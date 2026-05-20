@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import ar.edu.utn.frba.dds.donatrack.clasificacion.Categoria;
 import ar.edu.utn.frba.dds.donatrack.donacion.Perecedero;
 import ar.edu.utn.frba.dds.donatrack.donacion.NoPerecedero;
 import ar.edu.utn.frba.dds.donatrack.donacion.UnidadMedida;
@@ -13,8 +14,8 @@ import java.time.LocalDateTime;
 public class BienTest{
   @Test
   public void sePuedeCrearUnBienPerecedero() {
-
-    Subcategoria pastas = new Subcategoria("pastas");
+    Categoria alimentos = new Categoria("Alimentos");
+    Subcategoria pastas = new Subcategoria("pastas", alimentos);
 
     Perecedero fideos = BienBuilder.bienPerecedero(
         "Fideos secos",
@@ -29,8 +30,8 @@ public class BienTest{
   }
   @Test
   public void sePuedeCrearSalsaDeTomate() {
-
-    Subcategoria enlatados = new Subcategoria("enlatados");
+    Categoria alimentos = new Categoria("Alimentos");
+    Subcategoria enlatados = new Subcategoria("enlatados", alimentos);
 
     Perecedero salsaTomate = BienBuilder.bienPerecedero(
         "Salsa de tomate",
@@ -45,8 +46,8 @@ public class BienTest{
   }
   @Test
   public void sePuedeCrearSillasUsadas() {
-
-    Subcategoria muebles = new Subcategoria("muebles");
+    Categoria mobiliario  = new Categoria("Mobiliario ");
+    Subcategoria muebles = new Subcategoria("muebles", mobiliario);
 
     NoPerecedero sillas = BienBuilder.bienNoPerecedero(
         "Sillas de oficina",
@@ -62,8 +63,8 @@ public class BienTest{
 
   @Test
   public void sePuedeCrearMesaUsada() {
-
-    Subcategoria muebles = new Subcategoria("muebles");
+    Categoria mobiliario  = new Categoria("Mobiliario ");
+    Subcategoria muebles = new Subcategoria("muebles", mobiliario);
 
     NoPerecedero mesa = BienBuilder.bienNoPerecedero(
         "Mesa rectangular",

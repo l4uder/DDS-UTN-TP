@@ -7,13 +7,13 @@ import java.util.ArrayList;
 public class Subcategoria {
   private UUID id_Subcategoria;
   private String nombre;
-  //private Categoria categoria;
+  private Categoria categoria;
 
-  public Subcategoria(String nombre
-                      //Categoria categoria
+  public Subcategoria(String nombre,
+                      Categoria categoria
   ) {
     this.id_Subcategoria = UUID.randomUUID();
     this.nombre = nombre;
-        //this.categoria = categoria;
+    this.categoria = categoria;
   }
 }
