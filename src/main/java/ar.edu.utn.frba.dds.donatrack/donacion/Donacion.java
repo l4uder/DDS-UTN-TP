@@ -9,16 +9,24 @@ public class Donacion {
   private UUID idDonacion;
   private String descripcion;
   private List<Bien> bienes;
-  private EstadoDonacion estado;
-  private List<HistorialEstado> historialEstados;
+  //private TipoEstadoDonacion estado;
+  private List<EstadoDonacion> historialEstados;
+
+  public Donacion(String descripcion, List<Bien> bienes) {
+    this.idDonacion = UUID.randomUUID();
+    //this.estado = TipoEstadoDonacion.EN_DEPOSITO;
+    this.descripcion = (descripcion == null || descripcion.isBlank()) ? this.descripcionGeneral(bienes) : descripcion;
+    this.bienes = new ArrayList<>();
+    this.historialEstados = new ArrayList<>();
+    this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
+  }
 
   public Donacion(List<Bien> bienes) {
-    this.idDonacion = UUID.randomUUID();
-    this.estado = EstadoDonacion.EN_DEPOSITO;
-    this.bienes = new ArrayList<>(bienes);
-    this.descripcion = this.descripcionGeneral(bienes);
-    this.historialEstados = new ArrayList<>();
-    this.historialEstados.add(new HistorialEstado(this.estado, "Donación segmentada"));
+      this(null, bienes);
+  }
+
+  public TipoEstadoDonacion getEstadoActual() {
+      return historialEstados.get(historialEstados.size() - 1).getTipoEstado();
   }
 
   public String descripcionGeneral(List<Bien> bienes) {
@@ -27,17 +35,12 @@ public class Donacion {
         .collect(Collectors.joining(", "));
   }
 
-  public void cambiarEstado(EstadoDonacion nuevoEstado, String observacion) {
-    if (nuevoEstado == EstadoDonacion.ENTREGA_FALLIDA &&
-        (observacion == null || observacion.isBlank())) {
-      throw new IllegalArgumentException(
-          "Se requiere justificación para entrega fallida");
-    }
+  public void cambiarEstado(EstadoDonacion nuevoEstado) {
+    //this.estado = nuevoEstado;
+    this.historialEstados.add(nuevoEstado);
+  }
 
-    this.estado = nuevoEstado;
-    this.historialEstados.add(new HistorialEstado(
-        nuevoEstado,
-        (observacion == null || observacion.isBlank()) ? null : observacion
-    ));
+  public List<TipoEstadoDonacion> getHistorialEstados() {
+     return historialEstados.stream().map(EstadoDonacion::getTipoEstado).toList();
   }
 }
