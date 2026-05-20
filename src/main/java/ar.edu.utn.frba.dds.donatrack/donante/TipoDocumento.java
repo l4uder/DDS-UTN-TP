@@ -1,4 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donante;
 
-public class TipoDocumento {
+public enum TipoDocumento {
+  DNI,
+  CUIT,
+  PASAPORTE
 }
