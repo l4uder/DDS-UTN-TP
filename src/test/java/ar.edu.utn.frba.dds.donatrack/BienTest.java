@@ -2,79 +2,90 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import ar.edu.utn.frba.dds.donatrack.builder.CategoriaBuilder;
+import ar.edu.utn.frba.dds.donatrack.builder.SubcategoriaBuilder;
 import ar.edu.utn.frba.dds.donatrack.clasificacion.Categoria;
+import ar.edu.utn.frba.dds.donatrack.donacion.Bien;
 import ar.edu.utn.frba.dds.donatrack.donacion.Perecedero;
 import ar.edu.utn.frba.dds.donatrack.donacion.NoPerecedero;
 import ar.edu.utn.frba.dds.donatrack.donacion.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 
 public class BienTest{
+  private BienBuilder bien;
+  private Categoria alimentos;
+  private Categoria muebles;
+
+  @BeforeEach
+  void setUp() {
+    bien = new BienBuilder();
+    alimentos = new CategoriaBuilder().conNombre("Alimentos").build();
+    muebles = new CategoriaBuilder().conNombre("Muebles").build();
+  }
+
   @Test
   public void sePuedeCrearUnBienPerecedero() {
-    Categoria alimentos = new Categoria("Alimentos");
-    Subcategoria pastas = new Subcategoria("pastas", alimentos);
+    Subcategoria pastas = new SubcategoriaBuilder()
+        .conNombre("Pastas")
+        .conCategoria(alimentos)
+        .build();
 
-    Perecedero fideos = BienBuilder.bienPerecedero(
-        "Fideos secos",
-        LocalDateTime.of(2026,5,20,0,0),
-        100,
-        UnidadMedida.UNIDADES,
-        null,
-        pastas
-    );
+    Bien fideos = new BienBuilder()
+        .conDescripcion("Fideos secos")
+        .conCantidad(10)
+        .conSubcategoria(pastas)
+        .buildPerecedero(UnidadMedida.UNIDADES);
 
     assertEquals("Fideos secos", fideos.getDescripcion());
   }
   @Test
   public void sePuedeCrearSalsaDeTomate() {
-    Categoria alimentos = new Categoria("Alimentos");
-    Subcategoria enlatados = new Subcategoria("enlatados", alimentos);
+    Subcategoria tetrapack = new SubcategoriaBuilder()
+        .conNombre("Tetrapack")
+        .conCategoria(alimentos)
+        .build();
 
-    Perecedero salsaTomate = BienBuilder.bienPerecedero(
-        "Salsa de tomate",
-        LocalDateTime.of(2027,1,1,0,0),
-        50,
-        UnidadMedida.UNIDADES,
-        null,
-        enlatados
-    );
+    Bien salsaTomate = new BienBuilder()
+        .conDescripcion("Salsa de tomate")
+        .conCantidad(2)
+        .conSubcategoria(tetrapack)
+        .conFechaVencimiento(LocalDateTime.of(2027, 1, 1, 0, 0))
+        .buildPerecedero(UnidadMedida.UNIDADES);
 
     assertEquals("Salsa de tomate", salsaTomate.getDescripcion());
   }
   @Test
   public void sePuedeCrearSillasUsadas() {
-    Categoria mobiliario  = new Categoria("Mobiliario");
-    Subcategoria muebles = new Subcategoria("muebles", mobiliario);
+    Subcategoria sillas = new SubcategoriaBuilder()
+        .conNombre("Sillas")
+        .conCategoria(muebles).build();
 
-    NoPerecedero sillas = BienBuilder.bienNoPerecedero(
-        "muebles de oficina",
-        6,
-        UnidadMedida.UNIDADES,
-        null,
-        muebles,
-        true
-    );
+    Bien sillasUsadas = new BienBuilder()
+        .conDescripcion("Sillas de oficina usadas")
+        .conCantidad(10)
+        .conSubcategoria(sillas)
+        .usado()
+        .buildNoPerecedero();
 
-    assertEquals("Sillas de oficina", sillas.getDescripcion());
+    assertEquals("Sillas de oficina usadas", sillasUsadas.getDescripcion());
   }
 
   @Test
-  public void sePuedeCrearMesaUsada() {
-    Categoria muebles = new Categoria("muebles");
-    Subcategoria mesaRectangular = new Subcategoria("mesa rectangular", muebles);
+  public void sePuedeCrearMesa() {
+    Subcategoria mesas = new SubcategoriaBuilder()
+        .conNombre("Mesas")
+        .conCategoria(muebles).build();
 
-    NoPerecedero mesa = BienBuilder.bienNoPerecedero(
-        "Mesa rectangular",
-        1,
-        UnidadMedida.UNIDADES,
-        null,
-        mesaRectangular,
-        true
-    );
+    Bien mesaRectancular = new BienBuilder()
+        .conDescripcion("Mesa rectangular nueva")
+        .conCantidad(3)
+        .conSubcategoria(mesas)
+        .buildNoPerecedero();
 
-    assertEquals("Mesa rectangular", mesa.getDescripcion());
+    assertEquals("Mesa rectangular nueva", mesaRectancular.getDescripcion());
   }
 }
