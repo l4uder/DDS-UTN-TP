@@ -14,4 +14,8 @@ public class Perecedero extends Bien {
     super(descripcion, cantidad, unidad, foto, subcategoria);
     this.fechaVencimiento = fechaVencimiento;
   }
+
+  public LocalDateTime getFechaVencimiento(){
+    return this.fechaVencimiento;
+  }
 }

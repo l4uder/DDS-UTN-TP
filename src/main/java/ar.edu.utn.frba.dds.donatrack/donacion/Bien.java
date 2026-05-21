@@ -17,11 +17,27 @@ public abstract class Bien {
     this.descripcion = descripcion;
     this.cantidad = cantidad;
     this.unidad = unidad;
-    this.foto = foto; // puede ser null
+    this.foto = foto != null ? foto.clone() : null;
     this.subcategoria = subcategoria;
   }
 
-  public String getDescripcion(){
+  public String getDescripcion() {
     return this.descripcion;
+  }
+
+  public String getNombre() {
+    return this.descripcion;
+  }
+
+  public float getCantidad() {
+    return this.cantidad;
+  }
+
+  public UnidadMedida getUnidadMedida() {
+    return this.unidad;
+  }
+
+  public Subcategoria getSubcategoria() {
+    return this.subcategoria;
   }
 }

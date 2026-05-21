@@ -21,7 +21,7 @@ public class BienTest{
         "Fideos secos",
         LocalDateTime.of(2026,5,20,0,0),
         100,
-        UnidadMedida.UNIDAD,
+        UnidadMedida.UNIDADES,
         null,
         pastas
     );
@@ -37,7 +37,7 @@ public class BienTest{
         "Salsa de tomate",
         LocalDateTime.of(2027,1,1,0,0),
         50,
-        UnidadMedida.UNIDAD,
+        UnidadMedida.UNIDADES,
         null,
         enlatados
     );
@@ -46,13 +46,13 @@ public class BienTest{
   }
   @Test
   public void sePuedeCrearSillasUsadas() {
-    Categoria mobiliario  = new Categoria("Mobiliario ");
+    Categoria mobiliario  = new Categoria("Mobiliario");
     Subcategoria muebles = new Subcategoria("muebles", mobiliario);
 
     NoPerecedero sillas = BienBuilder.bienNoPerecedero(
-        "Sillas de oficina",
+        "muebles de oficina",
         6,
-        UnidadMedida.UNIDAD,
+        UnidadMedida.UNIDADES,
         null,
         muebles,
         true
@@ -63,15 +63,15 @@ public class BienTest{
 
   @Test
   public void sePuedeCrearMesaUsada() {
-    Categoria mobiliario  = new Categoria("Mobiliario ");
-    Subcategoria muebles = new Subcategoria("muebles", mobiliario);
+    Categoria muebles = new Categoria("muebles");
+    Subcategoria mesaRectangular = new Subcategoria("mesa rectangular", muebles);
 
     NoPerecedero mesa = BienBuilder.bienNoPerecedero(
         "Mesa rectangular",
         1,
-        UnidadMedida.UNIDAD,
+        UnidadMedida.UNIDADES,
         null,
-        muebles,
+        mesaRectangular,
         true
     );
 
