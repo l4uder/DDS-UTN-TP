@@ -10,8 +10,9 @@ import java.util.stream.Collectors;
 
 public class SegmentadorDonaciones {
 
-  public List<Donacion> segmentar(RegistroEntrega registro) {
-    return registro.getBienes().stream()
+  public List<Donacion> segmentar(List<RegistroEntrega> registros) {
+    return registros.stream()
+        .flatMap(registro -> registro.getBienes().stream())
         .collect(Collectors.groupingBy(this::claveDonacion))
         .values().stream()
         .map(Donacion::new)
@@ -24,8 +25,8 @@ public class SegmentadorDonaciones {
     if (bien instanceof Perecedero p) {
       return base + "_" + p.getFechaVencimiento();
     }
-    if (bien instanceof NoPerecedero p) {
-      return base + "_" + p.esUsado();
+    if (bien instanceof NoPerecedero u) {
+      return base + "_" + u.esUsado();
     }
     return base;
   }
