@@ -24,10 +24,6 @@ public abstract class Bien {
     return this.descripcion;
   }
 
-  public String getNombre() {
-    return this.descripcion;
-  }
-
   public float getCantidad() {
     return this.cantidad;
   }
