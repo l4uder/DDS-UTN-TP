@@ -8,9 +8,6 @@ public class EstadoDonacion {
   private String detalle;
 
   public EstadoDonacion(TipoEstadoDonacion estado, String observacion) {
-    if (estado == TipoEstadoDonacion.ENTREGA_FALLIDA && (observacion == null || observacion.isBlank())) {
-        throw new IllegalArgumentException("Se requiere justificación para entrega fallida");
-    }
     this.tipoEstado = estado;
     this.fecha = LocalDateTime.now();
     this.detalle = observacion;
@@ -22,5 +19,13 @@ public class EstadoDonacion {
 
   public TipoEstadoDonacion getTipoEstado() {
       return tipoEstado;
+  }
+
+  public LocalDateTime getFecha() {
+    return this.fecha;
+  }
+
+  public  String getDetalle() {
+    return this.detalle;
   }
 }

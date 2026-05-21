@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donacion;
 
+import ar.edu.utn.frba.dds.donatrack.entidadBeneficiaria.EntidadBeneficiaria;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -9,16 +10,16 @@ public class Donacion {
   private String descripcion;
   private List<Bien> bienes;
   private List<EstadoDonacion> historialEstados;
-
-  public Donacion(String descripcion, List<Bien> bienes) {
-    this.descripcion = (descripcion == null || descripcion.isBlank()) ? this.descripcionGeneral(bienes) : descripcion;
-    this.bienes = bienes != null ? new ArrayList<>(bienes) : new ArrayList<>();
-    this.historialEstados = new ArrayList<>();
-    this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
-  }
+  private EntidadBeneficiaria entidadAsignada;
 
   public Donacion(List<Bien> bienes) {
-      this(null, bienes);
+    if (bienes == null || bienes.isEmpty()) {
+      throw new IllegalArgumentException("Una donación debe tener al menos un bien");
+    }
+    this.descripcion = this.descripcionGeneral(bienes);
+    this.bienes = new ArrayList<>(bienes);
+    this.historialEstados = new ArrayList<>();
+    this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
   }
 
   public TipoEstadoDonacion getEstadoActual() {
@@ -31,12 +32,27 @@ public class Donacion {
         .collect(Collectors.joining(", "));
   }
 
-  public void cambiarEstado(EstadoDonacion nuevoEstado) {
-    //this.estado = nuevoEstado;
-    this.historialEstados.add(nuevoEstado);
+  public void cambiarEstado(TipoEstadoDonacion nuevoEstado, String observacion) {
+    if (nuevoEstado == TipoEstadoDonacion.ENTREGA_FALLIDA &&
+        (observacion == null || observacion.isBlank())) {
+      throw new IllegalArgumentException("Se requiere justificación para entrega fallida");
+    }
+    this.historialEstados.add(new EstadoDonacion(nuevoEstado, observacion));
   }
 
-  public List<TipoEstadoDonacion> getHistorialEstados() {
-     return historialEstados.stream().map(EstadoDonacion::getTipoEstado).toList();
+  public List<EstadoDonacion> getHistorialEstados() {
+    return new ArrayList<>(historialEstados);
+  }
+
+  public List<TipoEstadoDonacion> getTiposEstado() {
+    return historialEstados.stream()
+        .map(EstadoDonacion::getTipoEstado)
+        .toList();
+  }
+
+  public void asignarA(EntidadBeneficiaria beneficiario) {
+    this.entidadAsignada = beneficiario;
+    cambiarEstado(TipoEstadoDonacion.ASIGNACION_REALIZADA,
+        "Se realizó la asignación a " + beneficiario.getRazonSocial());
   }
 }
