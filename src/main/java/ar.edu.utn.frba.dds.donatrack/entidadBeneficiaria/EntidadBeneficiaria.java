@@ -8,10 +8,8 @@ import ar.edu.utn.frba.dds.donatrack.necesidades.NecesidadRecurrente;
 import ar.edu.utn.frba.dds.donatrack.necesidades.Periodo;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class EntidadBeneficiaria {
-  private UUID id_EntidadBenficiaria;
   private String razonSocial;
   private String direccion;
   //private List <MedioDeContacto> contactoRepresentantes;
@@ -20,13 +18,15 @@ public class EntidadBeneficiaria {
   public EntidadBeneficiaria (String razon,
                               String direccion
                               //List <MedioDeContacto> contactoRepresentantes
-                              ){
-    this.id_EntidadBenficiaria = UUID.randomUUID();
+                              ) {
     this.razonSocial = razon;
     this.direccion = direccion;
     //this.contactoRepresentantes = new ArrayList<>();
   }
-  public void registrarNecesidad(Necesidad necesidad){
+  public void registrarNecesidad(Necesidad necesidad) {
     this.necesidades.add(necesidad);
+  }
+  public String getRazonSocial() {
+    return this.razonSocial;
   }
 }
