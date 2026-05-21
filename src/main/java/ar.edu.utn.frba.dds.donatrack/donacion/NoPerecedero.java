@@ -3,7 +3,6 @@ package ar.edu.utn.frba.dds.donatrack.donacion;
 import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
 
 public class NoPerecedero extends Bien {
-
   private Boolean usado;
 
   public NoPerecedero(String descripcion,

@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class Donante {
-  private UUID idDonante;
   private MedioContacto medioDeContactoPred;
   private List<MedioContacto> contactosSecundarios;
   private List<RegistroEntrega> entregas;
 
   public Donante(MedioContacto medioDeContactoPred, List<MedioContacto> contactosSecundarios) {
-    this.idDonante = UUID.randomUUID();
     this.medioDeContactoPred = medioDeContactoPred;
     if(medioDeContactoPred == null)
           throw new IllegalArgumentException("El medio de contacto principal no puede ser null");

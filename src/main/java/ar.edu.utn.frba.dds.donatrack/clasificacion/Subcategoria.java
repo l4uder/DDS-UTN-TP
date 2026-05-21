@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class Subcategoria {
-  private UUID idSubcategoria;
   private String nombre;
   private Categoria categoria;
 
   public Subcategoria(String nombre,
                       Categoria categoria) {
-    this.idSubcategoria = UUID.randomUUID();
     this.nombre = nombre;
     this.categoria = categoria;
   }

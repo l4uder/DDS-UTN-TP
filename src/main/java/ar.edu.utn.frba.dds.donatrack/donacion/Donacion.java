@@ -6,15 +6,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Donacion {
-  private UUID idDonacion;
   private String descripcion;
   private List<Bien> bienes;
-  //private TipoEstadoDonacion estado;
   private List<EstadoDonacion> historialEstados;
 
   public Donacion(String descripcion, List<Bien> bienes) {
-    this.idDonacion = UUID.randomUUID();
-    //this.estado = TipoEstadoDonacion.EN_DEPOSITO;
     this.descripcion = (descripcion == null || descripcion.isBlank()) ? this.descripcionGeneral(bienes) : descripcion;
     this.bienes = bienes != null ? new ArrayList<>(bienes) : new ArrayList<>();
     this.historialEstados = new ArrayList<>();

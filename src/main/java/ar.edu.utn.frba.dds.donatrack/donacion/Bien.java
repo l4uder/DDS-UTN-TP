@@ -3,7 +3,6 @@ package ar.edu.utn.frba.dds.donatrack.donacion;
 import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
 
 public abstract class Bien {
-
   protected String descripcion;
   protected float cantidad;
   protected UnidadMedida unidad;

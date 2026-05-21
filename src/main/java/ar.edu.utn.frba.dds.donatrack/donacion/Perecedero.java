@@ -4,7 +4,6 @@ import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
 import java.time.LocalDateTime;
 
 public class Perecedero extends Bien {
-
   private LocalDateTime fechaVencimiento;
 
   public Perecedero(String descripcion, float cantidad,
