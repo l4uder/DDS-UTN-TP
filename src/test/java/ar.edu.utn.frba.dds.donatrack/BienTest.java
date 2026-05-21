@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class BienTest{
   @Test
   public void sePuedeCrearUnBienPerecedero() {
-    Categoria alimentos = new Categoria("alimentos");
+    Categoria alimentos = new Categoria("Alimentos");
     Subcategoria pastas = new Subcategoria("pastas", alimentos);
 
     Perecedero fideos = BienBuilder.bienPerecedero(
@@ -30,8 +30,8 @@ public class BienTest{
   }
   @Test
   public void sePuedeCrearSalsaDeTomate() {
-    Categoria despensa = new Categoria("despensa");
-    Subcategoria enlatados = new Subcategoria("enlatados", despensa);
+    Categoria alimentos = new Categoria("Alimentos");
+    Subcategoria enlatados = new Subcategoria("enlatados", alimentos);
 
     Perecedero salsaTomate = BienBuilder.bienPerecedero(
         "Salsa de tomate",
@@ -46,15 +46,15 @@ public class BienTest{
   }
   @Test
   public void sePuedeCrearSillasUsadas() {
-    Categoria muebles = new Categoria("muebles");
-    Subcategoria sillasUsadas = new Subcategoria("sillas usadas", muebles);
+    Categoria mobiliario  = new Categoria("Mobiliario");
+    Subcategoria muebles = new Subcategoria("muebles", mobiliario);
 
     NoPerecedero sillas = BienBuilder.bienNoPerecedero(
-        "Sillas de oficina",
+        "muebles de oficina",
         6,
         UnidadMedida.UNIDADES,
         null,
-        sillasUsadas,
+        muebles,
         true
     );
 

@@ -9,13 +9,12 @@ public class Subcategoria {
   private String nombre;
   private Categoria categoria;
 
-  public Subcategoria(String nombre, Categoria categoria) {
+  public Subcategoria(String nombre,
+                      Categoria categoria) {
     this.idSubcategoria = UUID.randomUUID();
     this.nombre = nombre;
     this.categoria = categoria;
   }
-
-  public String getNombre() {
+   public String getNombre() {
     return this.nombre;
-  }
 }
