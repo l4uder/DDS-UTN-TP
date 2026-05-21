@@ -16,5 +16,6 @@ public class Subcategoria {
     this.categoria = categoria;
   }
    public String getNombre() {
-    return this.nombre;
+       return this.nombre;
+   }
 }

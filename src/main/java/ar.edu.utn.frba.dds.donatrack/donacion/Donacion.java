@@ -16,7 +16,7 @@ public class Donacion {
     this.idDonacion = UUID.randomUUID();
     //this.estado = TipoEstadoDonacion.EN_DEPOSITO;
     this.descripcion = (descripcion == null || descripcion.isBlank()) ? this.descripcionGeneral(bienes) : descripcion;
-    this.bienes = new ArrayList<>();
+    this.bienes = bienes != null ? new ArrayList<>(bienes) : new ArrayList<>();
     this.historialEstados = new ArrayList<>();
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
   }

@@ -10,12 +10,12 @@ public abstract class Donante {
   private List<MedioContacto> contactosSecundarios;
   private List<RegistroEntrega> entregas;
 
-  public Donante(MedioContacto medioDeContactoPred, List<MedioContacto> contactos) {
+  public Donante(MedioContacto medioDeContactoPred, List<MedioContacto> contactosSecundarios) {
     this.idDonante = UUID.randomUUID();
     this.medioDeContactoPred = medioDeContactoPred;
     if(medioDeContactoPred == null)
           throw new IllegalArgumentException("El medio de contacto principal no puede ser null");
-    this.contactosSecundarios = new ArrayList<>(contactos);
+    this.contactosSecundarios = contactosSecundarios != null ? new ArrayList<>(contactosSecundarios) : new ArrayList<>();
     this.entregas = new ArrayList<>();
   }
 
@@ -23,7 +23,7 @@ public abstract class Donante {
     this.medioDeContactoPred = contacto;
   }
 
-  public List<MedioContacto> getMediosContacto(tipoContacto tipoContacto) {
+  public List<MedioContacto> getMediosContacto(TipoContacto tipoContacto) {
       List<MedioContacto> todos = new ArrayList<>();
       todos.add(medioDeContactoPred);
       todos.addAll(contactosSecundarios);
@@ -31,5 +31,9 @@ public abstract class Donante {
       List<MedioContacto> filtradoPorTipo = todos.stream().filter(c-> c.getTipo().equals(tipoContacto)).toList();
 
       return filtradoPorTipo;
+  }
+
+  public void agregarContactoSecundario(MedioContacto contacto) {
+      this.contactosSecundarios.add(contacto);
   }
 }

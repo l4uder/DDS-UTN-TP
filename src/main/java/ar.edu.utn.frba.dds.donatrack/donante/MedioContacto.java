@@ -1,15 +1,15 @@
 package ar.edu.utn.frba.dds.donatrack.donante;
 
 public class MedioContacto {
-  private tipoContacto tipo;
+  private TipoContacto tipo;
   private String detalle;
 
-  public MedioContacto(tipoContacto tipo, String detallee) {
+  public MedioContacto(TipoContacto tipo, String detallee) {
       this.tipo = tipo;
       this.detalle = detallee;
   }
 
-  public tipoContacto getTipo() {
+  public TipoContacto getTipo() {
     return tipo;
   }
 

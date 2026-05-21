@@ -1,28 +1,31 @@
 package ar.edu.utn.frba.dds.donatrack.donante;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 public class PersonaHumana extends Donante{
   private String nombre;
   private String apellido;
-  private int edad;
-  private TipoDocumento tipoDocumento;
-  private String documento;
+  private LocalDate fechaNacimiento;
+  private Documento documento;
   private Genero genero;
   private String direccion;
 
   public PersonaHumana(String nombre, String apellido,
-                       TipoDocumento tipoDocumento,
-                       int edad, String documento, Genero genero,
-                       String direccion, MedioContacto medioContPred,
-                       List<MedioContacto> contactos) {
-    super(medioContPred, contactos);
+                       Documento documento,
+                       LocalDate fechaNacimiento, Genero genero,
+                       String direccion, MedioContacto medioContPred, List<MedioContacto> contactosSecundarios) {
+    super(medioContPred, contactosSecundarios);
     this.nombre = nombre;
     this.apellido = apellido;
-    this.edad = edad;
-    this.tipoDocumento = tipoDocumento;
+    this.fechaNacimiento = fechaNacimiento;
     this.documento = documento;
     this.genero = genero;
     this.direccion = direccion;
   }
+
+    public Integer getEdad() {
+        return Period.between(fechaNacimiento, LocalDate.now()).getYears();
+    }
 }
