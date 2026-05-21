@@ -11,7 +11,7 @@ public class PersonaJuridica extends Donante {
 
   public PersonaJuridica(String razonSocial, TipoOrganizacion tipo,
                          String rubro, List<Representante> representantes,
-                         MedioDeContacto medioContPred, List<MedioDeContacto> contactos) {
+                         MedioContacto medioContPred, List<MedioContacto> contactos) {
     super(medioContPred, contactos);
     this.razonSocial = razonSocial;
     this.tipo = tipo;

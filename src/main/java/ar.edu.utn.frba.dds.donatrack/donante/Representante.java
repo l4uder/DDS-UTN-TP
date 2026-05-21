@@ -11,12 +11,12 @@ public class Representante {
   private String documento;
   private Genero genero;
   private String direccion;
-  private List<MedioDeContacto> contactos;
+  private List<MedioContacto> contactos;
 
   public Representante(String nombre, String apellido,
                        TipoDocumento tipoDocumento,
                        int edad, String documento, Genero genero,
-                       String direccion, List<MedioDeContacto> contactos){
+                       String direccion, List<MedioContacto> contactos){
     this.nombre = nombre;
     this.apellido = apellido;
     this.edad = edad;
