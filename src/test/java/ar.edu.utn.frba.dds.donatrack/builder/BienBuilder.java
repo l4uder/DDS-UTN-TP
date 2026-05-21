@@ -9,41 +9,43 @@ import java.time.LocalDateTime;
 
 public class BienBuilder {
 
-  public static Perecedero bienPerecedero(
-      String descripcion,
-      LocalDateTime fechaDeVencimiento,
-      float cantidad,
-      UnidadMedida unidad,
-      byte[] foto,
-      Subcategoria subcategoria
-  ) {
+  private String descripcion = "Bien default";
+  private float cantidad = 1;
+  private Subcategoria subcategoria = new SubcategoriaBuilder().build();
+  private byte[] foto = null;
+  private LocalDateTime fechaVencimiento = LocalDateTime.now().plusMonths(6);
+  private Boolean usado = false;
 
-    return new Perecedero(
-        descripcion,
-        cantidad,
-        unidad,
-        foto,
-        subcategoria,
-        fechaDeVencimiento
-    );
+  public BienBuilder conDescripcion(String descripcion) {
+    this.descripcion = descripcion;
+    return this;
   }
 
-  public static NoPerecedero bienNoPerecedero(
-      String descripcion,
-      float cantidad,
-      UnidadMedida unidad,
-      byte[] foto,
-      Subcategoria subcategoria,
-      Boolean usado
-  ) {
+  public BienBuilder conCantidad(float cantidad) {
+    this.cantidad = cantidad;
+    return this;
+  }
 
-    return new NoPerecedero(
-        descripcion,
-        cantidad,
-        unidad,
-        foto,
-        subcategoria,
-        usado
-    );
+  public BienBuilder conSubcategoria(Subcategoria subcategoria) {
+    this.subcategoria = subcategoria;
+    return this;
+  }
+
+  public BienBuilder conFechaVencimiento(LocalDateTime fecha) {
+    this.fechaVencimiento = fecha;
+    return this;
+  }
+
+  public BienBuilder usado() {
+    this.usado = true;
+    return this;
+  }
+
+  public Perecedero buildPerecedero(UnidadMedida unidad) {
+    return new Perecedero(descripcion, cantidad, unidad, foto, subcategoria, fechaVencimiento);
+  }
+
+  public NoPerecedero buildNoPerecedero() {
+    return new NoPerecedero(descripcion, cantidad, UnidadMedida.UNIDADES, foto, subcategoria, usado);
   }
 }
