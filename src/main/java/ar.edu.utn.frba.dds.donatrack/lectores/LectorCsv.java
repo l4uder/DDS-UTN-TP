@@ -16,32 +16,46 @@ import java.util.List;
 
 public class LectorCsv {
 
-    public static List<Donante> leerTodo(String csvDonantes) {
+    public record Error(int fila, String nombre){}
+
+    public record ResultadoImportacion(List<Error> errores, List<Donante> donantes){}
+
+    public static ResultadoImportacion leerTodo(String csvDonantes) {
         List<Donante> donantes = new ArrayList<>();
 
         InputStream csvStream = LectorCsv.class.getClassLoader().getResourceAsStream(csvDonantes);
 
         if (csvStream == null) {
-            System.out.println("No se encontró el archivo CSV en resources: " + csvDonantes);
-            return donantes;
+            String msg = "No se encontró el archivo CSV en resources: " + csvDonantes;
+            System.out.println(msg);
+            throw new BatchJobException(msg);
         }
 
+        var registroErrores = new ArrayList<Error>();
         try (CSVReader reader = new CSVReader(new InputStreamReader(csvStream, StandardCharsets.UTF_8))) {
 
             reader.readNext(); // lectura del encabezado
 
             String[] fila;
+            int indice = 0;
             while ((fila = reader.readNext()) != null) {
+                indice++;
                 String tipoPersona = fila[0];
-                Documento documento = new Documento(TipoDocumento.valueOf(fila[1]) ,fila[2]);
+                Documento documento = new Documento(TipoDocumento.valueOf(fila[1]), fila[2]);
                 String nombreCompleto = fila[3];
-                MedioContacto contactoPrincipal = new MedioContacto(TipoContacto.CORREO, fila[4]) ;
+                MedioContacto contactoPrincipal = new MedioContacto(TipoContacto.CORREO, fila[4]);
                 MedioContacto contactoSecundario = new MedioContacto(TipoContacto.TELEFONO, fila[5]);
 
-                Donante donanteNuevo = DonanteSimpleFactory.crear(tipoPersona, documento, nombreCompleto, contactoPrincipal, contactoSecundario);
+                Donante donanteNuevo;
+                try {
+                    donanteNuevo = DonanteSimpleFactory.crear(tipoPersona, documento, nombreCompleto, contactoPrincipal, contactoSecundario);
+                } catch (IllegalArgumentException e) {
+                    registroErrores.add(new Error(indice, nombreCompleto));
+                    continue;
+                }
 
                 Donante donanteEncontrado = donantes.stream().filter(d -> d.esElMismo(donanteNuevo)).findFirst().orElse(null);
-                if(donanteEncontrado == null)
+                if (donanteEncontrado == null)
                     donantes.add(donanteNuevo);
                 else {
                     donanteEncontrado.actualizar(donanteNuevo);
@@ -57,7 +71,7 @@ public class LectorCsv {
             throw new BatchJobException(msg, e);
         }
 
-        return donantes;
+        return new ResultadoImportacion(registroErrores, donantes);
     }
 }
 
