@@ -7,26 +7,20 @@ classDiagram
 
     class Donante {
         <<abstract>>
-        - idDonante: UUID
         - usuario: Usuario
-        - medioContactoPred: MedioDeContacto
-        - contactos: List~MedioDeContacto~
+        - medioContactoPred: MedioContacto
+        - contactos: List~MedioContacto~
         - entregas: List~RegistroEntrega~
-        + cambiarContactoPred(contacto: MedioDeContacto)
+        + cambiarContactoPred(contacto: MedioContacto)
+        + agregarContactoSecundario(contacto: MedioContacto)
         + actualizarDatos(donante: Donante)
-    }
-
-    class Usuario {
-        - email: String
-        - contrasenia: String
     }
 
     class PersonaHumana {
         - nombre: String
         - apellido: String
-        - edad: int
-        - tipoDocumento: TipoDocumento
-        - documento: String
+        - fechaNacimiento: LocalDate
+        - documento: Documento
         - genero: Genero
         - direccion: String
     }
@@ -35,43 +29,47 @@ classDiagram
         - razonSocial: String
         - tipoOrganizacion: TipoOrganizacion
         - rubro: String
-        - tipoDocumento: TipoDocumento
-        - documento: String
         - representantes: List~Representante~
     }
 
     class Representante {
         - nombre: String
         - apellido: String
-        - edad: int
-        - dni: String
+        - documento: Documento
         - genero: Genero
         - direccion: String
-        - contactos: List~MedioDeContacto~
+        - contactos: List~MedioContacto~
     }
 
-    class MedioDeContacto {
-        - tipo: TipoMedioContacto
+    class Documento {
+        - tipo: TipoDocumento
+        - numero: String
+    }
+    
+    class MedioContacto {
+        - tipo: TipoContacto
         - detalle: String
     }
 
     class RegistroEntrega {
-        - idRegistroEntrega: UUID
         - fecha: LocalDateTime
         - descripcionGeneral: String
         - bienes: List~Bien~
         + agregarBien(bien: Bien)
-        + getBienes(): List~Bien~
     }
 
     class Donacion {
-        - idDonacion: UUID
         - descripcionGeneral: String
-        - subcategoria: Subcategoria
         - bienes: List~Bien~
-        - estado: EstadoDonacion
-        - historialEstados: List~HistorialEstado~
-        + cambiarEstado(estado: EstadoDonacion, observacion: String)
+        - historialEstados: List~EstadoDonacion~
+        + cambiarEstado(tipo: TipoEstadoDonacion, observacion: String)
+        + asignarA(entidad: EntidadBeneficiaria)
+    }
+
+    class EstadoDonacion {
+        - fecha: LocalDateTime
+        - tipoEstado: TipoEstadoDonacion
+        - detalle: String
     }
 
     class Bien {
@@ -85,29 +83,19 @@ classDiagram
 
     class Perecedero {
         - fechaVencimiento: LocalDateTime
-        + estaVencido(): Boolean
-        + diasParaVencer(): int
     }
 
     class NoPerecedero {
         - usado: Boolean
-        + esUsado(): Boolean
-    }
-
-    class HistorialEstado {
-        - fecha: LocalDateTime
-        - estado: EstadoDonacion
-        - observacion: String
     }
 
     class Categoria {
-        - idCategoria: UUID
         - nombre: String
     }
 
     class Subcategoria {
-        - idSubcategoria: UUID
         - nombre: String
+        - categoria: Categoria
     }
 
     class SegmentadorDonaciones {
@@ -129,36 +117,48 @@ classDiagram
     }
 
     class EntidadBeneficiaria {
-        - idEntidadBeneficiaria: UUID
         - razonSocial: String
         - direccion: String
+        - contactoRepresentantes: List~MedioContacto~
+        - necesidades: List~Necesidad~
         + registrarNecesidad(necesidad: Necesidad)
     }
 
     class Necesidad {
         <<abstract>>
+        - subcategoria: Subcategoria
         - descripcion: String
+        - cantidadRecibida: int
+        + recibirBienes(cantidad: int)
         + esSatisfecha(): Boolean
     }
 
     class NecesidadExtraordinaria {
         - cantidadRequerida: int
-        - cantidadRecibida: int
+        + esSatisfecha(): Boolean
     }
 
     class NecesidadRecurrente {
         - cantidadPorPeriodo: int
-        - periodo: Periodo
+        + esSatisfecha(): Boolean
     }
 
     class Notificador {
         <<interface>>
-        + enviar(destinatario: Donante, mensaje: String, medio: TipoMedioContacto)
+        + notificar(donante: Donante, mensaje: String)
     }
 
-    class NotificadorEmail
-    class NotificadorSMS
-    class NotificadorWhatsApp
+    class CorreoElectronico {
+        + notificar(donante: Donante, mensaje: String)
+    }
+
+    class Telefono {
+        + notificar(donante: Donante, mensaje: String)
+    }
+
+    class Whatsapp {
+        + notificar(donante: Donante, mensaje: String)
+    }
 
     class Genero {
         <<enumeration>>
@@ -175,7 +175,7 @@ classDiagram
         INSTITUCION
     }
 
-    class TipoMedioContacto {
+    class TipoContacto {
         <<enumeration>>
         WHATSAPP
         CORREO
@@ -189,7 +189,7 @@ classDiagram
         PASAPORTE
     }
 
-    class EstadoDonacion {
+    class TipoEstadoDonacion {
         <<enumeration>>
         EN_DEPOSITO
         ASIGNACION_REALIZADA
@@ -220,40 +220,42 @@ classDiagram
     NoPerecedero --|> Bien
     NecesidadExtraordinaria --|> Necesidad
     NecesidadRecurrente --|> Necesidad
-    NotificadorEmail ..|> Notificador
-    NotificadorSMS ..|> Notificador
-    NotificadorWhatsApp ..|> Notificador
+    CorreoElectronico ..|> Notificador
+    Telefono ..|> Notificador
+    Whatsapp ..|> Notificador
 
-    Donante "1" --> "1" Usuario
-    Donante "1" --> "*" RegistroEntrega
-    Donante "1" --> "*" MedioDeContacto
-    PersonaJuridica "1" --> "*" Representante
-    Representante "*" --> "*" MedioDeContacto
-    Representante --> Genero
+    Donante --> RegistroEntrega
+    Donante --> MedioContacto
+    Donante --> MedioContacto
+    PersonaJuridica --> Representante
+    Representante --> MedioContacto
     PersonaHumana --> Genero
+    Representante --> Genero
     PersonaJuridica --> TipoOrganizacion
-    PersonaHumana --> TipoDocumento
-    PersonaJuridica --> TipoDocumento
+    PersonaHumana --> Documento
+    PersonaJuridica --> Documento
+    Documento --> TipoDocumento
 
-    RegistroEntrega "1" --> "*" Bien
-    Donacion "1" --> "*" Bien
-    Donacion "1" --> "1" Subcategoria
-    Donacion "1" --> "*" HistorialEstado
-    HistorialEstado --> EstadoDonacion
+    RegistroEntrega --> Bien
+    Donacion --> Bien
+    Donacion --> EstadoDonacion
+    Donacion --> EntidadBeneficiaria
+    EstadoDonacion --> TipoEstadoDonacion
 
-    Bien "*" --> "1" Subcategoria
+    Bien --> Subcategoria
     Bien --> UnidadMedida
-    Subcategoria "*" --> "1" Categoria
+    Subcategoria --> Categoria
 
     SegmentadorDonaciones ..> RegistroEntrega
     SegmentadorDonaciones ..> Donacion
     ImportadorDonantes ..> Donante
     ImportadorDonantes ..> ResultadoImportacion
 
-    EntidadBeneficiaria "1" --> "*" MedioDeContacto
-    EntidadBeneficiaria "1" --> "*" Necesidad
-    Necesidad "*" --> "1" Subcategoria
+    EntidadBeneficiaria --> MedioContacto
+    EntidadBeneficiaria --> Necesidad
+    Necesidad --> Subcategoria
     NecesidadRecurrente --> Periodo
+    MedioContacto --> TipoContacto
 
     Notificador ..> Donante
 ```
