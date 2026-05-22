@@ -7,9 +7,9 @@ import java.util.List;
 
 
 public abstract class Donante {
-  private MedioContacto medioDeContactoPred;
-  private List<MedioContacto> contactosSecundarios;
-  private List<RegistroEntrega> entregas;
+  protected MedioContacto medioDeContactoPred;
+  protected List<MedioContacto> contactosSecundarios;
+  protected List<RegistroEntrega> entregas;
 
   public Donante(MedioContacto medioDeContacto, List<MedioContacto> contactosSecundarios) {
     if (medioDeContacto == null) {
@@ -42,4 +42,12 @@ public abstract class Donante {
   public MedioContacto getMedioDeContactoPred() {
     return medioDeContactoPred;
   }
+
+  public List<MedioContacto> getContactosSecundarios() {
+    return contactosSecundarios;
+  }
+
+  abstract public boolean esElMismo(Donante otroDonante);
+
+  abstract public void actualizar(Donante otroDonante);
 }

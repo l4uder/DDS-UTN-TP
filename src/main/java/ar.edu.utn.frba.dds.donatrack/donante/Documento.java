@@ -8,4 +8,18 @@ public class Documento {
     this.tipoDocumento = tipoDocumento;
     this.detalle = detalle;
   }
+
+  public TipoDocumento getTipoDocumento() {
+    return tipoDocumento;
+  }
+
+  public String getDetalle() {
+      return detalle;
+  }
+
+
+  public Boolean esIgualA(Documento otrodocumento) {
+      return this.tipoDocumento == otrodocumento.getTipoDocumento() &&
+              this.detalle.equalsIgnoreCase(otrodocumento.getDetalle());
+  }
 }

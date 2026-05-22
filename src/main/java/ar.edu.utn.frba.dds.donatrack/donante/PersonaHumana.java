@@ -33,4 +33,48 @@ public class PersonaHumana extends Donante {
   public Integer getEdad() {
     return Period.between(fechaNacimiento, LocalDate.now()).getYears();
   }
+
+  public Documento getDocumento() {
+      return this.documento;
+  }
+
+  public String getNombre() {
+      return this.nombre;
+  }
+
+  public String getApellido() {
+      return this.apellido;
+  }
+
+  @Override
+  public boolean esElMismo(Donante otroDonante) {
+      if (!(otroDonante instanceof PersonaHumana))
+          return false;
+      PersonaHumana otraPersona =  (PersonaHumana) otroDonante;
+
+      return this.documento.esIgualA(otraPersona.getDocumento()) &&
+              this.getMediosContacto(TipoContacto.CORREO).stream().anyMatch(c-> c.getDetalle().equals(otraPersona.getMedioDeContactoPred().getDetalle()));
+  }
+
+  @Override
+  public void actualizar(Donante otroDonante) {
+      if (!(otroDonante instanceof PersonaHumana))
+          return ;
+      PersonaHumana otraPersona =  (PersonaHumana) otroDonante;
+
+      this.nombre = otraPersona.getNombre();
+      this.apellido = otraPersona.getApellido();
+      this.documento = otraPersona.getDocumento();
+      this.medioDeContactoPred = otraPersona.getMedioDeContactoPred();
+      this.contactosSecundarios = otraPersona.getContactosSecundarios();
+  }
+
+    @Override
+  public String toString() {
+      return "PersonaHumana{" +
+                "nombre: " + nombre +
+                ", apellido: " + apellido +
+                ", documento: " + documento.getTipoDocumento().toString() + documento.getDetalle() +
+                '}';
+  }
 }

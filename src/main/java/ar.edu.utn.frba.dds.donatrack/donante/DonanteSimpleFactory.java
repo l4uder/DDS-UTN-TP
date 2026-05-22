@@ -32,6 +32,7 @@ public class DonanteSimpleFactory {
                     nombreCompleto,
                     TipoOrganizacion.SIN_ESPECIFICAR,
                     null,
+                    documento,
                     null,
                     contactoPrincipal,
                     contactosSecundarios

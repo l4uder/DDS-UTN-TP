@@ -50,6 +50,7 @@ public class NotificadorTest {
             "Constructora Junior SRL",
             TipoOrganizacion.EMPRESA,
             "Construcción",
+            new Documento(TipoDocumento.CUIT, "30-12345678-9"),
             List.of(rep),
             new MedioContacto(TipoContacto.CORREO, "srl@gmail.com"),
             null);

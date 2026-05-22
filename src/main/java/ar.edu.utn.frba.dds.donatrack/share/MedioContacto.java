@@ -6,6 +6,9 @@ public class MedioContacto {
 
   public MedioContacto(TipoContacto tipo, String detallee) {
     this.tipo = tipo;
+    if (detallee == null || detallee.isBlank()) {
+       throw new IllegalArgumentException("contacto sin dato, falta el detalle");
+    }
     this.detalle = detallee;
   }
 
