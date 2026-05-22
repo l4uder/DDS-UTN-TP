@@ -7,7 +7,6 @@ classDiagram
 
     class Donante {
         <<abstract>>
-        - usuario: Usuario
         - medioContactoPred: MedioContacto
         - contactos: List~MedioContacto~
         - entregas: List~RegistroEntrega~
@@ -35,9 +34,11 @@ classDiagram
     class Representante {
         - nombre: String
         - apellido: String
+        - fechaNacimiento: LocalDate
         - documento: Documento
         - genero: Genero
         - direccion: String
+        - medioContactoPred: MedioContacto
         - contactos: List~MedioContacto~
     }
 
