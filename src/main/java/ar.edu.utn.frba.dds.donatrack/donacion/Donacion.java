@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donacion;
 
 import ar.edu.utn.frba.dds.donatrack.beneficiario.EntidadBeneficiaria;
+import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,5 +56,13 @@ public class Donacion {
     this.entidadAsignada = beneficiario;
     cambiarEstado(TipoEstadoDonacion.ASIGNACION_REALIZADA,
         "Se realizó la asignación a " + beneficiario.getRazonSocial());
+  }
+
+  public Subcategoria getSubcategoria() {
+    return this.bienes.get(0).getSubcategoria(); // todos tienen la misma
+  }
+
+  public List<Bien> getBienes() {
+    return new ArrayList<>(bienes);
   }
 }

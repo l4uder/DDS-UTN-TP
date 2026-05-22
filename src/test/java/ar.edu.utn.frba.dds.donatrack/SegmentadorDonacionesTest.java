@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.CategoriaBuilder;
@@ -10,6 +11,7 @@ import ar.edu.utn.frba.dds.donatrack.clasificacion.Categoria;
 import ar.edu.utn.frba.dds.donatrack.clasificacion.SegmentadorDonaciones;
 import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donacion.Bien;
+import ar.edu.utn.frba.dds.donatrack.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donacion.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.donante.RegistroEntrega;
 import java.time.LocalDate;
@@ -55,7 +57,9 @@ public class SegmentadorDonacionesTest {
         .conBien(bienFideos).conBien(bienTomate)
         .build();
 
-    assertEquals(2, segmentador.segmentar(List.of(registro)).size());
+    List<Donacion> donaciones = segmentador.segmentar(List.of(registro));
+    assertEquals(2, donaciones.size());
+    verificarSubcategoriasConsistentes(donaciones);
   }
 
   @Test
@@ -74,7 +78,9 @@ public class SegmentadorDonacionesTest {
         .conBien(fideos2027).conBien(fideos2026)
         .build();
 
-    assertEquals(2, segmentador.segmentar(List.of(registro)).size());
+    List<Donacion> donaciones = segmentador.segmentar(List.of(registro));
+    assertEquals(2, donaciones.size());
+    verificarSubcategoriasConsistentes(donaciones);
   }
 
   @Test
@@ -93,7 +99,9 @@ public class SegmentadorDonacionesTest {
         .conBien(fideos1).conBien(fideos2)
         .build();
 
-    assertEquals(1, segmentador.segmentar(List.of(registro)).size());
+    List<Donacion> donaciones = segmentador.segmentar(List.of(registro));
+    assertEquals(1, donaciones.size());
+    verificarSubcategoriasConsistentes(donaciones);
   }
 
   @Test
@@ -110,7 +118,9 @@ public class SegmentadorDonacionesTest {
         .conBien(sillaUsada).conBien(sillaNueva)
         .build();
 
-    assertEquals(2, segmentador.segmentar(List.of(registro)).size());
+    List<Donacion> donaciones = segmentador.segmentar(List.of(registro));
+    assertEquals(2, donaciones.size());
+    verificarSubcategoriasConsistentes(donaciones);
   }
 
   @Test
@@ -127,6 +137,16 @@ public class SegmentadorDonacionesTest {
         .conBien(sillaUsada).conBien(mesaUsada)
         .build();
 
-    assertEquals(2, segmentador.segmentar(List.of(registro)).size());
+    List<Donacion> donaciones = segmentador.segmentar(List.of(registro));
+    assertEquals(2, donaciones.size());
+    verificarSubcategoriasConsistentes(donaciones);
+  }
+
+  private void verificarSubcategoriasConsistentes(List<Donacion> donaciones) {
+    donaciones.forEach(donacion ->
+        donacion.getBienes().forEach(bien ->
+            assertEquals(donacion.getSubcategoria(), bien.getSubcategoria())
+        )
+    );
   }
 }
