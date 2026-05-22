@@ -15,10 +15,10 @@ public class EntidadBeneficiaria {
   //private List <MedioDeContacto> contactoRepresentantes;
   private List<Necesidad> necesidades;
 
-  public EntidadBeneficiaria (String razon,
-                              String direccion
+  public EntidadBeneficiaria(String razon,
+                             String direccion
                               //List <MedioDeContacto> contactoRepresentantes
-                              ) {
+                             ) {
     this.razonSocial = razon;
     this.direccion = direccion;
     //this.contactoRepresentantes = new ArrayList<>();

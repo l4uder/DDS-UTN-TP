@@ -5,8 +5,8 @@ public class MedioContacto {
   private String detalle;
 
   public MedioContacto(TipoContacto tipo, String detallee) {
-      this.tipo = tipo;
-      this.detalle = detallee;
+    this.tipo = tipo;
+    this.detalle = detallee;
   }
 
   public TipoContacto getTipo() {
@@ -14,6 +14,6 @@ public class MedioContacto {
   }
 
   public String getDetalle() {
-     return detalle;
+    return detalle;
   }
 }
