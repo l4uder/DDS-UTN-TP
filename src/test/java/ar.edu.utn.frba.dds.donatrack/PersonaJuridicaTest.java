@@ -31,6 +31,6 @@ public class PersonaJuridicaTest {
     empresa.agregarRepresentante(representante);
 
     assertEquals(1, empresa.getRepresentantes().size());
-    assertEquals(representante, empresa.getRepresentantes().getFirst());
+    assertEquals(representante, empresa.getRepresentantes().get(0));
   }
 }
