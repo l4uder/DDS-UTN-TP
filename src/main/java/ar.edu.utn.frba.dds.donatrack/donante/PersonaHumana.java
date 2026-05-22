@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donante;
 
 import ar.edu.utn.frba.dds.donatrack.share.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.share.TipoContacto;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -22,6 +23,9 @@ public class PersonaHumana extends Donante {
       throw new IllegalArgumentException(
           "La persona humana debe tener al menos un correo electrónico");
     }
+      if (documento.getTipoDocumento() == TipoDocumento.CUIT) {
+          throw new IllegalArgumentException("La persona humana no puede tener un CUIT");
+      }
     this.nombre = nombre;
     this.apellido = apellido;
     this.fechaNacimiento = fechaNacimiento;

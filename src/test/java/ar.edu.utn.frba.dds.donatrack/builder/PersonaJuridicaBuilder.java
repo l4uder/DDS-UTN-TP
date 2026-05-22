@@ -1,8 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.donante.PersonaJuridica;
-import ar.edu.utn.frba.dds.donatrack.donante.Representante;
-import ar.edu.utn.frba.dds.donatrack.donante.TipoOrganizacion;
+import ar.edu.utn.frba.dds.donatrack.donante.*;
 import ar.edu.utn.frba.dds.donatrack.share.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.share.TipoContacto;
 import java.util.ArrayList;
@@ -10,6 +8,7 @@ import java.util.List;
 
 public class PersonaJuridicaBuilder {
   private String razonSocial = "Empresa Default SA";
+  private Documento documento = new Documento(TipoDocumento.CUIT, "235345354");
   private TipoOrganizacion tipoOrganizacion = TipoOrganizacion.EMPRESA;
   private String rubro = "Rubro Default";
   private List<Representante> representantes = new ArrayList<>();
@@ -47,7 +46,7 @@ public class PersonaJuridicaBuilder {
   }
 
   public PersonaJuridica build() {
-    return new PersonaJuridica(razonSocial, tipoOrganizacion, rubro,
+    return new PersonaJuridica(razonSocial, tipoOrganizacion, rubro, documento,
         representantes, medioContPred, contactosSecundarios);
   }
 }

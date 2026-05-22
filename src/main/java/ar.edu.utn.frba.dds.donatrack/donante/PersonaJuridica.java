@@ -22,9 +22,9 @@ public class PersonaJuridica extends Donante {
       MedioContacto medioContPred,
       List<MedioContacto> contactosSecundarios) {
     super(medioContPred, contactosSecundarios);
-    /*if (representantes == null || representantes.isEmpty()) {
-      throw new IllegalArgumentException("La persona jurídica debe tener al menos un representante");
-    } */ //EL CSV no tiene informacion de los representantes
+    if (documento.getTipoDocumento() != TipoDocumento.CUIT) {
+      throw new IllegalArgumentException("La persona juridica debe tener un CUIT");
+    }
     this.razonSocial = razonSocial;
     this.tipoOrganizacion = tipo;
     this.documento = documento;
@@ -48,6 +48,14 @@ public class PersonaJuridica extends Donante {
     return representantes;
   }
 
+  public Documento getDocumento() {
+    return documento;
+  }
+
+  public void agregarRepresentante(Representante representante) {
+    representantes.add(representante);
+  }
+
   @Override
   public boolean esElMismo(Donante otroDonante) {
     if (!(otroDonante instanceof PersonaJuridica))
@@ -67,7 +75,6 @@ public class PersonaJuridica extends Donante {
     this.razonSocial = otraPersona.getRazonSocial();
     this.tipoOrganizacion = otraPersona.getTipoOrganizacion();
     this.rubro = otraPersona.getRubro();
-    this.representantes = otraPersona.getRepresentantes();
     this.representantes = otraPersona.getRepresentantes();
     this.medioDeContactoPred = otraPersona.getMedioDeContactoPred();
     this.contactosSecundarios = otraPersona.getContactosSecundarios();
