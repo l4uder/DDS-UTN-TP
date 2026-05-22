@@ -156,8 +156,18 @@ classDiagram
     class Telefono {
         + notificar(donante: Donante, mensaje: String)
     }
+    
+    class ServicioWhatsapp {
+        <<interface>>
+        + notificar(nro: String, message: String)   
+    }
+    
+    class ServicioWhatsappMock {
+        
+    }
 
     class Whatsapp {
+        servicioWhatsapp
         + notificar(donante: Donante, mensaje: String)
     }
 
@@ -224,6 +234,7 @@ classDiagram
     CorreoElectronico ..|> Notificador
     Telefono ..|> Notificador
     Whatsapp ..|> Notificador
+    ServicioWhatsappMock ..|> ServicioWhatsapp
 
     Donante --> RegistroEntrega
     Donante --> MedioContacto
