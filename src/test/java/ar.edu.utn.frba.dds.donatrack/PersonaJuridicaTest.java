@@ -10,13 +10,12 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 
 public class PersonaJuridicaTest {
-  MedioContacto contactoPred = new MedioContacto(TipoContacto.CORREO, "empresaTest@gmail.com");
 
   @Test
   public void sePuedeCrearUnaPersonaJuridicaConDatosValidos() {
     PersonaJuridica empresa = new PersonaJuridicaBuilder()
         .conRazonSocial("Empresa Test S.A.")
-        .conMedioDeContacto(contactoPred)
+        .conEmail("empresaTest@gmail.com")
         .build();
 
     assertNotNull(empresa.getMedioDeContactoPred());
