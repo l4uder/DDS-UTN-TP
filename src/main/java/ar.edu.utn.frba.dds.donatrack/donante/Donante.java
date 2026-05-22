@@ -15,6 +15,9 @@ public abstract class Donante {
     if (medioDeContacto == null) {
       throw new IllegalArgumentException("El medio de contacto principal no puede ser null");
     }
+    if (medioDeContacto.getTipo() != TipoContacto.CORREO){
+      throw new IllegalArgumentException("El medio de contacto principal debe ser un correo");
+    }
     this.medioDeContactoPred = medioDeContacto;
 
     this.contactosSecundarios = contactosSecundarios != null
@@ -24,6 +27,9 @@ public abstract class Donante {
   }
 
   public void cambiarContactoPred(MedioContacto contacto) {
+    if (contacto.getTipo() != TipoContacto.CORREO){
+      throw new IllegalArgumentException("El medio de contacto principal debe ser un correo");
+    }
     this.medioDeContactoPred = contacto;
   }
 
