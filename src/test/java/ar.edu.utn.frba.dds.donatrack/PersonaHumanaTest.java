@@ -9,13 +9,11 @@ import ar.edu.utn.frba.dds.donatrack.share.TipoContacto;
 import org.junit.jupiter.api.Test;
 
 public class PersonaHumanaTest {
-  MedioContacto contactoPred = new MedioContacto(TipoContacto.CORREO, "estebancarp@gmail.com");
-
   @Test
   public void sePuedeCrearUnaPersonaHumanaConDatosValidos() {
     PersonaHumana persona = new PersonaHumanaBuilder()
         .conNombre("Esteban")
-        .conContactoPredeterminado(contactoPred)
+        .conEmail("estebancarp@gmail.com")
         .build();
 
     assertNotNull(persona.getMedioDeContactoPred());
@@ -27,7 +25,6 @@ public class PersonaHumanaTest {
     assertThrows(IllegalArgumentException.class, () -> {
       new PersonaHumanaBuilder()
           .vaciarContactos()
-          .conContactoPredeterminado(new MedioContacto(TipoContacto.TELEFONO, "11223344"))
           .build();
     });
   }
