@@ -19,6 +19,9 @@ public class Representante {
   public Representante(String nombre, String apellido, LocalDate fechaNacimiento,
                        Documento documento, Genero genero, String direccion,
                        MedioContacto medioContPred, List<MedioContacto> contactos) {
+    if (documento.getTipoDocumento() == TipoDocumento.CUIT) {
+      throw new IllegalArgumentException("Un representante no puede tener un CUIT");
+    }
     this.nombre = nombre;
     this.apellido = apellido;
     this.fechaNacimiento = fechaNacimiento;
