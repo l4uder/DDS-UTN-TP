@@ -2,6 +2,8 @@ package ar.edu.utn.frba.dds.donatrack.donacion;
 
 import ar.edu.utn.frba.dds.donatrack.beneficiario.EntidadBeneficiaria;
 import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.exception.DomainValidationException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +16,7 @@ public class Donacion {
 
   public Donacion(List<Bien> bienes) {
     if (bienes == null || bienes.isEmpty()) {
-      throw new IllegalArgumentException("Una donación debe tener al menos un bien");
+      throw new DomainValidationException("Una donación debe tener al menos un bien");
     }
     this.descripcion = this.descripcionGeneral(bienes);
     this.bienes = new ArrayList<>(bienes);
@@ -37,7 +39,7 @@ public class Donacion {
   public void cambiarEstado(TipoEstadoDonacion nuevoEstado, String observacion) {
     if (nuevoEstado == TipoEstadoDonacion.ENTREGA_FALLIDA
         && (observacion == null || observacion.isBlank())) {
-      throw new IllegalArgumentException("Se requiere justificación para entrega fallida");
+      throw new DomainValidationException("Se requiere justificación para entrega fallida");
     }
     this.historialEstados.add(new EstadoDonacion(nuevoEstado, observacion));
   }

@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donante;
 
+import ar.edu.utn.frba.dds.donatrack.exception.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.share.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.share.TipoContacto;
 
@@ -23,7 +24,7 @@ public class PersonaJuridica extends Donante {
       List<MedioContacto> contactosSecundarios) {
     super(medioContPred, contactosSecundarios);
     if (documento.getTipoDocumento() != TipoDocumento.CUIT) {
-      throw new IllegalArgumentException("La persona juridica debe tener un CUIT");
+      throw new DomainValidationException("La persona juridica debe tener un CUIT");
     }
     this.razonSocial = razonSocial;
     this.tipoOrganizacion = tipo;

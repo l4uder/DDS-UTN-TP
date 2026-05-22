@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donante;
 
+import ar.edu.utn.frba.dds.donatrack.exception.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.share.MedioContacto;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class DonanteSimpleFactory {
             );
         }
 
-        throw new IllegalArgumentException("Tipo de persona invalido debe revisar: " + tipoPersona);
+        throw new DomainValidationException("Tipo de persona invalido debe revisar: " + tipoPersona);
     }
 }
 

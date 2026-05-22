@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donante;
 
+import ar.edu.utn.frba.dds.donatrack.exception.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.share.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.share.TipoContacto;
 import java.util.ArrayList;
@@ -13,10 +14,10 @@ public abstract class Donante {
 
   public Donante(MedioContacto medioDeContacto, List<MedioContacto> contactosSecundarios) {
     if (medioDeContacto == null) {
-      throw new IllegalArgumentException("El medio de contacto principal no puede ser null");
+      throw new DomainValidationException("El medio de contacto principal no puede ser null");
     }
     if (medioDeContacto.getTipo() != TipoContacto.CORREO){
-      throw new IllegalArgumentException("El medio de contacto principal debe ser un correo");
+      throw new DomainValidationException("El medio de contacto principal debe ser un correo");
     }
     this.medioDeContactoPred = medioDeContacto;
 
@@ -28,7 +29,7 @@ public abstract class Donante {
 
   public void cambiarContactoPred(MedioContacto contacto) {
     if (contacto.getTipo() != TipoContacto.CORREO){
-      throw new IllegalArgumentException("El medio de contacto principal debe ser un correo");
+      throw new DomainValidationException("El medio de contacto principal debe ser un correo");
     }
     this.medioDeContactoPred = contacto;
   }

@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donante.DonanteSimpleFactory;
 import ar.edu.utn.frba.dds.donatrack.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.exception.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.share.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.share.TipoContacto;
 import com.opencsv.CSVReader;
@@ -53,7 +54,7 @@ public class LectorCsv {
                 Donante donanteNuevo;
                 try {
                     donanteNuevo = DonanteSimpleFactory.crear(tipoPersona, documento, nombreCompleto, contactoPrincipal, contactoSecundario);
-                } catch (IllegalArgumentException e) {
+                } catch (DomainValidationException e) {
                     registroErrores.add(new Error(indice, nombreCompleto));
                     continue;
                 }

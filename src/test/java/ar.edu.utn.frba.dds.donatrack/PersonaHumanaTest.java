@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.donante.PersonaHumana;
+import ar.edu.utn.frba.dds.donatrack.exception.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.share.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.share.TipoContacto;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class PersonaHumanaTest {
 
   @Test
   public void lanzarExcepcionSiPersonaHumanaNoTieneCorreoElectronico() {
-    assertThrows(IllegalArgumentException.class, () -> {
+    assertThrows(DomainValidationException.class, () -> {
       new PersonaHumanaBuilder()
           .vaciarContactos()
           .build();

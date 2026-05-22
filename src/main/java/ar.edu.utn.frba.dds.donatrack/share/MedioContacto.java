@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.share;
 
+import ar.edu.utn.frba.dds.donatrack.exception.DomainValidationException;
+
 public class MedioContacto {
   private TipoContacto tipo;
   private String detalle;
@@ -7,7 +9,7 @@ public class MedioContacto {
   public MedioContacto(TipoContacto tipo, String detallee) {
     this.tipo = tipo;
     if (detallee == null || detallee.isBlank()) {
-       throw new IllegalArgumentException("contacto sin dato, falta el detalle");
+       throw new DomainValidationException("contacto sin dato, falta el detalle");
     }
     this.detalle = detallee;
   }

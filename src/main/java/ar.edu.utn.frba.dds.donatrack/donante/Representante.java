@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donante;
 
+import ar.edu.utn.frba.dds.donatrack.exception.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.share.MedioContacto;
 import java.time.LocalDate;
 import java.time.Period;
@@ -20,7 +21,7 @@ public class Representante {
                        Documento documento, Genero genero, String direccion,
                        MedioContacto medioContPred, List<MedioContacto> contactos) {
     if (documento.getTipoDocumento() == TipoDocumento.CUIT) {
-      throw new IllegalArgumentException("Un representante no puede tener un CUIT");
+      throw new DomainValidationException("Un representante no puede tener un CUIT");
     }
     this.nombre = nombre;
     this.apellido = apellido;

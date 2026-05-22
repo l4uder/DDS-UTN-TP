@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donante;
 
+import ar.edu.utn.frba.dds.donatrack.exception.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.share.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.share.TipoContacto;
 
@@ -20,11 +21,11 @@ public class PersonaHumana extends Donante {
                        MedioContacto medioContPred, List<MedioContacto> contactosSecundarios) {
     super(medioContPred, contactosSecundarios);
     if (getMediosContacto(TipoContacto.CORREO).isEmpty()) {
-      throw new IllegalArgumentException(
+      throw new DomainValidationException(
           "La persona humana debe tener al menos un correo electrónico");
     }
       if (documento.getTipoDocumento() == TipoDocumento.CUIT) {
-          throw new IllegalArgumentException("La persona humana no puede tener un CUIT");
+          throw new DomainValidationException("La persona humana no puede tener un CUIT");
       }
     this.nombre = nombre;
     this.apellido = apellido;
