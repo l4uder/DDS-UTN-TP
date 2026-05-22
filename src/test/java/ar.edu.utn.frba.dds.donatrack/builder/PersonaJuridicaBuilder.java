@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonaJuridicaBuilder {
-  private String razonSocial = "Constructora SRL";
+  private String razonSocial = "Empresa Default SA";
   private TipoOrganizacion tipoOrganizacion = TipoOrganizacion.EMPRESA;
-  private String rubro = "Construcción";
-  private List<Representante> representantes = new ArrayList<>(List.of(new RepresentanteBuilder().build()));
-  private MedioContacto medioContPred = new MedioContacto(TipoContacto.CORREO, "srl@gmail.com");
+  private String rubro = "Rubro Default";
+  private List<Representante> representantes = new ArrayList<>();
+  private MedioContacto medioContPred = new MedioContacto(TipoContacto.CORREO, "default@empresa.com");
   private List<MedioContacto> contactosSecundarios = new ArrayList<>();
 
   public PersonaJuridicaBuilder conRazonSocial(String razonSocial) {
@@ -21,8 +21,8 @@ public class PersonaJuridicaBuilder {
     return this;
   }
 
-  public PersonaJuridicaBuilder conTipo(TipoOrganizacion tipoOrganizacion) {
-    this.tipoOrganizacion = tipoOrganizacion;
+  public PersonaJuridicaBuilder conTipoOrganizacion(TipoOrganizacion tipo) {
+    this.tipoOrganizacion = tipo;
     return this;
   }
 
@@ -36,12 +36,18 @@ public class PersonaJuridicaBuilder {
     return this;
   }
 
-  public PersonaJuridicaBuilder conMedioDeContacto(MedioContacto medioContacto) {
-    this.medioContPred = medioContacto;
+  public PersonaJuridicaBuilder conEmail(String email) {
+    this.medioContPred = new MedioContacto(TipoContacto.CORREO, email);
+    return this;
+  }
+
+  public PersonaJuridicaBuilder conContactosSecundarios(List<MedioContacto> contactos) {
+    this.contactosSecundarios = contactos;
     return this;
   }
 
   public PersonaJuridica build() {
-    return new PersonaJuridica(razonSocial, tipoOrganizacion, rubro, representantes, medioContPred, contactosSecundarios);
+    return new PersonaJuridica(razonSocial, tipoOrganizacion, rubro,
+        representantes, medioContPred, contactosSecundarios);
   }
 }
