@@ -47,12 +47,14 @@ public class LectorCsv {
                     donanteEncontrado.actualizar(donanteNuevo);
                 }
             }
-        } catch (CsvValidationException c) {
-            System.out.println("El archivo CSV tiene formato inválido");
-            c.printStackTrace();
-        } catch (IOException io) {
-            System.out.println("Error al leer el archivo CSV");
-            io.printStackTrace();
+        } catch (CsvValidationException e) {
+            String msg = "El archivo CSV tiene formato inválido";
+            System.out.println(msg);
+            throw new BatchJobException(msg, e);
+        } catch (IOException e) {
+            String msg = "Error al leer el archivo CSV";
+            System.out.println(msg);
+            throw new BatchJobException(msg, e);
         }
 
         return donantes;
