@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonaHumanaBuilder {
-  private String nombre = "Juan";
-  private String apellido = "Villa";
-  private Documento documento = new Documento(TipoDocumento.DNI, "45123321");
-  private LocalDate fechaNacimiento = LocalDate.of(2000, 5, 10);
-  private Genero genero = Genero.MASCULINO;
-  private String direccion = "Av. Corrientes 1855";
-  private MedioContacto medioContPred = new MedioContacto(TipoContacto.CORREO, "juanitocabj@gmail.com");
+  private String nombre = "Nombre Default";
+  private String apellido = "Apellido Default";
+  private LocalDate fechaNacimiento = LocalDate.of(1990, 1, 1);
+  private Documento documento = new Documento(TipoDocumento.DNI, "12345678");
+  private Genero genero = Genero.X;
+  private String direccion = "Direccion Default";
+  private MedioContacto medioContPred = new MedioContacto(TipoContacto.CORREO, "default@mail.com");
   private List<MedioContacto> contactosSecundarios = new ArrayList<>();
 
   public PersonaHumanaBuilder conNombre(String nombre) {
@@ -25,8 +25,38 @@ public class PersonaHumanaBuilder {
     return this;
   }
 
-  public PersonaHumanaBuilder conContactoPredeterminado(MedioContacto medioContPred) {
-    this.medioContPred = medioContPred;
+  public PersonaHumanaBuilder conApellido(String apellido) {
+    this.apellido = apellido;
+    return this;
+  }
+
+  public PersonaHumanaBuilder conFechaNacimiento(LocalDate fechaNacimiento) {
+    this.fechaNacimiento = fechaNacimiento;
+    return this;
+  }
+
+  public PersonaHumanaBuilder conDocumento(TipoDocumento tipo, String numero) {
+    this.documento = new Documento(tipo, numero);
+    return this;
+  }
+
+  public PersonaHumanaBuilder conGenero(Genero genero) {
+    this.genero = genero;
+    return this;
+  }
+
+  public PersonaHumanaBuilder conDireccion(String direccion) {
+    this.direccion = direccion;
+    return this;
+  }
+
+  public PersonaHumanaBuilder conEmail(String email) {
+    this.medioContPred = new MedioContacto(TipoContacto.CORREO, email);
+    return this;
+  }
+
+  public PersonaHumanaBuilder conContactosSecundarios(List<MedioContacto> contactos) {
+    this.contactosSecundarios = contactos;
     return this;
   }
 
@@ -37,6 +67,7 @@ public class PersonaHumanaBuilder {
   }
 
   public PersonaHumana build() {
-    return new PersonaHumana(nombre, apellido, documento, fechaNacimiento, genero, direccion, medioContPred, contactosSecundarios);
+    return new PersonaHumana(nombre, apellido, documento, fechaNacimiento,
+        genero, direccion, medioContPred, contactosSecundarios);
   }
 }
