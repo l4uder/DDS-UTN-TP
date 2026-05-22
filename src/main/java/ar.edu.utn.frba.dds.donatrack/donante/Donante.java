@@ -11,11 +11,11 @@ public abstract class Donante {
   private List<MedioContacto> contactosSecundarios;
   private List<RegistroEntrega> entregas;
 
-  public Donante(MedioContacto medioDeContactoPred, List<MedioContacto> contactosSecundarios) {
-    if (medioDeContactoPred == null) {
+  public Donante(MedioContacto medioDeContacto, List<MedioContacto> contactosSecundarios) {
+    if (medioDeContacto == null) {
       throw new IllegalArgumentException("El medio de contacto principal no puede ser null");
     }
-    this.medioDeContactoPred = medioDeContactoPred;
+    this.medioDeContactoPred = medioDeContacto;
 
     this.contactosSecundarios = contactosSecundarios != null
         ? new ArrayList<>(contactosSecundarios)

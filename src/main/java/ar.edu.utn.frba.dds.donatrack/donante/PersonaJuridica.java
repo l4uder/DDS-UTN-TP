@@ -18,12 +18,12 @@ public class PersonaJuridica extends Donante {
       MedioContacto medioContPred,
       List<MedioContacto> contactosSecundarios) {
     super(medioContPred, contactosSecundarios);
-    if (representantes == null || representantes.isEmpty()) {
+    /*if (representantes == null || representantes.isEmpty()) {
       throw new IllegalArgumentException("La persona jurídica debe tener al menos un representante");
-    }
+    } */ //EL CSV no tiene informacion de los representantes
     this.razonSocial = razonSocial;
     this.tipoOrganizacion = tipo;
     this.rubro = rubro;
-    this.representantes = new ArrayList<>(representantes);
+    this.representantes = representantes == null ? new ArrayList<>() : new ArrayList<>(representantes);
   }
 }

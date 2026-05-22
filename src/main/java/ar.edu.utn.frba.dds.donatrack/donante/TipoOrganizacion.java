@@ -4,5 +4,6 @@ public enum TipoOrganizacion {
   GUBERNAMENTAL,
   ONG,
   EMPRESA,
-  INSTITUCION
+  INSTITUCION,
+  SIN_ESPECIFICAR
 }
