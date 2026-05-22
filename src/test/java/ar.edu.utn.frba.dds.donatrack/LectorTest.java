@@ -5,9 +5,11 @@ import ar.edu.utn.frba.dds.donatrack.lectores.LectorCsv;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LectorTest {
     String archivoSimple;
@@ -22,6 +24,9 @@ public class LectorTest {
     public void LectorConUnArchivoSimple(){
         var resultado = LectorCsv.leerTodo(archivoSimple);
 
+        assertEquals(1, resultado.errores().size());
         assertEquals(2, resultado.donantes().size());
+        assertTrue(resultado.donantes().stream().anyMatch(item -> item.getMedioDeContactoPred().getDetalle().equals("contacto@empresa.com")));
+        assertTrue(resultado.donantes().stream().anyMatch(item -> item.getMedioDeContactoPred().getDetalle().equals("ana@mail.com")));
     }
 }

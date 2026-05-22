@@ -44,7 +44,11 @@ public class LectorCsv {
                 Documento documento = new Documento(TipoDocumento.valueOf(fila[1]), fila[2]);
                 String nombreCompleto = fila[3];
                 MedioContacto contactoPrincipal = new MedioContacto(TipoContacto.CORREO, fila[4]);
-                MedioContacto contactoSecundario = new MedioContacto(TipoContacto.TELEFONO, fila[5]);
+                MedioContacto contactoSecundario = null;
+
+                if (!fila[5].isBlank()){
+                     contactoSecundario = new MedioContacto(TipoContacto.TELEFONO, fila[5]);
+                }
 
                 Donante donanteNuevo;
                 try {

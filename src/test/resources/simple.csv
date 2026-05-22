@@ -2,3 +2,4 @@ TipoPersona,TipoDoc,Documento,Nombre/Razón Social,Email,Teléfono
 HUMANA,DNI,12345678,Ana Pérez,ana@mail.com,+54 11 5555-5555
 JURIDICA,CUIT,30-12345678-9,Arcos Plateados S.A.,contacto@empresa.com,+54 11 4444-4444
 HUMANA,DNI,12345678,Ana Pérez Sam,ana@mail.com,+54 11 0000-0000
+HUMANA,CUIT,345435,Jose,jose@gmail.com,
