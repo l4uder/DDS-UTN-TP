@@ -1,9 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donacion;
 
-import ar.edu.utn.frba.dds.donatrack.entidadBeneficiaria.EntidadBeneficiaria;
+import ar.edu.utn.frba.dds.donatrack.beneficiario.EntidadBeneficiaria;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Donacion {
@@ -23,18 +22,20 @@ public class Donacion {
   }
 
   public TipoEstadoDonacion getEstadoActual() {
-      return historialEstados.get(historialEstados.size() - 1).getTipoEstado();
+    return historialEstados.get(historialEstados.size() - 1).getTipoEstado();
   }
 
   public String descripcionGeneral(List<Bien> bienes) {
     return bienes.stream()
-        .map(b -> b.getCantidad() + " " + b.getUnidadMedida() + " de " + b.getDescripcion())
+        .map(b -> b
+        .getCantidad() + " " + b.getUnidadMedida() + " de " + b
+        .getDescripcion())
         .collect(Collectors.joining(", "));
   }
 
   public void cambiarEstado(TipoEstadoDonacion nuevoEstado, String observacion) {
-    if (nuevoEstado == TipoEstadoDonacion.ENTREGA_FALLIDA &&
-        (observacion == null || observacion.isBlank())) {
+    if (nuevoEstado == TipoEstadoDonacion.ENTREGA_FALLIDA
+        && (observacion == null || observacion.isBlank())) {
       throw new IllegalArgumentException("Se requiere justificación para entrega fallida");
     }
     this.historialEstados.add(new EstadoDonacion(nuevoEstado, observacion));

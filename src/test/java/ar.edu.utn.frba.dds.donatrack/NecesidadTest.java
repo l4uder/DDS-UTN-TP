@@ -9,6 +9,7 @@ import ar.edu.utn.frba.dds.donatrack.donacion.NoPerecedero;
 import ar.edu.utn.frba.dds.donatrack.donacion.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
+import ar.edu.utn.frba.dds.donatrack.necesidades.Necesidad;
 import ar.edu.utn.frba.dds.donatrack.necesidades.NecesidadExtraordinaria;
 import ar.edu.utn.frba.dds.donatrack.necesidades.NecesidadRecurrente;
 import ar.edu.utn.frba.dds.donatrack.necesidades.Periodo;
@@ -23,8 +24,8 @@ public class NecesidadTest {
     NecesidadExtraordinaria necesidad1 = new NecesidadExtraordinaria(
         arroz,
         "descripcion",
-        38,
         30);
+    necesidad1.recibirBienes(34);
     assertTrue(necesidad1.esSatisfecha());
   }
   @Test
@@ -35,8 +36,8 @@ public class NecesidadTest {
         sillas,
         "23 sillas",
         10,
-        23,
         Periodo.SEMANAL);
+    necesidad2.recibirBienes(23);
     assertTrue(necesidad2.esSatisfecha());
   }
 }

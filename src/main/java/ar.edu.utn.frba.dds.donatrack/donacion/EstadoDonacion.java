@@ -10,15 +10,15 @@ public class EstadoDonacion {
   public EstadoDonacion(TipoEstadoDonacion estado, String observacion) {
     this.tipoEstado = estado;
     this.fecha = LocalDateTime.now();
-    this.detalle = observacion;
+    this.detalle = (observacion == null || observacion.isBlank()) ? null : observacion;
   }
 
   public EstadoDonacion(TipoEstadoDonacion estado) {
-      this(estado, null);
+    this(estado, null);
   }
 
   public TipoEstadoDonacion getTipoEstado() {
-      return tipoEstado;
+    return tipoEstado;
   }
 
   public LocalDateTime getFecha() {

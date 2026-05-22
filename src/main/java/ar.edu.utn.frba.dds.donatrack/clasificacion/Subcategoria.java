@@ -9,7 +9,8 @@ public class Subcategoria {
     this.nombre = nombre;
     this.categoria = categoria;
   }
-   public String getNombre() {
+
+  public String getNombre() {
     return this.nombre;
-   }
+  }
 }

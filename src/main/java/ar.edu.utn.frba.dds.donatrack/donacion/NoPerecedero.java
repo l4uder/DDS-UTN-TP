@@ -16,7 +16,7 @@ public class NoPerecedero extends Bien {
     this.usado = usado;
   }
 
-  public Boolean esUsado(){
+  public Boolean esUsado() {
     return this.usado;
   }
 }

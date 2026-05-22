@@ -14,7 +14,7 @@ public class Perecedero extends Bien {
     this.fechaVencimiento = fechaVencimiento;
   }
 
-  public LocalDateTime getFechaVencimiento(){
+  public LocalDateTime getFechaVencimiento() {
     return this.fechaVencimiento;
   }
 }

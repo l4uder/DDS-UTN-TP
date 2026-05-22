@@ -4,7 +4,6 @@ import ar.edu.utn.frba.dds.donatrack.donacion.Bien;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class RegistroEntrega {
   private LocalDateTime fecha;
