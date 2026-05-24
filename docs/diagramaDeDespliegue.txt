@@ -1,0 +1,27 @@
+@startuml
+title Diagrama de Despliegue
+
+actor Admin as admin
+actor Donante as donante
+actor Beneficiario as beneficiario
+
+rectangle {
+node "Cliente" as cliente
+
+node "ServidorMonolitico" as servidor
+}
+cloud "Whatsapp" as whatsapp
+cloud "CorreoElectronico" as correo
+cloud "Sms" as sms
+
+admin --> cliente
+donante --> cliente
+beneficiario --> cliente
+
+cliente --> servidor : https
+
+servidor --> whatsapp : https
+servidor --> correo : smtp
+servidor --> sms : https
+
+@enduml

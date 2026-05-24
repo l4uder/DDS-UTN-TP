@@ -1,0 +1,35 @@
+package ar.edu.utn.frba.dds.donatrack;
+
+import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
+import ar.edu.utn.frba.dds.donatrack.builder.RepresentanteBuilder;
+import ar.edu.utn.frba.dds.donatrack.donante.PersonaJuridica;
+import ar.edu.utn.frba.dds.donatrack.donante.TipoDocumento;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class PersonaJuridicaTest {
+
+  @Test
+  public void sePuedeCrearUnaPersonaJuridicaConDatosValidos() {
+    PersonaJuridica empresa = new PersonaJuridicaBuilder()
+        .conRazonSocial("Empresa Test S.A.")
+        .conEmail("empresaTest@gmail.com")
+        .build();
+
+    assertNotNull(empresa.getMedioDeContactoPred());
+  }
+
+  @Test
+  public void sePuedeAgregarUnRepresentante() {
+    PersonaJuridica empresa = new PersonaJuridicaBuilder()
+            .conEmail("empresaTest@gmail.com")
+            .build();
+    var representante = new RepresentanteBuilder().conDocumento(TipoDocumento.DNI, "235325554").conNombre("Marcelo").build();
+    empresa.agregarRepresentante(representante);
+
+    assertEquals(1, empresa.getRepresentantes().size());
+    assertEquals(representante, empresa.getRepresentantes().get(0));
+  }
+}
