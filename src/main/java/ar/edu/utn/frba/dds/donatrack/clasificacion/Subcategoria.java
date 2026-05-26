@@ -13,4 +13,6 @@ public class Subcategoria {
   public String getNombre() {
     return this.nombre;
   }
+
+
 }

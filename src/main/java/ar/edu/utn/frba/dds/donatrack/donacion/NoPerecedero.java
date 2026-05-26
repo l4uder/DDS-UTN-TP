@@ -19,4 +19,8 @@ public class NoPerecedero extends Bien {
   public Boolean esUsado() {
     return this.usado;
   }
+
+  public String getNombreClave(){
+    return subcategoria.getNombre() + "_" + (usado ? "usado" : "nuevo");
+  }
 }

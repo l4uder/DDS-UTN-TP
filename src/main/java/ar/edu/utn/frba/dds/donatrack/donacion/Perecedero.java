@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donacion;
 
 import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Perecedero extends Bien {
   private LocalDateTime fechaVencimiento;
@@ -16,5 +17,9 @@ public class Perecedero extends Bien {
 
   public LocalDateTime getFechaVencimiento() {
     return this.fechaVencimiento;
+  }
+
+  public String getNombreClave(){
+    return subcategoria.getNombre() + "_" + fechaVencimiento.format(DateTimeFormatter.BASIC_ISO_DATE);
   }
 }

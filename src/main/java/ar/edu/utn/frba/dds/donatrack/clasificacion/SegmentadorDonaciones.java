@@ -13,21 +13,9 @@ public class SegmentadorDonaciones {
   public List<Donacion> segmentar(List<RegistroEntrega> registros) {
     return registros.stream()
         .flatMap(registro -> registro.getBienes().stream())
-        .collect(Collectors.groupingBy(this::claveDonacion))
+        .collect(Collectors.groupingBy(Bien::getNombreClave))
         .values().stream()
         .map(Donacion::new)
         .toList();
-  }
-
-  private String claveDonacion(Bien bien) {
-    String base = bien.getSubcategoria().getNombre();
-
-    if (bien instanceof Perecedero p) {
-      return base + "_" + p.getFechaVencimiento();
-    }
-    if (bien instanceof NoPerecedero u) {
-      return base + "_" + u.esUsado();
-    }
-    return base;
   }
 }

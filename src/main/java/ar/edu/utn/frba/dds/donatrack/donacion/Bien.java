@@ -35,4 +35,6 @@ public abstract class Bien {
   public Subcategoria getSubcategoria() {
     return this.subcategoria;
   }
+
+  abstract public String getNombreClave();
 }
