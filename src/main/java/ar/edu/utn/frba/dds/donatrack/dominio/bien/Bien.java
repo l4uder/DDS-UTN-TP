@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.bien;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.tipoBien.NoPerecedero;
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.tipoBien.Perecedero;
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.tipoBien.TipoBien;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.tipobien.NoPerecedero;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.tipobien.Perecedero;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.tipobien.TipoBien;
 import java.time.LocalDateTime;
 
 public class Bien {
@@ -41,12 +41,13 @@ public class Bien {
     return this.subcategoria;
   }
 
-  public String getNombreClave(){
+  public String getNombreClave() {
     return this.tipoBien.getNombreClave(this.subcategoria);
   }
 
-  public static Bien crearPerecedero(String descripcion, float cantidad, UnidadMedida unidad,
-                                     String foto, Subcategoria subcategoria, LocalDateTime fechaVencimiento) {
+  public static Bien crearPerecedero(String descripcion, float cantidad,
+                                     UnidadMedida unidad, String foto,
+                                     Subcategoria subcategoria, LocalDateTime fechaVencimiento) {
 
     TipoBien tipoBien = new Perecedero(fechaVencimiento);
     return new Bien(descripcion, cantidad, unidad, foto, subcategoria, tipoBien);

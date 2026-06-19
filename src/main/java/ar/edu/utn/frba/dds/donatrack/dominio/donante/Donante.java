@@ -1,71 +1,79 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.donante;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.dominio.medioContacto.CorreoDeContato;
-import ar.edu.utn.frba.dds.donatrack.dominio.medioContacto.MedioContacto;
-
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 public abstract class Donante {
-    protected MedioContacto medioDeContactoPred;
-    protected Set<MedioContacto> mediosDeContacto;
-    protected List<RegistroEntrega> entregas = new ArrayList<>();
+  protected MedioContacto medioDeContactoPred;
+  protected Set<MedioContacto> mediosDeContacto;
+  protected List<RegistroEntrega> entregas = new ArrayList<>();
 
-    public Donante(MedioContacto medioDeContacto, List<MedioContacto> mediosDeContacto) {
-        if (medioDeContacto == null) {
-            throw new DomainValidationException("El medio de contacto principal no puede ser null");
-        }
-        this.mediosDeContacto = new HashSet<>(mediosDeContacto);
-        this.mediosDeContacto.add(medioDeContacto);
-        this.medioDeContactoPred = medioDeContacto;
+  public Donante(MedioContacto medioDeContacto, List<MedioContacto> mediosDeContacto) {
+    if (medioDeContacto == null) {
+      throw new DomainValidationException("El medio de contacto principal no puede ser null");
+    }
+    this.mediosDeContacto = new HashSet<>(mediosDeContacto);
+    this.mediosDeContacto.add(medioDeContacto);
+    this.medioDeContactoPred = medioDeContacto;
 
-        if (this.mediosDeContacto.stream().noneMatch(el -> el instanceof CorreoDeContato)) {
-            throw new DomainValidationException("Al menos un medio de contacto debe ser un correo");
-        }
-        if (this.mediosDeContacto.stream().filter(el -> el instanceof CorreoDeContato).toList().size() > 1) {
-            throw new DomainValidationException("No puede haber mas de un correo como medio de contacto");
-        }
+    if (this.mediosDeContacto.stream().noneMatch(el -> el instanceof CorreoDeContato)) {
+      throw new DomainValidationException("Al menos un medio de contacto debe ser un correo");
     }
 
-    public void cambiarContactoPred(MedioContacto contacto) {
-        if (contacto == null) {
-            throw new DomainValidationException("El medio de contacto principal no puede ser null");
-        }
-        var mediosDeContactoTest = new HashSet<>(mediosDeContacto);
-        mediosDeContactoTest.add(contacto);
-        if (this.mediosDeContacto.stream().filter(el -> el instanceof CorreoDeContato).toList().size() > 1) {
-            throw new DomainValidationException("No puede haber mas de un correo como medio de contacto");
-        }
-        medioDeContactoPred = contacto;
-        mediosDeContacto = mediosDeContactoTest;
+    long cantCorreos = this.mediosDeContacto.stream()
+        .filter(el -> el instanceof CorreoDeContato)
+        .count();
+    if (cantCorreos > 1) {
+      throw new DomainValidationException("No puede haber mas de un correo como contacto");
     }
+  }
 
-    public List<MedioContacto> getMediosContacto() {
-        return mediosDeContacto.stream().toList();
+  public void cambiarContactoPred(MedioContacto contacto) {
+    if (contacto == null) {
+      throw new DomainValidationException("El medio de contacto principal no puede ser null");
     }
+    var mediosDeContactoTest = new HashSet<>(mediosDeContacto);
+    mediosDeContactoTest.add(contacto);
 
-    public void agregarContactoSecundario(MedioContacto contacto) {
-        this.mediosDeContacto.add(contacto);
+    long cantCorreos = mediosDeContactoTest.stream()
+        .filter(el -> el instanceof CorreoDeContato)
+        .count();
+    if (cantCorreos > 1) {
+      throw new DomainValidationException("No puede haber mas de un correo como contacto");
     }
+    medioDeContactoPred = contacto;
+    mediosDeContacto = mediosDeContactoTest;
+  }
 
-    public MedioContacto getMedioDeContactoPred() {
-        return medioDeContactoPred;
+  public List<MedioContacto> getMediosContacto() {
+    return mediosDeContacto.stream().toList();
+  }
+
+  public void agregarContactoSecundario(MedioContacto contacto) {
+    this.mediosDeContacto.add(contacto);
+  }
+
+  public MedioContacto getMedioDeContactoPred() {
+    return medioDeContactoPred;
+  }
+
+  public Set<MedioContacto> getMediosDeContacto() {
+    return mediosDeContacto;
+  }
+
+  public String getEmail() {
+    var correoOpt = mediosDeContacto.stream()
+        .dropWhile(el -> !(el instanceof CorreoDeContato))
+        .findFirst();
+
+    if (correoOpt.isEmpty()) {
+      throw new IllegalStateException("Donante no tiene correo como medio de contacto");
     }
-
-    public Set<MedioContacto> getMediosDeContacto() {
-        return mediosDeContacto;
-    }
-
-    public String getEmail() {
-        var correoOpt = mediosDeContacto.stream().dropWhile(el -> !(el instanceof CorreoDeContato)).findFirst();
-
-        if (correoOpt.isEmpty()) {
-            throw new IllegalStateException("Donante no tiene correo como medio de contacto");
-        }
-        return ((CorreoDeContato) correoOpt.get()).getCorreo();
-    }
+    return ((CorreoDeContato) correoOpt.get()).getCorreo();
+  }
 }

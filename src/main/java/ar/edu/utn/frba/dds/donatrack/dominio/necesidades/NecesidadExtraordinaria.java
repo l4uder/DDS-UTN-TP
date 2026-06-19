@@ -9,7 +9,7 @@ public class NecesidadExtraordinaria extends Necesidad {
                                  String descripcion,
                                  int cantidadRequerida) {
     super(subcategoria, descripcion);
-      this.cantidadRequerida = cantidadRequerida;
+    this.cantidadRequerida = cantidadRequerida;
   }
 
   @Override

@@ -14,12 +14,11 @@ public class Documento {
   }
 
   public String getDetalle() {
-      return detalle;
+    return detalle;
   }
 
-
   public Boolean esIgualA(Documento otrodocumento) {
-      return this.tipoDocumento == otrodocumento.getTipoDocumento() &&
-              this.detalle.equalsIgnoreCase(otrodocumento.getDetalle());
+    return this.tipoDocumento == otrodocumento.getTipoDocumento()
+            && this.detalle.equalsIgnoreCase(otrodocumento.getDetalle());
   }
 }

@@ -1,8 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.donante;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.dominio.medioContacto.MedioContacto;
-
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -19,9 +18,9 @@ public class PersonaHumana extends Donante {
                        LocalDate fechaNacimiento, Genero genero, String direccion,
                        MedioContacto medioContPred, List<MedioContacto> contactosSecundarios) {
     super(medioContPred, contactosSecundarios);
-      if (documento.getTipoDocumento() == TipoDocumento.CUIT) {
-          throw new DomainValidationException("La persona humana no puede tener un CUIT");
-      }
+    if (documento.getTipoDocumento() == TipoDocumento.CUIT) {
+      throw new DomainValidationException("La persona humana no puede tener un CUIT");
+    }
     this.nombre = nombre;
     this.apellido = apellido;
     this.fechaNacimiento = fechaNacimiento;
@@ -35,23 +34,24 @@ public class PersonaHumana extends Donante {
   }
 
   public Documento getDocumento() {
-      return this.documento;
+    return this.documento;
   }
 
   public String getNombre() {
-      return this.nombre;
+    return this.nombre;
   }
 
   public String getApellido() {
-      return this.apellido;
+    return this.apellido;
   }
 
-    @Override
+  @Override
   public String toString() {
-      return "PersonaHumana{" +
-                "nombre: " + nombre +
-                ", apellido: " + apellido +
-                ", documento: " + documento.getTipoDocumento().toString() + documento.getDetalle() +
-                '}';
+    return "PersonaHumana{"
+        + "nombre: " + nombre
+        + ", apellido: " + apellido
+        + ", documento: " + documento.getTipoDocumento().toString()
+        + documento.getDetalle()
+        + '}';
   }
 }

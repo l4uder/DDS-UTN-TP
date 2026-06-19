@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.dominio.bien.tipoBien;
+package ar.edu.utn.frba.dds.donatrack.dominio.bien.tipobien;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
 

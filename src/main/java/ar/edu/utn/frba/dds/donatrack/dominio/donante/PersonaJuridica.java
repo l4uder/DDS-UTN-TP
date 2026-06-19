@@ -1,8 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.donante;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.dominio.medioContacto.MedioContacto;
-
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,9 @@ public class PersonaJuridica extends Donante {
     this.tipoOrganizacion = tipo;
     this.documento = documento;
     this.rubro = rubro;
-    this.representantes = representantes == null ? new ArrayList<>() : new ArrayList<>(representantes);
+    this.representantes = representantes == null
+        ? new ArrayList<>()
+        : new ArrayList<>(representantes);
   }
 
   public String getRazonSocial() {
@@ -58,9 +59,9 @@ public class PersonaJuridica extends Donante {
 
   @Override
   public String toString() {
-      return "PersonaJuridica{" +
-                "razonSocial: " + razonSocial  +
-                ", rubro: " + rubro +
-                '}';
+    return "PersonaJuridica{"
+        + "razonSocial: " + razonSocial
+        + ", rubro: " + rubro
+        + '}';
   }
 }

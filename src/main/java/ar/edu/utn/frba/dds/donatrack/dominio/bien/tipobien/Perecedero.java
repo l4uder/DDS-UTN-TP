@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.dominio.bien.tipoBien;
+package ar.edu.utn.frba.dds.donatrack.dominio.bien.tipobien;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
 import java.time.LocalDateTime;
@@ -16,7 +16,8 @@ public class Perecedero implements TipoBien {
   }
 
   @Override
-  public String getNombreClave(Subcategoria subcategoria){
-    return subcategoria.getNombre() + "_" + this.fechaVencimiento.format(DateTimeFormatter.BASIC_ISO_DATE);
+  public String getNombreClave(Subcategoria subcategoria) {
+    return subcategoria.getNombre() + "_"
+        + this.fechaVencimiento.format(DateTimeFormatter.BASIC_ISO_DATE);
   }
 }

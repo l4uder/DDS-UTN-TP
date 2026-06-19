@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.beneficiario;
 
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.dominio.necesidades.Necesidad;
-import ar.edu.utn.frba.dds.donatrack.dominio.medioContacto.MedioContacto;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class EntidadBeneficiaria {
 
   public EntidadBeneficiaria(String razon,
                              String direccion,
-                              List<MedioContacto> contactoRepresentantes) {
+                             List<MedioContacto> contactoRepresentantes) {
     this.razonSocial = razon;
     this.direccion = direccion;
     this.contactoRepresentantes = new ArrayList<>(contactoRepresentantes);
