@@ -15,7 +15,7 @@ public class PersonaHumanaTest {
         .conEmail("estebancarp@gmail.com")
         .build();
 
-    assertNotNull(persona.getMedioDeContactoPred());
+    assertNotNull(persona.getContactoPrincipal());
     assertEquals("Esteban", "Esteban");
   }
 

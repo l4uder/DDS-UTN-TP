@@ -16,8 +16,8 @@ public class PersonaHumana extends Donante {
 
   public PersonaHumana(String nombre, String apellido, Documento documento,
                        LocalDate fechaNacimiento, Genero genero, String direccion,
-                       MedioContacto medioContPred, List<MedioContacto> contactosSecundarios) {
-    super(medioContPred, contactosSecundarios);
+                       List<MedioContacto> contactos) {
+    super(contactos);
     if (documento.getTipoDocumento() == TipoDocumento.CUIT) {
       throw new DomainValidationException("La persona humana no puede tener un CUIT");
     }

@@ -4,76 +4,78 @@ import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationExcepti
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public abstract class Donante {
-  protected MedioContacto medioDeContactoPred;
-  protected Set<MedioContacto> mediosDeContacto;
+  protected List<MedioContacto> contactos;
   protected List<RegistroEntrega> entregas = new ArrayList<>();
 
-  public Donante(MedioContacto medioDeContacto, List<MedioContacto> mediosDeContacto) {
-    if (medioDeContacto == null) {
-      throw new DomainValidationException("El medio de contacto principal no puede ser null");
-    }
-    this.mediosDeContacto = new HashSet<>(mediosDeContacto);
-    this.mediosDeContacto.add(medioDeContacto);
-    this.medioDeContactoPred = medioDeContacto;
-
-    if (this.mediosDeContacto.stream().noneMatch(el -> el instanceof CorreoDeContato)) {
-      throw new DomainValidationException("Al menos un medio de contacto debe ser un correo");
+  public Donante(List<MedioContacto> contactos) {
+    if (contactos == null || contactos.isEmpty()) {
+      throw new DomainValidationException("La lista de contactos no puede estar vacía ni ser null");
     }
 
-    long cantCorreos = this.mediosDeContacto.stream()
-        .filter(el -> el instanceof CorreoDeContato)
-        .count();
-    if (cantCorreos > 1) {
-      throw new DomainValidationException("No puede haber mas de un correo como contacto");
+    this.contactos = new ArrayList<>(contactos);
+
+    if (this.contactos.stream().noneMatch(MedioContacto::getPrincipal)) {
+      throw new DomainValidationException("Debe tener al menos un contacto principal");
     }
   }
 
-  public void cambiarContactoPred(MedioContacto contacto) {
+  public void agregarContactoPrincipal(MedioContacto contacto) {
     if (contacto == null) {
       throw new DomainValidationException("El medio de contacto principal no puede ser null");
     }
-    var mediosDeContactoTest = new HashSet<>(mediosDeContacto);
-    mediosDeContactoTest.add(contacto);
 
-    long cantCorreos = mediosDeContactoTest.stream()
-        .filter(el -> el instanceof CorreoDeContato)
-        .count();
-    if (cantCorreos > 1) {
-      throw new DomainValidationException("No puede haber mas de un correo como contacto");
+    this.contactos.forEach(c -> c.setPrincipal(false));
+
+    MedioContacto contactoExistente = this.contactos.stream()
+        .filter(c -> c.esIgualA(contacto))
+        .findFirst()
+        .orElse(null);
+
+    if (contactoExistente != null) { // if existe
+      contactoExistente.setPrincipal(true);
+    } else {
+      contacto.setPrincipal(true);
+      this.contactos.add(contacto);
     }
-    medioDeContactoPred = contacto;
-    mediosDeContacto = mediosDeContactoTest;
-  }
-
-  public List<MedioContacto> getMediosContacto() {
-    return mediosDeContacto.stream().toList();
   }
 
   public void agregarContactoSecundario(MedioContacto contacto) {
-    this.mediosDeContacto.add(contacto);
+    if (contacto == null) {
+      throw new DomainValidationException("El medio de contacto no puede ser null");
+    }
+
+    boolean existe = this.contactos.stream().anyMatch(c -> c.esIgualA(contacto));
+
+    if (!existe) {
+      contacto.setPrincipal(false);
+      this.contactos.add(contacto);
+    }
   }
 
-  public MedioContacto getMedioDeContactoPred() {
-    return medioDeContactoPred;
+  public MedioContacto getContactoPrincipal() {
+    return this.contactos.stream()
+        .filter(MedioContacto::getPrincipal)
+        .findFirst()
+        .orElseThrow(() -> new DomainValidationException(
+            "El donante no posee ningún contacto configurado como principal"));
   }
 
-  public Set<MedioContacto> getMediosDeContacto() {
-    return mediosDeContacto;
+  public List<MedioContacto> getContactosSecundarios() {
+    return this.contactos.stream().filter(c -> !c.getPrincipal()).toList();
   }
 
   public String getEmail() {
-    var correoOpt = mediosDeContacto.stream()
-        .dropWhile(el -> !(el instanceof CorreoDeContato))
-        .findFirst();
+    CorreoDeContato correoBuscado = this.contactos.stream()
+        .filter(contacto -> contacto instanceof CorreoDeContato)
+        .map(correo -> (CorreoDeContato) correo)
+        .findFirst()
+        .orElseThrow(() -> new DomainValidationException(
+            "El Donante no tiene correo electrónico"));
 
-    if (correoOpt.isEmpty()) {
-      throw new IllegalStateException("Donante no tiene correo como medio de contacto");
-    }
-    return ((CorreoDeContato) correoOpt.get()).getCorreo();
+    return correoBuscado.getCorreo();
   }
+
 }

@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.cargabatch.DonanteParser;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.TelefonoDeContato;
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.SmsDeContato;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
 import org.junit.jupiter.api.Test;
 
@@ -34,8 +34,8 @@ public class DonanteParserTest {
         assertEquals(TipoDocumento.DNI, result.datosDonante().documento().getTipoDocumento());
         assertInstanceOf(CorreoDeContato.class, result.datosDonante().contactoPrincipal());
         assertEquals("juan@example.com", ((CorreoDeContato)result.datosDonante().contactoPrincipal()).getCorreo());
-        assertInstanceOf(TelefonoDeContato.class, result.datosDonante().contactoSecundario());
-        assertEquals("11223344", ((TelefonoDeContato)result.datosDonante().contactoSecundario()).getTelefono());
+        assertInstanceOf(SmsDeContato.class, result.datosDonante().contactoSecundario());
+        assertEquals("11223344", ((SmsDeContato)result.datosDonante().contactoSecundario()).getTelefono());
 
         assertFalse(it.hasNext());
     }

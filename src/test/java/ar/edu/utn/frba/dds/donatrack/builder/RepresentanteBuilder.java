@@ -18,7 +18,6 @@ public class RepresentanteBuilder {
   private Genero genero = Genero.FEMENINO;
   private String direccion = "Av. San Martín 100";
   private MedioContacto medioContPred = new CorreoDeContato("daniela@srl.com");
-  private List<MedioContacto> contactos = new ArrayList<>();
 
   public RepresentanteBuilder conNombre(String nombre) {
     this.nombre = nombre;
@@ -55,12 +54,7 @@ public class RepresentanteBuilder {
     return this;
   }
 
-  public RepresentanteBuilder conMedioContactosSecundarios(List<MedioContacto> contactos) {
-    this.contactos = contactos;
-    return this;
-  }
-
   public Representante build() {
-    return new Representante(nombre, apellido, fechaNacimiento, documento, genero, direccion, medioContPred, contactos);
+    return new Representante(nombre, apellido, fechaNacimiento, documento, genero, direccion, medioContPred);
   }
 }

@@ -3,19 +3,24 @@ package ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto;
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ClienteSms;
 
-public class TelefonoDeContato implements MedioContacto {
-  protected String telefono;
+public class SmsDeContato extends MedioContacto {
+  private String telefono;
   private ClienteSms clienteSms;
 
-  public TelefonoDeContato(String telefono) {
+  public SmsDeContato(String telefono) {
     if (!telefono.matches("^[+0-9 -]*$")) {
       throw new DomainValidationException("Telefono invalido");
     }
     this.telefono = telefono;
+    this.esPrincipal = false;
   }
 
   @Override
   public void notificar(String message) {
+    if (clienteSms == null) {
+      throw new DomainValidationException("clienteSms no asignado para enviar notificaciones");
+    }
+
     clienteSms.enviarSms(telefono, message);
   }
 
@@ -28,13 +33,11 @@ public class TelefonoDeContato implements MedioContacto {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    return obj instanceof TelefonoDeContato contacto
-        && contacto.telefono.equalsIgnoreCase(telefono);
-  }
+  public boolean esIgualA(MedioContacto otro) {
+    if (!(otro instanceof SmsDeContato numeroSms)) {
+      return false;
+    }
 
-  @Override
-  public int hashCode() {
-    return telefono.hashCode();
+    return this.telefono.equals(numeroSms.getTelefono());
   }
 }

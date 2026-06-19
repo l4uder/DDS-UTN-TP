@@ -3,8 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto;
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ClienteCorreo;
 
-public class CorreoDeContato implements MedioContacto {
-
+public class CorreoDeContato extends MedioContacto {
   private String correo;
   private ClienteCorreo clienteCorreo;
 
@@ -13,10 +12,15 @@ public class CorreoDeContato implements MedioContacto {
       throw new DomainValidationException("Correo invalido");
     }
     this.correo = correo;
+    this.esPrincipal = false;
   }
 
   @Override
   public void notificar(String message) {
+    if (clienteCorreo == null) {
+      throw new DomainValidationException("clienteCorreo no asignado para enviar notificaciones");
+    }
+
     clienteCorreo.enviarCorreo(correo, message);
   }
 
@@ -29,13 +33,11 @@ public class CorreoDeContato implements MedioContacto {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    return obj instanceof CorreoDeContato contacto
-        && contacto.correo.equalsIgnoreCase(correo);
-  }
+  public boolean esIgualA(MedioContacto otro) {
+    if (!(otro instanceof CorreoDeContato correoElectronico)) {
+      return false;
+    }
 
-  @Override
-  public int hashCode() {
-    return correo.hashCode();
+    return this.correo.equalsIgnoreCase(correoElectronico.getCorreo());
   }
 }

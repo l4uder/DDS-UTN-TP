@@ -19,7 +19,7 @@ public class PersonaJuridicaTest {
         .conEmail("empresaTest@gmail.com")
         .build();
 
-    assertNotNull(empresa.getMedioDeContactoPred());
+    assertNotNull(empresa.getContactoPrincipal());
   }
 
   @Test

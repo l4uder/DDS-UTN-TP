@@ -14,23 +14,18 @@ public class Representante {
   private Documento documento;
   private Genero genero;
   private String direccion;
-  private MedioContacto medioDeContactoPred;
-  private List<MedioContacto> contactos;
+  private MedioContacto contacto;
 
   public Representante(String nombre, String apellido, LocalDate fechaNacimiento,
                        Documento documento, Genero genero, String direccion,
-                       MedioContacto medioContPred, List<MedioContacto> contactos) {
-    if (documento.getTipoDocumento() == TipoDocumento.CUIT) {
-      throw new DomainValidationException("Un representante no puede tener un CUIT");
-    }
+                       MedioContacto contacto) {
     this.nombre = nombre;
     this.apellido = apellido;
     this.fechaNacimiento = fechaNacimiento;
     this.documento = documento;
     this.genero = genero;
     this.direccion = direccion;
-    this.medioDeContactoPred = medioContPred;
-    this.contactos = contactos != null ? new ArrayList<>(contactos) : new ArrayList<>();
+    this.contacto = contacto;
   }
 
   public Integer getEdad() {

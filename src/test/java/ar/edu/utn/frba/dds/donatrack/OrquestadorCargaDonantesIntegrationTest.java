@@ -23,6 +23,9 @@ public class OrquestadorCargaDonantesIntegrationTest {
         assertTrue(donantesIniciales.isEmpty());
         var resultado = OrquestadorCargaDonantes.iniciarCarga(archivoSimple);
         var donantesResultantes = DonanteRepository.INSTANCE.buscarTodos();
+
+        //System.out.println("Los errores encontrados son: " + resultado.errores());
+
         assertEquals(1, resultado.errores().size());
         assertEquals(3, resultado.registrosProcesados());
         assertEquals(2, donantesResultantes.size());

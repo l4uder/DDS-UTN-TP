@@ -16,8 +16,7 @@ public class PersonaJuridicaBuilder {
   private TipoOrganizacion tipoOrganizacion = TipoOrganizacion.EMPRESA;
   private String rubro = "Rubro Default";
   private List<Representante> representantes = new ArrayList<>();
-  private MedioContacto medioContPred = new CorreoDeContato("default@empresa.com");
-  private List<MedioContacto> contactosSecundarios = new ArrayList<>();
+  private List<MedioContacto> contactos = new ArrayList<>();
 
   public PersonaJuridicaBuilder conRazonSocial(String razonSocial) {
     this.razonSocial = razonSocial;
@@ -40,17 +39,22 @@ public class PersonaJuridicaBuilder {
   }
 
   public PersonaJuridicaBuilder conEmail(String email) {
-    this.medioContPred = new CorreoDeContato(email);
+    CorreoDeContato correo = new CorreoDeContato(email);
+    correo.setPrincipal(true);
+    this.contactos.add(correo);
     return this;
   }
 
-  public PersonaJuridicaBuilder conContactosSecundarios(List<MedioContacto> contactos) {
-    this.contactosSecundarios = contactos;
+  public PersonaJuridicaBuilder conContactosSecundarios(List<MedioContacto> secundarios) {
+    if (secundarios != null) {
+      secundarios.forEach(c -> c.setPrincipal(false));
+      this.contactos.addAll(secundarios);
+    }
     return this;
   }
 
   public PersonaJuridica build() {
-    return new PersonaJuridica(razonSocial, tipoOrganizacion, rubro, documento,
-        representantes, medioContPred, contactosSecundarios);
+    return new PersonaJuridica(razonSocial, tipoOrganizacion, rubro,
+                              documento, representantes, contactos);
   }
 }

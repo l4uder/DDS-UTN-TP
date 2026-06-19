@@ -10,24 +10,21 @@ public class DonanteFactory {
                               String nombreCompleto, MedioContacto contactoPrincipal,
                               MedioContacto contactoSecundario) {
 
+    contactoPrincipal.setPrincipal(true);
+
     if (tipoPersona.equals("HUMANA")) {
       String[] partimosNombre = nombreCompleto.trim().split(" +", 2);
       String nombre = partimosNombre[0];
       String apellido = partimosNombre.length > 1 ? partimosNombre[1] : "";
-      List<MedioContacto> contactosSecundarios = contactoSecundario == null
-                                                  ? null : List.of(contactoSecundario);
 
       return new PersonaHumana(nombre, apellido, documento, null, null,
-                              null, contactoPrincipal, contactosSecundarios);
+                              null, List.of(contactoPrincipal, contactoSecundario));
     }
 
     if (tipoPersona.equals("JURIDICA")) {
-      List<MedioContacto> contactosSecundarios = contactoSecundario == null
-                                                  ? null : List.of(contactoSecundario);
-
       return new PersonaJuridica(nombreCompleto, TipoOrganizacion.SIN_ESPECIFICAR, null,
-                                  documento, null, contactoPrincipal,
-                                  contactosSecundarios);
+                                  documento, null,
+                                  List.of(contactoPrincipal, contactoSecundario));
     }
 
     throw new DomainValidationException("Tipo de persona invalido debe revisar: " + tipoPersona);

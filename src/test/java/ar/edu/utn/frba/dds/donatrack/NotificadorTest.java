@@ -8,7 +8,7 @@ import ar.edu.utn.frba.dds.donatrack.dominio.donante.Representante;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoOrganizacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.TelefonoDeContato;
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.SmsDeContato;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.WhatsappDeContato;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ClienteSms;
@@ -28,47 +28,50 @@ public class NotificadorTest {
 
     @BeforeEach
     void configuracionInicial() {
-        persona = new PersonaHumana(
-                "Juan",
-                "Pérez",
-                new Documento(TipoDocumento.DNI, "45123456"),
-                LocalDate.of(2000, 5, 10),
-                Genero.MASCULINO,
-                "Av. Corrientes 1234",
-                new CorreoDeContato("pepe@gmail.com"),
-                List.of()
-        );
+      CorreoDeContato correoPersona = new CorreoDeContato("pepe@gmail.com");
+      correoPersona.setPrincipal(true);
 
-        Representante rep = new Representante(
-                "Carlos",
-                "García",
-                LocalDate.of(2000, 5, 12),
-                new Documento(TipoDocumento.DNI, "30123456"),
-                Genero.MASCULINO,
-                "Av. San Martín 100",
-                new CorreoDeContato("carlos@srl.com"),
-                List.of()
-        );
+      persona = new PersonaHumana(
+              "Juan",
+              "Pérez",
+              new Documento(TipoDocumento.DNI, "45123456"),
+              LocalDate.of(2000, 5, 10),
+              Genero.MASCULINO,
+              "Av. Corrientes 1234",
+              List.of(correoPersona)
+      );
 
-        constructoraSRL = new PersonaJuridica(
-                "Constructora Junior SRL",
-                TipoOrganizacion.EMPRESA,
-                "Construcción",
-                new Documento(TipoDocumento.CUIT, "30-12345678-9"),
-                List.of(rep),
-                new CorreoDeContato("srl@gmail.com"),
-                List.of()
-        );
+      Representante rep = new Representante(
+              "Carlos",
+              "García",
+              LocalDate.of(2000, 5, 12),
+              new Documento(TipoDocumento.DNI, "30123456"),
+              Genero.MASCULINO,
+              "Av. San Martín 100",
+              new CorreoDeContato("carlos@srl.com")
+      );
+
+      CorreoDeContato correoSRL = new CorreoDeContato("srl@gmail.com");
+      correoSRL.setPrincipal(true);
+
+      constructoraSRL = new PersonaJuridica(
+              "Constructora Junior SRL",
+              TipoOrganizacion.EMPRESA,
+              "Construcción",
+              new Documento(TipoDocumento.CUIT, "30-12345678-9"),
+              List.of(rep),
+              List.of(correoSRL)
+      );
     }
 
     @Test
     void notificarAUnaPersonaHumanaConUnCorreo() {
         ClienteCorreo client = mock(ClienteCorreo.class);
         String message = "Hola..";
-        ((CorreoDeContato)persona.getMedioDeContactoPred()).setClienteCorreo(client);
-        persona.getMedioDeContactoPred().notificar(message);
+        ((CorreoDeContato)persona.getContactoPrincipal()).setClienteCorreo(client);
+        persona.getContactoPrincipal().notificar(message);
 
-        verify(client).enviarCorreo(((CorreoDeContato)persona.getMedioDeContactoPred()).getCorreo(), message);
+        verify(client).enviarCorreo(((CorreoDeContato)persona.getContactoPrincipal()).getCorreo(), message);
     }
 
     @Test
@@ -79,7 +82,7 @@ public class NotificadorTest {
         ClienteCorreo client = mock(ClienteCorreo.class);
         persona.agregarContactoSecundario(new CorreoDeContato(correo1));
         persona.agregarContactoSecundario(new CorreoDeContato(correo2));
-        persona.getMediosDeContacto().stream().filter(el->el instanceof CorreoDeContato).forEach(el -> {
+        persona.getContactosSecundarios().stream().filter(el->el instanceof CorreoDeContato).forEach(el -> {
             ((CorreoDeContato)el).setClienteCorreo(client);
             el.notificar(message);
         });
@@ -96,7 +99,7 @@ public class NotificadorTest {
         var medioDeContacto = new WhatsappDeContato(tel);
         medioDeContacto.setClienteWhatsapp(client);
         persona.agregarContactoSecundario(medioDeContacto);
-        persona.getMediosDeContacto().stream().filter(el->el instanceof WhatsappDeContato).forEach(el -> el.notificar(message));
+        persona.getContactosSecundarios().stream().filter(el->el instanceof WhatsappDeContato).forEach(el -> el.notificar(message));
 
         verify(client).enviarMensaje(tel, message);
     }
@@ -106,10 +109,10 @@ public class NotificadorTest {
         String message = "Hola...";
         String tel = "434644456";
         ClienteSms client = mock(ClienteSms.class);
-        var medioDeContacto = new TelefonoDeContato(tel);
+        var medioDeContacto = new SmsDeContato(tel);
         medioDeContacto.setClienteSms(client);
         persona.agregarContactoSecundario(medioDeContacto);
-        persona.getMediosDeContacto().stream().filter(el->el instanceof TelefonoDeContato).forEach(el -> el.notificar(message));
+        persona.getContactosSecundarios().stream().filter(el->el instanceof SmsDeContato).forEach(el -> el.notificar(message));
 
         verify(client).enviarSms(tel, message);
     }

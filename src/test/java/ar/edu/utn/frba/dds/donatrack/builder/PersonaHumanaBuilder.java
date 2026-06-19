@@ -17,8 +17,7 @@ public class PersonaHumanaBuilder {
   private Documento documento = new Documento(TipoDocumento.DNI, "12345678");
   private Genero genero = Genero.X;
   private String direccion = "Direccion Default";
-  private MedioContacto medioContPred = new CorreoDeContato("default@mail.com");
-  private List<MedioContacto> contactosSecundarios = new ArrayList<>();
+  private List<MedioContacto> contactos = new ArrayList<>();
 
   public PersonaHumanaBuilder conNombre(String nombre) {
     this.nombre = nombre;
@@ -51,23 +50,27 @@ public class PersonaHumanaBuilder {
   }
 
   public PersonaHumanaBuilder conEmail(String email) {
-    this.medioContPred = new CorreoDeContato(email);
+    CorreoDeContato correo = new CorreoDeContato(email);
+    correo.setPrincipal(true);
+    this.contactos.add(correo);
     return this;
   }
 
-  public PersonaHumanaBuilder conContactosSecundarios(List<MedioContacto> contactos) {
-    this.contactosSecundarios = contactos;
+  public PersonaHumanaBuilder conContactosSecundarios(List<MedioContacto> contactosSecundarios) {
+    if (contactosSecundarios != null) {
+      contactosSecundarios.forEach(c -> c.setPrincipal(false));
+      this.contactos.addAll(contactosSecundarios);
+    }
     return this;
   }
 
   public PersonaHumanaBuilder vaciarContactos() {
-    this.medioContPred = null;
-    this.contactosSecundarios = new ArrayList<>();
+    this.contactos = new ArrayList<>();
     return this;
   }
 
   public PersonaHumana build() {
     return new PersonaHumana(nombre, apellido, documento, fechaNacimiento,
-        genero, direccion, medioContPred, contactosSecundarios);
+        genero, direccion, contactos);
   }
 }
