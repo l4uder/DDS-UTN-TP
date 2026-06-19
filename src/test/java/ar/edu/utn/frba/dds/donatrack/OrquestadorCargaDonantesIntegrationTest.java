@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.carga_batch.OrquestadorCargaDonantes;
-import ar.edu.utn.frba.dds.donatrack.repository.DonanteRepository;
+import ar.edu.utn.frba.dds.donatrack.dominio.carga_batch.OrquestadorCargaDonantes;
+import ar.edu.utn.frba.dds.donatrack.persistencia.DonanteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -2,9 +2,9 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.RepresentanteBuilder;
-import ar.edu.utn.frba.dds.donatrack.donante.Documento;
-import ar.edu.utn.frba.dds.donatrack.donante.PersonaJuridica;
-import ar.edu.utn.frba.dds.donatrack.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.PersonaJuridica;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

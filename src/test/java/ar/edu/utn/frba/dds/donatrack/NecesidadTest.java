@@ -3,11 +3,11 @@ package ar.edu.utn.frba.dds.donatrack;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ar.edu.utn.frba.dds.donatrack.donacion.Categoria;
-import ar.edu.utn.frba.dds.donatrack.donacion.Subcategoria;
-import ar.edu.utn.frba.dds.donatrack.necesidades.NecesidadExtraordinaria;
-import ar.edu.utn.frba.dds.donatrack.necesidades.NecesidadRecurrente;
-import ar.edu.utn.frba.dds.donatrack.necesidades.Periodo;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.Categoria;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.dominio.necesidades.NecesidadExtraordinaria;
+import ar.edu.utn.frba.dds.donatrack.dominio.necesidades.NecesidadRecurrente;
+import ar.edu.utn.frba.dds.donatrack.dominio.necesidades.Periodo;
 import org.junit.jupiter.api.Test;
 
 public class NecesidadTest {

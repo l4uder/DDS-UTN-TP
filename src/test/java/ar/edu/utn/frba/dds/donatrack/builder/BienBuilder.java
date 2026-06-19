@@ -1,10 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.donacion.Bien;
-import ar.edu.utn.frba.dds.donatrack.donacion.NoPerecedero;
-import ar.edu.utn.frba.dds.donatrack.donacion.Perecedero;
-import ar.edu.utn.frba.dds.donatrack.donacion.UnidadMedida;
-import ar.edu.utn.frba.dds.donatrack.donacion.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.Bien;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.UnidadMedida;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
 
 import java.time.LocalDateTime;
 

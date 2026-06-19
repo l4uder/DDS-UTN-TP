@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.donacion.Categoria;
-import ar.edu.utn.frba.dds.donatrack.donacion.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.Categoria;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
 
 public class SubcategoriaBuilder {
   private String nombre;

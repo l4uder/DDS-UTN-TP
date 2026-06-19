@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.donacion.Bien;
-import ar.edu.utn.frba.dds.donatrack.donante.RegistroEntrega;
+import ar.edu.utn.frba.dds.donatrack.dominio.bien.Bien;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.RegistroEntrega;
 import java.util.ArrayList;
 import java.util.List;
 
