@@ -1,11 +1,11 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Categoria;
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donacion.Categoria;
+import ar.edu.utn.frba.dds.donatrack.donacion.Subcategoria;
 
 public class SubcategoriaBuilder {
-  private String nombre = "Subcategoria";
-  private Categoria categoria = new CategoriaBuilder().build();
+  private String nombre;
+  private Categoria categoria;
 
   public SubcategoriaBuilder conNombre(String nombre){
     this.nombre = nombre;
@@ -18,6 +18,13 @@ public class SubcategoriaBuilder {
   }
 
   public Subcategoria build(){
+    if (this.nombre == null || this.nombre.trim().isEmpty()) {
+      throw new IllegalStateException("No se puede construir una Subcategoria sin un nombre válido.");
+    }
+    if (this.categoria == null) {
+      throw new IllegalStateException("Toda Subcategoria debe pertenecer a una Categoria.");
+    }
+
     return new Subcategoria(nombre, categoria);
   }
 }

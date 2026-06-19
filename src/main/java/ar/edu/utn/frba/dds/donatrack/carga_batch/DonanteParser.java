@@ -1,9 +1,9 @@
 package ar.edu.utn.frba.dds.donatrack.carga_batch;
 
-import ar.edu.utn.frba.dds.donatrack.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.contacto.CorreoDeContato;
-import ar.edu.utn.frba.dds.donatrack.contacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.contacto.TelefonoDeContato;
+import ar.edu.utn.frba.dds.donatrack.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.TelefonoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donante.TipoDocumento;
 

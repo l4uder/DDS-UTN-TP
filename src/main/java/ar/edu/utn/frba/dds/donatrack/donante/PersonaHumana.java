@@ -1,8 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donante;
 
-import ar.edu.utn.frba.dds.donatrack.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.contacto.CorreoDeContato;
-import ar.edu.utn.frba.dds.donatrack.contacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.MedioContacto;
 
 import java.time.LocalDate;
 import java.time.Period;

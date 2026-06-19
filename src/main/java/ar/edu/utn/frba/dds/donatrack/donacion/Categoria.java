@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.clasificacion;
+package ar.edu.utn.frba.dds.donatrack.donacion;
 
 public class Categoria {
   private String nombre;

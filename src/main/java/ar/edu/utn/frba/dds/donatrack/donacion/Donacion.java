@@ -1,9 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donacion;
 
-import ar.edu.utn.frba.dds.donatrack.CambioDeEstadoNoPermitidoException;
-import ar.edu.utn.frba.dds.donatrack.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.excepciones.CambioDeEstadoNoPermitidoException;
+import ar.edu.utn.frba.dds.donatrack.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.beneficiario.EntidadBeneficiaria;
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
 
 import java.util.ArrayList;
 import java.util.List;

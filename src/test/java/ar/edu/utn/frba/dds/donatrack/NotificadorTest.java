@@ -1,12 +1,12 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.contacto.CorreoDeContato;
-import ar.edu.utn.frba.dds.donatrack.contacto.TelefonoDeContato;
-import ar.edu.utn.frba.dds.donatrack.contacto.WhatsappDeContato;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.TelefonoDeContato;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.WhatsappDeContato;
 import ar.edu.utn.frba.dds.donatrack.donante.*;
-import ar.edu.utn.frba.dds.donatrack.notificacion.ClienteCorreo;
-import ar.edu.utn.frba.dds.donatrack.notificacion.ClienteSms;
-import ar.edu.utn.frba.dds.donatrack.notificacion.ClienteWhatsapp;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.implementacion.ClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.implementacion.ClienteSms;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.implementacion.ClienteWhatsapp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -4,12 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ar.edu.utn.frba.dds.donatrack.builder.CategoriaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.SubcategoriaBuilder;
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Categoria;
+import ar.edu.utn.frba.dds.donatrack.donacion.Categoria;
 import ar.edu.utn.frba.dds.donatrack.donacion.Bien;
-import ar.edu.utn.frba.dds.donatrack.donacion.Perecedero;
-import ar.edu.utn.frba.dds.donatrack.donacion.NoPerecedero;
 import ar.edu.utn.frba.dds.donatrack.donacion.UnidadMedida;
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donacion.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +36,8 @@ public class BienTest{
         .conDescripcion("Fideos secos")
         .conCantidad(10)
         .conSubcategoria(pastas)
-        .buildPerecedero(UnidadMedida.UNIDADES);
+        .conUnidad(UnidadMedida.UNIDADES)
+        .buildPerecedero();
 
     assertEquals("Fideos secos", fideos.getDescripcion());
   }
@@ -54,7 +53,8 @@ public class BienTest{
         .conCantidad(2)
         .conSubcategoria(tetrapack)
         .conFechaVencimiento(LocalDateTime.of(2027, 1, 1, 0, 0))
-        .buildPerecedero(UnidadMedida.UNIDADES);
+        .conUnidad(UnidadMedida.UNIDADES)
+        .buildPerecedero();
 
     assertEquals("Salsa de tomate", salsaTomate.getDescripcion());
   }
@@ -68,7 +68,7 @@ public class BienTest{
         .conDescripcion("Sillas de oficina usadas")
         .conCantidad(10)
         .conSubcategoria(sillas)
-        .usado()
+        .conUsado(true)
         .buildNoPerecedero();
 
     assertEquals("Sillas de oficina usadas", sillasUsadas.getDescripcion());

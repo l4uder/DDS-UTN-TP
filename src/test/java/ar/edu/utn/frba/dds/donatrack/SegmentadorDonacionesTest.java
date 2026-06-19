@@ -7,14 +7,13 @@ import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.CategoriaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.RegistroEntregaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.SubcategoriaBuilder;
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Categoria;
-import ar.edu.utn.frba.dds.donatrack.clasificacion.SegmentadorDonaciones;
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donacion.Categoria;
+import ar.edu.utn.frba.dds.donatrack.segmentador.SegmentadorDonaciones;
+import ar.edu.utn.frba.dds.donatrack.donacion.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donacion.Bien;
 import ar.edu.utn.frba.dds.donatrack.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donacion.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.donante.RegistroEntrega;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,11 +45,13 @@ public class SegmentadorDonacionesTest {
     Bien bienFideos = new BienBuilder()
         .conDescripcion("Fideos").conCantidad(100).conSubcategoria(fideos)
         .conFechaVencimiento(LocalDateTime.of(2027, 1, 1, 0, 0))
-        .buildPerecedero(UnidadMedida.UNIDADES);
+        .conUnidad(UnidadMedida.UNIDADES)
+        .buildPerecedero();
     Bien bienTomate = new BienBuilder()
         .conDescripcion("Tomate").conCantidad(50).conSubcategoria(tomate)
         .conFechaVencimiento(LocalDateTime.of(2027, 1, 1, 0, 0))
-        .buildPerecedero(UnidadMedida.UNIDADES);
+        .conUnidad(UnidadMedida.UNIDADES)
+        .buildPerecedero();
 
     RegistroEntrega registro = new RegistroEntregaBuilder()
         .conDescripcion("Donación planta de pastas")
@@ -67,11 +68,13 @@ public class SegmentadorDonacionesTest {
     Bien fideos2027 = new BienBuilder()
         .conDescripcion("Fideos").conCantidad(100).conSubcategoria(fideos)
         .conFechaVencimiento(LocalDateTime.of(2027, 1, 1, 0, 0))
-        .buildPerecedero(UnidadMedida.UNIDADES);
+        .conUnidad(UnidadMedida.UNIDADES)
+        .buildPerecedero();
     Bien fideos2026 = new BienBuilder()
         .conDescripcion("Fideos").conCantidad(50).conSubcategoria(fideos)
         .conFechaVencimiento(LocalDateTime.of(2026, 6, 1, 0, 0))
-        .buildPerecedero(UnidadMedida.UNIDADES);
+        .conUnidad(UnidadMedida.UNIDADES)
+        .buildPerecedero();
 
     RegistroEntrega registro = new RegistroEntregaBuilder()
         .conDescripcion("Fideos con distintas fechas")
@@ -88,11 +91,13 @@ public class SegmentadorDonacionesTest {
     Bien fideos1 = new BienBuilder()
         .conDescripcion("Fideos").conCantidad(100).conSubcategoria(fideos)
         .conFechaVencimiento(LocalDateTime.of(2027, 1, 1, 0, 0))
-        .buildPerecedero(UnidadMedida.UNIDADES);
+        .conUnidad(UnidadMedida.UNIDADES)
+        .buildPerecedero();
     Bien fideos2 = new BienBuilder()
         .conDescripcion("Fideos").conCantidad(200).conSubcategoria(fideos)
         .conFechaVencimiento(LocalDateTime.of(2027, 1, 1, 0, 0))
-        .buildPerecedero(UnidadMedida.UNIDADES);
+        .conUnidad(UnidadMedida.UNIDADES)
+        .buildPerecedero();
 
     RegistroEntrega registro = new RegistroEntregaBuilder()
         .conDescripcion("Fideos misma fecha")
@@ -108,9 +113,10 @@ public class SegmentadorDonacionesTest {
   void sePuedeSegmentarNoPerecederosPorEstado() {
     Bien sillaUsada = new BienBuilder()
         .conDescripcion("Silla").conCantidad(6).conSubcategoria(sillas)
-        .usado().buildNoPerecedero();
+        .conUsado(true).buildNoPerecedero();
     Bien sillaNueva = new BienBuilder()
         .conDescripcion("Silla").conCantidad(2).conSubcategoria(sillas)
+        .conUsado(false)
         .buildNoPerecedero();
 
     RegistroEntrega registro = new RegistroEntregaBuilder()
@@ -127,10 +133,10 @@ public class SegmentadorDonacionesTest {
   void sePuedeSegmentarEjemploArcosPlatados() {
     Bien sillaUsada = new BienBuilder()
         .conDescripcion("Silla").conCantidad(6).conSubcategoria(sillas)
-        .usado().buildNoPerecedero();
+        .conUsado(true).buildNoPerecedero();
     Bien mesaUsada = new BienBuilder()
         .conDescripcion("Mesa rectangular").conCantidad(1).conSubcategoria(mesas)
-        .usado().buildNoPerecedero();
+        .conUsado(true).buildNoPerecedero();
 
     RegistroEntrega registro = new RegistroEntregaBuilder()
         .conDescripcion("Mudanza Arcos Plateados")

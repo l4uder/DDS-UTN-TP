@@ -1,9 +1,9 @@
-package ar.edu.utn.frba.dds.donatrack.contacto;
+package ar.edu.utn.frba.dds.donatrack.medioContacto;
 
-import ar.edu.utn.frba.dds.donatrack.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.notificacion.ClienteSms;
+import ar.edu.utn.frba.dds.donatrack.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.implementacion.ClienteSms;
 
-public non-sealed class TelefonoDeContato implements MedioContacto {
+public class TelefonoDeContato implements MedioContacto {
 
     protected String telefono;
     private ClienteSms clienteSms;

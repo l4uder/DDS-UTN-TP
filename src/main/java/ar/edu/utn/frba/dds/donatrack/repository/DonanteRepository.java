@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.repository;
 
 import ar.edu.utn.frba.dds.donatrack.donante.Donante;
 
+import ar.edu.utn.frba.dds.donatrack.excepciones.PersistanceException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

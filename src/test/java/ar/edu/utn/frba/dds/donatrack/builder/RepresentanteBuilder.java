@@ -1,11 +1,11 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.contacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donante.Genero;
 import ar.edu.utn.frba.dds.donatrack.donante.Representante;
 import ar.edu.utn.frba.dds.donatrack.donante.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.contacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.MedioContacto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +25,38 @@ public class RepresentanteBuilder {
     return this;
   }
 
-  public RepresentanteBuilder conDocumento(TipoDocumento tipo, String numero) {
-    this.documento = new Documento(tipo, numero);
+  public RepresentanteBuilder conApellido(String apellido) {
+    this.apellido = apellido;
+    return this;
+  }
+
+  public RepresentanteBuilder conFechaNacimiento(LocalDate fechaNacimiento) {
+    this.fechaNacimiento = fechaNacimiento;
+    return this;
+  }
+
+  public RepresentanteBuilder conDocumento(Documento documento) {
+    this.documento = documento;
+    return this;
+  }
+
+  public RepresentanteBuilder conGenero(Genero genero) {
+    this.genero = genero;
+    return this;
+  }
+
+  public RepresentanteBuilder conDireccion(String direccion) {
+    this.direccion = direccion;
+    return this;
+  }
+
+  public RepresentanteBuilder conMedioContactoPredeterminado(MedioContacto medioContacto) {
+    this.medioContPred = medioContacto;
+    return this;
+  }
+
+  public RepresentanteBuilder conMedioContactosSecundarios(List<MedioContacto> contactos) {
+    this.contactos = contactos;
     return this;
   }
 

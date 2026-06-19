@@ -1,10 +1,11 @@
 package ar.edu.utn.frba.dds.donatrack.carga_batch;
 
-import ar.edu.utn.frba.dds.donatrack.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.excepciones.BatchJobException;
+import ar.edu.utn.frba.dds.donatrack.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donante.DonanteFactory;
 import ar.edu.utn.frba.dds.donatrack.repository.DonanteRepository;
-import ar.edu.utn.frba.dds.donatrack.repository.PersistanceException;
+import ar.edu.utn.frba.dds.donatrack.excepciones.PersistanceException;
 import com.opencsv.CSVReader;
 
 import java.io.IOException;

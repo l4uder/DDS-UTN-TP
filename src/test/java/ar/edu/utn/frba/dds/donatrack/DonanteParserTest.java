@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.carga_batch.DonanteParser;
-import ar.edu.utn.frba.dds.donatrack.contacto.CorreoDeContato;
-import ar.edu.utn.frba.dds.donatrack.contacto.TelefonoDeContato;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.TelefonoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donante.TipoDocumento;
 import org.junit.jupiter.api.Test;
 

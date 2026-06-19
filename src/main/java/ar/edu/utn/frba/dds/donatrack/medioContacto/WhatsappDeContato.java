@@ -1,8 +1,8 @@
-package ar.edu.utn.frba.dds.donatrack.contacto;
+package ar.edu.utn.frba.dds.donatrack.medioContacto;
 
-import ar.edu.utn.frba.dds.donatrack.notificacion.ClienteWhatsapp;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.implementacion.ClienteWhatsapp;
 
-public final class WhatsappDeContato extends TelefonoDeContato implements MedioContacto {
+public class WhatsappDeContato extends TelefonoDeContato implements MedioContacto {
 
     private ClienteWhatsapp clienteWhatsapp;
 

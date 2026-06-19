@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.beneficiario;
 
 import ar.edu.utn.frba.dds.donatrack.necesidades.Necesidad;
-import ar.edu.utn.frba.dds.donatrack.contacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.medioContacto.MedioContacto;
 import java.util.ArrayList;
 import java.util.List;
 

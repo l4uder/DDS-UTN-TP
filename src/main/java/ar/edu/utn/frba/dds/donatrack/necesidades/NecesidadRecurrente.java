@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.necesidades;
 
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donacion.Subcategoria;
 
 public class NecesidadRecurrente extends Necesidad {
   private int cantidadPorPeriodo;

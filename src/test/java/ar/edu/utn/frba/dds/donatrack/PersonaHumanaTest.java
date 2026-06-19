@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.donante.PersonaHumana;
+import ar.edu.utn.frba.dds.donatrack.excepciones.DomainValidationException;
 import org.junit.jupiter.api.Test;
 
 public class PersonaHumanaTest {

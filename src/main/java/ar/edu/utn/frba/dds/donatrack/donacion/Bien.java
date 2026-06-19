@@ -1,22 +1,20 @@
 package ar.edu.utn.frba.dds.donatrack.donacion;
 
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
-
 public abstract class Bien {
   protected String descripcion;
   protected float cantidad;
   protected UnidadMedida unidad;
-  protected byte[] foto;
+  protected String foto;
   protected Subcategoria subcategoria;
 
   public Bien(String descripcion, float cantidad,
-              UnidadMedida unidad, byte[] foto,
+              UnidadMedida unidad, String foto,
               Subcategoria subcategoria) {
 
     this.descripcion = descripcion;
     this.cantidad = cantidad;
     this.unidad = unidad;
-    this.foto = foto != null ? foto.clone() : null;
+    this.foto = foto;
     this.subcategoria = subcategoria;
   }
 

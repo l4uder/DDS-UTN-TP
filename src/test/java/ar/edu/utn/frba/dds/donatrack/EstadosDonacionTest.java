@@ -4,8 +4,9 @@ import ar.edu.utn.frba.dds.donatrack.beneficiario.EntidadBeneficiaria;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.CategoriaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.SubcategoriaBuilder;
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donacion.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donacion.*;
+import ar.edu.utn.frba.dds.donatrack.excepciones.CambioDeEstadoNoPermitidoException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -25,7 +26,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 
@@ -43,7 +45,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 
@@ -65,7 +68,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 
@@ -89,7 +93,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 
@@ -115,7 +120,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 
@@ -142,7 +148,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 
@@ -170,7 +177,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 
@@ -200,7 +208,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 
@@ -227,7 +236,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 
@@ -261,7 +271,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 
@@ -295,7 +306,8 @@ public class EstadosDonacionTest {
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
-                .buildPerecedero(UnidadMedida.UNIDADES);
+                .conUnidad(UnidadMedida.UNIDADES)
+                .buildPerecedero();
 
         Donacion donacion = new Donacion(List.of(fideosLucetti));
 

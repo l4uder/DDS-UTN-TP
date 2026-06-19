@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.RepresentanteBuilder;
+import ar.edu.utn.frba.dds.donatrack.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donante.PersonaJuridica;
 import ar.edu.utn.frba.dds.donatrack.donante.TipoDocumento;
 import org.junit.jupiter.api.Test;
@@ -24,9 +25,11 @@ public class PersonaJuridicaTest {
   @Test
   public void sePuedeAgregarUnRepresentante() {
     PersonaJuridica empresa = new PersonaJuridicaBuilder()
-            .conEmail("empresaTest@gmail.com")
-            .build();
-    var representante = new RepresentanteBuilder().conDocumento(TipoDocumento.DNI, "235325554").conNombre("Marcelo").build();
+        .conEmail("empresaTest@gmail.com")
+        .build();
+    var representante = new RepresentanteBuilder().conDocumento(new Documento(TipoDocumento.DNI, "235325554"))
+        .conNombre("Marcelo")
+        .build();
     empresa.agregarRepresentante(representante);
 
     assertEquals(1, empresa.getRepresentantes().size());

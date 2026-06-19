@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.donatrack.donacion;
 
-import ar.edu.utn.frba.dds.donatrack.clasificacion.Subcategoria;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -8,7 +7,7 @@ public class Perecedero extends Bien {
   private LocalDateTime fechaVencimiento;
 
   public Perecedero(String descripcion, float cantidad,
-                    UnidadMedida unidad, byte[] foto,
+                    UnidadMedida unidad, String foto,
                     Subcategoria subcategoria, LocalDateTime fechaVencimiento) {
 
     super(descripcion, cantidad, unidad, foto, subcategoria);
