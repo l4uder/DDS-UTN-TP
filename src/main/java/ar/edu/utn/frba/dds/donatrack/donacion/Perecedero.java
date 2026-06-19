@@ -3,14 +3,10 @@ package ar.edu.utn.frba.dds.donatrack.donacion;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Perecedero extends Bien {
+public class Perecedero implements TipoBien {
   private LocalDateTime fechaVencimiento;
 
-  public Perecedero(String descripcion, float cantidad,
-                    UnidadMedida unidad, String foto,
-                    Subcategoria subcategoria, LocalDateTime fechaVencimiento) {
-
-    super(descripcion, cantidad, unidad, foto, subcategoria);
+  public Perecedero(LocalDateTime fechaVencimiento) {
     this.fechaVencimiento = fechaVencimiento;
   }
 
@@ -18,7 +14,8 @@ public class Perecedero extends Bien {
     return this.fechaVencimiento;
   }
 
-  public String getNombreClave(){
-    return subcategoria.getNombre() + "_" + fechaVencimiento.format(DateTimeFormatter.BASIC_ISO_DATE);
+  @Override
+  public String getNombreClave(Subcategoria subcategoria){
+    return subcategoria.getNombre() + "_" + this.fechaVencimiento.format(DateTimeFormatter.BASIC_ISO_DATE);
   }
 }

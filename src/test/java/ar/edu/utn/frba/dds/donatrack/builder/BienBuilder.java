@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
+import ar.edu.utn.frba.dds.donatrack.donacion.Bien;
 import ar.edu.utn.frba.dds.donatrack.donacion.NoPerecedero;
 import ar.edu.utn.frba.dds.donatrack.donacion.Perecedero;
 import ar.edu.utn.frba.dds.donatrack.donacion.UnidadMedida;
@@ -51,11 +52,11 @@ public class BienBuilder {
     return this;
   }
 
-  public Perecedero buildPerecedero() {
-    return new Perecedero(descripcion, cantidad, unidad, foto, subcategoria, fechaVencimiento);
+  public Bien buildPerecedero() {
+    return Bien.crearPerecedero(descripcion, cantidad, unidad, foto, subcategoria, fechaVencimiento);
   }
 
-  public NoPerecedero buildNoPerecedero() {
-    return new NoPerecedero(descripcion, cantidad, UnidadMedida.UNIDADES, foto, subcategoria, usado);
+  public Bien buildNoPerecedero() {
+    return Bien.crearNoPerecedero(descripcion, cantidad, UnidadMedida.UNIDADES, foto, subcategoria, usado);
   }
 }

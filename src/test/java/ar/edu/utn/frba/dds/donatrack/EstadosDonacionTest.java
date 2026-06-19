@@ -22,7 +22,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
@@ -41,7 +41,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
@@ -64,7 +64,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
@@ -89,7 +89,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
@@ -116,7 +116,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
@@ -144,7 +144,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
@@ -173,7 +173,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
@@ -204,7 +204,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
@@ -232,7 +232,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
@@ -267,7 +267,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)
@@ -302,7 +302,7 @@ public class EstadosDonacionTest {
                 .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
                 .build();
 
-        Perecedero fideosLucetti = new BienBuilder()
+        Bien fideosLucetti = new BienBuilder()
                 .conDescripcion("Fideos Lucchetti")
                 .conCantidad(4)
                 .conSubcategoria(fideos)

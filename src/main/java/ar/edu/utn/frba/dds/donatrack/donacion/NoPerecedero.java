@@ -1,16 +1,9 @@
 package ar.edu.utn.frba.dds.donatrack.donacion;
 
-public class NoPerecedero extends Bien {
+public class NoPerecedero implements TipoBien {
   private Boolean usado;
 
-  public NoPerecedero(String descripcion,
-                      float cantidad,
-                      UnidadMedida unidad,
-                      String foto,
-                      Subcategoria subcategoria,
-                      Boolean usado) {
-
-    super(descripcion, cantidad, unidad, foto, subcategoria);
+  public NoPerecedero(Boolean usado) {
     this.usado = usado;
   }
 
@@ -18,7 +11,8 @@ public class NoPerecedero extends Bien {
     return this.usado;
   }
 
-  public String getNombreClave(){
+  @Override
+  public String getNombreClave(Subcategoria subcategoria) {
     return subcategoria.getNombre() + "_" + (usado ? "usado" : "nuevo");
   }
 }
