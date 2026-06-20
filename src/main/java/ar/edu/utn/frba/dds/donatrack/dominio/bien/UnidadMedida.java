@@ -2,9 +2,9 @@ package ar.edu.utn.frba.dds.donatrack.dominio.bien;
 
 public enum UnidadMedida {
   KILOGRAMOS("kg"),
-  UNIDADES("unidades"),
-  LITROS("l"),
-  GRAMOS("g");
+  LITROS("lt"),
+  GRAMOS("gr"),
+  SIN_MEDIDA("sin medida");
 
   private final String label;
 

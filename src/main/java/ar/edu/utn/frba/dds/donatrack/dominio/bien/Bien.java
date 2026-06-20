@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.dominio.bien;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.tipobien.NoPerecedero;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.tipobien.Perecedero;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.tipobien.TipoBien;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Bien {
@@ -47,7 +48,7 @@ public class Bien {
 
   public static Bien crearPerecedero(String descripcion, float cantidad,
                                      UnidadMedida unidad, String foto,
-                                     Subcategoria subcategoria, LocalDateTime fechaVencimiento) {
+                                     Subcategoria subcategoria, LocalDate fechaVencimiento) {
 
     TipoBien tipoBien = new Perecedero(fechaVencimiento);
     return new Bien(descripcion, cantidad, unidad, foto, subcategoria, tipoBien);

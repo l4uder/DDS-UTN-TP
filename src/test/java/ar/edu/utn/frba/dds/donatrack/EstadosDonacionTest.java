@@ -11,6 +11,8 @@ import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.TipoEstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.CambioDeEstadoNoPermitidoException;
+import java.time.LocalDate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -19,312 +21,196 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EstadosDonacionTest {
-    @Test
-    public void estadoInicialDeUnaDonacionEsEnDeposito() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
+  private Subcategoria fideos;
+  private Bien fideosLucetti;
 
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
+  @BeforeEach
+  public void configuracionInicial() {
+    fideos = new SubcategoriaBuilder()
+        .conNombre("Fideos secos")
+        .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
+        .build();
 
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
+    fideosLucetti = new BienBuilder()
+        .conDescripcion("Fideos Lucchetti")
+        .conCantidad(4)
+        .conSubcategoria(fideos)
+        .conFechaVencimiento(LocalDate.now().plusMonths(6))
+        .conUnidad(UnidadMedida.SIN_MEDIDA)
+        .buildPerecedero();
+  }
 
-        assertEquals(TipoEstadoDonacion.EN_DEPOSITO, donacion.getEstadoActual());
-    }
+  @Test
+  public void estadoInicialDeUnaDonacionEsEnDeposito() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-    @Test
-    public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEnDeposito() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
+    assertEquals(TipoEstadoDonacion.EN_DEPOSITO, donacion.getEstadoActual());
+  }
 
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
+  @Test
+  public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEnDeposito() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarEntrega);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.notificarEntregaFallida("razon"));
+    assertEquals(TipoEstadoDonacion.EN_DEPOSITO, donacion.getEstadoActual());
+  }
 
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarEntrega);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.notificarEntregaFallida("razon"));
-        assertEquals(TipoEstadoDonacion.EN_DEPOSITO, donacion.getEstadoActual());
-    }
+  @Test
+  public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeAsignacionRealizada() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-    @Test
-    public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeAsignacionRealizada() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
+    donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
 
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarEntrega);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.notificarEntregaFallida("razon"));
+    assertEquals(TipoEstadoDonacion.ASIGNACION_REALIZADA, donacion.getEstadoActual());
+  }
 
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
+  @Test
+  public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeListaParaEntregar() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-        donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
+    donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
+    donacion.confirmarRuta();
 
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarEntrega);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.notificarEntregaFallida("razon"));
-        assertEquals(TipoEstadoDonacion.ASIGNACION_REALIZADA, donacion.getEstadoActual());
-    }
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarEntrega);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of())));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.notificarEntregaFallida("razon"));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::marcarVencida);
+    assertEquals(TipoEstadoDonacion.LISTA_PARA_ENTREGAR, donacion.getEstadoActual());
+  }
 
-    @Test
-    public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeListaParaEntregar() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
+  @Test
+  public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEnViaje() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
+    donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
+    donacion.confirmarRuta();
+    donacion.confirmarTrasladoEnCurso();
 
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of())));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::marcarVencida);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
 
-        donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
-        donacion.confirmarRuta();
+    assertEquals(TipoEstadoDonacion.EN_TRASLADO, donacion.getEstadoActual());
+  }
 
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarEntrega);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of())));
-        assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.notificarEntregaFallida("razon"));
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::marcarVencida);
-        assertEquals(TipoEstadoDonacion.LISTA_PARA_ENTREGAR, donacion.getEstadoActual());
-    }
+  @Test
+  public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEntregaFallida() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-    @Test
-    public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEnViaje() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
+    donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
+    donacion.confirmarRuta();
+    donacion.confirmarTrasladoEnCurso();
+    donacion.notificarEntregaFallida("No se encontraba en el domicilio");
 
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of())));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::marcarVencida);
 
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
+    assertEquals(TipoEstadoDonacion.ENTREGA_FALLIDA, donacion.getEstadoActual());
+  }
 
-        donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
-        donacion.confirmarRuta();
-        donacion.confirmarTrasladoEnCurso();
+  @Test
+  public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEntregaRealizada() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of())));
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::marcarVencida);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
+    donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
+    donacion.confirmarRuta();
+    donacion.confirmarTrasladoEnCurso();
+    donacion.confirmarEntrega();
 
-        assertEquals(TipoEstadoDonacion.EN_TRASLADO, donacion.getEstadoActual());
-    }
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of())));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::marcarVencida);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.notificarEntregaFallida("razon"));
 
-    @Test
-    public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEntregaFallida() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
+    assertEquals(TipoEstadoDonacion.ENTREGADA, donacion.getEstadoActual());
+  }
 
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
+  @Test
+  public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeVencida() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
+    donacion.marcarVencida();
 
-        donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
-        donacion.confirmarRuta();
-        donacion.confirmarTrasladoEnCurso();
-        donacion.notificarEntregaFallida("No se encontraba en el domicilio");
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of())));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarEntrega);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.notificarEntregaFallida("razon"));
 
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of())));
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::marcarVencida);
+    assertEquals(TipoEstadoDonacion.VENCIDA, donacion.getEstadoActual());
+  }
 
-        assertEquals(TipoEstadoDonacion.ENTREGA_FALLIDA, donacion.getEstadoActual());
-    }
+  @Test
+  public void entregaExitosa() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-    @Test
-    public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEntregaRealizada() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
+    donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
+    donacion.confirmarRuta();
+    donacion.confirmarTrasladoEnCurso();
+    donacion.confirmarEntrega();
 
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
+    List<TipoEstadoDonacion> estadosEsperados = List.of(
+            TipoEstadoDonacion.EN_DEPOSITO,
+            TipoEstadoDonacion.ASIGNACION_REALIZADA,
+            TipoEstadoDonacion.LISTA_PARA_ENTREGAR,
+            TipoEstadoDonacion.EN_TRASLADO,
+            TipoEstadoDonacion.ENTREGADA
+    );
 
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
+    //donacion.getHistorialEstados().forEach(e ->
+    //        System.out.println(e.getFecha() + " | " + e.getTipoEstado() + " | " + e.getDetalle()));
+    assertEquals(estadosEsperados, donacion.getHistorialEstados().stream().map(EstadoDonacion::getTipoEstado).toList());
+  }
 
-        donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
-        donacion.confirmarRuta();
-        donacion.confirmarTrasladoEnCurso();
-        donacion.confirmarEntrega();
+  @Test
+  public void entregaFallida() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of())));
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::marcarVencida);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.notificarEntregaFallida("razon"));
+    donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
+    donacion.confirmarRuta();
+    donacion.confirmarTrasladoEnCurso();
+    donacion.notificarEntregaFallida("No se encontraba en el domicilio");
 
-        assertEquals(TipoEstadoDonacion.ENTREGADA, donacion.getEstadoActual());
-    }
+    List<TipoEstadoDonacion> estadosEsperados = List.of(
+            TipoEstadoDonacion.EN_DEPOSITO,
+            TipoEstadoDonacion.ASIGNACION_REALIZADA,
+            TipoEstadoDonacion.LISTA_PARA_ENTREGAR,
+            TipoEstadoDonacion.EN_TRASLADO,
+            TipoEstadoDonacion.ENTREGA_FALLIDA
+    );
 
-    @Test
-    public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeVencida() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
+    //donacion.getHistorialEstados().forEach(e ->
+    //        System.out.println(e.getFecha() + " | " + e.getTipoEstado() + " | " + e.getDetalle()));
+    assertEquals(estadosEsperados, donacion.getHistorialEstados().stream().map(EstadoDonacion::getTipoEstado).toList());
+  }
 
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
+  @Test
+  public void donacionVencida() {
+    Donacion donacion = new Donacion(List.of(fideosLucetti));
 
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
+    donacion.marcarVencida();
 
-        donacion.marcarVencida();
+    List<TipoEstadoDonacion> estadosEsperados = List.of(
+            TipoEstadoDonacion.EN_DEPOSITO,
+            TipoEstadoDonacion.VENCIDA
+    );
 
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of())));
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarEntrega);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
-        assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.notificarEntregaFallida("razon"));
-
-        assertEquals(TipoEstadoDonacion.VENCIDA, donacion.getEstadoActual());
-    }
-
-    @Test
-    public void entregaExitosa() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
-
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
-
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
-
-        donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
-        donacion.confirmarRuta();
-        donacion.confirmarTrasladoEnCurso();
-        donacion.confirmarEntrega();
-
-        List<TipoEstadoDonacion> estadosEsperados = List.of(
-                TipoEstadoDonacion.EN_DEPOSITO,
-                TipoEstadoDonacion.ASIGNACION_REALIZADA,
-                TipoEstadoDonacion.LISTA_PARA_ENTREGAR,
-                TipoEstadoDonacion.EN_TRASLADO,
-                TipoEstadoDonacion.ENTREGADA
-        );
-
-        donacion.getHistorialEstados().forEach(e ->
-                System.out.println(e.getFecha() + " | " + e.getTipoEstado() + " | " + e.getDetalle())
-        );
-        assertEquals(estadosEsperados, donacion.getHistorialEstados().stream().map(EstadoDonacion::getTipoEstado).toList());
-    }
-
-    @Test
-    public void entregaFallida() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
-
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
-
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
-
-        donacion.confirmarAsignacion(new EntidadBeneficiaria("razon", "direccion", List.of()));
-        donacion.confirmarRuta();
-        donacion.confirmarTrasladoEnCurso();
-        donacion.notificarEntregaFallida("No se encontraba en el domicilio");
-
-        List<TipoEstadoDonacion> estadosEsperados = List.of(
-                TipoEstadoDonacion.EN_DEPOSITO,
-                TipoEstadoDonacion.ASIGNACION_REALIZADA,
-                TipoEstadoDonacion.LISTA_PARA_ENTREGAR,
-                TipoEstadoDonacion.EN_TRASLADO,
-                TipoEstadoDonacion.ENTREGA_FALLIDA
-        );
-
-        donacion.getHistorialEstados().forEach(e ->
-                System.out.println(e.getFecha() + " | " + e.getTipoEstado() + " | " + e.getDetalle())
-        );
-        assertEquals(estadosEsperados, donacion.getHistorialEstados().stream().map(EstadoDonacion::getTipoEstado).toList());
-    }
-
-    @Test
-    public void donacionVencida() {
-        Subcategoria fideos = new SubcategoriaBuilder()
-                .conNombre("Fideos secos")
-                .conCategoria(new CategoriaBuilder().conNombre("Alimentos").build())
-                .build();
-
-        Bien fideosLucetti = new BienBuilder()
-                .conDescripcion("Fideos Lucchetti")
-                .conCantidad(4)
-                .conSubcategoria(fideos)
-                .conUnidad(UnidadMedida.UNIDADES)
-                .buildPerecedero();
-
-        Donacion donacion = new Donacion(List.of(fideosLucetti));
-
-        donacion.marcarVencida();
-
-        List<TipoEstadoDonacion> estadosEsperados = List.of(
-                TipoEstadoDonacion.EN_DEPOSITO,
-                TipoEstadoDonacion.VENCIDA
-        );
-
-        donacion.getHistorialEstados().forEach(e ->
-                System.out.println(e.getFecha() + " | " + e.getTipoEstado() + " | " + e.getDetalle())
-        );
-        assertEquals(estadosEsperados, donacion.getHistorialEstados().stream().map(EstadoDonacion::getTipoEstado).toList());
-    }
+    //donacion.getHistorialEstados().forEach(e ->
+    //        System.out.println(e.getFecha() + " | " + e.getTipoEstado() + " | " + e.getDetalle()));
+    assertEquals(estadosEsperados, donacion.getHistorialEstados().stream().map(EstadoDonacion::getTipoEstado).toList());
+  }
 }

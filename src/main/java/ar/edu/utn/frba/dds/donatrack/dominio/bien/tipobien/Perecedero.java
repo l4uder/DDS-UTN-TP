@@ -1,17 +1,18 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.bien.tipobien;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Perecedero implements TipoBien {
-  private LocalDateTime fechaVencimiento;
+  private LocalDate fechaVencimiento;
 
-  public Perecedero(LocalDateTime fechaVencimiento) {
+  public Perecedero(LocalDate fechaVencimiento) {
     this.fechaVencimiento = fechaVencimiento;
   }
 
-  public LocalDateTime getFechaVencimiento() {
+  public LocalDate getFechaVencimiento() {
     return this.fechaVencimiento;
   }
 

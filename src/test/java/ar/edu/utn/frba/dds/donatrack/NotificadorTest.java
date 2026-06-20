@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack;
 
+import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
+import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.Genero;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.PersonaHumana;
@@ -23,97 +25,90 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class NotificadorTest {
-    PersonaHumana persona;
-    PersonaJuridica constructoraSRL;
+  PersonaHumanaBuilder buildPersona;
+  PersonaJuridicaBuilder buildPersonaJuridica;
+  PersonaJuridica constructoraSRL;
+  ClienteCorreo clienteMockCorreo;
+  ClienteSms clienteMockSms;
+  ClienteWhatsapp clienteMockWhatsapp;
+  String message;
 
-    @BeforeEach
-    void configuracionInicial() {
-      CorreoDeContato correoPersona = new CorreoDeContato("pepe@gmail.com");
-      correoPersona.setPrincipal(true);
+  @BeforeEach
+  void configuracionInicial() {
+    clienteMockCorreo = mock(ClienteCorreo.class);
+    clienteMockWhatsapp = mock(ClienteWhatsapp.class);
+    clienteMockSms = mock(ClienteSms.class);
 
-      persona = new PersonaHumana(
-              "Juan",
-              "Pérez",
-              new Documento(TipoDocumento.DNI, "45123456"),
-              LocalDate.of(2000, 5, 10),
-              Genero.MASCULINO,
-              "Av. Corrientes 1234",
-              List.of(correoPersona)
-      );
+    buildPersona = new PersonaHumanaBuilder().conNombre("Juan").conApellido("Pérez")
+        .conDocumento(new Documento(TipoDocumento.DNI, "45123456"))
+        .conFechaNacimiento(LocalDate.of(2000, 5, 10))
+        .conGenero(Genero.MASCULINO)
+        .conDireccion("Av. Corrientes 1234");
 
-      Representante rep = new Representante(
-              "Carlos",
-              "García",
-              LocalDate.of(2000, 5, 12),
-              new Documento(TipoDocumento.DNI, "30123456"),
-              Genero.MASCULINO,
-              "Av. San Martín 100",
-              new CorreoDeContato("carlos@srl.com")
-      );
+    Representante rep = new Representante(
+            "Carlos",
+            "García",
+            LocalDate.of(2000, 5, 12),
+            new Documento(TipoDocumento.DNI, "30123456"),
+            Genero.MASCULINO,
+            "Av. San Martín 100",
+            new CorreoDeContato("carlos@srl.com")
+    );
 
-      CorreoDeContato correoSRL = new CorreoDeContato("srl@gmail.com");
-      correoSRL.setPrincipal(true);
+    buildPersonaJuridica = new PersonaJuridicaBuilder().conRazonSocial("Constructora Junior SRL")
+        .conTipoOrganizacion(TipoOrganizacion.EMPRESA)
+        .conRubro("Construcción")
+        .conDocumento(new Documento(TipoDocumento.CUIT, "30-12345678-9"))
+        .conRepresentantes(List.of(rep));
 
-      constructoraSRL = new PersonaJuridica(
-              "Constructora Junior SRL",
-              TipoOrganizacion.EMPRESA,
-              "Construcción",
-              new Documento(TipoDocumento.CUIT, "30-12345678-9"),
-              List.of(rep),
-              List.of(correoSRL)
-      );
-    }
+    message = "Hola..";
+  }
 
-    @Test
-    void notificarAUnaPersonaHumanaConUnCorreo() {
-        ClienteCorreo client = mock(ClienteCorreo.class);
-        String message = "Hola..";
-        ((CorreoDeContato)persona.getContactoPrincipal()).setClienteCorreo(client);
-        persona.getContactoPrincipal().notificar(message);
+  @Test
+  void notificarAUnaPersonaHumanaPorCorreo() {
+    CorreoDeContato correoJuan = new CorreoDeContato("juanpepe@gmail.com");
+    correoJuan.setClienteCorreo(clienteMockCorreo);
+    PersonaHumana juan = buildPersona.conContactoPrincipal(correoJuan).build();
 
-        verify(client).enviarCorreo(((CorreoDeContato)persona.getContactoPrincipal()).getCorreo(), message);
-    }
+    juan.recibirNotificacion(message);
 
-    @Test
-    void notificarAUnaPersonaHumanaConVariosCorreos() {
-        String message = "Hola...!!";
-        String correo1 = "SRLSecundario@gmail.com";
-        String correo2 = "SRLerceraa@gmail.com";
-        ClienteCorreo client = mock(ClienteCorreo.class);
-        persona.agregarContactoSecundario(new CorreoDeContato(correo1));
-        persona.agregarContactoSecundario(new CorreoDeContato(correo2));
-        persona.getContactosSecundarios().stream().filter(el->el instanceof CorreoDeContato).forEach(el -> {
-            ((CorreoDeContato)el).setClienteCorreo(client);
-            el.notificar(message);
-        });
+    verify(clienteMockCorreo).enviarCorreo(correoJuan.getCorreo(), message);
+  }
 
-        verify(client).enviarCorreo(correo1, message);
-        verify(client).enviarCorreo(correo2, message);
-    }
+  @Test
+  void notificarAUnaPersonaJuridicaPorSMS() {
+    SmsDeContato numeroSms = new SmsDeContato("434644456");
+    numeroSms.setClienteSms(clienteMockSms);
+    PersonaJuridica constructoraSRL = buildPersonaJuridica.conContactoPrincipal(numeroSms).build();
 
-    @Test
-    void notificarAUnaPersonaHumanaPorWhashapp() {
-        String message = "Hola...!";
-        String tel = "235254543";
-        ClienteWhatsapp client = mock(ClienteWhatsapp.class);
-        var medioDeContacto = new WhatsappDeContato(tel);
-        medioDeContacto.setClienteWhatsapp(client);
-        persona.agregarContactoSecundario(medioDeContacto);
-        persona.getContactosSecundarios().stream().filter(el->el instanceof WhatsappDeContato).forEach(el -> el.notificar(message));
+    constructoraSRL.recibirNotificacion(message);
 
-        verify(client).enviarMensaje(tel, message);
-    }
+    verify(clienteMockSms).enviarSms(numeroSms.getTelefono(), message);
+  }
 
-    @Test
-    void notificarAUnaPersonaJuridicaPorSMS() {
-        String message = "Hola...";
-        String tel = "434644456";
-        ClienteSms client = mock(ClienteSms.class);
-        var medioDeContacto = new SmsDeContato(tel);
-        medioDeContacto.setClienteSms(client);
-        persona.agregarContactoSecundario(medioDeContacto);
-        persona.getContactosSecundarios().stream().filter(el->el instanceof SmsDeContato).forEach(el -> el.notificar(message));
+  @Test
+  void notificarAUnaPersonaHumanaPorWhashapp() {
+    WhatsappDeContato numeroWhatsapp = new WhatsappDeContato("235254543");
+    numeroWhatsapp.setClienteWhatsapp(clienteMockWhatsapp);
+    PersonaHumana juan = buildPersona.conContactoPrincipal(numeroWhatsapp).build();
 
-        verify(client).enviarSms(tel, message);
-    }
+    juan.recibirNotificacion(message);
+
+    verify(clienteMockWhatsapp).enviarMensaje(numeroWhatsapp.getTelefono(), message);
+  }
+
+  @Test
+  void notificarAUnaPersonaHumanaConVariosCorreos() {
+    CorreoDeContato correo1 = new CorreoDeContato("juanpepe@gmail.com");
+    CorreoDeContato correo2 = new CorreoDeContato("juanSecundario@gmail.com");
+    correo1.setClienteCorreo(clienteMockCorreo);
+    correo2.setClienteCorreo(clienteMockCorreo);
+    PersonaHumana juan = buildPersona.conContactoPrincipal(correo1).conContactoSecundario(correo2).build();
+
+    juan.recibirNotificacion(message);
+
+    verify(clienteMockCorreo).enviarCorreo(correo1.getCorreo(), message);
+    verify(clienteMockCorreo).enviarCorreo(correo2.getCorreo(), message);
+  }
+
 }

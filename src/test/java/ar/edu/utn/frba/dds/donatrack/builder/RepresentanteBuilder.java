@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RepresentanteBuilder {
-  private String nombre = "Daniela";
-  private String apellido = "Vega";
-  private LocalDate fechaNacimiento = LocalDate.of(2004, 5, 12);
-  private Documento documento = new Documento(TipoDocumento.DNI, "46499829");
-  private Genero genero = Genero.FEMENINO;
-  private String direccion = "Av. San Martín 100";
-  private MedioContacto medioContPred = new CorreoDeContato("daniela@srl.com");
+  private String nombre;
+  private String apellido;
+  private LocalDate fechaNacimiento;
+  private Documento documento;
+  private Genero genero;
+  private String direccion;
+  private MedioContacto medioContPred;
 
   public RepresentanteBuilder conNombre(String nombre) {
     this.nombre = nombre;

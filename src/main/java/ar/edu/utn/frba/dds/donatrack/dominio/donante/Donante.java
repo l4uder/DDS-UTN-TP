@@ -78,4 +78,13 @@ public abstract class Donante {
     return correoBuscado.getCorreo();
   }
 
+  private List<MedioContacto> getContactos() {
+    return this.contactos;
+  }
+
+  public void recibirNotificacion(String mensaje) {
+    List<MedioContacto> contactos = getContactos();
+    contactos.forEach(c -> c.notificar(mensaje));
+  }
+
 }

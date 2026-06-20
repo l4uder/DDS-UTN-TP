@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RegistroEntregaBuilder {
-  private String descripcion = "Descripcion default";
-  private List<Bien> bienes = new ArrayList<>();
+  private String descripcion;
+  private List<Bien> bienes;
+
+  public RegistroEntregaBuilder() {
+    this.bienes = new ArrayList<>();
+  }
 
   public RegistroEntregaBuilder conDescripcion(String descripcion) {
     this.descripcion = descripcion;

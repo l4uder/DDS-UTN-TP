@@ -11,15 +11,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonaJuridicaBuilder {
-  private String razonSocial = "Empresa Default SA";
-  private Documento documento = new Documento(TipoDocumento.CUIT, "235345354");
-  private TipoOrganizacion tipoOrganizacion = TipoOrganizacion.EMPRESA;
-  private String rubro = "Rubro Default";
-  private List<Representante> representantes = new ArrayList<>();
-  private List<MedioContacto> contactos = new ArrayList<>();
+  private String razonSocial;
+  private Documento documento;
+  private TipoOrganizacion tipoOrganizacion;
+  private String rubro;
+  private List<Representante> representantes;
+  private List<MedioContacto> contactos;
+
+  public PersonaJuridicaBuilder() {
+    this.representantes = new ArrayList<>();
+    this.contactos = new ArrayList<>();
+  }
 
   public PersonaJuridicaBuilder conRazonSocial(String razonSocial) {
     this.razonSocial = razonSocial;
+    return this;
+  }
+
+  public PersonaJuridicaBuilder conDocumento(Documento documento) {
+    this.documento = documento;
     return this;
   }
 
@@ -38,18 +48,14 @@ public class PersonaJuridicaBuilder {
     return this;
   }
 
-  public PersonaJuridicaBuilder conEmail(String email) {
-    CorreoDeContato correo = new CorreoDeContato(email);
-    correo.setPrincipal(true);
-    this.contactos.add(correo);
+  public PersonaJuridicaBuilder conContactoPrincipal(MedioContacto contacto) {
+    contacto.setPrincipal(true);
+    this.contactos.add(contacto);
     return this;
   }
 
-  public PersonaJuridicaBuilder conContactosSecundarios(List<MedioContacto> secundarios) {
-    if (secundarios != null) {
-      secundarios.forEach(c -> c.setPrincipal(false));
-      this.contactos.addAll(secundarios);
-    }
+  public PersonaJuridicaBuilder conContactoSecundario(MedioContacto contacto) {
+    this.contactos.add(contacto);
     return this;
   }
 

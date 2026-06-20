@@ -4,7 +4,6 @@ import ar.edu.utn.frba.dds.donatrack.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.DonanteFactory;
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.BatchJobException;
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.PersistanceException;
 import ar.edu.utn.frba.dds.donatrack.persistencia.DonanteRepository;
 import com.opencsv.CSVReader;
 import java.io.IOException;
@@ -62,13 +61,8 @@ public class OrquestadorCargaDonantes {
           registroErrores.add(new Error(resultado.filaNro()));
           continue;
         }
-        try {
-          repository.guardarDonante(donanteNuevo);
-          cargadosCorrectamente++;
-        } catch (PersistanceException e) {
-          registroErrores.add(new Error(resultado.filaNro()));
-          continue;
-        }
+        repository.guardarDonante(donanteNuevo);
+        cargadosCorrectamente++;
       }
     } catch (IOException e) {
       String msg = "Error al leer el archivo CSV";

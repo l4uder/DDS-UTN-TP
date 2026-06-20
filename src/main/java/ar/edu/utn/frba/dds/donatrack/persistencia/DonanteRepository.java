@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.PersistanceException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,7 @@ public final class DonanteRepository {
   private DonanteRepository() {
   }
 
-  public void guardarDonante(Donante donante) throws PersistanceException {
+  public void guardarDonante(Donante donante) {
     donantesStore.put(donante.getEmail(), donante);
   }
 

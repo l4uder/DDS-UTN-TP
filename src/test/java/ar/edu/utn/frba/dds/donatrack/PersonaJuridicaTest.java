@@ -4,7 +4,9 @@ import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.RepresentanteBuilder;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.PersonaJuridica;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.Representante;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,10 +16,9 @@ public class PersonaJuridicaTest {
 
   @Test
   public void sePuedeCrearUnaPersonaJuridicaConDatosValidos() {
-    PersonaJuridica empresa = new PersonaJuridicaBuilder()
-        .conRazonSocial("Empresa Test S.A.")
-        .conEmail("empresaTest@gmail.com")
-        .build();
+    PersonaJuridica empresa = new PersonaJuridicaBuilder().conRazonSocial("Empresa Test S.A.")
+        .conDocumento(new Documento(TipoDocumento.CUIT, "30-12345678-9"))
+        .conContactoPrincipal(new CorreoDeContato("empresaTest@gmail.com")).build();
 
     assertNotNull(empresa.getContactoPrincipal());
   }
@@ -25,14 +26,16 @@ public class PersonaJuridicaTest {
   @Test
   public void sePuedeAgregarUnRepresentante() {
     PersonaJuridica empresa = new PersonaJuridicaBuilder()
-        .conEmail("empresaTest@gmail.com")
-        .build();
-    var representante = new RepresentanteBuilder().conDocumento(new Documento(TipoDocumento.DNI, "235325554"))
-        .conNombre("Marcelo")
-        .build();
+        .conDocumento(new Documento(TipoDocumento.CUIT, "30-12345678-9"))
+        .conContactoPrincipal(new CorreoDeContato("empresaTest@gmail.com")).build();
+
+    Representante representante = new RepresentanteBuilder().conDocumento(new Documento(TipoDocumento.DNI, "235325554"))
+        .conNombre("Marcelo").build();
+
     empresa.agregarRepresentante(representante);
 
     assertEquals(1, empresa.getRepresentantes().size());
     assertEquals(representante, empresa.getRepresentantes().get(0));
   }
+
 }

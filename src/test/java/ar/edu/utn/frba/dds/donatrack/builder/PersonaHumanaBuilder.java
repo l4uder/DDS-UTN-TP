@@ -11,13 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonaHumanaBuilder {
-  private String nombre = "Nombre Default";
-  private String apellido = "Apellido Default";
-  private LocalDate fechaNacimiento = LocalDate.of(1990, 1, 1);
-  private Documento documento = new Documento(TipoDocumento.DNI, "12345678");
-  private Genero genero = Genero.X;
-  private String direccion = "Direccion Default";
-  private List<MedioContacto> contactos = new ArrayList<>();
+  private String nombre;
+  private String apellido;
+  private LocalDate fechaNacimiento;
+  private Documento documento;
+  private Genero genero;
+  private String direccion;
+  private List<MedioContacto> contactos;
+
+  public PersonaHumanaBuilder() {
+    this.contactos = new ArrayList<>();
+  }
 
   public PersonaHumanaBuilder conNombre(String nombre) {
     this.nombre = nombre;
@@ -34,8 +38,8 @@ public class PersonaHumanaBuilder {
     return this;
   }
 
-  public PersonaHumanaBuilder conDocumento(TipoDocumento tipo, String numero) {
-    this.documento = new Documento(tipo, numero);
+  public PersonaHumanaBuilder conDocumento(Documento documento) {
+    this.documento = documento;
     return this;
   }
 
@@ -49,10 +53,14 @@ public class PersonaHumanaBuilder {
     return this;
   }
 
-  public PersonaHumanaBuilder conEmail(String email) {
-    CorreoDeContato correo = new CorreoDeContato(email);
-    correo.setPrincipal(true);
-    this.contactos.add(correo);
+  public PersonaHumanaBuilder conContactoPrincipal(MedioContacto contacto) {
+    contacto.setPrincipal(true);
+    this.contactos.add(contacto);
+    return this;
+  }
+
+  public PersonaHumanaBuilder conContactoSecundario(MedioContacto contacto) {
+    this.contactos.add(contacto);
     return this;
   }
 
