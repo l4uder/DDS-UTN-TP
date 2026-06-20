@@ -6,12 +6,11 @@
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'background': '#FFFFFF',
     'primaryColor': '#FFF2CC',
     'primaryTextColor': '#000000',
-    'primaryBorderColor': '#000000',
-    'lineColor': '#000000',
-    'textColor': '#000000'
+    'primaryBorderColor': '#555555',
+    'lineColor': '#888888',
+    'textColor': '#888888'
   }
 }}%%
 classDiagram
