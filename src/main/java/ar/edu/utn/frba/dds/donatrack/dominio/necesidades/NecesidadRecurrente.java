@@ -3,7 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.dominio.necesidades;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
 
 public class NecesidadRecurrente extends Necesidad {
-  private int cantidadPorPeriodo;
+  private Integer cantidadPorPeriodo;
   private Periodo periodo;
 
   public NecesidadRecurrente(Subcategoria subcategoria,

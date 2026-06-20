@@ -41,7 +41,7 @@ public class BienTest{
         .conDescripcion("Fideos secos")
         .conCantidad(10)
         .conSubcategoria(pastas)
-        .conUnidad(UnidadMedida.SIN_MEDIDA)
+        .conUnidad(UnidadMedida.SIN_UNIDAD)
         .conFechaVencimiento(LocalDate.now().plusMonths(6))
         .buildPerecedero();
 
@@ -54,7 +54,7 @@ public class BienTest{
         .conCantidad(2)
         .conSubcategoria(tetrapack)
         .conFechaVencimiento(LocalDate.of(2027, 1, 1))
-        .conUnidad(UnidadMedida.SIN_MEDIDA)
+        .conUnidad(UnidadMedida.SIN_UNIDAD)
         .buildPerecedero();
 
     assertEquals("Salsa de tomate", salsaTomate.getDescripcion());

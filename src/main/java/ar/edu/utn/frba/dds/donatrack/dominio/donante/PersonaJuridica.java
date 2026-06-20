@@ -12,13 +12,9 @@ public class PersonaJuridica extends Donante {
   private Documento documento;
   private List<Representante> representantes;
 
-  public PersonaJuridica(
-      String razonSocial,
-      TipoOrganizacion tipo,
-      String rubro,
-      Documento documento,
-      List<Representante> representantes,
-      List<MedioContacto> contactos) {
+  public PersonaJuridica(String razonSocial, TipoOrganizacion tipo,
+                        String rubro, Documento documento,
+                        List<Representante> representantes, List<MedioContacto> contactos) {
     super(contactos);
     if (documento.getTipoDocumento() != TipoDocumento.CUIT) {
       throw new DomainValidationException("La persona juridica debe tener un CUIT");
@@ -28,7 +24,7 @@ public class PersonaJuridica extends Donante {
     this.documento = documento;
     this.rubro = rubro;
     this.representantes = representantes == null
-        ? new ArrayList<>() : new ArrayList<>(representantes);
+                            ? new ArrayList<>() : new ArrayList<>(representantes);
   }
 
   public String getRazonSocial() {

@@ -9,7 +9,7 @@ public class NoPerecedero implements TipoBien {
     this.usado = usado;
   }
 
-  public Boolean esUsado() {
+  public Boolean getUsado() {
     return this.usado;
   }
 

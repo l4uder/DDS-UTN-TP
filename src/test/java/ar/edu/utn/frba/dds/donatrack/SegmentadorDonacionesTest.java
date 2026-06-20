@@ -15,7 +15,6 @@ import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.RegistroEntrega;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,11 +54,11 @@ public class SegmentadorDonacionesTest {
     builtomate = new BienBuilder()
         .conDescripcion("tomate").conCantidad(1).conSubcategoria(SubcategoriaTomate)
         .conFechaVencimiento(LocalDate.of(2027, 1, 1))
-        .conUnidad(UnidadMedida.SIN_MEDIDA);
+        .conUnidad(UnidadMedida.SIN_UNIDAD);
     buildFideo = new BienBuilder()
         .conDescripcion("Fideos").conCantidad(100).conSubcategoria(SubcategoriaFideos)
         .conFechaVencimiento(LocalDate.of(2027, 1, 1))
-        .conUnidad(UnidadMedida.SIN_MEDIDA);
+        .conUnidad(UnidadMedida.SIN_UNIDAD);
     buildSilla = new BienBuilder()
         .conDescripcion("Silla").conCantidad(6).conSubcategoria(SubcategoriaSillas)
         .conUsado(true);

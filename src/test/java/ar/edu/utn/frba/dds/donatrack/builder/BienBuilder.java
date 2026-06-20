@@ -6,7 +6,6 @@ import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class BienBuilder {
   private String descripcion;
@@ -65,6 +64,6 @@ public class BienBuilder {
       throw new DomainValidationException("es necesario saber si es usado o no, para ser No perecedero.");
     }
 
-    return Bien.crearNoPerecedero(descripcion, cantidad, UnidadMedida.SIN_MEDIDA, foto, subcategoria, usado);
+    return Bien.crearNoPerecedero(descripcion, cantidad, UnidadMedida.SIN_UNIDAD, foto, subcategoria, usado);
   }
 }

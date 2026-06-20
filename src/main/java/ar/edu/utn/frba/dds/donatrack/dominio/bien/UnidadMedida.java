@@ -4,7 +4,7 @@ public enum UnidadMedida {
   KILOGRAMOS("kg"),
   LITROS("lt"),
   GRAMOS("gr"),
-  SIN_MEDIDA("sin medida");
+  SIN_UNIDAD("sin medida");
 
   private final String label;
 

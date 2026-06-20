@@ -30,7 +30,6 @@ public class OrquestadorCargaDonantes {
 
     if (csvStream == null) {
       String msg = "No se encontró el archivo CSV en resources: " + pathArchivoCsv;
-      System.out.println(msg);
       throw new BatchJobException(msg);
     }
 

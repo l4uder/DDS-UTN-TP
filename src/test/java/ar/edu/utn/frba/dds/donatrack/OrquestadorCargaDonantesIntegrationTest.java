@@ -37,7 +37,6 @@ public class OrquestadorCargaDonantesIntegrationTest {
   public void LectorLanzaExcepcionSiElArchivoNoExiste() {
     String archivoInexistente = "no_existo.csv";
 
-    // Si "iniciarCarga" NO lanza la BatchJobException, el test va a fallar automáticamente aquí.
     assertThrows(BatchJobException.class, () -> {
       OrquestadorCargaDonantes.iniciarCarga(archivoInexistente);
     });

@@ -14,5 +14,7 @@ public class Subcategoria {
     return this.nombre;
   }
 
-
+  public Categoria getCategoria() {
+    return this.categoria;
+  }
 }

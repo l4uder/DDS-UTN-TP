@@ -36,7 +36,7 @@ public class EstadosDonacionTest {
         .conCantidad(4)
         .conSubcategoria(fideos)
         .conFechaVencimiento(LocalDate.now().plusMonths(6))
-        .conUnidad(UnidadMedida.SIN_MEDIDA)
+        .conUnidad(UnidadMedida.SIN_UNIDAD)
         .buildPerecedero();
   }
 

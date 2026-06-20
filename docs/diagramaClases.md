@@ -3,203 +3,108 @@
 ## Diagrama de clases
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'background': '#FFFFFF',
+    'primaryColor': '#FFF2CC',
+    'primaryTextColor': '#000000',
+    'primaryBorderColor': '#000000',
+    'lineColor': '#000000',
+    'textColor': '#000000'
+  }
+}}%%
 classDiagram
-
-    class Donante {
-        <<abstract>>
-        - medioContactoPred: MedioContacto
-        - contactos: List~MedioContacto~
-        - entregas: List~RegistroEntrega~
-        + cambiarContactoPred(contacto: MedioContacto)
-        + agregarContactoSecundario(contacto: MedioContacto)
-        + actualizarDatos(donante: Donante)
-    }
-
-    class PersonaHumana {
-        - nombre: String
-        - apellido: String
-        - fechaNacimiento: LocalDate
-        - documento: Documento
-        - genero: Genero
-        - direccion: String
-    }
-
-    class PersonaJuridica {
-        - razonSocial: String
-        - tipoOrganizacion: TipoOrganizacion
-        - rubro: String
-        - representantes: List~Representante~
-    }
-
-    class Representante {
-        - nombre: String
-        - apellido: String
-        - fechaNacimiento: LocalDate
-        - documento: Documento
-        - genero: Genero
-        - direccion: String
-        - medioContactoPred: MedioContacto
-        - contactos: List~MedioContacto~
-    }
-
-    class Documento {
-        - tipo: TipoDocumento
-        - numero: String
-    }
+    %%=============Entidades==================
+    %%=============ordenando por package======
     
-    class MedioContacto {
-        - tipo: TipoContacto
-        - detalle: String
-    }
-
-    class RegistroEntrega {
-        - fecha: LocalDateTime
-        - descripcionGeneral: String
-        - bienes: List~Bien~
-        + agregarBien(bien: Bien)
-    }
-
-    class Donacion {
-        - descripcionGeneral: String
-        - bienes: List~Bien~
-        - historialEstados: List~EstadoDonacion~
-        + cambiarEstado(tipo: TipoEstadoDonacion, observacion: String)
-        + asignarA(entidad: EntidadBeneficiaria)
-    }
-
-    class EstadoDonacion {
-        - fecha: LocalDateTime
-        - tipoEstado: TipoEstadoDonacion
-        - detalle: String
-    }
-
-    class Bien {
-        <<abstract>>
-        - descripcion: String
-        - cantidad: float
-        - unidad: UnidadMedida
-        - foto: byte[]
-        - subcategoria: Subcategoria
-    }
-
-    class Perecedero {
-        - fechaVencimiento: LocalDateTime
-    }
-
-    class NoPerecedero {
-        - usado: Boolean
-    }
-
-    class Categoria {
-        - nombre: String
-    }
-
-    class Subcategoria {
-        - nombre: String
-        - categoria: Categoria
-    }
-
-    class SegmentadorDonaciones {
-        + segmentar(registro: RegistroEntrega): List~Donacion~
-    }
-
-    class ImportadorDonantes {
-        + importar(csv: InputStream): ResultadoImportacion
-    }
-
-    class ResultadoImportacion {
-        - importados: List~Donante~
-        - actualizados: List~Donante~
-        - errores: List~String~
-        + agregarImportado(donante: Donante)
-        + agregarActualizado(donante: Donante)
-        + agregarError(fila: int, motivo: String)
-        + totalProcesados(): int
-    }
-
+    %%beneficiario
     class EntidadBeneficiaria {
         - razonSocial: String
         - direccion: String
         - contactoRepresentantes: List~MedioContacto~
         - necesidades: List~Necesidad~
-        + registrarNecesidad(necesidad: Necesidad)
+
+        + registrarNecesidad(necesidad: Necesidad): void
     }
 
-    class Necesidad {
-        <<abstract>>
-        - subcategoria: Subcategoria
-        - descripcion: String
-        - cantidadRecibida: int
-        + recibirBienes(cantidad: int)
-        + esSatisfecha(): Boolean
-    }
-
-    class NecesidadExtraordinaria {
-        - cantidadRequerida: int
-        + esSatisfecha(): Boolean
-    }
-
-    class NecesidadRecurrente {
-        - cantidadPorPeriodo: int
-        + esSatisfecha(): Boolean
-    }
-
-    class Notificador {
-        <<interface>>
-        + notificar(donante: Donante, mensaje: String)
-    }
-
-    class CorreoElectronico {
-        + notificar(donante: Donante, mensaje: String)
-    }
-
-    class Telefono {
-        + notificar(donante: Donante, mensaje: String)
-    }
-    
-    class ServicioWhatsapp {
-        <<interface>>
-        + notificar(nro: String, message: String)   
-    }
-    
-    class ServicioWhatsappMock {
+    %%bien
+    class NoPerecedero {
+        - usado: Boolean
         
+        + getNombreClave(subcategoria: Subcategoria): String
     }
-
-    class Whatsapp {
-        servicioWhatsapp
-        + notificar(donante: Donante, mensaje: String)
+    class Perecedero {
+        - fechaVencimiento: LocalDate
+        
+        + getNombreClave(subcategoria: Subcategoria): String
     }
+    class TipoBien {
+        <<interface>>
+        + getNombreClave(subcategoria: Subcategoria): String
+    }
+    class Bien {
+        - descripcion: String
+        - cantidad: float
+        - unidad: UnidadMedida
+        - foto: String
+        - subcategoria: Subcategoria
+        - tipoBien: TipoBien
 
-    class Genero {
+        + getNombreClave(): String
+        + crearPerecedero(...): Bien
+        + crearNoPerecedero(...): Bien
+    }
+    class Categoria {
+        - nombre: String
+    }
+    class Subcategoria {
+        - nombre: String
+        - categoria: Categoria
+    }
+    class UnidadMedida {
         <<enumeration>>
-        FEMENINO
-        MASCULINO
-        X
+        KILOGRAMO
+        GRAMO
+        LITRO
+        SIN_UNIDAD
     }
+    
+    %%cargabatch
+    class DonanteParser {
+        + record DatosDonante(...)
+        + record Resultado(...)
 
-    class TipoOrganizacion {
-        <<enumeration>>
-        GUBERNAMENTAL
-        ONG
-        EMPRESA
-        INSTITUCION
+        + parseCsv(csvContent: Iterable<String[]>): Iterable<Resultado>
     }
-
-    class TipoContacto {
-        <<enumeration>>
-        WHATSAPP
-        CORREO
-        TELEFONO
+    class OrquestadorCargaDonantes {
+        + record Error(Int)
+        + record ResultadoImportacion(...)
+        
+        + iniciarCarga(String pathArchivoCsv): ResultadoImportacion$
     }
+    
+    %%donacion
+    class Donacion {
+        - descripcion: String
+        - bienes: List~Bien~
+        - historialEstados: List~EstadoDonacion~
+        - entidadAsignada: EntidadBeneficiaria
 
-    class TipoDocumento {
-        <<enumeration>>
-        DNI
-        CUIT
-        PASAPORTE
+        + descripcionGeneral(bienes: List~Bien~): String
+        + notificarEntregaFallida(observacion: String): Void
+        + confirmarEntrega(): Void
+        + confirmarTrasladoEnCurso(): Void
+        + confirmarRuta(): Void
+        + confirmarAsignacion(beneficiario: EntidadBeneficiaria)
+        + marcarVencida(): Void
+        + confirmarRecepcionDeposito(): Void
     }
-
+    class EstadoDonacion {
+        - fecha: LocalDateTime
+        - tipoEstado: TipoEstadoDonacion
+        - detalle: String
+    }
     class TipoEstadoDonacion {
         <<enumeration>>
         EN_DEPOSITO
@@ -210,64 +115,227 @@ classDiagram
         ENTREGA_FALLIDA
         VENCIDA
     }
-
-    class UnidadMedida {
-        <<enumeration>>
-        UNIDAD
-        KG
-        LITRO
+    
+    %%donante
+    class Documento {
+        - tipo: TipoDocumento
+        - detalle: String
     }
+    class Donante {
+        <<abstract>>
+        - contactos: List~MedioContacto~
+        - entregas: List~RegistroEntrega~
 
+        + agregarContactoPrincipal(contacto: MedioContacto): Void
+        + agregarContactoSecundario(contacto: MedioContacto): Void
+        + getContactoPrincipal(): MedioContacto
+        + getContactosSecundarios(): List~MedioContacto~
+        + getEmail(): String
+        + recibirNotificacion(mensaje: String): Void
+    }
+    class DonanteFactory {
+        + crear(tipoPersona: String, documento: Documento, nombreCompleto: String, contactoPrincipal: MedioContacto, contactoSecundario: MedioContacto): Donante$
+    }
+    class Genero {
+        <<enumeration>>
+        FEMENINO
+        MASCULINO
+        X
+    }
+    class PersonaHumana {
+        - nombre: String
+        - apellido: String
+        - fechaNacimiento: LocalDate
+        - documento: Documento
+        - genero: Genero
+        - direccion: String
+    }
+    class PersonaJuridica {
+        - razonSocial: String
+        - tipoOrganizacion: TipoOrganizacion
+        - rubro: String
+        - documento: Documento
+        - representantes: List~Representante~
+
+        + agregarRepresentante(representante: Representante): Void
+    }
+    class RegistroEntrega {
+        - fecha: LocalDateTime
+        - descripcionGeneral: String
+        - bienes: List~Bien~
+
+        + agregarBien(bien: Bien): void
+    }
+    class Representante {
+        - nombre: String
+        - apellido: String
+        - fechaNacimiento: LocalDate
+        - documento: Documento
+        - genero: Genero
+        - direccion: String
+        - medioContactoPred: MedioContacto
+
+        + getEdad(): Integer
+    }
+    class TipoDocumento {
+        <<enumeration>>
+        DNI
+        CUIT
+        PASAPORTE
+    }
+    class TipoOrganizacion {
+        <<enumeration>>
+        GUBERNAMENTAL
+        ONG
+        EMPRESA
+        INSTITUCION
+        SIN_ESPECIFICAR
+    }
+    
+    %%medioContacto
+    class ClienteCorreo {
+        <<interface>>
+        + enviarCorreo(correo: String, mensaje: String): Void
+    }
+    class ClienteSms {
+        <<interface>>
+        + enviarSms(numeroTelefono: String, mensaje: String): Void
+    }
+    class ClienteWhatsapp {
+        <<interface>>
+        + enviarMensaje(numeroWhatsapp: String, mensaje: String): Void
+    }
+    class CorreoDeContacto {
+        - correo: String
+        - clienteCorreo: ClienteCorreo
+
+        + notificar(mensaje: String): Void
+        + esIgual(otro: MedioContacto): Boolean
+    }
+    class MedioContacto {
+        <<abstract>>
+        - esPrincipal: Boolean
+
+        + notificar(message: String): Void*
+        + esIgualA(otro: MedioContacto): Boolean*
+    }
+    class SmsDeContato {
+        - telefono: String
+        - clienteSms: ClienteSms
+
+        + notificar(mensaje: String): Void
+        + esIgual(otro: MedioContacto): Boolean
+    }
+    class WhatsappDeContato {
+        - telefono: String
+        - clienteWhatsapp: ClienteWhatsapp
+
+        + notificar(mensaje: String): Void
+        + esIgual(otro: MedioContacto): Boolean
+    }
+    
+    %%necesidades
+    class Necesidad {
+        <<abstract>>
+        - subcategoria: Subcategoria
+        - descripcion: String
+        - cantidadRecibida: Integer
+
+        + recibirBienes(cantidad: Integer): Void
+        + getCantidadRecibida(): Integer
+        + esSatisfecha(): Boolean
+    }
+    class NecesidadExtraordinaria {
+        - cantidadRequerida: Integer
+
+        + esSatisfecha(): Boolean
+    }
+    class NecesidadRecurrente {
+        - cantidadPorPeriodo: Integer
+        - periodo: Periodo
+
+        + esSatisfecha(): Boolean
+    }
     class Periodo {
         <<enumeration>>
         DIARIO
         SEMANAL
         MENSUAL
     }
+    
+    %%segmentador
+    class SegmentadorDonaciones {
+        + segmentar(registro: RegistroEntrega): List~Donacion~
+    }
 
-    PersonaHumana --|> Donante
-    PersonaJuridica --|> Donante
-    Perecedero --|> Bien
-    NoPerecedero --|> Bien
-    NecesidadExtraordinaria --|> Necesidad
-    NecesidadRecurrente --|> Necesidad
-    CorreoElectronico ..|> Notificador
-    Telefono ..|> Notificador
-    Whatsapp ..|> Notificador
-    ServicioWhatsappMock ..|> ServicioWhatsapp
+    %%peristencia
+    class DonanteRepository {
+        - donantesStore: Map<String, Donante>
+        - INSTANCE: DonanteRepository$
+        
+        + guardarDonante(donante: Donante): Void
+        + buscarTodos(): List~Donante~
+    }
+    
+    %%==============Relaciones===============
+    %%==============Ordenado por package=====
+    
+    %%beneficiario
+    EntidadBeneficiaria -->"*" MedioContacto
+    EntidadBeneficiaria -->"*" Necesidad
+    
+    %%bien
+    NoPerecedero ..|> TipoBien
+    Perecedero ..|> TipoBien
+    Bien --> UnidadMedida
+    Bien --> Subcategoria
+    Bien --> TipoBien
+    Subcategoria --> Categoria
 
-    Donante --> RegistroEntrega
-    Donante --> MedioContacto
-    Donante --> MedioContacto
-    PersonaJuridica --> Representante
-    Representante --> MedioContacto
-    PersonaHumana --> Genero
-    Representante --> Genero
-    PersonaJuridica --> TipoOrganizacion
-    PersonaHumana --> Documento
-    PersonaJuridica --> Documento
-    Documento --> TipoDocumento
+    %%cargabatch
+    OrquestadorCargaDonantes ..> DonanteParser
 
-    RegistroEntrega --> Bien
-    Donacion --> Bien
-    Donacion --> EstadoDonacion
+    %%donacion
+    Donacion -->"*" Bien
+    Donacion -->"*" EstadoDonacion
     Donacion --> EntidadBeneficiaria
     EstadoDonacion --> TipoEstadoDonacion
 
-    Bien --> Subcategoria
-    Bien --> UnidadMedida
-    Subcategoria --> Categoria
+    %%donante
+    PersonaHumana --|> Donante
+    PersonaJuridica --|> Donante
+    Donante -->"*" MedioContacto
+    Donante -->"*" RegistroEntrega
+    PersonaJuridica -->"*" Representante
+    RegistroEntrega -->"*" Bien
+    Documento --> TipoDocumento    
+    PersonaHumana --> Genero
+    PersonaHumana --> Documento
+    PersonaJuridica --> TipoOrganizacion
+    PersonaJuridica --> Documento
+    Representante --> Documento
+    Representante --> Genero
+    Representante --> MedioContacto
+    DonanteFactory ..> Donante
 
-    SegmentadorDonaciones ..> RegistroEntrega
-    SegmentadorDonaciones ..> Donacion
-    ImportadorDonantes ..> Donante
-    ImportadorDonantes ..> ResultadoImportacion
-
-    EntidadBeneficiaria --> MedioContacto
-    EntidadBeneficiaria --> Necesidad
+    %%medioContacto
+    CorreoDeContacto ..|> MedioContacto
+    SmsDeContato ..|> MedioContacto
+    WhatsappDeContato ..|> MedioContacto
+    CorreoDeContacto --> ClienteCorreo
+    SmsDeContato --> ClienteSms
+    WhatsappDeContato --> ClienteWhatsapp
+    
+    %%necesidades
+    NecesidadExtraordinaria --|> Necesidad
+    NecesidadRecurrente --|> Necesidad
     Necesidad --> Subcategoria
     NecesidadRecurrente --> Periodo
-    MedioContacto --> TipoContacto
-
-    Notificador ..> Donante
+    
+    %%segmentador
+    SegmentadorDonaciones ..> RegistroEntrega
+    SegmentadorDonaciones ..> Donacion
+    
+    %%peristencia
+    DonanteRepository -->"*" Donante
 ```
