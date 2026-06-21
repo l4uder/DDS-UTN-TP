@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.logistica;
 
-public enum EstadoEntrega {
+public enum TipoEstadoEntrega {
   PENDIENTE,
   EN_TRASLADO,
   ENTREGADA,
