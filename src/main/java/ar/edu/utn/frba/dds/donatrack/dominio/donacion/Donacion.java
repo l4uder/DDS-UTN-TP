@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.donacion;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.EntidadBeneficiaria;
+import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.CambioDeEstadoNoPermitidoException;
@@ -13,7 +13,7 @@ public class Donacion {
   private String descripcion;
   private List<Bien> bienes;
   private List<EstadoDonacion> historialEstados;
-  private EntidadBeneficiaria entidadAsignada;
+  private Beneficiario beneficiario;
 
   public Donacion(List<Bien> bienes) {
     if (bienes == null || bienes.isEmpty()) {
@@ -90,7 +90,7 @@ public class Donacion {
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.LISTA_PARA_ENTREGAR));
   }
 
-  public void confirmarAsignacion(EntidadBeneficiaria beneficiario) {
+  public void confirmarAsignacion(Beneficiario beneficiario) {
     if (getEstadoActual() == TipoEstadoDonacion.ASIGNACION_REALIZADA) {
       return;
     }
@@ -99,7 +99,7 @@ public class Donacion {
           "No se puede asignar donacion a menos que este en deposito"
       );
     }
-    this.entidadAsignada = beneficiario;
+    this.beneficiario = beneficiario;
     this.historialEstados.add(new EstadoDonacion(
         TipoEstadoDonacion.ASIGNACION_REALIZADA,
         "Se realizó la asignación a " + beneficiario.getRazonSocial()

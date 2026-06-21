@@ -3,9 +3,9 @@ package ar.edu.utn.frba.dds.donatrack.dominio.donacion;
 import java.time.LocalDateTime;
 
 public class EstadoDonacion {
-  private LocalDateTime fecha;
-  private TipoEstadoDonacion tipoEstado;
   private String detalle;
+  private TipoEstadoDonacion tipoEstado;
+  private LocalDateTime fecha;
 
   public EstadoDonacion(TipoEstadoDonacion estado, String observacion) {
     this.tipoEstado = estado;

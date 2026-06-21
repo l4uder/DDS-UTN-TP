@@ -5,18 +5,18 @@ import ar.edu.utn.frba.dds.donatrack.dominio.necesidades.Necesidad;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntidadBeneficiaria {
+public class Beneficiario {
   private String razonSocial;
   private String direccion;
-  private List<MedioContacto> contactoRepresentantes;
+  private List<MedioContacto> contactos;
   private List<Necesidad> necesidades;
 
-  public EntidadBeneficiaria(String razon,
-                             String direccion,
-                             List<MedioContacto> contactoRepresentantes) {
+  public Beneficiario(String razon,
+                      String direccion,
+                      List<MedioContacto> contactos) {
     this.razonSocial = razon;
     this.direccion = direccion;
-    this.contactoRepresentantes = new ArrayList<>(contactoRepresentantes);
+    this.contactos = new ArrayList<>(contactos);
     this.necesidades = new ArrayList<>();
   }
 

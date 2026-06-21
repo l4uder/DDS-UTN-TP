@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Donante {
+  protected Documento documento;
   protected List<MedioContacto> contactos;
   protected List<RegistroEntrega> entregas = new ArrayList<>();
 
-  public Donante(List<MedioContacto> contactos) {
+  public Donante(Documento documento, List<MedioContacto> contactos) {
     if (contactos == null || contactos.isEmpty()) {
       throw new DomainValidationException("La lista de contactos no puede estar vacía ni ser null");
     }
-
+    this.documento = documento;
     this.contactos = new ArrayList<>(contactos);
 
     if (this.contactos.stream().noneMatch(MedioContacto::getPrincipal)) {

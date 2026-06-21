@@ -18,10 +18,10 @@ classDiagram
     %%=============ordenando por package======
     
     %%beneficiario
-    class EntidadBeneficiaria {
+    class Beneficiario {
         - razonSocial: String
         - direccion: String
-        - contactoRepresentantes: List~MedioContacto~
+        - contactos: List~MedioContacto~
         - necesidades: List~Necesidad~
 
         + registrarNecesidad(necesidad: Necesidad): void
@@ -29,7 +29,7 @@ classDiagram
 
     %%bien
     class NoPerecedero {
-        - usado: Boolean
+        - estaUsado: Boolean
         
         + getNombreClave(subcategoria: Subcategoria): String
     }
@@ -88,21 +88,21 @@ classDiagram
         - descripcion: String
         - bienes: List~Bien~
         - historialEstados: List~EstadoDonacion~
-        - entidadAsignada: EntidadBeneficiaria
+        - beneficiario: Beneficiario
 
         + descripcionGeneral(bienes: List~Bien~): String
         + notificarEntregaFallida(observacion: String): Void
         + confirmarEntrega(): Void
         + confirmarTrasladoEnCurso(): Void
         + confirmarRuta(): Void
-        + confirmarAsignacion(beneficiario: EntidadBeneficiaria)
+        + confirmarAsignacion(beneficiario: Beneficiario): Void
         + marcarVencida(): Void
         + confirmarRecepcionDeposito(): Void
     }
     class EstadoDonacion {
-        - fecha: LocalDateTime
-        - tipoEstado: TipoEstadoDonacion
         - detalle: String
+        - tipoEstado: TipoEstadoDonacion
+        - fecha: LocalDateTime
     }
     class TipoEstadoDonacion {
         <<enumeration>>
@@ -124,6 +124,7 @@ classDiagram
         <<abstract>>
         - contactos: List~MedioContacto~
         - entregas: List~RegistroEntrega~
+        - documento: Documento
 
         + agregarContactoPrincipal(contacto: MedioContacto): Void
         + agregarContactoSecundario(contacto: MedioContacto): Void
@@ -145,15 +146,15 @@ classDiagram
         - nombre: String
         - apellido: String
         - fechaNacimiento: LocalDate
-        - documento: Documento
         - genero: Genero
         - direccion: String
+        
+        + getEdad(): Integer
     }
     class PersonaJuridica {
         - razonSocial: String
         - tipoOrganizacion: TipoOrganizacion
         - rubro: String
-        - documento: Documento
         - representantes: List~Representante~
 
         + agregarRepresentante(representante: Representante): Void
@@ -162,8 +163,6 @@ classDiagram
         - fecha: LocalDateTime
         - descripcionGeneral: String
         - bienes: List~Bien~
-
-        + agregarBien(bien: Bien): void
     }
     class Representante {
         - nombre: String
@@ -172,7 +171,7 @@ classDiagram
         - documento: Documento
         - genero: Genero
         - direccion: String
-        - medioContactoPred: MedioContacto
+        - contacto: MedioContacto
 
         + getEdad(): Integer
     }
@@ -204,7 +203,7 @@ classDiagram
         <<interface>>
         + enviarMensaje(numeroWhatsapp: String, mensaje: String): Void
     }
-    class CorreoDeContacto {
+    class CorreoContacto {
         - correo: String
         - clienteCorreo: ClienteCorreo
 
@@ -218,14 +217,14 @@ classDiagram
         + notificar(message: String): Void*
         + esIgualA(otro: MedioContacto): Boolean*
     }
-    class SmsDeContato {
+    class SmsContacto {
         - telefono: String
         - clienteSms: ClienteSms
 
         + notificar(mensaje: String): Void
         + esIgual(otro: MedioContacto): Boolean
     }
-    class WhatsappDeContato {
+    class WhatsappContacto {
         - telefono: String
         - clienteWhatsapp: ClienteWhatsapp
 
@@ -241,7 +240,6 @@ classDiagram
         - cantidadRecibida: Integer
 
         + recibirBienes(cantidad: Integer): Void
-        + getCantidadRecibida(): Integer
         + esSatisfecha(): Boolean
     }
     class NecesidadExtraordinaria {
@@ -280,8 +278,8 @@ classDiagram
     %%==============Ordenado por package=====
     
     %%beneficiario
-    EntidadBeneficiaria -->"*" MedioContacto
-    EntidadBeneficiaria -->"*" Necesidad
+    Beneficiario -->"*" MedioContacto
+    Beneficiario -->"*" Necesidad
     
     %%bien
     NoPerecedero ..|> TipoBien
@@ -297,7 +295,7 @@ classDiagram
     %%donacion
     Donacion -->"*" Bien
     Donacion -->"*" EstadoDonacion
-    Donacion --> EntidadBeneficiaria
+    Donacion --> Beneficiario
     EstadoDonacion --> TipoEstadoDonacion
 
     %%donante
@@ -318,12 +316,12 @@ classDiagram
     DonanteFactory ..> Donante
 
     %%medioContacto
-    CorreoDeContacto ..|> MedioContacto
-    SmsDeContato ..|> MedioContacto
-    WhatsappDeContato ..|> MedioContacto
-    CorreoDeContacto --> ClienteCorreo
-    SmsDeContato --> ClienteSms
-    WhatsappDeContato --> ClienteWhatsapp
+    CorreoContacto ..|> MedioContacto
+    SmsDeContacto ..|> MedioContacto
+    WhatsappContacto ..|> MedioContacto
+    CorreoContacto --> ClienteCorreo
+    SmsContacto --> ClienteSms
+    WhatsappContacto --> ClienteWhatsapp
     
     %%necesidades
     NecesidadExtraordinaria --|> Necesidad
