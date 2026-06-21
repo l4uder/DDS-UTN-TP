@@ -112,7 +112,7 @@ public class EntregaTest {
     entrega.confirmarListaParaEntregar();
     entrega.iniciarTraslado();
     entrega.marcarNoRecibida("Incidente logístico");
-    entrega.reingresarADeposito();
+    entrega.reingresarDeposito();
 
     assertEquals(TipoEstadoEntrega.PENDIENTE, entrega.getEstadoActual());
     assertEquals(TipoEstadoDonacion.EN_DEPOSITO, donacion.getEstadoActual());
@@ -120,7 +120,7 @@ public class EntregaTest {
 
   @Test
   void noSePuedeReingresarSiNoEstaNoRecibida() {
-    assertThrows(IllegalStateException.class, () -> entrega.reingresarADeposito());
+    assertThrows(IllegalStateException.class, () -> entrega.reingresarDeposito());
   }
 
   @Test

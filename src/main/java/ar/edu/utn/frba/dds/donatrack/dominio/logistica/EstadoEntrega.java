@@ -7,13 +7,13 @@ public class EstadoEntrega {
   private TipoEstadoEntrega tipoEstado;
   private String detalle;
 
-  public EstadoEntrega(TipoEstadoEntrega estado, String observacion){
+  public EstadoEntrega(TipoEstadoEntrega estado, String observacion) {
     this.tipoEstado = estado;
     this.fecha = LocalDateTime.now();
     this.detalle = (observacion == null || observacion.isBlank()) ? null : observacion;
   }
 
-  public EstadoEntrega(TipoEstadoEntrega estado){
+  public EstadoEntrega(TipoEstadoEntrega estado) {
     this(estado, null);
   }
 

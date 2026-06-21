@@ -4,9 +4,10 @@ import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.EntidadBeneficiaria;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.TipoEstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.ResultadoPlanificacion;
-
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class OrquestadorLogistica {
@@ -15,7 +16,8 @@ public class OrquestadorLogistica {
   private List<Camion> camionesDisponibles;
   private List<Donacion> donacionesAsignadas;
 
-  public OrquestadorLogistica(List<Camion> camionesDisponibles, List<Donacion> donacionesAsignadas) {
+  public OrquestadorLogistica(List<Camion> camionesDisponibles,
+                              List<Donacion> donacionesAsignadas) {
     this.camionesDisponibles = camionesDisponibles;
     this.donacionesAsignadas = donacionesAsignadas.stream()
         .filter(d -> d.getEstadoActual() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
@@ -40,7 +42,8 @@ public class OrquestadorLogistica {
 
     for (Entrega e : entregas) {
       int cantidadDonaciones = e.getDonaciones().size();
-      if (contadorDonaciones + cantidadDonaciones > MAX_DONACIONES_POR_LOTE && !loteActual.isEmpty()) {
+      if (contadorDonaciones + cantidadDonaciones > MAX_DONACIONES_POR_LOTE
+          && !loteActual.isEmpty()) {
         lotes.add(loteActual);
         loteActual = new ArrayList<>();
         contadorDonaciones = 0;
@@ -54,7 +57,8 @@ public class OrquestadorLogistica {
     return lotes;
   }
 
-  public List<Ruta> procesarResultadoPlanificacion(ResultadoPlanificacion resultado, LocalDate fecha) {
+  public List<Ruta> procesarResultadoPlanificacion(ResultadoPlanificacion resultado,
+                                                   LocalDate fecha) {
     List<Ruta> rutasCreadas = new ArrayList<>();
 
     for (Map.Entry<Camion, List<Entrega>> entry : resultado.getEntregasPorCamion().entrySet()) {

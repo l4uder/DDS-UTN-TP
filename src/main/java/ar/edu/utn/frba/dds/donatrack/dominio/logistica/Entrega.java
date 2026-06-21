@@ -18,14 +18,14 @@ public class Entrega {
     this.donaciones = donaciones;
     this.camionAsignado = camion;
     this.historialEstados = new ArrayList<>();
-    this.historialEstados.
-        add(new CambioEstadoEntrega(this, TipoEstadoEntrega.PENDIENTE, camion));
+    this.historialEstados
+            .add(new CambioEstadoEntrega(this, TipoEstadoEntrega.PENDIENTE, camion));
     this.fotosRecepcion = new ArrayList<>();
   }
 
   public void cambiarEstado(TipoEstadoEntrega estado, String observacion) {
-    this.historialEstados.
-        add(new CambioEstadoEntrega(this, estado, observacion, this.camionAsignado));
+    this.historialEstados
+            .add(new CambioEstadoEntrega(this, estado, observacion, this.camionAsignado));
   }
 
   public void iniciarTraslado() {
@@ -52,7 +52,7 @@ public class Entrega {
     }
   }
 
-  public void reingresarADeposito() {
+  public void reingresarDeposito() {
     if (getEstadoActual() != TipoEstadoEntrega.NO_RECIBIDA) {
       throw new IllegalStateException("Solo puede reingresar al depósito una entrega No recibida");
     }
