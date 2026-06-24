@@ -13,6 +13,10 @@ public abstract class Necesidad {
     this.cantidadRecibida = 0;
   }
 
+  public Subcategoria getSubcategoria() {
+    return subcategoria;
+  }
+
   public void recibirBienes(Integer cantidad) {
     this.cantidadRecibida += cantidad;
   }

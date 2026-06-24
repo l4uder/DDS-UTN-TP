@@ -10,4 +10,8 @@ public class Categoria {
   public String getNombre() {
     return nombre;
   }
+
+  public Boolean esIgual(Categoria categoria) {
+    return this.nombre.equalsIgnoreCase(categoria.getNombre());
+  }
 }

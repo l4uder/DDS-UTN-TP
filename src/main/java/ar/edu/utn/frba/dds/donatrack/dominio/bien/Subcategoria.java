@@ -17,4 +17,9 @@ public class Subcategoria {
   public Categoria getCategoria() {
     return this.categoria;
   }
+
+  public Boolean esIgual(Subcategoria otraSubcategoria) {
+    return this.nombre.equalsIgnoreCase(otraSubcategoria.getNombre())
+          && this.categoria.esIgual(otraSubcategoria.getCategoria());
+  }
 }
