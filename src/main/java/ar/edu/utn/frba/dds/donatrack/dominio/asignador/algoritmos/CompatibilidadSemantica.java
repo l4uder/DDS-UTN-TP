@@ -11,17 +11,21 @@ import java.util.stream.Collectors;
 public class CompatibilidadSemantica extends AlgoritmoMatchmaking {
 
   @Override
-  public Map<Beneficiario, Integer> mapearPuntaje(Donacion donacion, List<Beneficiario> beneficiarios) {
-    return beneficiarios.stream().map(b-> Map.entry(b, calcularnecesidadesCubiertas(b, donacion)))
-        .filter(entry -> entry.getValue() >= 1)//Solo guardamos aquellos beneficiarios a quien les sirve la donacion
+  public Map<Beneficiario, Integer> mapearPuntaje(Donacion donacion,
+                                                  List<Beneficiario> beneficiarios) {
+    return beneficiarios.stream()
+        .map(b -> Map.entry(b, calcularnecesidadesCubiertas(b, donacion)))
+        .filter(entry -> entry.getValue() >= 1)
+        //Solo guardamos aquellos beneficiarios a quien les sirve la donacion
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   private Integer calcularnecesidadesCubiertas(Beneficiario beneficiario, Donacion donacion) {
     List<Necesidad> necesidades = beneficiario.getNecesidades();
 
-    List<Necesidad> necesidadesCubiertas = necesidades.stream().filter(n -> donacion.getBienes()
-                                .stream().anyMatch(b-> b.getSubcategoria().esIgual(n.getSubcategoria()))).toList();
+    List<Necesidad> necesidadesCubiertas = necesidades.stream()
+        .filter(n -> donacion.getBienes()
+            .stream().anyMatch(b -> b.getSubcategoria().esIgual(n.getSubcategoria()))).toList();
 
     return necesidadesCubiertas.size();
   }
@@ -37,7 +41,7 @@ public class CompatibilidadSemantica extends AlgoritmoMatchmaking {
     Map<Beneficiario, Integer> puntajes = new HashMap<>();
 
     beneficiarios.forEach(b -> { int puntaje = calcularPuntaje(b, donacion);
-                                            if(puntaje >= 1)//Solo guardamos aquellos beneficiarios a quien les sirve la donacion
+                                            if(puntaje >= 1)
                                               puntajes.put(b, puntaje);}
     );
 

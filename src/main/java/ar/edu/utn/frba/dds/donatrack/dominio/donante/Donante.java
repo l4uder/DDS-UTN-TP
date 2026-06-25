@@ -3,7 +3,10 @@ package ar.edu.utn.frba.dds.donatrack.dominio.donante;
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class Donante {
@@ -86,6 +89,25 @@ public abstract class Donante {
   public void recibirNotificacion(String mensaje) {
     List<MedioContacto> contactos = getContactos();
     contactos.forEach(c -> c.notificar(mensaje));
+  }
+
+  public RegistroEntrega getUltimaEntrega() {
+    //return this.entregas.stream().max(Comparator.comparing(r -> r.getFecha())).orElse(null);
+    if (this.entregas.isEmpty()) {
+      return null;
+    }
+    return this.entregas.get(this.entregas.size() - 1);
+  }
+
+  public boolean estaAusentePorMasDe(Integer dias) {
+    RegistroEntrega ultima = this.getUltimaEntrega();
+
+    if (ultima == null) {
+      return false; // A los nuevos no los vamos a considerar como ausentes
+    }
+
+    LocalDateTime fechaLimite = LocalDateTime.now().minusDays(dias);
+    return ultima.getFecha().isBefore(fechaLimite);
   }
 
 }

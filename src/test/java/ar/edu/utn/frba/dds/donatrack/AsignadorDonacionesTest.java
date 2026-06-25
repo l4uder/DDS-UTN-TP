@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.asignador.AsignadorDonacion;
+import ar.edu.utn.frba.dds.donatrack.dominio.asignador.Asignador;
 import ar.edu.utn.frba.dds.donatrack.dominio.asignador.algoritmos.AlgoritmoMatchmaking;
 import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
@@ -13,7 +13,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AsignadorDeDonacionTest {
+public class AsignadorDonacionesTest {
   //los algoritmos
   private AlgoritmoMatchmaking algoritmoMock1;
   private AlgoritmoMatchmaking algoritmoMock2;
@@ -25,11 +25,11 @@ public class AsignadorDeDonacionTest {
   private Beneficiario beneficiario3;
   private Beneficiario beneficiario4;
   //asignador
-  private AsignadorDonacion asignador;
+  private Asignador asignador;
 
   @BeforeEach
   void configuracionIncial() {
-    asignador = new AsignadorDonacion();
+    asignador = new Asignador();
 
     algoritmoMock1 = mock(AlgoritmoMatchmaking.class);
     algoritmoMock2 = mock(AlgoritmoMatchmaking.class);

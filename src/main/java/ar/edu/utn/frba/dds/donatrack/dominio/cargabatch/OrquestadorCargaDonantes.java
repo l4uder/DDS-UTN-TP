@@ -37,7 +37,7 @@ public class OrquestadorCargaDonantes {
     try (CSVReader reader = new CSVReader(
         new InputStreamReader(csvStream, StandardCharsets.UTF_8))) {
       DonanteParser parser = new DonanteParser();
-      DonanteRepository repository = DonanteRepository.INSTANCE;
+      DonanteRepository repository = DonanteRepository.getInstancia();
       var iter = parser.parseCsv(reader).iterator();
 
       while (iter.hasNext()) {

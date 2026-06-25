@@ -6,7 +6,7 @@ import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.CategoriaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.SubcategoriaBuilder;
 import ar.edu.utn.frba.dds.donatrack.dominio.asignador.algoritmos.CompatibilidadSemantica;
-import ar.edu.utn.frba.dds.donatrack.dominio.asignador.algoritmos.PrioridadASubAtendidos;
+import ar.edu.utn.frba.dds.donatrack.dominio.asignador.algoritmos.PrioridadSubAtendidos;
 import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Categoria;
@@ -58,7 +58,7 @@ public class AlgoritmoMatchmakingTest {
   private Beneficiario beneficiario12;
   //Algoritmos match
   CompatibilidadSemantica compatibilidadSemantica;
-  PrioridadASubAtendidos prioridadASubAtendidos;
+  PrioridadSubAtendidos prioridadASubAtendidos;
 
   @BeforeEach
   void configuracionInicial() {
@@ -117,7 +117,7 @@ public class AlgoritmoMatchmakingTest {
     beneficiario12 = new Beneficiario("6666", "Rivadavia 1000", List.of(correo));
     //Algoritmos match
     compatibilidadSemantica = new CompatibilidadSemantica();
-    prioridadASubAtendidos = new PrioridadASubAtendidos();
+    prioridadASubAtendidos = new PrioridadSubAtendidos();
   }
 
   @Test

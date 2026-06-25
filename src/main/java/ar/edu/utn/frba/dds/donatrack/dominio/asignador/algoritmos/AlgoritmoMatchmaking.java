@@ -20,7 +20,8 @@ public abstract class AlgoritmoMatchmaking {
     return top10;
   }
 
-  abstract protected Map<Beneficiario, Integer> mapearPuntaje(Donacion donacion, List<Beneficiario> beneficiarios);
+  protected abstract Map<Beneficiario, Integer> mapearPuntaje(Donacion donacion,
+                                                              List<Beneficiario> beneficiarios);
 
-  abstract protected Comparator<Map.Entry<Beneficiario, Integer>> modoOrdenamiento();
+  protected abstract Comparator<Map.Entry<Beneficiario, Integer>> modoOrdenamiento();
 }

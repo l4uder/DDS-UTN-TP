@@ -33,18 +33,18 @@ public class Donacion {
 
   public LocalDateTime getFechaAsignacion() {
     return this.historialEstados.stream()
-        .filter(e->e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
+        .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
         .findFirst()
         .map(EstadoDonacion::getFecha)
-        .orElseThrow(() -> new DomainValidationException("La Donacion no posee fecha de asignacion"));
+        .orElseThrow(() -> new DomainValidationException("Donacion no posee fecha de asignacion"));
   }
 
   /*Solo para poder probar un test despues ver como mejorar quitando esto*/
   public void setFechaAsignacion(LocalDateTime fechaAsignacion) {
     EstadoDonacion estadoAsignacion = this.historialEstados.stream()
-        .filter(e->e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
+        .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
         .findFirst()
-        .orElseThrow(() -> new DomainValidationException("La Donacion no posee fecha de asignacion"));
+        .orElseThrow(() -> new DomainValidationException("Donacion no posee fecha de asignacion"));
 
     estadoAsignacion.setFecha(fechaAsignacion);
   }
@@ -123,7 +123,7 @@ public class Donacion {
         TipoEstadoDonacion.ASIGNACION_REALIZADA,
         "Se realizó la asignación a " + beneficiario.getRazonSocial()
     ));
-    beneficiario.recibirDonacion(this);//Muy importante mandarselo después de que cambio de estado
+    beneficiario.recibirDonacion(this); //Muy importante mandarselo después de que cambio de estado
   }
 
   public void marcarVencida() {
