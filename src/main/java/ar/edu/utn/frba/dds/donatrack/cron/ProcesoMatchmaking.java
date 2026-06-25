@@ -19,5 +19,6 @@ public class ProcesoMatchmaking {
     Asignador asignador = new Asignador();
 
     List<ResultadoAsignacion> asignaciones = asignador.asignar(donaciones, beneficiarios);
+    System.out.println("acabamossss");
   }
 }

@@ -12,5 +12,6 @@ public class AusenciaBeneficiario {
 
     donantesAusentes.forEach(d -> d.recibirNotificacion(
         "vuelve a donar porfavor, eso ayuda a personas que lo necesitan"));
+    System.out.println("acabamossss");
   }
 }
