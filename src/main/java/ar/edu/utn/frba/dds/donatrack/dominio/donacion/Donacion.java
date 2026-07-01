@@ -141,4 +141,8 @@ public class Donacion {
   public List<Bien> getBienes() {
     return new ArrayList<>(bienes);
   }
+
+  public EntidadBeneficiaria getEntidadAsignada() {
+    return this.entidadAsignada;
+  }
 }
