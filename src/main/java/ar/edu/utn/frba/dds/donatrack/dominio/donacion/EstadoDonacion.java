@@ -28,4 +28,8 @@ public class EstadoDonacion {
   public  String getDetalle() {
     return this.detalle;
   }
+
+  public void setFecha(LocalDateTime fecha) {
+    this.fecha = fecha;
+  }
 }

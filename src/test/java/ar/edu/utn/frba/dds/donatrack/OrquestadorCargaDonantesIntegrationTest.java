@@ -21,10 +21,10 @@ public class OrquestadorCargaDonantesIntegrationTest {
 
   @Test
   public void LectorConUnArchivoSimple(){
-    var donantesIniciales = DonanteRepository.INSTANCE.buscarTodos();
+    var donantesIniciales = DonanteRepository.getInstancia().buscarTodos();
     assertTrue(donantesIniciales.isEmpty());
     var resultado = OrquestadorCargaDonantes.iniciarCarga(archivoSimple);
-    var donantesResultantes = DonanteRepository.INSTANCE.buscarTodos();
+    var donantesResultantes = DonanteRepository.getInstancia().buscarTodos();
 
     //System.out.println("Los errores encontrados son: " + resultado.errores());
 

@@ -16,6 +16,10 @@ public class RegistroEntrega {
     this.bienes = new ArrayList<>(bienes);
   }
 
+  public LocalDateTime getFecha() {
+    return this.fecha;
+  }
+
   public void agregarBien(Bien bien) {
     this.bienes.add(bien);
   }

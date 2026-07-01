@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.donatrack.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +14,8 @@ public class Donacion {
   private String descripcion;
   private List<Bien> bienes;
   private List<EstadoDonacion> historialEstados;
-  private Beneficiario beneficiario;
+  //NO mas ahora va a estar del lado del beneficiario
+  //private Beneficiario beneficiario;
 
   public Donacion(List<Bien> bienes) {
     if (bienes == null || bienes.isEmpty()) {
@@ -27,6 +29,24 @@ public class Donacion {
 
   public TipoEstadoDonacion getEstadoActual() {
     return historialEstados.get(historialEstados.size() - 1).getTipoEstado();
+  }
+
+  public LocalDateTime getFechaAsignacion() {
+    return this.historialEstados.stream()
+        .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
+        .findFirst()
+        .map(EstadoDonacion::getFecha)
+        .orElseThrow(() -> new DomainValidationException("Donacion no posee fecha de asignacion"));
+  }
+
+  /*Solo para poder probar un test despues ver como mejorar quitando esto*/
+  public void setFechaAsignacion(LocalDateTime fechaAsignacion) {
+    EstadoDonacion estadoAsignacion = this.historialEstados.stream()
+        .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
+        .findFirst()
+        .orElseThrow(() -> new DomainValidationException("Donacion no posee fecha de asignacion"));
+
+    estadoAsignacion.setFecha(fechaAsignacion);
   }
 
   public String descripcionGeneral(List<Bien> bienes) {
@@ -99,11 +119,11 @@ public class Donacion {
           "No se puede asignar donacion a menos que este en deposito"
       );
     }
-    this.beneficiario = beneficiario;
     this.historialEstados.add(new EstadoDonacion(
         TipoEstadoDonacion.ASIGNACION_REALIZADA,
         "Se realizó la asignación a " + beneficiario.getRazonSocial()
     ));
+    beneficiario.recibirDonacion(this); //Muy importante mandarselo después de que cambio de estado
   }
 
   public void marcarVencida() {
