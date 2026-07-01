@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.asignador.algoritmos;
 
+import ar.edu.utn.frba.dds.donatrack.dominio.asignador.AlgoritmoMatchmaking;
 import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.necesidades.Necesidad;
@@ -36,13 +37,3 @@ public class CompatibilidadSemantica extends AlgoritmoMatchmaking {
     return Map.Entry.<Beneficiario, Integer>comparingByValue().reversed();
   }
 }
-
-      /* Lo mismo pero con un foreach
-    Map<Beneficiario, Integer> puntajes = new HashMap<>();
-
-    beneficiarios.forEach(b -> { int puntaje = calcularPuntaje(b, donacion);
-                                            if(puntaje >= 1)
-                                              puntajes.put(b, puntaje);}
-    );
-
-    return puntajes; */

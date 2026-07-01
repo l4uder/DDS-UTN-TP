@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.donatrack.dominio.beneficiario;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.TipoEstadoDonacion;
-import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.dominio.necesidades.Necesidad;
@@ -14,6 +13,7 @@ public class Beneficiario {
   private String direccion;
   private List<MedioContacto> contactos;
   private List<Necesidad> necesidades;
+  //Doble asociacion bidericcional
   private List<Donacion> donaciones;
 
   public Beneficiario(String razon,
@@ -42,7 +42,7 @@ public class Beneficiario {
     this.necesidades.add(necesidad);
   }
 
-  public void recibirDonacion(Donacion donacion) {
+  public void asignarDonacion(Donacion donacion) {
     if (donacion.getEstadoActual() != TipoEstadoDonacion.ASIGNACION_REALIZADA) {
       throw new DomainValidationException("Al beneficiario le debe llegar donaciones asignadas");
     }

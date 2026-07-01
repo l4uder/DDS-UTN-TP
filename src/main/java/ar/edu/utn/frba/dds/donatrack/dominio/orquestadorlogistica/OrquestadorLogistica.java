@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.dominio.orquestadorlogistica;
 import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.TipoEstadoDonacion;
+import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.OrquestadorException;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Camion;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Entrega;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Ruta;
@@ -16,24 +17,26 @@ public class OrquestadorLogistica {
   private static final int MAX_DONACIONES_POR_LOTE = 100;
 
   private List<Camion> camionesDisponibles;
-  private List<Donacion> donacionesAsignadas;
+  private List<Donacion> donacionesAllevar;
 
   public OrquestadorLogistica(List<Camion> camionesDisponibles,
-                              List<Donacion> donacionesAsignadas) {
+                              List<Donacion> donacionesAllevar) {
     this.camionesDisponibles = camionesDisponibles;
-    this.donacionesAsignadas = donacionesAsignadas.stream()
-        .filter(d -> d.getEstadoActual() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
-        .collect(Collectors.toList());
+    if (donacionesAllevar.stream()
+        .anyMatch(d -> d.getEstadoActual() != TipoEstadoDonacion.ASIGNACION_REALIZADA)) {
+      throw new OrquestadorException("Solo podemos llevar donaciones asignadas");
+    }
+    this.donacionesAllevar = donacionesAllevar;
   }
 
   public List<Entrega> armarEntregasPendientes() {
-    Map<Beneficiario, List<Donacion>> agrupadas = donacionesAsignadas.stream()
-        .collect(Collectors.groupingBy(Donacion::getEntidadAsignada));
+    Map<Beneficiario, List<Donacion>> agrupadasPorBeneficiario = donacionesAllevar.stream()
+        .collect(Collectors.groupingBy(Donacion::getBeneficiario));
 
     List<Entrega> entregas = new ArrayList<>();
-    for (Map.Entry<Beneficiario, List<Donacion>> grupo : agrupadas.entrySet()) {
-      entregas.add(new Entrega(grupo.getKey(), grupo.getValue(), null)); // sin camión aún
-    }
+    agrupadasPorBeneficiario.forEach((beneficiario, donaciones) ->
+        entregas.add(new Entrega(beneficiario, donaciones, null)));
+
     return entregas;
   }
 
@@ -78,4 +81,5 @@ public class OrquestadorLogistica {
 
     return rutasCreadas;
   }
+  
 }

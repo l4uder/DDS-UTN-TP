@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.asignador.Asignador;
-import ar.edu.utn.frba.dds.donatrack.dominio.asignador.algoritmos.AlgoritmoMatchmaking;
+import ar.edu.utn.frba.dds.donatrack.dominio.asignador.AlgoritmoMatchmaking;
 import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import java.util.List;

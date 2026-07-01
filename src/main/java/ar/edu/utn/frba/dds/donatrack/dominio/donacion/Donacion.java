@@ -14,8 +14,8 @@ public class Donacion {
   private String descripcion;
   private List<Bien> bienes;
   private List<EstadoDonacion> historialEstados;
-  //NO mas ahora va a estar del lado del beneficiario
-  //private Beneficiario beneficiario;
+  //Doble asociacion bidericcional
+  private Beneficiario beneficiario;
 
   public Donacion(List<Bien> bienes) {
     if (bienes == null || bienes.isEmpty()) {
@@ -123,7 +123,8 @@ public class Donacion {
         TipoEstadoDonacion.ASIGNACION_REALIZADA,
         "Se realizó la asignación a " + beneficiario.getRazonSocial()
     ));
-    beneficiario.recibirDonacion(this); //Muy importante mandarselo después de que cambio de estado
+    this.beneficiario = beneficiario;
+    beneficiario.asignarDonacion(this);
   }
 
   public void marcarVencida() {
@@ -162,8 +163,7 @@ public class Donacion {
     return new ArrayList<>(bienes);
   }
 
-  //Despues ver si es mejor o no que un beneficiari conozca sus donaciones
-  public Beneficiario getEntidadAsignada() {
+  public Beneficiario getBeneficiario() {
     return this.beneficiario;
   }
 }

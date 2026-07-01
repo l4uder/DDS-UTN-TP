@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.EntidadBeneficiariaBuilder;
 import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.OrquestadorException;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Camion;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Entrega;
 import ar.edu.utn.frba.dds.donatrack.dominio.orquestadorlogistica.OrquestadorLogistica;
@@ -97,9 +98,7 @@ public class OrquestadorLogisticaTest {
     donaciones.add(donacionSinAsignar);
     donaciones.add(donacionAsignadaA(beneficiarioA));
 
-    OrquestadorLogistica orquestador = new OrquestadorLogistica(camiones, donaciones);
-    List<Entrega> entregas = orquestador.armarEntregasPendientes();
-
-    assertEquals(1, entregas.size());
+    assertThrows(OrquestadorException.class, () -> new OrquestadorLogistica(camiones, donaciones));
   }
+
 }
