@@ -1,55 +1,49 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.logistica;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.EntidadBeneficiaria;
+import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Entrega {
-  private EntidadBeneficiaria destino;
+  private Beneficiario destino;
   private List<Donacion> donaciones;
   private Camion camionAsignado;
-  private List<CambioEstadoEntrega> historialEstados;
+  private List<EstadoEntrega> historialEstados;
   private List<String> fotosRecepcion;
 
-  public Entrega(EntidadBeneficiaria destino, List<Donacion> donaciones,
-                 Camion camion) {
+  public Entrega(Beneficiario destino, List<Donacion> donaciones, Camion camion) {
     this.destino = destino;
     this.donaciones = donaciones;
     this.camionAsignado = camion;
     this.historialEstados = new ArrayList<>();
-    this.historialEstados
-            .add(new CambioEstadoEntrega(this, TipoEstadoEntrega.PENDIENTE, camion));
+    historialEstados.add(new EstadoEntrega(TipoEstadoEntrega.PENDIENTE, camion));
     this.fotosRecepcion = new ArrayList<>();
   }
 
-  public void cambiarEstado(TipoEstadoEntrega estado, String observacion) {
+  private void cambiarEstado(TipoEstadoEntrega estado, String observacion) {
     this.historialEstados
-            .add(new CambioEstadoEntrega(this, estado, observacion, this.camionAsignado));
+            .add(new EstadoEntrega(estado, observacion, this.camionAsignado));
+  }
+
+  //ver si es mejor ese nombre o cambiar por confirmarRuta
+  public void confirmarListaParaEntregar() {
+    this.donaciones.forEach(d -> d.confirmarRuta());
   }
 
   public void iniciarTraslado() {
-    this.cambiarEstado(TipoEstadoEntrega.EN_TRASLADO, "Inicio de recorrido");
-    for (Donacion d : donaciones) {
-      d.confirmarTrasladoEnCurso();
-    }
+    this.cambiarEstado(TipoEstadoEntrega.EN_TRASLADO, "Iniciando recorrido");
+    this.donaciones.forEach(d -> d.confirmarTrasladoEnCurso());
   }
 
   public void confirmarRecepcion() {
-    if (getEstadoActual() != TipoEstadoEntrega.EN_TRASLADO) {
-      throw new IllegalStateException("Solo se puede confirmar una entrega En traslado");
-    }
     this.cambiarEstado(TipoEstadoEntrega.ENTREGADA, null);
-    for (Donacion d : donaciones) {
-      d.confirmarEntrega();
-    }
+    this.donaciones.forEach(d -> d.confirmarEntrega());
   }
 
   public void marcarNoRecibida(String motivo) {
     this.cambiarEstado(TipoEstadoEntrega.NO_RECIBIDA, motivo);
-    for (Donacion d : donaciones) {
-      d.notificarEntregaFallida(motivo);
-    }
+    this.donaciones.forEach(d -> d.notificarEntregaFallida(motivo));
   }
 
   public void reingresarDeposito() {
@@ -57,15 +51,7 @@ public class Entrega {
       throw new IllegalStateException("Solo puede reingresar al depósito una entrega No recibida");
     }
     this.cambiarEstado(TipoEstadoEntrega.PENDIENTE, "Donación reingresada al depósito");
-    for (Donacion d : donaciones) {
-      d.confirmarRecepcionDeposito();
-    }
-  }
-
-  public void confirmarListaParaEntregar() {
-    for (Donacion d : donaciones) {
-      d.confirmarRuta();
-    }
+    this.donaciones.forEach(d -> d.confirmarRecepcionDeposito());
   }
 
   public void reasignarCamion(Camion nuevoCamion) {
@@ -86,7 +72,7 @@ public class Entrega {
     return historialEstados.get(historialEstados.size() - 1).getTipoEstado();
   }
 
-  public EntidadBeneficiaria getDestino() {
+  public Beneficiario getDestino() {
     return destino;
   }
 
@@ -96,10 +82,6 @@ public class Entrega {
 
   public Camion getCamionAsignado() {
     return camionAsignado;
-  }
-
-  public List<CambioEstadoEntrega> getHistorialEstados() {
-    return historialEstados;
   }
 
   public List<String> getFotosRecepcion() {

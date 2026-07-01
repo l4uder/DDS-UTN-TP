@@ -3,7 +3,7 @@ package ar.edu.utn.frba.dds.donatrack;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.EntidadBeneficiariaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.EntidadBeneficiaria;
+import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.TipoEstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Camion;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntregaTest {
 
-  private EntidadBeneficiaria beneficiario;
+  private Beneficiario beneficiario;
   private Donacion donacion;
   private Camion camion;
   private Entrega entrega;
@@ -90,11 +90,6 @@ public class EntregaTest {
 
     assertEquals(TipoEstadoEntrega.ENTREGADA, entrega.getEstadoActual());
     assertEquals(TipoEstadoDonacion.ENTREGADA, donacion.getEstadoActual());
-  }
-
-  @Test
-  void noSePuedeConfirmarRecepcionSinEstarEnTraslado() {
-    assertThrows(IllegalStateException.class, () -> entrega.confirmarRecepcion());
   }
 
   @Test

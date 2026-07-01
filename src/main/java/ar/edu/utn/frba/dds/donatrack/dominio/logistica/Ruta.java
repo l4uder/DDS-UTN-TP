@@ -26,9 +26,7 @@ public class Ruta {
       throw new IllegalStateException("La ruta debe tener chofer");
     }
     this.iniciada = true;
-    for (Entrega entrega : entregasOrdenadas) {
-      entrega.iniciarTraslado();
-    }
+    this.entregasOrdenadas.forEach(e -> e.iniciarTraslado());
   }
 
   public void asignarChofer(Chofer chofer) {

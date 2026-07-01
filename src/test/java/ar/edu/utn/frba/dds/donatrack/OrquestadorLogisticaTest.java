@@ -2,11 +2,11 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.EntidadBeneficiariaBuilder;
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.EntidadBeneficiaria;
+import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Camion;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Entrega;
-import ar.edu.utn.frba.dds.donatrack.dominio.logistica.OrquestadorLogistica;
+import ar.edu.utn.frba.dds.donatrack.dominio.orquestadorlogistica.OrquestadorLogistica;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.SmsDeContato;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.WhatsappDeContato;
@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class OrquestadorLogisticaTest {
 
-  private EntidadBeneficiaria beneficiarioA;
-  private EntidadBeneficiaria beneficiarioB;
+  private Beneficiario beneficiarioA;
+  private Beneficiario beneficiarioB;
   private List<Donacion> donaciones;
   private List<Camion> camiones;
 
@@ -48,7 +48,7 @@ public class OrquestadorLogisticaTest {
     camiones = List.of(new Camion("AB123CD", 10f, 2.5f, 1500f));
   }
 
-  private Donacion donacionAsignadaA(EntidadBeneficiaria beneficiario) {
+  private Donacion donacionAsignadaA(Beneficiario beneficiario) {
     Donacion d = new Donacion(List.of(
         new BienBuilder().conDescripcion("Arroz").conCantidad(3).conUsado(false).buildNoPerecedero()
     ));
@@ -78,7 +78,7 @@ public class OrquestadorLogisticaTest {
 
     OrquestadorLogistica orquestador = new OrquestadorLogistica(camiones, donaciones);
     List<Entrega> entregas = orquestador.armarEntregasPendientes(); // una sola Entrega con 150 donaciones
-    List<List<Entrega>> lotes = orquestador.armarLotes(entregas);
+    List<List<Entrega>> lotes = orquestador.armarLotesEntrega(entregas);
 
     // como las 150 donaciones quedan agrupadas en UNA sola Entrega (mismo destino),
     // el lote no puede partirla

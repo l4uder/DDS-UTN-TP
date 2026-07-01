@@ -4,17 +4,19 @@ import java.time.LocalDateTime;
 
 public class EstadoEntrega {
   private LocalDateTime fecha;
-  private TipoEstadoEntrega tipoEstado;
   private String detalle;
+  private TipoEstadoEntrega tipoEstado;
+  private Camion camion;
 
-  public EstadoEntrega(TipoEstadoEntrega estado, String observacion) {
+  public EstadoEntrega(TipoEstadoEntrega estado, String observacion, Camion camion) {
     this.tipoEstado = estado;
     this.fecha = LocalDateTime.now();
     this.detalle = (observacion == null || observacion.isBlank()) ? null : observacion;
+    this.camion = camion;
   }
 
-  public EstadoEntrega(TipoEstadoEntrega estado) {
-    this(estado, null);
+  public EstadoEntrega(TipoEstadoEntrega estado, Camion camion) {
+    this(estado, null, camion);
   }
 
   public TipoEstadoEntrega getTipoEstado() {

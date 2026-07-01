@@ -1,9 +1,11 @@
-package ar.edu.utn.frba.dds.donatrack.dominio.logistica;
+package ar.edu.utn.frba.dds.donatrack.dominio.orquestadorlogistica;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.EntidadBeneficiaria;
+import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.TipoEstadoDonacion;
-import ar.edu.utn.frba.dds.donatrack.dominio.logistica.ResultadoPlanificacion;
+import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Camion;
+import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Entrega;
+import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Ruta;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +27,17 @@ public class OrquestadorLogistica {
   }
 
   public List<Entrega> armarEntregasPendientes() {
-    Map<EntidadBeneficiaria, List<Donacion>> agrupadas = donacionesAsignadas.stream()
+    Map<Beneficiario, List<Donacion>> agrupadas = donacionesAsignadas.stream()
         .collect(Collectors.groupingBy(Donacion::getEntidadAsignada));
 
     List<Entrega> entregas = new ArrayList<>();
-    for (Map.Entry<EntidadBeneficiaria, List<Donacion>> grupo : agrupadas.entrySet()) {
+    for (Map.Entry<Beneficiario, List<Donacion>> grupo : agrupadas.entrySet()) {
       entregas.add(new Entrega(grupo.getKey(), grupo.getValue(), null)); // sin camión aún
     }
     return entregas;
   }
 
-  public List<List<Entrega>> armarLotes(List<Entrega> entregas) {
+  public List<List<Entrega>> armarLotesEntrega(List<Entrega> entregas) {
     List<List<Entrega>> lotes = new ArrayList<>();
     List<Entrega> loteActual = new ArrayList<>();
     int contadorDonaciones = 0;

@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.EntidadBeneficiariaBuilder;
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.EntidadBeneficiaria;
+import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Camion;
 import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Chofer;
@@ -25,7 +25,7 @@ public class RutaTest {
   private Chofer chofer;
   private Entrega entrega;
   private Ruta ruta;
-  private EntidadBeneficiaria beneficiario;
+  private Beneficiario beneficiario;
 
   @BeforeEach
   void setUp() {

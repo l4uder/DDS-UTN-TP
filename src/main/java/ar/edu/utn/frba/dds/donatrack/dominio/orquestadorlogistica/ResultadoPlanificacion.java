@@ -1,5 +1,7 @@
-package ar.edu.utn.frba.dds.donatrack.dominio.logistica;
+package ar.edu.utn.frba.dds.donatrack.dominio.orquestadorlogistica;
 
+import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Camion;
+import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Entrega;
 import java.util.List;
 import java.util.Map;
 

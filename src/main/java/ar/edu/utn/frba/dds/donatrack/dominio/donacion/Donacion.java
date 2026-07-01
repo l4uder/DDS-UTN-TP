@@ -142,7 +142,8 @@ public class Donacion {
     return new ArrayList<>(bienes);
   }
 
-  public EntidadBeneficiaria getEntidadAsignada() {
-    return this.entidadAsignada;
+  //Despues ver si es mejor o no que un beneficiari conozca sus donaciones
+  public Beneficiario getEntidadAsignada() {
+    return this.beneficiario;
   }
 }

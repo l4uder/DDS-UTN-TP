@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.EntregaTest;
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.EntidadBeneficiaria;
+import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.dominio.necesidades.Necesidad;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class EntidadBeneficiariaBuilder {
     return this;
   }
 
-  public EntidadBeneficiaria build(){
-    return new EntidadBeneficiaria(razonSocial, direccion, contactoRepresentantes);
+  public Beneficiario build(){
+    return new Beneficiario(razonSocial, direccion, contactoRepresentantes);
   }
 }
