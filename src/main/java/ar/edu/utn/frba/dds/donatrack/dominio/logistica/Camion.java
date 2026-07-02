@@ -5,6 +5,7 @@ public class Camion {
   private float capacidadVolumen;
   private float altura;
   private float capacidadCarga;
+  private Gps gps;
 
   public Camion(String patente, float capacidadVolumen,
                 float altura, float capacidadCarga) {
@@ -12,5 +13,9 @@ public class Camion {
     this.capacidadVolumen = capacidadVolumen;
     this.altura = altura;
     this.capacidadCarga = capacidadCarga;
+  }
+
+  public Ubicacion getUbicacion() {
+    return this.gps.getUbicacion();
   }
 }

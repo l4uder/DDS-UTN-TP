@@ -26,3 +26,6 @@ replay_pid*
 *.iml
 .idea/**
 target
+
+# Ignorar carpetas autogeneradas del broker MQTT
+Estacion-dds-*/
