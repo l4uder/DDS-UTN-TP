@@ -1,20 +1,38 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.mqtt.suscriptor;
 
+import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Camion;
+import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Coordenada;
+import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Gps;
 import ar.edu.utn.frba.dds.donatrack.dominio.mqtt.GpsMensaje;
-import org.eclipse.paho.client.mqttv3.*;
-import com.google.gson.Gson;
+import ar.edu.utn.frba.dds.donatrack.persistencia.CamionRepository;
+import ar.edu.utn.frba.dds.donatrack.persistencia.GpsRepository;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class EstacionRecepcion {
   private MqttClient client;
   private String brokerUrl;
   private String clientId;
-  private Gson gson;
+  private ObjectMapper conversor;
+  private CamionRepository repoCamiones;
+  private GpsRepository repoGps;
 
-  public EstacionRecepcion() {
+  public EstacionRecepcion(CamionRepository camionRepository, GpsRepository gpsRepository) {
     this.client = null;
     this.brokerUrl = "tcp://broker.hivemq.com:1883";
     this.clientId = "Estacion-dds-g7" + System.currentTimeMillis();
-    this.gson = new Gson();
+    this.conversor = new ObjectMapper();
+    conversor.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+    conversor.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    this.repoCamiones = camionRepository;
+    this.repoGps = gpsRepository;
   }
 
   public void conectar() {
@@ -27,12 +45,22 @@ public class EstacionRecepcion {
           System.out.println("Se perdió la conexión con el broker: " + cause.getMessage());
         }
 
-        public void messageArrived(String topic, MqttMessage message) throws Exception {
-          String mensajeRecibido = new String(message.getPayload());
-          GpsMensaje datos = gson.fromJson(mensajeRecibido, GpsMensaje.class);
-          System.out.println("llego nuevo mensaje: " + datos.getId() +
-              " | Lat: " + datos.getLatitud() +
-              " | Lon: " + datos.getLongitud());
+        public void messageArrived(String topic, MqttMessage message) {
+          try {
+            String mensajeRecibido = new String(message.getPayload());
+            GpsMensaje datos = conversor.readValue(mensajeRecibido, GpsMensaje.class);
+            System.out.println("llego nuevo mensaje | gpsId: " + datos.getId()
+                + " | bateria: " + datos.getNivelBateria()
+                + " | Latitud: " + datos.getLatitud()
+                + " | Longitud: " + datos.getLongitud());
+            Camion camion = repoCamiones.buscarCamionPorGps(datos.getId());
+            camion.agregarCoordenada(new Coordenada(datos.getLatitud(), datos.getLongitud()));
+            Gps gps = repoGps.buscarPorId(datos.getId());
+            gps.actualizarEstado(datos.getNivelBateria());
+          } catch (Exception e) {
+            System.out.println("Error procesando un mensaje del topic " + topic);
+            System.out.println("Motivo: " + e.getMessage());
+          }
         }
 
         public void deliveryComplete(IMqttDeliveryToken token) {}

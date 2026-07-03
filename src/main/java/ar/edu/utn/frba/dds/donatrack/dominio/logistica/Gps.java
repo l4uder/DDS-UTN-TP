@@ -1,22 +1,27 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.logistica;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import lombok.Getter;
 
+@Getter
 public class Gps {
-  private String id;
-  private List<Ubicacion> ubicaciones;
+  private String imei;
+  private LocalDateTime fecha;
+  private String nivelBateria;
+  private Boolean funciona;
 
   public Gps(String id) {
-    this.id = id;
-    this.ubicaciones = new ArrayList<>();
+    this.imei = id;
+    this.nivelBateria = "100";
+    this.funciona = true;
   }
 
-  public void agregarUbicacion(Ubicacion ubicacion) {
-    this.ubicaciones.add(ubicacion);
+  public void dejoFuncionar() {
+    this.funciona = false;
   }
 
-  public Ubicacion getUbicacion() {
-    return this.ubicaciones.get(this.ubicaciones.size() -1);
+  public void actualizarEstado(String nivelBateria) {
+    this.fecha = LocalDateTime.now();
+    this.nivelBateria = nivelBateria;
   }
 }

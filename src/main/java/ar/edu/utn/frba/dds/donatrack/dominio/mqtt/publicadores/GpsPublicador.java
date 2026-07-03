@@ -1,42 +1,81 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.mqtt.publicadores;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.mqtt.GpsMensaje;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Scanner;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import com.google.gson.Gson;
-import java.util.Scanner;
 
 public class GpsPublicador {
 
   public static void main(String[] args) {
     String brokerUrl = "tcp://broker.hivemq.com:1883";
-    Gson conversor = new Gson();
+    ObjectMapper conversor = new ObjectMapper();
+    conversor.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
     Scanner teclado = new Scanner(System.in);
-    System.out.print("Ingrese el ID del gps: ");
-    String idDispositivo = teclado.nextLine();
-    System.out.print("Ingrese la latitud: ");
-    String latitud = teclado.nextLine();
-    System.out.print("Ingrese la longitud: ");
-    String longitud = teclado.nextLine();
-    String topic = "g7/dds/vehiculos/gps/ubicaciones/" + idDispositivo;
-    System.out.println("se enviara mensajes al topic: "+ topic);
 
+    System.out.print("Ingrese el ID del gps por ejemplo: gpsA o gpsB: ");
+    String idDispositivo = teclado.nextLine();
+    String topic = "g7/dds/vehiculos/gps/ubicaciones/" + idDispositivo;
+    System.out.print("ArchivoJson: ");
+    String nombreArchivo = teclado.nextLine();
+    String rutaArchivo = "src/main/resources/coordenadasCamiones/" + nombreArchivo;
+
+    Path path = Paths.get(rutaArchivo);
+    if (!existeArchivo(path)) {
+      System.out.println("ERROR: No se encontró el archivo en la ruta: " + rutaArchivo);
+      return;
+    }
+    System.out.println("se enviara mensajes al topic: " + topic);
     try {
+      String contenidoJson = new String(Files.readAllBytes(path));
+      List<GpsMensaje> mensajes = conversor.readValue(contenidoJson,
+          new TypeReference<List<GpsMensaje>>() {});
+
+      System.out.println("Archivo de coordenadas cargada exitosamente, con: " + mensajes.size()
+                    + " coordenadas");
+
       MqttClient client = new MqttClient(brokerUrl, idDispositivo);
       client.connect();
 
-      GpsMensaje miUbicacion = new GpsMensaje(idDispositivo, latitud, longitud);
+      for (GpsMensaje mensaje : mensajes) {
+        //agregamos id que tomamos por consola
+        mensaje.setId(idDispositivo);
 
-      String mensajeEnviar = conversor.toJson(miUbicacion);
+        String mensajeEnviar = conversor.writeValueAsString(mensaje);
+        System.out.println("Enviando: " + mensajeEnviar);
 
-      MqttMessage message = new MqttMessage(mensajeEnviar.getBytes());
-      message.setQos(1);
-      client.publish(topic, message);
+        MqttMessage message = new MqttMessage(mensajeEnviar.getBytes());
+        message.setQos(1);
+        client.publish(topic, message);
+        pasanSeg(4);
+      }
 
-      System.out.println("Enviado: " + mensajeEnviar);
+      System.out.println("Ruta finalizada.");
       client.disconnect();
     } catch (Exception e) {
       System.out.println("Error al enviar el mensaje: " + e.getMessage());
+    } finally {
+      teclado.close();
+    }
+  }
+
+  //=============Funciones auxiliares=================
+  private static Boolean existeArchivo(Path path) {
+    return Files.exists(path);
+  }
+
+  private static void pasanSeg(Integer segundos) {
+    try {
+      Thread.sleep(segundos * 1000);
+    } catch (InterruptedException e) {
+      System.out.println("error al esperar segundos " + e.getMessage());
     }
   }
 

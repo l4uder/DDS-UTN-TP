@@ -55,12 +55,20 @@
             <version>1.2.5</version>
             <scope>compile</scope>
         </dependency>
-        <!-- Source: https://mvnrepository.com/artifact/com.google.code.gson/gson
-             Motivo para convertir/desconvertir json-->
+        <!-- Source: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+             Motivo para convertir/desconvertir json  -->
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.13.2</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.22.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/org.projectlombok/lombok
+            Motivo: para crear constructores vacios y generar getters y setters por default -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -122,6 +130,7 @@
                 <configuration>
                     <excludes>
                         <exclude>ar/edu/utn/frba/dds/donatrack/cron/**/*</exclude>
+                        <exclude>ar/edu/utn/frba/dds/donatrack/dominio/mqtt/**/*</exclude>
                         <exclude>ar/edu/utn/frba/dds/donatrack/persistencia/**/*</exclude>
                         <exclude>ar/edu/utn/frba/dds/donatrack/Main.class</exclude>
                     </excludes>
