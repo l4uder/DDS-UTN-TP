@@ -39,4 +39,8 @@ public class Camion {
     }
     return this.coordenadas.get(this.coordenadas.size() - 1);
   }
+
+  public String getPatente() {
+    return this.patente;
+  }
 }

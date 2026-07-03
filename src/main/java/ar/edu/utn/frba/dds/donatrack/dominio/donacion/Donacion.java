@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.dominio.donacion;
 
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
@@ -16,8 +17,9 @@ public class Donacion {
   private List<EstadoDonacion> historialEstados;
   //Doble asociacion bidericcional
   private Beneficiario beneficiario;
+  private Donante donante;
 
-  public Donacion(List<Bien> bienes) {
+  public Donacion(Donante donante, List<Bien> bienes) {
     if (bienes == null || bienes.isEmpty()) {
       throw new DomainValidationException("Una donación debe tener al menos un bien");
     }
@@ -25,6 +27,11 @@ public class Donacion {
     this.bienes = new ArrayList<>(bienes);
     this.historialEstados = new ArrayList<>();
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
+    this.donante = donante;
+  }
+
+  public Donante getDonante(){
+    return this.donante;
   }
 
   public TipoEstadoDonacion getEstadoActual() {
@@ -125,6 +132,12 @@ public class Donacion {
     ));
     this.beneficiario = beneficiario;
     beneficiario.asignarDonacion(this);
+
+    String mensajeBeneficiario = "Se le ha asignado una nueva donación: " + this.descripcion;
+    beneficiario.getMedioDeContactoPred().notificar(mensajeBeneficiario);
+
+    String mensajeDonante = "Tu donación ha sido asignada a la entidad: " + beneficiario.getRazonSocial();
+    this.donante.getMedioDeContactoPred().notificar(mensajeDonante);
   }
 
   public void marcarVencida() {
