@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.cron;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.persistencia.DonanteRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import java.util.List;
 
 public class AusenciaBeneficiario {
