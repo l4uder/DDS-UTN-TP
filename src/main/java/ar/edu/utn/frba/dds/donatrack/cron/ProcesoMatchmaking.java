@@ -1,11 +1,11 @@
 package ar.edu.utn.frba.dds.donatrack.cron;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.asignador.Asignador;
-import ar.edu.utn.frba.dds.donatrack.dominio.asignador.ResultadoAsignacion;
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
-import ar.edu.utn.frba.dds.donatrack.persistencia.BeneficiarioRepository;
-import ar.edu.utn.frba.dds.donatrack.persistencia.DonacionRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.Asignador;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.ResultadoAsignacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import java.util.List;
 
 public class ProcesoMatchmaking {
