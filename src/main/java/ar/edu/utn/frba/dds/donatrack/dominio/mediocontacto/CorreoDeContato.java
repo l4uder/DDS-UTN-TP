@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto;
 
 import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 
 public class CorreoDeContato extends MedioContacto {
   private String correo;
@@ -13,6 +14,8 @@ public class CorreoDeContato extends MedioContacto {
     }
     this.correo = correo;
     this.esPrincipal = false;
+
+    this.clienteCorreo = ProveedorClienteCorreo.getInstancia();
   }
 
   @Override
