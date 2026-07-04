@@ -4,6 +4,8 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public final class DonanteRepository {
   private static final DonanteRepository INSTANCE = new DonanteRepository();
@@ -18,7 +20,28 @@ public final class DonanteRepository {
   }
 
   public void guardarDonante(Donante donante) {
-    donantesStore.put(donante.getEmail(), donante);
+    if (donante.getId() == null) {
+      donante.buscarEmail().flatMap(this::buscarPorEmail)
+          .ifPresent(existente -> donante.setId(existente.getId()));
+    }
+    if (donante.getId() == null) {
+      donante.setId(UUID.randomUUID().toString());
+    }
+    donantesStore.put(donante.getId(), donante);
+  }
+
+  public Optional<Donante> buscarPorId(String id) {
+    return Optional.ofNullable(donantesStore.get(id));
+  }
+
+  public Optional<Donante> buscarPorEmail(String email) {
+    return donantesStore.values().stream()
+        .filter(d -> d.buscarEmail().map(e -> e.equalsIgnoreCase(email)).orElse(false))
+        .findFirst();
+  }
+
+  public void eliminar(String id) {
+    donantesStore.remove(id);
   }
 
   public List<Donante> buscarAusentesPorMas(Integer dias) {

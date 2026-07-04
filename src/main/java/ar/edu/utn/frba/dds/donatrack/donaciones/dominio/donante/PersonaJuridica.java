@@ -41,10 +41,6 @@ public class PersonaJuridica extends Donante {
     return representantes;
   }
 
-  public Documento getDocumento() {
-    return documento;
-  }
-
   public void agregarRepresentante(Representante representante) {
     representantes.add(representante);
   }

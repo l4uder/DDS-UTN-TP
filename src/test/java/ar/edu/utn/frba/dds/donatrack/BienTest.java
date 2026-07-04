@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ar.edu.utn.frba.dds.donatrack.builder.CategoriaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.SubcategoriaBuilder;
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.Categoria;
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.Bien;
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.UnidadMedida;
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Categoria;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;

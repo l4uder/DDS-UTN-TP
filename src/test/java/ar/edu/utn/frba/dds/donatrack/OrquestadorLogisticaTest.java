@@ -2,15 +2,15 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.EntidadBeneficiariaBuilder;
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
-import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.OrquestadorException;
-import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Camion;
-import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Entrega;
-import ar.edu.utn.frba.dds.donatrack.dominio.orquestadorlogistica.OrquestadorLogistica;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.SmsDeContato;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.WhatsappDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.OrquestadorException;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.orquestadorlogistica.OrquestadorLogistica;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
