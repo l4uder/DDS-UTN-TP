@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.asignador.Asignador;
-import ar.edu.utn.frba.dds.donatrack.dominio.asignador.AlgoritmoMatchmaking;
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.Asignador;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.AlgoritmoMatchmaking;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

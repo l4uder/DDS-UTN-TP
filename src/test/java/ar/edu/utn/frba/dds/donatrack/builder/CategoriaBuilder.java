@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.Categoria;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Categoria;
 
 public class CategoriaBuilder {
   private String nombre;

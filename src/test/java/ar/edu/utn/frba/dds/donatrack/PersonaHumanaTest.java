@@ -2,13 +2,13 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.Documento;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.PersonaHumana;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaHumana;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

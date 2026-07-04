@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ClienteCorreoRealJavaMail;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteCorreoRealJavaMail;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 
 public class Main {
   public static void main(String[] args) {

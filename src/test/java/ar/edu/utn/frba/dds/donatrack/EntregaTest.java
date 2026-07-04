@@ -1,23 +1,23 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.Documento;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.EntidadBeneficiariaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
-import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.dominio.donacion.Donacion;
-import ar.edu.utn.frba.dds.donatrack.dominio.donacion.TipoEstadoDonacion;
-import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Camion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.logistica.Entrega;
-import ar.edu.utn.frba.dds.donatrack.dominio.logistica.TipoEstadoEntrega;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.WhatsappDeContato;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.TipoEstadoEntrega;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
 import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

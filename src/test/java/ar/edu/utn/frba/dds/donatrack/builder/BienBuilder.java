@@ -1,10 +1,10 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.Bien;
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.UnidadMedida;
-import ar.edu.utn.frba.dds.donatrack.dominio.bien.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.time.LocalDate;
 
 public class BienBuilder {

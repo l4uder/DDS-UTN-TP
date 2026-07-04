@@ -1,21 +1,21 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.Documento;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.Genero;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.PersonaHumana;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.PersonaJuridica;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.Representante;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoOrganizacion;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.SmsDeContato;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.WhatsappDeContato;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ClienteCorreo;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ClienteSms;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ClienteWhatsapp;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Genero;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaHumana;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaJuridica;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Representante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoOrganizacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteSms;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteWhatsapp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
