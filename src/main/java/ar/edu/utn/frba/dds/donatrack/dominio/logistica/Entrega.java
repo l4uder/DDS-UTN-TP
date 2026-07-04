@@ -45,14 +45,14 @@ public class Entrega {
     this.cambiarEstado(TipoEstadoEntrega.ENTREGADA, null);
     this.donaciones.forEach(d -> d.confirmarEntrega());
 
-    this.notificarAInvolucrados("Entrega finalizada con éxito!")
+    this.notificarAInvolucrados("Entrega finalizada con éxito!");
   }
 
   public void marcarNoRecibida(String motivo) {
     this.cambiarEstado(TipoEstadoEntrega.NO_RECIBIDA, motivo);
     this.donaciones.forEach(d -> d.notificarEntregaFallida(motivo));
 
-    this.notificarAInvolucrados("La entrega no pudo concretarse. Motivo: " + motivo)
+    this.notificarAInvolucrados("La entrega no pudo concretarse. Motivo: " + motivo);
   }
 
   public void reingresarDeposito() {
@@ -98,11 +98,11 @@ public class Entrega {
   }
 
   private void notificarAInvolucrados(String mensaje) {
-    this.destino.getMedioDeContactoPred().notificar(mensaje);
+    this.destino.getContactoPrincipal().notificar(mensaje);
     
     this.donaciones.stream()
         .map(Donacion::getDonante)
         .distinct()
-        .forEach(donante -> donante.getMedioDeContactoPred().notificar(mensaje));
+        .forEach(donante -> donante.getContactoPrincipal().notificar(mensaje));
 }
 }

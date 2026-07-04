@@ -134,10 +134,10 @@ public class Donacion {
     beneficiario.asignarDonacion(this);
 
     String mensajeBeneficiario = "Se le ha asignado una nueva donación: " + this.descripcion;
-    beneficiario.getMedioDeContactoPred().notificar(mensajeBeneficiario);
+    beneficiario.getContactoPrincipal().notificar(mensajeBeneficiario);
 
     String mensajeDonante = "Tu donación ha sido asignada a la entidad: " + beneficiario.getRazonSocial();
-    this.donante.getMedioDeContactoPred().notificar(mensajeDonante);
+    this.donante.getContactoPrincipal().notificar(mensajeDonante);
   }
 
   public void marcarVencida() {

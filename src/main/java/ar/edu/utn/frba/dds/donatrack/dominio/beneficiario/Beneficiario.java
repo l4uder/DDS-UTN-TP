@@ -52,4 +52,11 @@ public class Beneficiario {
   public Boolean esIgual(Beneficiario otroBeneficiario) {
     return razonSocial.equalsIgnoreCase(otroBeneficiario.getRazonSocial());
   }
+
+  public MedioContacto getContactoPrincipal() {
+    if (this.contactos != null && !this.contactos.isEmpty()) {
+        return this.contactos.get(0);
+    }
+    throw new DomainValidationException("El beneficiario no posee contactos");
+}
 }
