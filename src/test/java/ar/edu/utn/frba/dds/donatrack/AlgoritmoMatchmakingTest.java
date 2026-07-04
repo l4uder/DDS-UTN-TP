@@ -2,6 +2,11 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.CategoriaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.SubcategoriaBuilder;
@@ -59,9 +64,17 @@ public class AlgoritmoMatchmakingTest {
   //Algoritmos match
   CompatibilidadSemantica compatibilidadSemantica;
   PrioridadSubAtendidos prioridadASubAtendidos;
+  //Donante
+  private Donante donantePrueba;
 
   @BeforeEach
   void configuracionInicial() {
+    //Mock de Motor de correos exclusivo para los tests
+    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
+        // No hace nada de red, solo simula que lo envió
+        System.out.println("TEST - Simulando envío a: " + destino);
+    });
+
     //Categorias
     alimentos = new CategoriaBuilder().conNombre("Alimentos").build();
     muebles = new CategoriaBuilder().conNombre("Muebles").build();
@@ -118,6 +131,13 @@ public class AlgoritmoMatchmakingTest {
     //Algoritmos match
     compatibilidadSemantica = new CompatibilidadSemantica();
     prioridadASubAtendidos = new PrioridadSubAtendidos();
+    //Donante
+    donantePrueba = new PersonaHumanaBuilder()
+      .conNombre("Juan")
+      .conApellido("Pérez")
+      .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+      .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+      .build();
   }
 
   @Test
@@ -126,7 +146,7 @@ public class AlgoritmoMatchmakingTest {
     beneficiario2.agregarNecesidad(new NecesidadExtraordinaria(sillas, "....", 3));
     beneficiario3.agregarNecesidad(new NecesidadExtraordinaria(frutas, "....", 3));
 
-    donacion1 = new Donacion(List.of(yogurDream, manzanasRojas));
+    donacion1 = new Donacion(donantePrueba, List.of(yogurDream, manzanasRojas));
 
     List<Beneficiario> beneficiarios = compatibilidadSemantica.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 
@@ -140,7 +160,7 @@ public class AlgoritmoMatchmakingTest {
     beneficiario1.agregarNecesidad(new NecesidadExtraordinaria(lacteos, "....", 1));
     beneficiario2.agregarNecesidad(new NecesidadExtraordinaria(frutas, "....", 3));
 
-    donacion1 = new Donacion(List.of(yogurDream, manzanasRojas));
+    donacion1 = new Donacion(donantePrueba, List.of(yogurDream, manzanasRojas));
 
     List<Beneficiario> beneficiarios = compatibilidadSemantica.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 
@@ -164,7 +184,7 @@ public class AlgoritmoMatchmakingTest {
     beneficiario11.agregarNecesidad(new NecesidadExtraordinaria(frutas, "....", 2));
     beneficiario12.agregarNecesidad(new NecesidadExtraordinaria(frutas, "....", 2));
 
-    donacion1 = new Donacion(List.of(yogurDream, manzanasRojas));
+    donacion1 = new Donacion(donantePrueba, List.of(yogurDream, manzanasRojas));
 
     List<Beneficiario> beneficiarios = compatibilidadSemantica.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3, beneficiario4, beneficiario5, beneficiario6, beneficiario7, beneficiario8, beneficiario9, beneficiario10, beneficiario11, beneficiario12));
     assertEquals(10, beneficiarios.size());
@@ -173,15 +193,15 @@ public class AlgoritmoMatchmakingTest {
   @Test
   void debePriorizarAlBeneficiarioConMenosDonaciones() {
     //benefeciario1 recibe una donacion
-    donacionAsignada1 = new Donacion(List.of(sillaMadera));
+    donacionAsignada1 = new Donacion(donantePrueba, List.of(sillaMadera));
     donacionAsignada1.confirmarAsignacion(beneficiario1);
     //beneficiario2 recibe dos donaciones
-    donacionAsignada2 = new Donacion(List.of(yogurDream));
-    donacionAsignada3 = new Donacion(List.of(remeraMangaCorta));
+    donacionAsignada2 = new Donacion(donantePrueba, List.of(yogurDream));
+    donacionAsignada3 = new Donacion(donantePrueba, List.of(remeraMangaCorta));
     donacionAsignada2.confirmarAsignacion(beneficiario2);
     donacionAsignada3.confirmarAsignacion(beneficiario2);
 
-    donacion1 = new Donacion(List.of(yogurDream, manzanasRojas));
+    donacion1 = new Donacion(donantePrueba, List.of(yogurDream, manzanasRojas));
 
     List<Beneficiario> beneficiarios = prioridadASubAtendidos.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 
@@ -193,17 +213,17 @@ public class AlgoritmoMatchmakingTest {
   @Test
   void debeIgnorarLasDonacionesAnterioresATresMeses() {
     //benefeciario1 recibe una donacion
-    donacionAsignada1 = new Donacion(List.of(sillaMadera));
+    donacionAsignada1 = new Donacion(donantePrueba, List.of(sillaMadera));
     donacionAsignada1.confirmarAsignacion(beneficiario1);
     //beneficiario2 recibe dos donaciones pero el año pasado
-    donacionAsignada2 = new Donacion(List.of(yogurDream));
-    donacionAsignada3 = new Donacion(List.of(remeraMangaCorta));
+    donacionAsignada2 = new Donacion(donantePrueba, List.of(yogurDream));
+    donacionAsignada3 = new Donacion(donantePrueba, List.of(remeraMangaCorta));
     donacionAsignada2.confirmarAsignacion(beneficiario2);
     donacionAsignada3.confirmarAsignacion(beneficiario2);
     donacionAsignada2.setFechaAsignacion(LocalDateTime.now().minusYears(1));
     donacionAsignada3.setFechaAsignacion(LocalDateTime.now().minusYears(1));
 
-    donacion1 = new Donacion(List.of(yogurDream, manzanasRojas));
+    donacion1 = new Donacion(donantePrueba, List.of(yogurDream, manzanasRojas));
 
     List<Beneficiario> beneficiarios = prioridadASubAtendidos.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 

@@ -1,5 +1,11 @@
 package ar.edu.utn.frba.dds.donatrack;
 
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.EntidadBeneficiariaBuilder;
 import ar.edu.utn.frba.dds.donatrack.dominio.beneficiario.Beneficiario;
@@ -26,13 +32,18 @@ public class OrquestadorLogisticaTest {
   private List<Donacion> donaciones;
   private List<Camion> camiones;
 
+  private Donante donantePrueba;
+
   @BeforeEach
   void setUp() {
     WhatsappDeContato contactoWhatsapp = new WhatsappDeContato("132212212");
     SmsDeContato contactoSms = new SmsDeContato("112322222");
+    CorreoDeContato contactoCorreo = new CorreoDeContato("comedor@prueba.com");
+    CorreoDeContato contactoCorreoB = new CorreoDeContato("comedorB@prueba.com");
 
-    List<MedioContacto> listaContactosA = List.of(contactoWhatsapp);
-    List<MedioContacto> listaContactosB = List.of(contactoSms);
+    List<MedioContacto> listaContactosA = List.of(contactoCorreo); //Cambio a correo a la espera de la implementación de envio por Whatsapp
+    //List<MedioContacto> listaContactosB = List.of(contactoSms); Comentada a la espera de la implementación de envío por SMS
+    List<MedioContacto> listaContactosB = List.of(contactoCorreo);
 
     beneficiarioA = new EntidadBeneficiariaBuilder()
         .conRazonSocial("Comedor A")
@@ -47,10 +58,23 @@ public class OrquestadorLogisticaTest {
 
     donaciones = new ArrayList<>();
     camiones = List.of(new Camion("AB123CD", 10f, 2.5f, 1500f));
+
+    //Mock de Motor de correos exclusivo para los tests
+    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
+        // No hace nada de red, solo simula que lo envió
+        System.out.println("TEST - Simulando envío a: " + destino);
+    });
+
+    donantePrueba = new PersonaHumanaBuilder()
+      .conNombre("Juan")
+      .conApellido("Pérez")
+      .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+      .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+      .build();
   }
 
   private Donacion donacionAsignadaA(Beneficiario beneficiario) {
-    Donacion d = new Donacion(List.of(
+    Donacion d = new Donacion(donantePrueba, List.of(
         new BienBuilder().conDescripcion("Arroz").conCantidad(3).conUsado(false).buildNoPerecedero()
     ));
     d.confirmarAsignacion(beneficiario);
@@ -88,7 +112,7 @@ public class OrquestadorLogisticaTest {
 
   @Test
   void soloConsideraDonacionesEnAsignacionRealizada() {
-    Donacion donacionSinAsignar = new Donacion(List.of(
+    Donacion donacionSinAsignar = new Donacion(donantePrueba, List.of(
         new BienBuilder()
           .conDescripcion("Fideos")
           .conCantidad(2)

@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack;
 
+import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.RepresentanteBuilder;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.Documento;
@@ -7,12 +8,22 @@ import ar.edu.utn.frba.dds.donatrack.dominio.donante.PersonaJuridica;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.Representante;
 import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PersonaJuridicaTest {
+
+  @BeforeEach
+  void setUp() {
+    //Mock de Motor de correos exclusivo para los tests
+    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
+        // No hace nada de red, solo simula que lo envió
+        System.out.println("TEST - Simulando envío a: " + destino);
+    });
+  }
 
   @Test
   public void sePuedeCrearUnaPersonaJuridicaConDatosValidos() {

@@ -10,10 +10,11 @@ public class SegmentadorDonaciones {
 
   public List<Donacion> segmentar(List<RegistroEntrega> registros) {
     return registros.stream()
-        .flatMap(registro -> registro.getBienes().stream())
-        .collect(Collectors.groupingBy(Bien::getNombreClave))
-        .values().stream()
-        .map(Donacion::new)
+        .flatMap(registro -> registro.getBienes().stream()
+            .collect(Collectors.groupingBy(Bien::getNombreClave))
+            .values().stream()
+            .map(bienesAgrupados -> new Donacion(registro.getDonante(), bienesAgrupados))
+        )
         .toList();
   }
 }
