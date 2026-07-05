@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.server;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.routes.DonacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.routes.DonanteRoutes;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
@@ -23,6 +24,7 @@ public class DonacionesApp {
 
     app.get("/health", ctx -> ctx.json(new Health("donaciones-service", "OK")));
     DonanteRoutes.registrar(app);
+    DonacionRoutes.registrar(app);
 
     return app;
   }

@@ -35,6 +35,7 @@ public class GsonConfig {
             (JsonDeserializer<LocalDate>) (json, tipo, ctx) ->
                 LocalDate.parse(json.getAsString(), FORMATO_FECHA))
         .setPrettyPrinting()
+        .disableHtmlEscaping()
         .create();
   }
 
