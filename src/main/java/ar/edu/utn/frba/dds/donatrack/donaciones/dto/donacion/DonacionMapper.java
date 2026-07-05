@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.NoPerecedero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.Perecedero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.util.List;
 
@@ -33,6 +34,13 @@ public class DonacionMapper {
         donacion.getEstadoActual().name(),
         donacion.getBeneficiario() == null ? null : donacion.getBeneficiario().getRazonSocial(),
         donacion.getBienes().stream().map(DonacionMapper::aBienDto).toList());
+  }
+
+  public static EstadoDonacionDto aEstadoDto(EstadoDonacion estado) {
+    return new EstadoDonacionDto(
+        estado.getTipoEstado().name(),
+        estado.getFecha(),
+        estado.getDetalle());
   }
 
   private static Bien aBien(BienDto dto) {
