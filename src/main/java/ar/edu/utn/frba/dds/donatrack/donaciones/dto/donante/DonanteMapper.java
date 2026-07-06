@@ -7,10 +7,9 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaHumana;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaJuridica;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoOrganizacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dto.comun.ContactoDto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dto.comun.ContactoMapper;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,40 +84,14 @@ public class DonanteMapper {
     if (contactos == null || contactos.isEmpty()) {
       throw new DomainValidationException("La lista de contactos no puede estar vacía ni ser null");
     }
-    return contactos.stream().map(DonanteMapper::aContacto).toList();
-  }
-
-  private static MedioContacto aContacto(ContactoDto dto) {
-    if (dto.medio() == null || dto.valor() == null) {
-      throw new DomainValidationException("Cada contacto necesita 'medio' y 'valor'");
-    }
-    MedioContacto contacto = switch (dto.medio().toUpperCase()) {
-      case "EMAIL" -> new CorreoDeContato(dto.valor());
-      case "SMS" -> new SmsDeContato(dto.valor());
-      case "WHATSAPP" -> new WhatsappDeContato(dto.valor());
-      default -> throw new DomainValidationException(
-          "Medio de contacto invalido: " + dto.medio() + " (EMAIL, SMS o WHATSAPP)");
-    };
-    contacto.setPrincipal(Boolean.TRUE.equals(dto.principal()));
-    return contacto;
+    return ContactoMapper.aDominio(contactos);
   }
 
   private static List<ContactoDto> aContactosDto(Donante donante) {
     List<ContactoDto> contactos = new ArrayList<>();
-    contactos.add(aContactoDto(donante.getContactoPrincipal()));
-    donante.getContactosSecundarios().forEach(c -> contactos.add(aContactoDto(c)));
+    contactos.add(ContactoMapper.aDto(donante.getContactoPrincipal()));
+    donante.getContactosSecundarios().forEach(c -> contactos.add(ContactoMapper.aDto(c)));
     return contactos;
-  }
-
-  private static ContactoDto aContactoDto(MedioContacto contacto) {
-    if (contacto instanceof CorreoDeContato correo) {
-      return new ContactoDto("EMAIL", correo.getCorreo(), correo.getPrincipal());
-    }
-    if (contacto instanceof SmsDeContato sms) {
-      return new ContactoDto("SMS", sms.getTelefono(), sms.getPrincipal());
-    }
-    WhatsappDeContato whatsapp = (WhatsappDeContato) contacto;
-    return new ContactoDto("WHATSAPP", whatsapp.getTelefono(), whatsapp.getPrincipal());
   }
 
   private static <E extends Enum<E>> E parseEnum(Class<E> tipo, String valor, String campo) {

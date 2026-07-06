@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dto.comun.ContactoDto;
 import java.time.LocalDate;
 import java.util.List;
 

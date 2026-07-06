@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Beneficiario {
+  private String id;
   private String razonSocial;
   private String direccion;
   private List<MedioContacto> contactos;
@@ -26,8 +27,32 @@ public class Beneficiario {
     this.donaciones = new ArrayList<>();
   }
 
+  public String getId() {
+    return this.id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
   public String getRazonSocial() {
     return this.razonSocial;
+  }
+
+  public String getDireccion() {
+    return this.direccion;
+  }
+
+  public List<MedioContacto> getContactos() {
+    return new ArrayList<>(this.contactos);
+  }
+
+  public void actualizarDatos(String razonSocial,
+                              String direccion,
+                              List<MedioContacto> contactos) {
+    this.razonSocial = razonSocial;
+    this.direccion = direccion;
+    this.contactos = new ArrayList<>(contactos);
   }
 
   public List<Necesidad> getNecesidades() {
