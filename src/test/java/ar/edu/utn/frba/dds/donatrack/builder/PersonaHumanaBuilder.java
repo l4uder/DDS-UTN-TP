@@ -1,11 +1,11 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.CorreoDeContato;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.Documento;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.Genero;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.PersonaHumana;
-import ar.edu.utn.frba.dds.donatrack.dominio.donante.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.dominio.mediocontacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Genero;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaHumana;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

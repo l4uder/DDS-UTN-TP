@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.dominio.cargabatch.OrquestadorCargaDonantes;
-import ar.edu.utn.frba.dds.donatrack.dominio.excepciones.BatchJobException;
-import ar.edu.utn.frba.dds.donatrack.persistencia.DonanteRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.cargabatch.OrquestadorCargaDonantes;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BatchJobException;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

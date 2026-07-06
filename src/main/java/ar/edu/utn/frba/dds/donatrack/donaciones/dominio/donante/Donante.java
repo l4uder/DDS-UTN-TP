@@ -8,8 +8,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Donante {
+  protected String id;
   protected Documento documento;
   protected List<MedioContacto> contactos;
   protected List<RegistroEntrega> entregas = new ArrayList<>();
@@ -24,6 +26,18 @@ public abstract class Donante {
     if (this.contactos.stream().noneMatch(MedioContacto::getPrincipal)) {
       throw new DomainValidationException("Debe tener al menos un contacto principal");
     }
+  }
+
+  public String getId() {
+    return this.id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public Documento getDocumento() {
+    return this.documento;
   }
 
   public void agregarContactoPrincipal(MedioContacto contacto) {
@@ -72,14 +86,16 @@ public abstract class Donante {
   }
 
   public String getEmail() {
-    CorreoDeContato correoBuscado = this.contactos.stream()
-        .filter(contacto -> contacto instanceof CorreoDeContato)
-        .map(correo -> (CorreoDeContato) correo)
-        .findFirst()
+    return buscarEmail()
         .orElseThrow(() -> new DomainValidationException(
             "El Donante no tiene correo electrónico"));
+  }
 
-    return correoBuscado.getCorreo();
+  public Optional<String> buscarEmail() {
+    return this.contactos.stream()
+        .filter(contacto -> contacto instanceof CorreoDeContato)
+        .map(correo -> ((CorreoDeContato) correo).getCorreo())
+        .findFirst();
   }
 
   private List<MedioContacto> getContactos() {

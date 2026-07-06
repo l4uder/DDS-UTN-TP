@@ -42,6 +42,14 @@ public class Bien {
     return this.subcategoria;
   }
 
+  public String getFoto() {
+    return this.foto;
+  }
+
+  public TipoBien getTipoBien() {
+    return this.tipoBien;
+  }
+
   public String getNombreClave() {
     return this.tipoBien.getNombreClave(this.subcategoria);
   }
