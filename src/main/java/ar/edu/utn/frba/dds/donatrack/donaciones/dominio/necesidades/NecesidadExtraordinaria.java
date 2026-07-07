@@ -12,6 +12,17 @@ public class NecesidadExtraordinaria extends Necesidad {
     this.cantidadRequerida = cantidadRequerida;
   }
 
+  public Integer getCantidadRequerida() {
+    return cantidadRequerida;
+  }
+
+  public void actualizarDatos(Subcategoria subcategoria,
+                              String descripcion,
+                              int cantidadRequerida) {
+    super.actualizarDatos(subcategoria, descripcion);
+    this.cantidadRequerida = cantidadRequerida;
+  }
+
   @Override
   public Boolean esSatisfecha() {
     return getCantidadRecibida() >= cantidadRequerida;

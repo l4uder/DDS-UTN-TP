@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioConta
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Beneficiario {
   private String id;
@@ -65,6 +66,16 @@ public class Beneficiario {
 
   public void agregarNecesidad(Necesidad necesidad) {
     this.necesidades.add(necesidad);
+  }
+
+  public Optional<Necesidad> buscarNecesidad(String necesidadId) {
+    return this.necesidades.stream()
+        .filter(necesidad -> necesidadId.equals(necesidad.getId()))
+        .findFirst();
+  }
+
+  public void eliminarNecesidad(Necesidad necesidad) {
+    this.necesidades.remove(necesidad);
   }
 
   public void asignarDonacion(Donacion donacion) {
