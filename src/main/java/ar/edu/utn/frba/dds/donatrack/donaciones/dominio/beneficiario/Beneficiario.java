@@ -15,9 +15,7 @@ public class Beneficiario {
   private String direccion;
   private List<MedioContacto> contactos;
   private List<Necesidad> necesidades;
-  //Doble asociacion bidericcional
   private List<Donacion> donaciones;
-
   public Beneficiario(String razon,
                       String direccion,
                       List<MedioContacto> contactos) {
