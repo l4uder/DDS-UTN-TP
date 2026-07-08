@@ -31,8 +31,16 @@ public class PersonaHumana extends Donante {
     return Period.between(fechaNacimiento, LocalDate.now()).getYears();
   }
 
-  public Documento getDocumento() {
-    return this.documento;
+  public LocalDate getFechaNacimiento() {
+    return this.fechaNacimiento;
+  }
+
+  public Genero getGenero() {
+    return this.genero;
+  }
+
+  public String getDireccion() {
+    return this.direccion;
   }
 
   public String getNombre() {

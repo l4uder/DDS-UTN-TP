@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Donacion {
+  private String id;
   private String descripcion;
   private List<Bien> bienes;
   private List<EstadoDonacion> historialEstados;
@@ -32,6 +33,31 @@ public class Donacion {
 
   public Donante getDonante(){
     return this.donante;
+  }
+
+  public String getId() {
+    return this.id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getDescripcion() {
+    return this.descripcion;
+  }
+
+  public void reemplazarBienes(List<Bien> nuevosBienes) {
+    if (nuevosBienes == null || nuevosBienes.isEmpty()) {
+      throw new DomainValidationException("Una donación debe tener al menos un bien");
+    }
+    if (getEstadoActual() != TipoEstadoDonacion.EN_DEPOSITO) {
+      throw new CambioDeEstadoNoPermitidoException(
+          "Solo se puede modificar una donacion que esta en deposito"
+      );
+    }
+    this.bienes = new ArrayList<>(nuevosBienes);
+    this.descripcion = this.descripcionGeneral(nuevosBienes);
   }
 
   public TipoEstadoDonacion getEstadoActual() {

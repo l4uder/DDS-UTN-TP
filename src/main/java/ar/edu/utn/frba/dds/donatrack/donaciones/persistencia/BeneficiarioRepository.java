@@ -1,15 +1,18 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
-public class BeneficiarioRepository {
-  private static BeneficiarioRepository INSTANCE = new BeneficiarioRepository();
-  private List<Beneficiario> beneficiarios;
+public final class BeneficiarioRepository {
+  private static final BeneficiarioRepository INSTANCE = new BeneficiarioRepository();
+  private Map<String, Beneficiario> beneficiariosStore;
 
   private BeneficiarioRepository() {
-    beneficiarios = new ArrayList<>();
+    beneficiariosStore = new HashMap<>();
   }
 
   public static BeneficiarioRepository getInstancia() {
@@ -17,10 +20,21 @@ public class BeneficiarioRepository {
   }
 
   public void guardarBeneficiario(Beneficiario beneficiario) {
-    this.beneficiarios.add(beneficiario);
+    if (beneficiario.getId() == null) {
+      beneficiario.setId(UUID.randomUUID().toString());
+    }
+    beneficiariosStore.put(beneficiario.getId(), beneficiario);
+  }
+
+  public Optional<Beneficiario> buscarPorId(String id) {
+    return Optional.ofNullable(beneficiariosStore.get(id));
+  }
+
+  public void eliminar(String id) {
+    beneficiariosStore.remove(id);
   }
 
   public List<Beneficiario> buscarTodos() {
-    return this.beneficiarios;
+    return beneficiariosStore.values().stream().toList();
   }
 }
