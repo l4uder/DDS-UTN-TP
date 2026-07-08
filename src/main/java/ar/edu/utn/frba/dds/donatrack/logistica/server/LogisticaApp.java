@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.server;
 
+import ar.edu.utn.frba.dds.donatrack.logistica.routes.CamionRoutes;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
 import io.javalin.Javalin;
@@ -21,6 +22,8 @@ public class LogisticaApp {
     ExceptionHandlers.registrar(app);
 
     app.get("/health", ctx -> ctx.json(new Health("logistica-service", "OK")));
+
+    CamionRoutes.registrar(app);
 
     return app;
   }

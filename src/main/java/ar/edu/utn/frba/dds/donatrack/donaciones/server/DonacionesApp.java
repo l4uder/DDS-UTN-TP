@@ -1,8 +1,10 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.server;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.routes.AsignacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.routes.BeneficiarioRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.routes.DonacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.routes.DonanteRoutes;
+import ar.edu.utn.frba.dds.donatrack.donaciones.routes.NecesidadRoutes;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
 import io.javalin.Javalin;
@@ -27,6 +29,8 @@ public class DonacionesApp {
     DonanteRoutes.registrar(app);
     DonacionRoutes.registrar(app);
     BeneficiarioRoutes.registrar(app);
+    NecesidadRoutes.registrar(app);
+    AsignacionRoutes.registrar(app);
 
     return app;
   }

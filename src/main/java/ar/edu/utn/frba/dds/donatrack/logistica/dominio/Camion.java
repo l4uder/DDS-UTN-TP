@@ -26,7 +26,29 @@ public class Camion {
   }
 
   public Boolean posee(String idGps) {
-    return this.gps.getImei().equalsIgnoreCase(idGps);
+    return this.gps != null && this.gps.getImei().equalsIgnoreCase(idGps);
+  }
+
+  public void actualizarDatos(float capacidadVolumen, float altura, float capacidadCarga) {
+    this.capacidadVolumen = capacidadVolumen;
+    this.altura = altura;
+    this.capacidadCarga = capacidadCarga;
+  }
+
+  public String getPatente() {
+    return patente;
+  }
+
+  public float getCapacidadVolumen() {
+    return capacidadVolumen;
+  }
+
+  public float getAltura() {
+    return altura;
+  }
+
+  public float getCapacidadCarga() {
+    return capacidadCarga;
   }
 
   public void agregarCoordenada(Coordenada coordenadas) {
