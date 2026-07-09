@@ -1,10 +1,10 @@
 package ar.edu.utn.frba.dds.donatrack.cron;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.orquestadorlogistica.OrquestadorLogistica;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
+import ar.edu.utn.frba.dds.donatrack.logistica.integracion.DonacionesClient;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
 
@@ -12,11 +12,11 @@ import java.util.List;
 
 public class ProcesoLogistica {
   public static void main(String[] args) {
-    DonacionRepository repoDonaciones = DonacionRepository.getInstancia();
+    DonacionesClient donacionesClient = new DonacionesClient();
     CamionRepository repoCamiones = CamionRepository.getInstancia();
     EntregaRepository repoEntregas = EntregaRepository.getInstancia();
 
-    List<Donacion> donacionesAsignadas = repoDonaciones.buscarDonacionesAsignadas();
+    List<DonacionAsignadaDTO> donacionesAsignadas = donacionesClient.buscarDonacionesAsignadas();
     List<Camion> camiones = repoCamiones.buscarTodos();
 
     OrquestadorLogistica orquestador = new OrquestadorLogistica(camiones, donacionesAsignadas);

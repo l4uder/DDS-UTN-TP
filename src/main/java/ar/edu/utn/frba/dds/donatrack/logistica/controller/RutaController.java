@@ -1,13 +1,17 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.controller;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Chofer;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Ruta;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.entrega.EntregaMapper;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.entrega.EntregaResponse;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.planificacion.CallbackPlanificacionRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.ruta.RutaMapper;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.ruta.RutaResponse;
 import ar.edu.utn.frba.dds.donatrack.logistica.service.GestorRuta;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ServicioExternoException;
 import io.javalin.http.Context;
 
 import java.util.List;
@@ -54,6 +58,17 @@ public class RutaController {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     } catch (IllegalStateException e) {
       ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void planificar(Context ctx) {
+    try {
+      List<Entrega> entregas = gestor.planificarEntregasPendientes();
+      ctx.status(201).json(entregas.stream()
+          .map(EntregaMapper::aResponse)
+          .toList());
+    } catch (ServicioExternoException e) {
+      ctx.status(502).json(new ErrorResponse(502, e.getMessage()));
     }
   }
 

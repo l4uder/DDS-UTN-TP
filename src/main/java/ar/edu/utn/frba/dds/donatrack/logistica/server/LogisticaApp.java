@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.server;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.integracion.DonacionesClient;
 import ar.edu.utn.frba.dds.donatrack.logistica.service.GestorRuta;
 import ar.edu.utn.frba.dds.donatrack.logistica.service.GestorEntrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.controller.RutaController;
@@ -19,10 +20,6 @@ public class LogisticaApp {
   public static final int PUERTO = 7071;
 
   public static void main(String[] args) {
-    //hardcodeado
-    Camion camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
-    CamionRepository.getInstancia().guardar(camion);
-
     crearApp().start(PUERTO);
   }
 
@@ -38,12 +35,18 @@ public class LogisticaApp {
 
     CamionRoutes.registrar(app);
 
+    DonacionesClient donacionesClient = new DonacionesClient();
+
     GestorRuta gestorRuta = new GestorRuta(
         RutaRepository.getInstancia(),
         CamionRepository.getInstancia(),
-        EntregaRepository.getInstancia()
+        EntregaRepository.getInstancia(),
+        donacionesClient
     );
-    GestorEntrega gestorEntrega = new GestorEntrega(EntregaRepository.getInstancia());
+    GestorEntrega gestorEntrega = new GestorEntrega(
+        EntregaRepository.getInstancia(),
+        donacionesClient
+    );
     RutaController rutaController = new RutaController(gestorRuta);
     EntregaController entregaController = new EntregaController(gestorEntrega);
     RutaRoutes.registrar(app, rutaController, entregaController);

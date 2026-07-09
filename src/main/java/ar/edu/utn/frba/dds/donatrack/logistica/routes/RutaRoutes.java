@@ -11,6 +11,7 @@ public class RutaRoutes {
                                EntregaController entregaController) {
     // Rutas
     app.get("/rutas", rutaController::listar);
+    app.post("/rutas/planificar", rutaController::planificar);
     app.get("/rutas/{id}", rutaController::obtener);
     app.post("/rutas/{id}/chofer", rutaController::asignarChofer);
     app.post("/rutas/{id}/iniciar", rutaController::iniciarRecorrido);
