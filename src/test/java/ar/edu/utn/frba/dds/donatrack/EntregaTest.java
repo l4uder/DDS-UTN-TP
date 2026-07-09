@@ -1,65 +1,33 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
-import ar.edu.utn.frba.dds.donatrack.builder.EntidadBeneficiariaBuilder;
-import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
-
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.TipoEstadoEntrega;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
-import java.util.ArrayList;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntregaTest {
 
-  private Beneficiario beneficiario;
-  private Donacion donacion;
+  private BeneficiarioDTO beneficiario;
+  private DonacionAsignadaDTO donacion;
   private Camion camion;
   private Entrega entrega;
 
   @BeforeEach
   void setUp() {
-    WhatsappDeContato contactoWhatsapp =
-        new WhatsappDeContato("132212212");
+    beneficiario = new BeneficiarioDTO("ben-1", "Comedor San José", "Av. Siempre Viva 123");
 
-    List<MedioContacto> listaContactos =
-        List.of(contactoWhatsapp);
-
-    beneficiario = new EntidadBeneficiariaBuilder()
-        .conRazonSocial("Comedor San José")
-        .conDireccion("Av. Siempre Viva 123")
-        .conMediosContactos(listaContactos)
-        .build();
-
-    donacion = new Donacion(List.of(
-        new BienBuilder()
-            .conDescripcion("Fideos")
-            .conCantidad(5)
-            .conUsado(false)
-            .buildNoPerecedero()
-    ));
-
-    donacion.confirmarAsignacion(beneficiario);
+    donacion = new DonacionAsignadaDTO("don-1", "Fideos", beneficiario);
 
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
 
-    entrega = new Entrega(
-        beneficiario,
-        List.of(donacion),
-        camion
-    );
+    entrega = new Entrega(beneficiario, List.of(donacion), camion);
   }
 
   @Test
@@ -68,49 +36,37 @@ public class EntregaTest {
   }
 
   @Test
-  void confirmarListaParaEntregarActualizaLasDonaciones() {
+  void confirmarListaParaEntregarNoCambiaEstadoDeEntrega() {
     entrega.confirmarListaParaEntregar();
-    assertEquals(TipoEstadoDonacion.LISTA_PARA_ENTREGAR, donacion.getEstadoActual());
+    assertEquals(TipoEstadoEntrega.PENDIENTE, entrega.getEstadoActual());
   }
 
   @Test
-  void iniciarTrasladoCambiaEntregaYDonaciones() {
-    entrega.confirmarListaParaEntregar();
+  void iniciarTrasladoCambiaEstadoDeEntrega() {
     entrega.iniciarTraslado();
-
     assertEquals(TipoEstadoEntrega.EN_TRASLADO, entrega.getEstadoActual());
-    assertEquals(TipoEstadoDonacion.EN_TRASLADO, donacion.getEstadoActual());
   }
 
   @Test
-  void confirmarRecepcionMarcaEntregaYDonacionesComoEntregadas() {
-    entrega.confirmarListaParaEntregar();
+  void confirmarRecepcionMarcaEntregaComoEntregada() {
     entrega.iniciarTraslado();
     entrega.confirmarRecepcion();
-
     assertEquals(TipoEstadoEntrega.ENTREGADA, entrega.getEstadoActual());
-    assertEquals(TipoEstadoDonacion.ENTREGADA, donacion.getEstadoActual());
   }
 
   @Test
-  void marcarNoRecibidaPropagaMotivoADonaciones() {
-    entrega.confirmarListaParaEntregar();
+  void marcarNoRecibidaActualizaEstadoDeEntrega() {
     entrega.iniciarTraslado();
     entrega.marcarNoRecibida("Nadie respondió en el domicilio");
-
     assertEquals(TipoEstadoEntrega.NO_RECIBIDA, entrega.getEstadoActual());
-    assertEquals(TipoEstadoDonacion.ENTREGA_FALLIDA, donacion.getEstadoActual());
   }
 
   @Test
-  void reingresarADepositoVuelveDonacionesADeposito() {
-    entrega.confirmarListaParaEntregar();
+  void reingresarADepositoVuelveEntregaAPendiente() {
     entrega.iniciarTraslado();
     entrega.marcarNoRecibida("Incidente logístico");
     entrega.reingresarDeposito();
-
     assertEquals(TipoEstadoEntrega.PENDIENTE, entrega.getEstadoActual());
-    assertEquals(TipoEstadoDonacion.EN_DEPOSITO, donacion.getEstadoActual());
   }
 
   @Test

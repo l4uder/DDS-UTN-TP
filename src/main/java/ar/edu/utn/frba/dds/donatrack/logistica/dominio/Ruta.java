@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Ruta {
+  private String id;
   private Camion camion;
   private Chofer chofer;
   private LocalDate fecha;
@@ -17,6 +18,8 @@ public class Ruta {
     this.entregasOrdenadas = entregasOrdenadas;
     this.iniciada = false;
   }
+
+  public String getId() { return id; }
 
   public void iniciarRecorrido() {
     if (iniciada) {
@@ -36,6 +39,7 @@ public class Ruta {
     this.chofer = chofer;
   }
 
+  public LocalDate getFecha() { return fecha; }
   public boolean isIniciada() {
     return iniciada;
   }
@@ -50,5 +54,9 @@ public class Ruta {
 
   public List<Entrega> getEntregasOrdenadas() {
     return entregasOrdenadas;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 }
