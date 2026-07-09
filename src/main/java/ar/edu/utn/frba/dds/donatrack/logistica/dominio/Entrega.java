@@ -34,6 +34,7 @@ public class Entrega {
   public void iniciarTraslado() {
     this.cambiarEstado(TipoEstadoEntrega.EN_TRASLADO, "Iniciando recorrido");
     this.donaciones.forEach(d -> d.confirmarTrasladoEnCurso());
+    this.donaciones.
   }
 
   public void confirmarRecepcion() {

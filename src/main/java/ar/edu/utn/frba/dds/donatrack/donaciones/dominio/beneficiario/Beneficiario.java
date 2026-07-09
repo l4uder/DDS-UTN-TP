@@ -74,6 +74,11 @@ public class Beneficiario {
     this.donaciones.add(donacion);
   }
 
+  public void recibirNotificacion(String mensaje) {
+    List<MedioContacto> contactos = getContactos();
+    contactos.forEach(c -> c.notificar(mensaje));
+  }
+
   public Boolean esIgual(Beneficiario otroBeneficiario) {
     return razonSocial.equalsIgnoreCase(otroBeneficiario.getRazonSocial());
   }
