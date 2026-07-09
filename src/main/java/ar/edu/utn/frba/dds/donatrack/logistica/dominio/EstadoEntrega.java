@@ -19,6 +19,7 @@ public class EstadoEntrega {
     this(estado, null, camion);
   }
 
+  public Camion getCamion() { return camion; }
   public TipoEstadoEntrega getTipoEstado() {
     return this.tipoEstado;
   }

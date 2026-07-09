@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Entrega {
+  private String id;
   private Beneficiario destino;
   private List<Donacion> donaciones;
   private Camion camionAsignado;
@@ -72,6 +73,14 @@ public class Entrega {
     return historialEstados.get(historialEstados.size() - 1).getTipoEstado();
   }
 
+  public List<EstadoEntrega> getHistorialEstados() {
+    return historialEstados;
+  }
+
+  public String getId() {
+    return id;
+  }
+
   public Beneficiario getDestino() {
     return destino;
   }
@@ -86,5 +95,9 @@ public class Entrega {
 
   public List<String> getFotosRecepcion() {
     return fotosRecepcion;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 }

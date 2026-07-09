@@ -1,5 +1,14 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.server;
 
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.service.GestorRuta;
+import ar.edu.utn.frba.dds.donatrack.logistica.service.GestorEntrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.controller.RutaController;
+import ar.edu.utn.frba.dds.donatrack.logistica.controller.EntregaController;
+import ar.edu.utn.frba.dds.donatrack.logistica.routes.RutaRoutes;
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.routes.CamionRoutes;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
@@ -10,6 +19,10 @@ public class LogisticaApp {
   public static final int PUERTO = 7071;
 
   public static void main(String[] args) {
+    //hardcodeado
+    Camion camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
+    CamionRepository.getInstancia().guardar(camion);
+
     crearApp().start(PUERTO);
   }
 
@@ -24,6 +37,16 @@ public class LogisticaApp {
     app.get("/health", ctx -> ctx.json(new Health("logistica-service", "OK")));
 
     CamionRoutes.registrar(app);
+
+    GestorRuta gestorRuta = new GestorRuta(
+        RutaRepository.getInstancia(),
+        CamionRepository.getInstancia(),
+        EntregaRepository.getInstancia()
+    );
+    GestorEntrega gestorEntrega = new GestorEntrega(EntregaRepository.getInstancia());
+    RutaController rutaController = new RutaController(gestorRuta);
+    EntregaController entregaController = new EntregaController(gestorEntrega);
+    RutaRoutes.registrar(app, rutaController, entregaController);
 
     return app;
   }
