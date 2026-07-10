@@ -6,8 +6,10 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donacion.DonacionRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donacion.DonacionResponse;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donacion.EstadoDonacionDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.service.DonacionService;
-import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
@@ -71,10 +73,42 @@ public class DonacionController {
     }
   }
 
-  public void cambiarEstado(Context ctx) {
+  public void cambiarEstadoAEntregada(Context ctx) {
     try {
-      CambioEstadoRequest request = ctx.bodyAsClass(CambioEstadoRequest.class);
-      Donacion donacion = service.cambiarEstado(ctx.pathParam("id"), request);
+      var request = ctx.bodyAsClass(CambioEstadoEntregadaRequest.class);
+      Donacion donacion = service.cambiarEstadoEntregada(ctx.pathParam("id"), request.camionId());
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void cambiarEstadoAErrorEntrega(Context ctx) {
+    try {
+      var request = ctx.bodyAsClass(CambioEstadoErrorEntregaRequest.class);
+      Donacion donacion = service.cambiarEstadoErrorEntrega(ctx.pathParam("id"), request.observacion());
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void cambiarEstadoAEnTraslado(Context ctx) {
+    try {
+      var request = ctx.bodyAsClass(CambioEstadoInicioRutaRequest.class);
+      Donacion donacion = service.cambiarEstadoEnTraslado(ctx.pathParam("id"), request.linkMapa());
       ctx.json(DonacionMapper.aResponse(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));

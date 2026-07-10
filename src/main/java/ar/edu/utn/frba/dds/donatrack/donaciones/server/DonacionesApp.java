@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.server;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.Notificador;
 import ar.edu.utn.frba.dds.donatrack.donaciones.routes.AsignacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.routes.BeneficiarioRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.routes.DonacionRoutes;
@@ -14,6 +15,7 @@ public class DonacionesApp {
   public static final int PUERTO = 7070;
 
   public static void main(String[] args) {
+    Notificador.init(AppEventBus.getInstance());
     crearApp().start(PUERTO);
   }
 

@@ -3,11 +3,17 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaExitosa;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaFallida;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoAsignacionDeDonacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoInicioDeRuta;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import com.google.common.eventbus.EventBus;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +27,16 @@ public class Donacion {
   //Doble asociacion bidericcional
   private Beneficiario beneficiario;
   @Getter
-  private List<Donante> donantes;
+  private List<String> donanteIds;
 
-  public Donacion(List<Bien> bienes, List<Donante> donantes) {
+  public Donacion(List<Bien> bienes, List<String> donanteIds) {
     if (bienes == null || bienes.isEmpty()) {
       throw new DomainValidationException("Una donación debe tener al menos un bien");
     }
-    if (donantes == null || donantes.isEmpty()) {
+    if (donanteIds == null || donanteIds.isEmpty()) {
       throw new DomainValidationException("Una donación debe tener al menos un donante");
     }
-    this.donantes = donantes;
+    this.donanteIds = donanteIds;
     this.descripcion = this.descripcionGeneral(bienes);
     this.bienes = new ArrayList<>(bienes);
     this.historialEstados = new ArrayList<>();

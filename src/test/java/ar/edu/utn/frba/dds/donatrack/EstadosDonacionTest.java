@@ -42,14 +42,14 @@ public class EstadosDonacionTest {
 
   @Test
   public void estadoInicialDeUnaDonacionEsEnDeposito() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     assertEquals(TipoEstadoDonacion.EN_DEPOSITO, donacion.getEstadoActual());
   }
 
   @Test
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEnDeposito() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarTrasladoEnCurso);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
@@ -60,7 +60,7 @@ public class EstadosDonacionTest {
 
   @Test
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeAsignacionRealizada() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     donacion.confirmarAsignacion(new Beneficiario("razon", "direccion", List.of()));
 
@@ -73,7 +73,7 @@ public class EstadosDonacionTest {
 
   @Test
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeListaParaEntregar() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     donacion.confirmarAsignacion(new Beneficiario("razon", "direccion", List.of()));
     donacion.confirmarRuta();
@@ -88,7 +88,7 @@ public class EstadosDonacionTest {
 
   @Test
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEnViaje() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     donacion.confirmarAsignacion(new Beneficiario("razon", "direccion", List.of()));
     donacion.confirmarRuta();
@@ -104,7 +104,7 @@ public class EstadosDonacionTest {
 
   @Test
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEntregaFallida() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     donacion.confirmarAsignacion(new Beneficiario("razon", "direccion", List.of()));
     donacion.confirmarRuta();
@@ -121,7 +121,7 @@ public class EstadosDonacionTest {
 
   @Test
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEntregaRealizada() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     donacion.confirmarAsignacion(new Beneficiario("razon", "direccion", List.of()));
     donacion.confirmarRuta();
@@ -140,7 +140,7 @@ public class EstadosDonacionTest {
 
   @Test
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeVencida() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     donacion.marcarVencida();
 
@@ -156,7 +156,7 @@ public class EstadosDonacionTest {
 
   @Test
   public void entregaExitosa() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     donacion.confirmarAsignacion(new Beneficiario("razon", "direccion", List.of()));
     donacion.confirmarRuta();
@@ -178,7 +178,7 @@ public class EstadosDonacionTest {
 
   @Test
   public void entregaFallida() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     donacion.confirmarAsignacion(new Beneficiario("razon", "direccion", List.of()));
     donacion.confirmarRuta();
@@ -200,7 +200,7 @@ public class EstadosDonacionTest {
 
   @Test
   public void donacionVencida() {
-    Donacion donacion = new Donacion(List.of(fideosLucetti));
+    Donacion donacion = new Donacion(List.of(fideosLucetti), List.of("1"));
 
     donacion.marcarVencida();
 

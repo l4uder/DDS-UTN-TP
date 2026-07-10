@@ -9,6 +9,8 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.Perecedero
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.beneficiario.BeneficiarioMapper;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteMapper;
+import ar.edu.utn.frba.dds.donatrack.donaciones.server.AppEventBus;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public class DonacionMapper {
   }
 
   public static Donacion aDominio(DonacionRequest request) {
-    return new Donacion(aBienes(request.bienes()));
+    return new Donacion(aBienes(request.bienes()), List.of(request.donanteId()));
   }
 
   public static List<Bien> aBienes(List<BienDto> bienes) {

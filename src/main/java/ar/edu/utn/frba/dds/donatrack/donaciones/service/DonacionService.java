@@ -3,12 +3,18 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.service;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaExitosa;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaFallida;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoInicioDeRuta;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donacion.DonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donacion.DonacionRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.server.AppEventBus;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
+
+import java.time.LocalDate;
 import java.util.List;
 
 public class DonacionService {
@@ -44,7 +50,7 @@ public class DonacionService {
     obtener(id);
     repository.eliminar(id);
   }
-
+  // TODO pasar a endpoints individuales
   public Donacion cambiarEstado(String id, CambioEstadoRequest request) {
     if (request == null || request.estado() == null) {
       throw new DomainValidationException("El body necesita 'estado'");
@@ -54,13 +60,31 @@ public class DonacionService {
       case ASIGNACION_REALIZADA -> throw new DomainValidationException(
           "No se puede asignar por este medio, la asignacion requiere un beneficiario");
       case LISTA_PARA_ENTREGAR -> donacion.confirmarRuta();
-      case EN_TRASLADO -> donacion.confirmarTrasladoEnCurso();
-      case ENTREGADA -> donacion.confirmarEntrega();
-      case ENTREGA_FALLIDA -> donacion.notificarEntregaFallida(request.observacion());
       case EN_DEPOSITO -> donacion.confirmarRecepcionDeposito();
       case VENCIDA -> donacion.marcarVencida();
     }
     repository.guardarDonacion(donacion);
+    return donacion;
+  }
+
+  public Donacion cambiarEstadoEntregada(String id, String idCamion) {
+    Donacion donacion = obtener(id);
+    donacion.confirmarEntrega();
+    AppEventBus.getInstance().post(new EventoEntregaExitosa(donacion, LocalDate.now(), idCamion));
+    return donacion;
+  }
+
+  public Donacion cambiarEstadoErrorEntrega(String id, String observacion) {
+    Donacion donacion = obtener(id);
+    donacion.notificarEntregaFallida(observacion);
+    AppEventBus.getInstance().post(new EventoEntregaFallida(observacion, donacion, LocalDate.now()));
+    return donacion;
+  }
+
+  public Donacion cambiarEstadoEnTraslado(String id, String linkMapa) {
+    Donacion donacion = obtener(id);
+    donacion.confirmarTrasladoEnCurso();
+    AppEventBus.getInstance().post(new EventoInicioDeRuta(donacion, LocalDate.now(), linkMapa));
     return donacion;
   }
 

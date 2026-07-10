@@ -16,7 +16,10 @@ public class DonacionRoutes {
     app.get("/donaciones/{id}", controller::obtener);
     app.put("/donaciones/{id}", controller::actualizar);
     app.delete("/donaciones/{id}", controller::eliminar);
-    app.post("/donaciones/{id}/estados", controller::cambiarEstado); //aca lo modelamos como post ya que en realidad no es un cambio de estado de true a false, sino que agrega un estado a la lista historialdeEstado (por eso no usamos patch)
+    //aca lo modelamos como post ya que en realidad no es un cambio de estado de true a false, sino que agrega un estado a la lista historialdeEstado (por eso no usamos patch)
+    app.post("/donaciones/{id}/estado/entregada", controller::cambiarEstadoAEntregada);
+    app.post("/donaciones/{id}/estado/error-entrega", controller::cambiarEstadoAErrorEntrega);
+    app.post("/donaciones/{id}/estado/en-ruta", controller::cambiarEstadoAEnTraslado);
     app.get("/donaciones/{id}/estados", controller::listarEstados);
   }
 }

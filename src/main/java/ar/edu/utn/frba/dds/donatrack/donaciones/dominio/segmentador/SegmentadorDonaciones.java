@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.RegistroEntrega;
+import ar.edu.utn.frba.dds.donatrack.donaciones.server.AppEventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,12 @@ public class SegmentadorDonaciones {
         .values().stream()
         .map(el-> {
           List<Bien> bienes = new ArrayList<>();
-          List<Donante> donantes = new ArrayList<>();
+          List<String> donanteIds = new ArrayList<>();
           el.forEach(byd -> {
             bienes.add(byd.b);
-            donantes.add(byd.d);
+            donanteIds.add(byd.d.getId());
           });
-          return new Donacion(bienes, donantes);
+          return new Donacion(bienes, donanteIds);
         })
         .toList();
   }
