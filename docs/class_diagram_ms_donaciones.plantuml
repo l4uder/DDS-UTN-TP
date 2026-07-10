@@ -1,0 +1,515 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class AlgoritmoMatchmaking {
+  + generarRanking(Donacion, List<Beneficiario>): List<Beneficiario>
+  # modoOrdenamiento(): Comparator<Entry<Beneficiario, Integer>>
+  # mapearPuntaje(Donacion, List<Beneficiario>): Map<Beneficiario, Integer>
+}
+entity AsignacionRequest << record >> {
+  + beneficiarioId(): String
+}
+class Asignador {
+  + asignar(Donacion, List<Beneficiario>): List<Beneficiario>
+  + agregarAlgoritmo(AlgoritmoMatchmaking): void
+  + asignar(List<Donacion>, List<Beneficiario>): List<ResultadoAsignacion>
+}
+class Beneficiario {
+  - razonSocial: String
+  - necesidades: List<Necesidad>
+  - id: String
+  - donaciones: List<Donacion>
+  - direccion: String
+  - contactos: List<MedioContacto>
+  + eliminarNecesidad(Necesidad): void
+  + esIgual(Beneficiario): Boolean
+  + agregarNecesidad(Necesidad): void
+  + buscarNecesidad(String): Optional<Necesidad>
+  + asignarDonacion(Donacion): void
+  + actualizarDatos(String, String, List<MedioContacto>): void
+   contactos: List<MedioContacto>
+   necesidades: List<Necesidad>
+   direccion: String
+   razonSocial: String
+   donaciones: List<Donacion>
+   id: String
+}
+class BeneficiarioMapper {
+  + validar(BeneficiarioRequest): void
+  + aDominio(BeneficiarioRequest): Beneficiario
+  + aResponse(Beneficiario): BeneficiarioResponse
+}
+entity BeneficiarioRequest << record >> {
+  + razonSocial(): String
+  + direccion(): String
+  + contactos(): List<ContactoDto>
+}
+entity BeneficiarioResponse << record >> {
+  + direccion(): String
+  + id(): String
+  + razonSocial(): String
+  + contactos(): List<ContactoDto>
+}
+class Bien {
+  - cantidad: float
+  - tipoBien: TipoBien
+  - subcategoria: Subcategoria
+  - descripcion: String
+  - foto: String
+  + crearPerecedero(String, float, UnidadMedida, String, Subcategoria, LocalDate): Bien
+  + crearNoPerecedero(String, float, UnidadMedida, String, Subcategoria, Boolean): Bien
+   tipoBien: TipoBien
+   subcategoria: Subcategoria
+   descripcion: String
+   unidadMedida: UnidadMedida
+   nombreClave: String
+   cantidad: float
+   foto: String
+}
+entity BienDto << record >> {
+  + categoria(): String
+  + cantidad(): Float
+  + unidadMedida(): String
+  + foto(): String
+  + descripcion(): String
+  + subcategoria(): String
+  + fechaVencimiento(): LocalDate
+  + usado(): Boolean
+  + tipo(): String
+}
+entity CandidatoDto << record >> {
+  + posicion(): int
+  + razonSocial(): String
+  + direccion(): String
+  + beneficiarioId(): String
+}
+class Categoria {
+  - nombre: String
+  + esIgual(Categoria): Boolean
+   nombre: String
+}
+interface ClienteCorreo << interface >> {
+  + enviarCorreo(String, String): void
+}
+interface ClienteSms << interface >> {
+  + enviarSms(String, String): void
+}
+interface ClienteWhatsapp << interface >> {
+  + enviarMensaje(String, String): void
+}
+class CompatibilidadSemantica {
+  # modoOrdenamiento(): Comparator<Entry<Beneficiario, Integer>>
+  - calcularnecesidadesCubiertas(Beneficiario, Donacion): Integer
+  + mapearPuntaje(Donacion, List<Beneficiario>): Map<Beneficiario, Integer>
+}
+entity ContactoDto << record >> {
+  + medio(): String
+  + principal(): Boolean
+  + valor(): String
+}
+class ContactoMapper {
+  + aDominio(List<ContactoDto>): List<MedioContacto>
+  + aDto(MedioContacto): ContactoDto
+  + aContacto(ContactoDto): MedioContacto
+}
+class CorreoDeContato {
+  - correo: String
+  - clienteCorreo: ClienteCorreo
+  + notificar(String): void
+  + esIgualA(MedioContacto): boolean
+   clienteCorreo: ClienteCorreo
+   correo: String
+}
+class Documento {
+  - detalle: String
+  - tipoDocumento: TipoDocumento
+  + esIgualA(Documento): Boolean
+   tipoDocumento: TipoDocumento
+   detalle: String
+}
+entity DocumentoDto << record >> {
+  + numero(): String
+  + tipo(): String
+}
+class Donacion {
+  - historialEstados: List<EstadoDonacion>
+  - bienes: List<Bien>
+  - beneficiario: Beneficiario
+  - id: String
+  - descripcion: String
+  + marcarVencida(): void
+  + confirmarTrasladoEnCurso(): void
+  + confirmarRecepcionDeposito(): void
+  + confirmarEntrega(): void
+  + descripcionGeneral(List<Bien>): String
+  + notificarEntregaFallida(String): void
+  + confirmarRuta(): void
+  + reemplazarBienes(List<Bien>): void
+  + confirmarAsignacion(Beneficiario): void
+   subcategoria: Subcategoria
+   descripcion: String
+   bienes: List<Bien>
+   fechaAsignacion: LocalDateTime
+   estadoActual: TipoEstadoDonacion
+   historialEstados: List<EstadoDonacion>
+   id: String
+   beneficiario: Beneficiario
+}
+class DonacionMapper {
+  + aDominio(DonacionRequest): Donacion
+  - aBienDto(Bien): BienDto
+  - parseUnidadMedida(String): UnidadMedida
+  + aResponse(Donacion): DonacionResponse
+  - aBien(BienDto): Bien
+  + aEstadoDto(EstadoDonacion): EstadoDonacionDto
+  + aBienes(List<BienDto>): List<Bien>
+}
+entity DonacionRequest << record >> {
+  + bienes(): List<BienDto>
+}
+entity DonacionResponse << record >> {
+  + id(): String
+  + beneficiario(): BeneficiarioResponse
+  + estado(): String
+  + descripcion(): String
+  + bienes(): List<BienDto>
+}
+class Donante {
+  # documento: Documento
+  # contactos: List<MedioContacto>
+  # id: String
+  + buscarEmail(): Optional<String>
+  + agregarContactoSecundario(MedioContacto): void
+  + estaAusentePorMasDe(Integer): boolean
+  + agregarContactoPrincipal(MedioContacto): void
+  + recibirNotificacion(String): void
+   contactoPrincipal: MedioContacto
+   contactos: List<MedioContacto>
+   email: String
+   documento: Documento
+   ultimaEntrega: RegistroEntrega
+   id: String
+   contactosSecundarios: List<MedioContacto>
+}
+class DonanteFactory {
+  + crear(String, Documento, String, MedioContacto, MedioContacto): Donante
+}
+class DonanteMapper {
+  + aDominio(DonanteRequest): Donante
+  - parseEnum(Class<E>, String, String): E
+  - aContactosDto(Donante): List<ContactoDto>
+  + aResponse(Donante): DonanteResponse
+  - aContactos(List<ContactoDto>): List<MedioContacto>
+}
+class DonanteParser {
+  + parseCsv(Iterable<String[]>): Iterable<Resultado>
+}
+entity DonanteRequest << record >> {
+  + apellido(): String
+  + tipo(): String
+  + tipoOrganizacion(): String
+  + razonSocial(): String
+  + genero(): String
+  + documento(): DocumentoDto
+  + fechaNacimiento(): LocalDate
+  + rubro(): String
+  + contactos(): List<ContactoDto>
+  + direccion(): String
+  + nombre(): String
+}
+entity DonanteResponse << record >> {
+  + genero(): String
+  + nombre(): String
+  + apellido(): String
+  + documento(): DocumentoDto
+  + fechaNacimiento(): LocalDate
+  + direccion(): String
+  + razonSocial(): String
+  + contactos(): List<ContactoDto>
+  + id(): String
+  + tipo(): String
+  + tipoOrganizacion(): String
+  + rubro(): String
+}
+class EstadoDonacion {
+  - detalle: String
+  - tipoEstado: TipoEstadoDonacion
+  - fecha: LocalDateTime
+   tipoEstado: TipoEstadoDonacion
+   detalle: String
+   fecha: LocalDateTime
+}
+entity EstadoDonacionDto << record >> {
+  + fecha(): LocalDateTime
+  + estado(): String
+  + detalle(): String
+}
+enum Genero << enumeration >> {
+  + values(): Genero[]
+  + valueOf(String): Genero
+}
+class MedioContacto {
+  + notificar(String): void
+  + esIgualA(MedioContacto): boolean
+   principal: Boolean
+}
+class Necesidad {
+  - id: String
+  - subcategoria: Subcategoria
+  - descripcion: String
+  - cantidadRecibida: Integer
+  + esSatisfecha(): Boolean
+  # actualizarDatos(Subcategoria, String): void
+  + recibirBienes(Integer): void
+   subcategoria: Subcategoria
+   descripcion: String
+   cantidadRecibida: Integer
+   id: String
+}
+class NecesidadExtraordinaria {
+  - cantidadRequerida: Integer
+  + actualizarDatos(Subcategoria, String, int): void
+  + esSatisfecha(): Boolean
+   cantidadRequerida: Integer
+}
+class NecesidadMapper {
+  + aResponse(Necesidad): NecesidadResponse
+  + validar(NecesidadRequest): void
+  - aPeriodo(String): Periodo
+  + actualizarDominio(Necesidad, NecesidadRequest): void
+  - tipoDe(Necesidad): String
+  - aSubcategoria(NecesidadRequest): Subcategoria
+  + aDominio(NecesidadRequest): Necesidad
+}
+class NecesidadRecurrente {
+  - cantidadPorPeriodo: Integer
+  - periodo: Periodo
+  + actualizarDatos(Subcategoria, String, int, Periodo): void
+  + esSatisfecha(): Boolean
+   periodo: Periodo
+   cantidadPorPeriodo: Integer
+}
+entity NecesidadRequest << record >> {
+  + periodo(): String
+  + tipo(): String
+  + descripcion(): String
+  + categoria(): String
+  + subcategoria(): String
+  + cantidadPorPeriodo(): Integer
+  + cantidadRequerida(): Integer
+}
+entity NecesidadResponse << record >> {
+  + subcategoria(): String
+  + periodo(): String
+  + id(): String
+  + descripcion(): String
+  + cantidadRequerida(): Integer
+  + tipo(): String
+  + cantidadPorPeriodo(): Integer
+  + categoria(): String
+  + cantidadRecibida(): Integer
+  + satisfecha(): Boolean
+}
+class NoPerecedero {
+  - estaUsado: Boolean
+  + getNombreClave(Subcategoria): String
+   estaUsado: Boolean
+}
+class OrquestadorCargaDonantes {
+  + iniciarCarga(String): ResultadoImportacion
+}
+class Perecedero {
+  - fechaVencimiento: LocalDate
+  + getNombreClave(Subcategoria): String
+   fechaVencimiento: LocalDate
+}
+enum Periodo << enumeration >> {
+  + valueOf(String): Periodo
+  + values(): Periodo[]
+}
+class PersonaHumana {
+  - nombre: String
+  - apellido: String
+  - fechaNacimiento: LocalDate
+  - direccion: String
+  - genero: Genero
+  + toString(): String
+   edad: Integer
+   direccion: String
+   genero: Genero
+   fechaNacimiento: LocalDate
+   apellido: String
+   nombre: String
+}
+class PersonaJuridica {
+  - razonSocial: String
+  - tipoOrganizacion: TipoOrganizacion
+  - rubro: String
+  - representantes: List<Representante>
+  + toString(): String
+  + agregarRepresentante(Representante): void
+   tipoOrganizacion: TipoOrganizacion
+   rubro: String
+   razonSocial: String
+   representantes: List<Representante>
+}
+class PrioridadSubAtendidos {
+  + mapearPuntaje(Donacion, List<Beneficiario>): Map<Beneficiario, Integer>
+  # modoOrdenamiento(): Comparator<Entry<Beneficiario, Integer>>
+  - calcularDonacionesUltimoTrimestre(Beneficiario): Integer
+}
+class Ranking {
+  - candidatos: List<Beneficiario>
+  - fechaGeneracion: LocalDateTime
+  - donacionId: String
+   donacionId: String
+   candidatos: List<Beneficiario>
+   fechaGeneracion: LocalDateTime
+}
+class RankingMapper {
+  + aResponse(Ranking): RankingResponse
+}
+entity RankingResponse << record >> {
+  + donacionId(): String
+  + fechaGeneracion(): LocalDateTime
+  + candidatos(): List<CandidatoDto>
+}
+class RegistroEntrega {
+  - bienes: List<Bien>
+  - fecha: LocalDateTime
+  + agregarBien(Bien): void
+   bienes: List<Bien>
+   fecha: LocalDateTime
+}
+class Representante {
+   edad: Integer
+}
+class ResultadoAsignacion
+class SegmentadorDonaciones {
+  + segmentar(List<RegistroEntrega>): List<Donacion>
+}
+class SmsDeContato {
+  - telefono: String
+  - clienteSms: ClienteSms
+  + esIgualA(MedioContacto): boolean
+  + notificar(String): void
+   clienteSms: ClienteSms
+   telefono: String
+}
+class Subcategoria {
+  - nombre: String
+  - categoria: Categoria
+  + esIgual(Subcategoria): Boolean
+   categoria: Categoria
+   nombre: String
+}
+interface TipoBien << interface >> {
+  + getNombreClave(Subcategoria): String
+}
+enum TipoDocumento << enumeration >> {
+  + valueOf(String): TipoDocumento
+  + values(): TipoDocumento[]
+}
+enum TipoEstadoDonacion << enumeration >> {
+  + valueOf(String): TipoEstadoDonacion
+  + values(): TipoEstadoDonacion[]
+}
+enum TipoOrganizacion << enumeration >> {
+  + valueOf(String): TipoOrganizacion
+  + values(): TipoOrganizacion[]
+}
+enum UnidadMedida << enumeration >> {
+  + toString(): String
+  + valueOf(String): UnidadMedida
+  + values(): UnidadMedida[]
+}
+class WhatsappDeContato {
+  - telefono: String
+  - clienteWhatsapp: ClienteWhatsapp
+  + notificar(String): void
+  + esIgualA(MedioContacto): boolean
+   clienteWhatsapp: ClienteWhatsapp
+   telefono: String
+}
+
+Asignador                "1" *-[#595959,plain]-> "algoritmosMatch\n*" AlgoritmoMatchmaking     
+Asignador                 -[#595959,dashed]->  ResultadoAsignacion      : "«create»"
+Beneficiario             "1" *-[#595959,plain]-> "donaciones\n*" Donacion                 
+Beneficiario             "1" *-[#595959,plain]-> "contactos\n*" MedioContacto            
+Beneficiario             "1" *-[#595959,plain]-> "necesidades\n*" Necesidad                
+BeneficiarioMapper        -[#595959,dashed]->  Beneficiario             : "«create»"
+BeneficiarioMapper        -[#595959,dashed]->  BeneficiarioResponse     : "«create»"
+Bien                      -[#595959,dashed]->  NoPerecedero             : "«create»"
+Bien                      -[#595959,dashed]->  Perecedero               : "«create»"
+Bien                     "1" *-[#595959,plain]-> "subcategoria\n1" Subcategoria             
+Bien                     "1" *-[#595959,plain]-> "tipoBien\n1" TipoBien                 
+Bien                     "1" *-[#595959,plain]-> "unidad\n1" UnidadMedida             
+CompatibilidadSemantica   -[#000082,plain]-^  AlgoritmoMatchmaking     
+ContactoMapper            -[#595959,dashed]->  ContactoDto              : "«create»"
+ContactoMapper            -[#595959,dashed]->  CorreoDeContato          : "«create»"
+ContactoMapper            -[#595959,dashed]->  SmsDeContato             : "«create»"
+ContactoMapper            -[#595959,dashed]->  WhatsappDeContato        : "«create»"
+CorreoDeContato          "1" *-[#595959,plain]-> "clienteCorreo\n1" ClienteCorreo            
+CorreoDeContato           -[#000082,plain]-^  MedioContacto            
+Documento                "1" *-[#595959,plain]-> "tipoDocumento\n1" TipoDocumento            
+Donacion                 "1" *-[#595959,plain]-> "beneficiario\n1" Beneficiario             
+Donacion                 "1" *-[#595959,plain]-> "bienes\n*" Bien                     
+Donacion                 "1" *-[#595959,plain]-> "historialEstados\n*" EstadoDonacion           
+Donacion                  -[#595959,dashed]->  EstadoDonacion           : "«create»"
+DonacionMapper            -[#595959,dashed]->  BienDto                  : "«create»"
+DonacionMapper            -[#595959,dashed]->  Categoria                : "«create»"
+DonacionMapper            -[#595959,dashed]->  Donacion                 : "«create»"
+DonacionMapper            -[#595959,dashed]->  DonacionResponse         : "«create»"
+DonacionMapper            -[#595959,dashed]->  EstadoDonacionDto        : "«create»"
+DonacionMapper            -[#595959,dashed]->  Subcategoria             : "«create»"
+DonacionRequest          "1" *-[#595959,plain]-> "bienes\n*" BienDto                  
+Donante                  "1" *-[#595959,plain]-> "documento\n1" Documento                
+Donante                  "1" *-[#595959,plain]-> "contactos\n*" MedioContacto            
+Donante                  "1" *-[#595959,plain]-> "entregas\n*" RegistroEntrega          
+DonanteFactory            -[#595959,dashed]->  PersonaHumana            : "«create»"
+DonanteFactory            -[#595959,dashed]->  PersonaJuridica          : "«create»"
+DonanteMapper             -[#595959,dashed]->  Documento                : "«create»"
+DonanteMapper             -[#595959,dashed]->  DocumentoDto             : "«create»"
+DonanteMapper             -[#595959,dashed]->  DonanteResponse          : "«create»"
+DonanteMapper             -[#595959,dashed]->  PersonaHumana            : "«create»"
+DonanteMapper             -[#595959,dashed]->  PersonaJuridica          : "«create»"
+DonanteParser             -[#595959,dashed]->  CorreoDeContato          : "«create»"
+DonanteParser             -[#595959,dashed]->  Documento                : "«create»"
+DonanteParser             -[#595959,dashed]->  SmsDeContato             : "«create»"
+EstadoDonacion           "1" *-[#595959,plain]-> "tipoEstado\n1" TipoEstadoDonacion       
+Necesidad                "1" *-[#595959,plain]-> "subcategoria\n1" Subcategoria             
+NecesidadExtraordinaria   -[#000082,plain]-^  Necesidad                
+NecesidadMapper           -[#595959,dashed]->  Categoria                : "«create»"
+NecesidadMapper           -[#595959,dashed]->  NecesidadExtraordinaria  : "«create»"
+NecesidadMapper           -[#595959,dashed]->  NecesidadRecurrente      : "«create»"
+NecesidadMapper           -[#595959,dashed]->  NecesidadResponse        : "«create»"
+NecesidadMapper           -[#595959,dashed]->  Subcategoria             : "«create»"
+NecesidadRecurrente       -[#000082,plain]-^  Necesidad                
+NecesidadRecurrente      "1" *-[#595959,plain]-> "periodo\n1" Periodo                  
+NoPerecedero              -[#008200,dashed]-^  TipoBien                 
+OrquestadorCargaDonantes  -[#595959,dashed]->  DonanteParser            : "«create»"
+Perecedero                -[#008200,dashed]-^  TipoBien                 
+PersonaHumana             -[#000082,plain]-^  Donante                  
+PersonaHumana            "1" *-[#595959,plain]-> "genero\n1" Genero                   
+PersonaJuridica           -[#000082,plain]-^  Donante                  
+PersonaJuridica          "1" *-[#595959,plain]-> "representantes\n*" Representante            
+PersonaJuridica          "1" *-[#595959,plain]-> "tipoOrganizacion\n1" TipoOrganizacion         
+PrioridadSubAtendidos     -[#000082,plain]-^  AlgoritmoMatchmaking     
+Ranking                  "1" *-[#595959,plain]-> "candidatos\n*" Beneficiario             
+RankingMapper             -[#595959,dashed]->  CandidatoDto             : "«create»"
+RankingMapper             -[#595959,dashed]->  RankingResponse          : "«create»"
+RegistroEntrega          "1" *-[#595959,plain]-> "bienes\n*" Bien                     
+Representante            "1" *-[#595959,plain]-> "documento\n1" Documento                
+Representante            "1" *-[#595959,plain]-> "genero\n1" Genero                   
+Representante            "1" *-[#595959,plain]-> "contacto\n1" MedioContacto            
+ResultadoAsignacion      "1" *-[#595959,plain]-> "beneficiarios\n*" Beneficiario             
+ResultadoAsignacion      "1" *-[#595959,plain]-> "donacion\n1" Donacion                 
+SmsDeContato             "1" *-[#595959,plain]-> "clienteSms\n1" ClienteSms               
+SmsDeContato              -[#000082,plain]-^  MedioContacto            
+Subcategoria             "1" *-[#595959,plain]-> "categoria\n1" Categoria                
+WhatsappDeContato        "1" *-[#595959,plain]-> "clienteWhatsapp\n1" ClienteWhatsapp          
+WhatsappDeContato         -[#000082,plain]-^  MedioContacto            
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+left to right direction
+
+actor "Donante" as Donante
+actor "Representante Persona Jurídica" as RepJuridica
+actor "Representante Entidad Beneficiaria" as RepBeneficiaria
+actor "Administrador Depósito" as AdminDeposito
+actor "Administrador Sistema" as AdminSistema
+actor "Transportista" as Transportista
+
+rectangle "DonaTrack" {
+  usecase "Registrarse como donante" as UC1
+  usecase "Registrar necesidad" as UC2
+  usecase "Registrar entidad beneficiaria" as UC3
+  usecase "Marcar donación vencida" as UC4
+  usecase "Registrar donación" as UC5
+  usecase "Importar donantes CSV" as UC6
+  usecase "Registrar entrega" as UC7
+  usecase "Ejecutar matchmaking" as UC8
+  usecase "Asignar donación" as UC9
+}
+
+Donante --> UC1
+RepJuridica --> UC1
+
+RepBeneficiaria --> UC2
+RepBeneficiaria --> UC3
+
+AdminDeposito --> UC4
+AdminDeposito --> UC5
+
+AdminSistema --> UC6
+AdminSistema --> UC8
+AdminSistema --> UC9
+
+Transportista --> UC7
+
+@enduml

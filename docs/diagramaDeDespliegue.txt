@@ -8,20 +8,32 @@ actor Beneficiario as beneficiario
 rectangle {
 node "Cliente" as cliente
 
-node "ServidorMonolitico" as servidor
+node "Microservicio Donaciones" as ms_donaciones
+node "Microservicio Logistica" as ms_logistica
 }
+
+node "Gps" as gps
+
 cloud "Whatsapp" as whatsapp
 cloud "CorreoElectronico" as correo
 cloud "Sms" as sms
 
+cloud "GPS Broker" as gps_broker
+
 admin --> cliente
 donante --> cliente
 beneficiario --> cliente
+gps_broker --> ms_logistica
 
-cliente --> servidor : https
+cliente --> ms_donaciones : https
+cliente --> ms_logistica : https
 
-servidor --> whatsapp : https
-servidor --> correo : smtp
-servidor --> sms : https
+ms_donaciones <--> ms_logistica : http
+
+gps --> gps_broker : mqtt
+
+ms_donaciones --> whatsapp : https
+ms_donaciones --> correo : smtp
+ms_donaciones --> sms : https
 
 @enduml
