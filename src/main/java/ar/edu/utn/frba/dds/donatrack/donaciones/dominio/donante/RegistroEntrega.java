@@ -1,20 +1,22 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
+import java.util.List;
 public class RegistroEntrega {
   private LocalDateTime fecha;
   private String descripcionGeneral;
   private List<Bien> bienes;
+  @Getter
   private Donante donante;
 
-  public RegistroEntrega(Donante donante, String descripcionGeneral, List<Bien> bienes) {
-    this.donante = donante;
+  public RegistroEntrega(String descripcionGeneral, List<Bien> bienes, Donante donante) {
     this.fecha = LocalDateTime.now();
+    this.donante = donante;
     this.descripcionGeneral = descripcionGeneral;
     this.bienes = new ArrayList<>(bienes);
   }
@@ -29,9 +31,5 @@ public class RegistroEntrega {
 
   public List<Bien> getBienes() {
     return bienes;
-  }
-
-  public Donante getDonante(){
-    return this.donante;
   }
 }

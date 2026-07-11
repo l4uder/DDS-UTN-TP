@@ -17,6 +17,11 @@ public class Perecedero implements TipoBien {
   }
 
   @Override
+  public String toString() {
+    return "PERECEDERO";
+  }
+
+  @Override
   public String getNombreClave(Subcategoria subcategoria) {
     return subcategoria.getNombre() + "_"
         + this.fechaVencimiento.format(DateTimeFormatter.BASIC_ISO_DATE);

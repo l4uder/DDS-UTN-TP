@@ -23,6 +23,8 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadExt
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import ar.edu.utn.frba.dds.donatrack.donaciones.server.AppEventBus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -146,7 +148,7 @@ public class AlgoritmoMatchmakingTest {
     beneficiario2.agregarNecesidad(new NecesidadExtraordinaria(sillas, "....", 3));
     beneficiario3.agregarNecesidad(new NecesidadExtraordinaria(frutas, "....", 3));
 
-    donacion1 = new Donacion(donantePrueba, List.of(yogurDream, manzanasRojas));
+    donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
 
     List<Beneficiario> beneficiarios = compatibilidadSemantica.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 
@@ -160,7 +162,7 @@ public class AlgoritmoMatchmakingTest {
     beneficiario1.agregarNecesidad(new NecesidadExtraordinaria(lacteos, "....", 1));
     beneficiario2.agregarNecesidad(new NecesidadExtraordinaria(frutas, "....", 3));
 
-    donacion1 = new Donacion(donantePrueba, List.of(yogurDream, manzanasRojas));
+    donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
 
     List<Beneficiario> beneficiarios = compatibilidadSemantica.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 
@@ -184,7 +186,7 @@ public class AlgoritmoMatchmakingTest {
     beneficiario11.agregarNecesidad(new NecesidadExtraordinaria(frutas, "....", 2));
     beneficiario12.agregarNecesidad(new NecesidadExtraordinaria(frutas, "....", 2));
 
-    donacion1 = new Donacion(donantePrueba, List.of(yogurDream, manzanasRojas));
+    donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
 
     List<Beneficiario> beneficiarios = compatibilidadSemantica.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3, beneficiario4, beneficiario5, beneficiario6, beneficiario7, beneficiario8, beneficiario9, beneficiario10, beneficiario11, beneficiario12));
     assertEquals(10, beneficiarios.size());
@@ -193,15 +195,15 @@ public class AlgoritmoMatchmakingTest {
   @Test
   void debePriorizarAlBeneficiarioConMenosDonaciones() {
     //benefeciario1 recibe una donacion
-    donacionAsignada1 = new Donacion(donantePrueba, List.of(sillaMadera));
+    donacionAsignada1 = new Donacion(List.of(sillaMadera), List.of(donantePrueba));
     donacionAsignada1.confirmarAsignacion(beneficiario1);
     //beneficiario2 recibe dos donaciones
-    donacionAsignada2 = new Donacion(donantePrueba, List.of(yogurDream));
-    donacionAsignada3 = new Donacion(donantePrueba, List.of(remeraMangaCorta));
+    donacionAsignada2 = new Donacion(List.of(yogurDream), List.of(donantePrueba));
+    donacionAsignada3 = new Donacion(List.of(remeraMangaCorta), List.of(donantePrueba));
     donacionAsignada2.confirmarAsignacion(beneficiario2);
     donacionAsignada3.confirmarAsignacion(beneficiario2);
 
-    donacion1 = new Donacion(donantePrueba, List.of(yogurDream, manzanasRojas));
+    donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
 
     List<Beneficiario> beneficiarios = prioridadASubAtendidos.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 
@@ -213,17 +215,17 @@ public class AlgoritmoMatchmakingTest {
   @Test
   void debeIgnorarLasDonacionesAnterioresATresMeses() {
     //benefeciario1 recibe una donacion
-    donacionAsignada1 = new Donacion(donantePrueba, List.of(sillaMadera));
+    donacionAsignada1 = new Donacion(List.of(sillaMadera), List.of(donantePrueba));
     donacionAsignada1.confirmarAsignacion(beneficiario1);
     //beneficiario2 recibe dos donaciones pero el año pasado
-    donacionAsignada2 = new Donacion(donantePrueba, List.of(yogurDream));
-    donacionAsignada3 = new Donacion(donantePrueba, List.of(remeraMangaCorta));
+    donacionAsignada2 = new Donacion(List.of(yogurDream), List.of(donantePrueba));
+    donacionAsignada3 = new Donacion(List.of(remeraMangaCorta), List.of(donantePrueba));
     donacionAsignada2.confirmarAsignacion(beneficiario2);
     donacionAsignada3.confirmarAsignacion(beneficiario2);
     donacionAsignada2.setFechaAsignacion(LocalDateTime.now().minusYears(1));
     donacionAsignada3.setFechaAsignacion(LocalDateTime.now().minusYears(1));
 
-    donacion1 = new Donacion(donantePrueba, List.of(yogurDream, manzanasRojas));
+    donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
 
     List<Beneficiario> beneficiarios = prioridadASubAtendidos.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 

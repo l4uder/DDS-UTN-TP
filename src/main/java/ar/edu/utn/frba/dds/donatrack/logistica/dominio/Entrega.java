@@ -35,19 +35,17 @@ public class Entrega {
 
   public void iniciarTraslado() {
     this.cambiarEstado(TipoEstadoEntrega.EN_TRASLADO, "Iniciando recorrido");
-    
-    //Cambiar al implementar la integración
-    String urlMapa = "https://donatrack.app/seguimiento/" + this.camionAsignado.getPatente();
+    //this.donaciones.forEach(d -> d.confirmarTrasladoEnCurso());
   }
 
   public void confirmarRecepcion() {
     this.cambiarEstado(TipoEstadoEntrega.ENTREGADA, null);
-
+    //this.donaciones.forEach(d -> d.confirmarEntrega());
   }
 
   public void marcarNoRecibida(String motivo) {
     this.cambiarEstado(TipoEstadoEntrega.NO_RECIBIDA, motivo);
-
+   // this.donaciones.forEach(d -> d.notificarEntregaFallida(motivo));
   }
 
   public void reingresarDeposito() {
@@ -55,6 +53,7 @@ public class Entrega {
       throw new IllegalStateException("Solo puede reingresar al depósito una entrega No recibida");
     }
     this.cambiarEstado(TipoEstadoEntrega.PENDIENTE, "Donación reingresada al depósito");
+   // this.donaciones.forEach(d -> d.confirmarRecepcionDeposito()); TODO implement this
   }
 
   public void reasignarCamion(Camion nuevoCamion) {

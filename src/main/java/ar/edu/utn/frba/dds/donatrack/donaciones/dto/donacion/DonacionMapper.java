@@ -10,7 +10,10 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.beneficiario.BeneficiarioMapper;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteMapper;
+import ar.edu.utn.frba.dds.donatrack.donaciones.server.AppEventBus;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+
 import java.util.List;
 
 public class DonacionMapper {
@@ -18,8 +21,8 @@ public class DonacionMapper {
   private DonacionMapper() {
   }
 
-  public static Donacion aDominio(Donante donante, DonacionRequest request) {
-    return new Donacion(donante, aBienes(request.bienes()));
+  public static Donacion aDominio(DonacionRequest request, List<Donante> donantes) {
+      return new Donacion(aBienes(request.bienes()), donantes);
   }
 
   public static List<Bien> aBienes(List<BienDto> bienes) {
@@ -79,17 +82,17 @@ public class DonacionMapper {
   }
 
   private static BienDto aBienDto(Bien bien) {
-    boolean esPerecedero = bien.getTipoBien() instanceof Perecedero;
     return new BienDto(
-        esPerecedero ? "PERECEDERO" : "NO_PERECEDERO",
+        bien.getTipoBien().toString(),
         bien.getDescripcion(),
         bien.getCantidad(),
         bien.getUnidadMedida().name(),
         bien.getFoto(),
         bien.getSubcategoria().getCategoria().getNombre(),
         bien.getSubcategoria().getNombre(),
-        esPerecedero ? ((Perecedero) bien.getTipoBien()).getFechaVencimiento() : null,
-        esPerecedero ? null : ((NoPerecedero) bien.getTipoBien()).getEstaUsado());
+        bien.getTipoBien() instanceof Perecedero p ? p.getFechaVencimiento() : null,
+        bien.getTipoBien() instanceof NoPerecedero np ? np.getEstaUsado() : null
+        );
   }
 
   private static UnidadMedida parseUnidadMedida(String valor) {

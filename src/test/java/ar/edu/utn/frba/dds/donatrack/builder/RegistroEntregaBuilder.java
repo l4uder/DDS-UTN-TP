@@ -39,6 +39,6 @@ public class RegistroEntregaBuilder {
   }
 
   public RegistroEntrega build() {
-    return new RegistroEntrega(donantePrueba, descripcion, bienes);
+    return new RegistroEntrega(descripcion, bienes, donantePrueba);
   }
 }

@@ -4,8 +4,17 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaExitosa;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaFallida;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoAsignacionDeDonacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoInicioDeRuta;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import com.google.common.eventbus.EventBus;
+import lombok.Getter;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,21 +29,25 @@ public class Donacion {
 
   //Doble asociacion bidericcional
   private Beneficiario beneficiario;
-  private Donante donante;
+  @Getter
+  private List<Donante> donanteIds;
 
-  public Donacion(Donante donante, List<Bien> bienes) {
+  public Donacion(List<Bien> bienes, List<Donante> donanteIds) {
     if (bienes == null || bienes.isEmpty()) {
       throw new DomainValidationException("Una donación debe tener al menos un bien");
     }
+    if (donanteIds == null || donanteIds.isEmpty()) {
+      throw new DomainValidationException("Una donación debe tener al menos un donante");
+    }
+    this.donanteIds = donanteIds;
     this.descripcion = this.descripcionGeneral(bienes);
     this.bienes = new ArrayList<>(bienes);
     this.historialEstados = new ArrayList<>();
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
-    this.donante = donante;
   }
 
-  public Donante getDonante(){
-    return this.donante;
+  public List<Donante> getDonantes(){
+    return this.donanteIds;
   }
 
   public String getId() {
@@ -110,7 +123,9 @@ public class Donacion {
     // Notificación de falla delegada al dominio de Donaciones
     String mensaje = "La entrega no pudo concretarse. Motivo: " + observacion;
     this.beneficiario.getContactoPrincipal().notificar(mensaje);
-    this.donante.getContactoPrincipal().notificar(mensaje);
+    this.donanteIds.forEach(donanteIndividual -> 
+      donanteIndividual.getContactoPrincipal().notificar(mensaje)
+    );
   }
 
   public void confirmarEntrega() {
@@ -127,7 +142,9 @@ public class Donacion {
     // Notificación de éxito delegada al dominio de Donaciones
     String mensaje = "¡Entrega finalizada con éxito!";
     this.beneficiario.getContactoPrincipal().notificar(mensaje);
-    this.donante.getContactoPrincipal().notificar(mensaje);
+    this.donanteIds.forEach(donanteIndividual -> 
+      donanteIndividual.getContactoPrincipal().notificar(mensaje)
+    );
   }
 
   public void confirmarTrasladoEnCurso() {
@@ -144,7 +161,9 @@ public class Donacion {
     // Notificación de inicio de traslado delegada al dominio de Donaciones
     String mensaje = "La entrega está en camino. ¡Atentos al recorrido!";
     this.beneficiario.getContactoPrincipal().notificar(mensaje);
-    this.donante.getContactoPrincipal().notificar(mensaje);
+    this.donanteIds.forEach(donanteIndividual -> 
+        donanteIndividual.getContactoPrincipal().notificar(mensaje)
+    );
   }
 
   public void confirmarRuta() {
@@ -179,7 +198,9 @@ public class Donacion {
     beneficiario.getContactoPrincipal().notificar(mensajeBeneficiario);
 
     String mensajeDonante = "Tu donación ha sido asignada a la entidad: " + beneficiario.getRazonSocial();
-    this.donante.getContactoPrincipal().notificar(mensajeDonante);
+    this.donanteIds.forEach(donanteIndividual -> 
+      donanteIndividual.getContactoPrincipal().notificar(mensajeDonante)
+    );
   }
 
   public void marcarVencida() {

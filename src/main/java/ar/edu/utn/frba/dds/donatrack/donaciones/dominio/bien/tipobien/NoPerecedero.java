@@ -14,6 +14,11 @@ public class NoPerecedero implements TipoBien {
   }
 
   @Override
+  public String toString() {
+    return "NO_PERECEDERO";
+  }
+
+  @Override
   public String getNombreClave(Subcategoria subcategoria) {
     return subcategoria.getNombre() + "_" + (estaUsado ? "usado" : "nuevo");
   }
