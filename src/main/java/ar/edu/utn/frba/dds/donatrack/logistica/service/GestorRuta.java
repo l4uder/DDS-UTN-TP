@@ -9,12 +9,15 @@ import ar.edu.utn.frba.dds.donatrack.logistica.integracion.DonacionesClient;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class GestorRuta {
   private static final String ESTADO_LISTA_PARA_ENTREGAR = "LISTA_PARA_ENTREGAR";
@@ -51,7 +54,9 @@ public class GestorRuta {
     Ruta ruta = rutaRepository.buscarPorId(id);
     ruta.iniciarRecorrido();
     ruta.getEntregasOrdenadas().forEach(e ->
-        propagarEstadoDonaciones(e, ESTADO_EN_TRASLADO));
+        propagarEstadoDonaciones(e, donacionId -> donacionesClient.cambiarEstadoDonacion(
+            donacionId, new CambioEstadoInicioRutaRequest(ruta.getLinkMapa()))
+        ));
     rutaRepository.guardar(ruta);
   }
 
@@ -88,13 +93,12 @@ public class GestorRuta {
 
     List<Ruta> rutas = orquestador.procesarResultadoPlanificacion(resultado, fecha);
     rutas.forEach(ruta -> ruta.getEntregasOrdenadas().forEach(e ->
-        propagarEstadoDonaciones(e, ESTADO_LISTA_PARA_ENTREGAR)));
+        propagarEstadoDonaciones(e, donacionesClient::cambiarEstadoDonacionLista)));
     rutas.forEach(rutaRepository::guardar);
     return rutas;
   }
 
-  private void propagarEstadoDonaciones(Entrega entrega, String estado) {
-    entrega.getDonaciones().forEach(d ->
-        donacionesClient.cambiarEstadoDonacion(d.getId(), estado));
+  private void propagarEstadoDonaciones(Entrega entrega, Consumer<String> command) {
+    entrega.getDonaciones().forEach(d -> command.accept(d.getId()));
   }
 }

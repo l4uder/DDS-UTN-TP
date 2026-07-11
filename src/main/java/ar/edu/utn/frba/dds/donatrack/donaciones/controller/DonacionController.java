@@ -73,6 +73,51 @@ public class DonacionController {
     }
   }
 
+  public void cambiarEstadoADeposito(Context ctx) {
+    try {
+      Donacion donacion = service.cambiarEstadoEnDeposito(ctx.pathParam("id"));
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void cambiarEstadoAVencida(Context ctx) {
+    try {
+      Donacion donacion = service.cambiarEstadoVencida(ctx.pathParam("id"));
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void cambiarEstadoALista(Context ctx) {
+    try {
+      Donacion donacion = service.cambiarEstadoListaEntregar(ctx.pathParam("id"));
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
   public void cambiarEstadoAEntregada(Context ctx) {
     try {
       var request = ctx.bodyAsClass(CambioEstadoEntregadaRequest.class);

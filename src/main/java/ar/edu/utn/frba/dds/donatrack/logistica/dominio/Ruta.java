@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio;
 
+import lombok.Getter;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -58,5 +60,9 @@ public class Ruta {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public String getLinkMapa(){
+    return "https://map.donaciones.ar/camion/" + camion.getPatente();
   }
 }

@@ -4,10 +4,13 @@ import ar.edu.utn.frba.dds.donatrack.logistica.config.DonacionesServiceConfig;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
-import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ServicioExternoException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -16,12 +19,14 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 public class DonacionesClient {
 
   private static final String ESTADO_ASIGNACION_REALIZADA = "ASIGNACION_REALIZADA";
   private static final Type LISTA_DONACIONES_REMOTAS =
-      new TypeToken<List<DonacionRemotaResponse>>() {}.getType();
+      new TypeToken<List<DonacionRemotaResponse>>() {
+      }.getType();
 
   private final HttpClient httpClient;
   private final String baseUrl;
@@ -63,13 +68,30 @@ public class DonacionesClient {
     return remotas.stream().map(this::aDonacionAsignada).toList();
   }
 
-  public void cambiarEstadoDonacion(String donacionId, String estado) {
-    String url = baseUrl + "/donaciones/" + donacionId + "/estados";
-    String body = gson.toJson(new CambioEstadoRequest(estado, null));
+  public void cambiarEstadoDonacion(String donacionId, CambioEstadoEntregadaRequest body) {
+    cambiarEstadoDonacion(donacionId, Optional.of(gson.toJson(body)), "entregada");
+  }
 
+  public void cambiarEstadoDonacion(String donacionId, CambioEstadoErrorEntregaRequest body) {
+    cambiarEstadoDonacion(donacionId, Optional.of(gson.toJson(body)), "error-entrega");
+  }
+
+  public void cambiarEstadoDonacion(String donacionId, CambioEstadoInicioRutaRequest body) {
+    cambiarEstadoDonacion(donacionId, Optional.of(gson.toJson(body)), "en-ruta");
+  }
+
+  public void cambiarEstadoDonacionVueltaDeposito(String donacionId) {
+    cambiarEstadoDonacion(donacionId, Optional.empty(), buildUrl(donacionId, "vuelta-deposito"));
+  }
+
+  public void cambiarEstadoDonacionLista(String donacionId) {
+    cambiarEstadoDonacion(donacionId, Optional.empty(), buildUrl(donacionId, "lista-para-entregar"));
+  }
+
+  private void cambiarEstadoDonacion(String donacionId, Optional<String> body, String url) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
-        .POST(HttpRequest.BodyPublishers.ofString(body))
+        .POST(body.map(HttpRequest.BodyPublishers::ofString).orElse(HttpRequest.BodyPublishers.noBody()))
         .header("Content-Type", "application/json")
         .header("Accept", "application/json")
         .build();
@@ -81,6 +103,10 @@ public class DonacionesClient {
           "Error al cambiar estado de donación " + donacionId + ": HTTP " + status
               + " — " + response.body());
     }
+  }
+
+  private String buildUrl(String donacionId, String path){
+    return baseUrl + "/donaciones/" + donacionId + "/" + path;
   }
 
   private HttpResponse<String> enviar(HttpRequest request, String operacion) {

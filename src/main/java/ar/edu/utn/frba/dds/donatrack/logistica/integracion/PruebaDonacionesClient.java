@@ -1,5 +1,10 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.integracion;
 
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioDeEstadosDonacionLogistica;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
+
 /**
  * Main de prueba manual. Requiere DonacionesApp corriendo en el puerto 7070.
  *
@@ -28,10 +33,14 @@ public class PruebaDonacionesClient {
 
       if (!donaciones.isEmpty() && args.length > 0) {
         String donacionId = donaciones.get(0).getId();
-        String nuevoEstado = args[0];
+        var nuevoEstado = CambioDeEstadosDonacionLogistica.valueOf(args[0]);
         System.out.println();
         System.out.println("Cambiando estado de " + donacionId + " a " + nuevoEstado + "...");
-        client.cambiarEstadoDonacion(donacionId, nuevoEstado);
+        switch (nuevoEstado){
+          case ENTREGADA -> client.cambiarEstadoDonacion(donacionId, new CambioEstadoEntregadaRequest("1"));
+          case INICIO_RUTA -> client.cambiarEstadoDonacion(donacionId, new CambioEstadoInicioRutaRequest("https://mapa.map/123"));
+          case ERROR_ENTREGA -> client.cambiarEstadoDonacion(donacionId, new CambioEstadoErrorEntregaRequest("El camion pincho una rueda"));
+        }
         System.out.println("Estado cambiado correctamente.");
       } else if (!donaciones.isEmpty()) {
         System.out.println();

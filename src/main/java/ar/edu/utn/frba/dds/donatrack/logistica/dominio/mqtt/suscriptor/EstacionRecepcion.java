@@ -55,6 +55,7 @@ public class EstacionRecepcion {
                 + " | Longitud: " + datos.getLongitud());
             Camion camion = repoCamiones.buscarCamionPorGps(datos.getId());
             camion.agregarCoordenada(new Coordenada(datos.getLatitud(), datos.getLongitud()));
+            repoCamiones.guardar(camion);
             Gps gps = repoGps.buscarPorId(datos.getId());
             gps.actualizarEstado(datos.getNivelBateria());
           } catch (Exception e) {

@@ -3,14 +3,17 @@ package ar.edu.utn.frba.dds.donatrack.logistica.service;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.integracion.DonacionesClient;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public class GestorEntrega {
-  private static final String ESTADO_ENTREGADA = "ENTREGADA";
-  private static final String ESTADO_ENTREGA_FALLIDA = "ENTREGA_FALLIDA";
-  private static final String ESTADO_EN_DEPOSITO = "EN_DEPOSITO";
 
   private final EntregaRepository entregaRepository;
   private final DonacionesClient donacionesClient;
@@ -31,7 +34,9 @@ public class GestorEntrega {
   public void confirmarRecepcion(String id) {
     Entrega entrega = entregaRepository.buscarPorId(id);
     entrega.confirmarRecepcion();
-    propagarEstadoDonaciones(entrega, ESTADO_ENTREGADA);
+    propagarEstadoDonaciones(entrega, donacionId -> donacionesClient.cambiarEstadoDonacion(
+        donacionId, new CambioEstadoEntregadaRequest(entrega.getCamionAsignado().getPatente()))
+    );
     entregaRepository.guardar(entrega);
   }
 
@@ -41,14 +46,14 @@ public class GestorEntrega {
     }
     Entrega entrega = entregaRepository.buscarPorId(id);
     entrega.marcarNoRecibida(motivo);
-    propagarEstadoDonaciones(entrega, ESTADO_ENTREGA_FALLIDA);
+    propagarEstadoDonaciones(entrega, donacionId -> donacionesClient.cambiarEstadoDonacion(donacionId, new CambioEstadoErrorEntregaRequest(motivo)));
     entregaRepository.guardar(entrega);
   }
 
   public void reingresarADeposito(String id) {
     Entrega entrega = entregaRepository.buscarPorId(id);
     entrega.reingresarDeposito();
-    propagarEstadoDonaciones(entrega, ESTADO_EN_DEPOSITO);
+    propagarEstadoDonaciones(entrega, donacionesClient::cambiarEstadoDonacionVueltaDeposito);
     entregaRepository.guardar(entrega);
   }
 
@@ -61,8 +66,7 @@ public class GestorEntrega {
     entregaRepository.guardar(entrega);
   }
 
-  private void propagarEstadoDonaciones(Entrega entrega, String estado) {
-    entrega.getDonaciones().forEach(d ->
-        donacionesClient.cambiarEstadoDonacion(d.getId(), estado));
+  private void propagarEstadoDonaciones(Entrega entrega, Consumer<String> command) {
+    entrega.getDonaciones().forEach(d -> command.accept(d.getId()));
   }
 }
