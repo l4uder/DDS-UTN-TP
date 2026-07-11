@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Donacion {
+
   private String id;
   private String descripcion;
   private List<Bien> bienes;
   private List<EstadoDonacion> historialEstados;
+
   //Doble asociacion bidericcional
   private Beneficiario beneficiario;
   private Donante donante;
@@ -78,7 +80,6 @@ public class Donacion {
         .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
         .findFirst()
         .orElseThrow(() -> new DomainValidationException("Donacion no posee fecha de asignacion"));
-
     estadoAsignacion.setFecha(fechaAsignacion);
   }
 
@@ -105,6 +106,11 @@ public class Donacion {
     this.historialEstados.add(
         new EstadoDonacion(TipoEstadoDonacion.ENTREGA_FALLIDA, observacion)
     );
+
+    // Notificación de falla delegada al dominio de Donaciones
+    String mensaje = "La entrega no pudo concretarse. Motivo: " + observacion;
+    this.beneficiario.getContactoPrincipal().notificar(mensaje);
+    this.donante.getContactoPrincipal().notificar(mensaje);
   }
 
   public void confirmarEntrega() {
@@ -117,6 +123,11 @@ public class Donacion {
       );
     }
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.ENTREGADA));
+
+    // Notificación de éxito delegada al dominio de Donaciones
+    String mensaje = "¡Entrega finalizada con éxito!";
+    this.beneficiario.getContactoPrincipal().notificar(mensaje);
+    this.donante.getContactoPrincipal().notificar(mensaje);
   }
 
   public void confirmarTrasladoEnCurso() {
@@ -129,6 +140,11 @@ public class Donacion {
       );
     }
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_TRASLADO));
+
+    // Notificación de inicio de traslado delegada al dominio de Donaciones
+    String mensaje = "La entrega está en camino. ¡Atentos al recorrido!";
+    this.beneficiario.getContactoPrincipal().notificar(mensaje);
+    this.donante.getContactoPrincipal().notificar(mensaje);
   }
 
   public void confirmarRuta() {
@@ -184,7 +200,7 @@ public class Donacion {
     }
     if (getEstadoActual() != TipoEstadoDonacion.ENTREGA_FALLIDA) {
       throw new CambioDeEstadoNoPermitidoException(
-          "No se puede recivir en deposito a menos que la entrega fracase"
+          "No se puede recibir en deposito a menos que la entrega falle"
       );
     }
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));

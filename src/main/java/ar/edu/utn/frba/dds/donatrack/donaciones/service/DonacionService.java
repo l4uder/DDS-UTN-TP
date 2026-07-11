@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.service;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
@@ -28,7 +29,7 @@ public class DonacionService {
   }
 
   public Donacion crear(DonacionRequest request) {
-    Donacion donacion = DonacionMapper.aDominio(request);
+    Donacion donacion = DonacionMapper.aDominio(null, request); //VERRRR y CAMBIAR
     repository.guardarDonacion(donacion);
     return donacion;
   }

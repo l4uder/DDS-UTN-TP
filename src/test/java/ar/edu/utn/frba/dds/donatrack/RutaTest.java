@@ -1,22 +1,21 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.*;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.*;
+import ar.edu.utn.frba.dds.donatrack.builder.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
-import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
-import ar.edu.utn.frba.dds.donatrack.builder.EntidadBeneficiariaBuilder;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Chofer;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Ruta;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.TipoEstadoEntrega;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +30,7 @@ public class RutaTest {
   private Chofer chofer;
   private Entrega entrega;
   private Ruta ruta;
-  private Beneficiario beneficiario;
+  private BeneficiarioDTO beneficiario;
 
   private Donante donantePrueba;
 
@@ -49,12 +48,6 @@ public class RutaTest {
     List<MedioContacto> listaContactos =
         List.of(contactoCorreo); //Cambio a correo a la espera de la implementación de envio por Whatsapp
 
-    beneficiario = new EntidadBeneficiariaBuilder()
-        .conRazonSocial("Comedor San José")
-        .conDireccion("Av. Siempre Viva 123")
-        .conMediosContactos(listaContactos)
-        .build();
-
     //Mock de Motor de correos exclusivo para los tests
     ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
         // No hace nada de red, solo simula que lo envió
@@ -68,14 +61,11 @@ public class RutaTest {
       .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
       .build();
 
-    Donacion donacion = new Donacion(donantePrueba, List.of(
-        new BienBuilder()
-            .conDescripcion("Fideos")
-            .conCantidad(5)
-            .conUsado(false)
-            .buildNoPerecedero()
-    ));
-    donacion.confirmarAsignacion(beneficiario);
+    DonacionAsignadaDTO donacion = new DonacionAsignadaDTO("don-1", "Fideos", beneficiario);
+    
+    //donacion.confirmarAsignacion(beneficiario);
+    beneficiario = new BeneficiarioDTO("ben-1", "Comedor San José", "Av. Siempre Viva 123");
+
 
     entrega = new Entrega(beneficiario, List.of(donacion), camion);
     ruta = new Ruta(camion, LocalDate.now(), List.of(entrega));
@@ -94,7 +84,6 @@ public class RutaTest {
   @Test
   void asignarChoferPermiteIniciarRuta() {
     ruta.asignarChofer(chofer);
-    entrega.confirmarListaParaEntregar();
 
     ruta.iniciarRecorrido();
 
@@ -113,7 +102,6 @@ public class RutaTest {
   @Test
   void noSePuedeIniciarUnaRutaDosVeces() {
     ruta.asignarChofer(chofer);
-    entrega.confirmarListaParaEntregar();
     ruta.iniciarRecorrido();
 
     assertThrows(IllegalStateException.class, () -> ruta.iniciarRecorrido());

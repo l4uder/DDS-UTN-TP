@@ -1,12 +1,10 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio.orquestadorlogistica;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.OrquestadorException;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Ruta;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,21 +15,17 @@ public class OrquestadorLogistica {
   private static final int MAX_DONACIONES_POR_LOTE = 100;
 
   private List<Camion> camionesDisponibles;
-  private List<Donacion> donacionesAllevar;
+  private List<DonacionAsignadaDTO> donacionesAllevar;
 
   public OrquestadorLogistica(List<Camion> camionesDisponibles,
-                              List<Donacion> donacionesAllevar) {
+                              List<DonacionAsignadaDTO> donacionesAllevar) {
     this.camionesDisponibles = camionesDisponibles;
-    if (donacionesAllevar.stream()
-        .anyMatch(d -> d.getEstadoActual() != TipoEstadoDonacion.ASIGNACION_REALIZADA)) {
-      throw new OrquestadorException("Solo podemos llevar donaciones asignadas");
-    }
     this.donacionesAllevar = donacionesAllevar;
   }
 
   public List<Entrega> armarEntregasPendientes() {
-    Map<Beneficiario, List<Donacion>> agrupadasPorBeneficiario = donacionesAllevar.stream()
-        .collect(Collectors.groupingBy(Donacion::getBeneficiario));
+    Map<BeneficiarioDTO, List<DonacionAsignadaDTO>> agrupadasPorBeneficiario = donacionesAllevar.stream()
+        .collect(Collectors.groupingBy(DonacionAsignadaDTO::getBeneficiario));
 
     List<Entrega> entregas = new ArrayList<>();
     agrupadasPorBeneficiario.forEach((beneficiario, donaciones) ->
@@ -81,5 +75,5 @@ public class OrquestadorLogistica {
 
     return rutasCreadas;
   }
-  
+
 }

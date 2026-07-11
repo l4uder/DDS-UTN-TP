@@ -44,6 +44,10 @@ public class DonacionRepository {
     return buscarPorEstado(TipoEstadoDonacion.EN_DEPOSITO);
   }
 
+  public List<Donacion> buscarDonacionesAsignadas() {
+    return buscarPorEstado(TipoEstadoDonacion.ASIGNACION_REALIZADA);
+  }
+
   public List<Donacion> buscarTodos() {
     return this.donaciones.values().stream().toList();
   }

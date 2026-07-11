@@ -1,18 +1,21 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Entrega {
-  private Beneficiario destino;
-  private List<Donacion> donaciones;
+  private String id;
+  private BeneficiarioDTO destino;
+  private List<DonacionAsignadaDTO> donaciones;
   private Camion camionAsignado;
   private List<EstadoEntrega> historialEstados;
   private List<String> fotosRecepcion;
 
-  public Entrega(Beneficiario destino, List<Donacion> donaciones, Camion camion) {
+  public Entrega(BeneficiarioDTO destino, List<DonacionAsignadaDTO> donaciones, Camion camion) {
+    this.id = UUID.randomUUID().toString();
     this.destino = destino;
     this.donaciones = donaciones;
     this.camionAsignado = camion;
@@ -26,33 +29,25 @@ public class Entrega {
             .add(new EstadoEntrega(estado, observacion, this.camionAsignado));
   }
 
-  //ver si es mejor ese nombre o cambiar por confirmarRuta
   public void confirmarListaParaEntregar() {
-    this.donaciones.forEach(d -> d.confirmarRuta());
+    // La propagación del estado a donaciones se realiza en GestorRuta vía DonacionesClient.
   }
 
   public void iniciarTraslado() {
     this.cambiarEstado(TipoEstadoEntrega.EN_TRASLADO, "Iniciando recorrido");
-    this.donaciones.forEach(d -> d.confirmarTrasladoEnCurso());
     
     //Cambiar al implementar la integración
     String urlMapa = "https://donatrack.app/seguimiento/" + this.camionAsignado.getPatente();
-    
-    this.notificarAInvolucrados("La entrega está en camino. Seguí el recorrido en tiempo real acá: " + urlMapa);
   }
 
   public void confirmarRecepcion() {
     this.cambiarEstado(TipoEstadoEntrega.ENTREGADA, null);
-    this.donaciones.forEach(d -> d.confirmarEntrega());
 
-    this.notificarAInvolucrados("Entrega finalizada con éxito!");
   }
 
   public void marcarNoRecibida(String motivo) {
     this.cambiarEstado(TipoEstadoEntrega.NO_RECIBIDA, motivo);
-    this.donaciones.forEach(d -> d.notificarEntregaFallida(motivo));
 
-    this.notificarAInvolucrados("La entrega no pudo concretarse. Motivo: " + motivo);
   }
 
   public void reingresarDeposito() {
@@ -60,7 +55,6 @@ public class Entrega {
       throw new IllegalStateException("Solo puede reingresar al depósito una entrega No recibida");
     }
     this.cambiarEstado(TipoEstadoEntrega.PENDIENTE, "Donación reingresada al depósito");
-    this.donaciones.forEach(d -> d.confirmarRecepcionDeposito());
   }
 
   public void reasignarCamion(Camion nuevoCamion) {
@@ -81,11 +75,19 @@ public class Entrega {
     return historialEstados.get(historialEstados.size() - 1).getTipoEstado();
   }
 
-  public Beneficiario getDestino() {
+  public List<EstadoEntrega> getHistorialEstados() {
+    return historialEstados;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public BeneficiarioDTO getDestino() {
     return destino;
   }
 
-  public List<Donacion> getDonaciones() {
+  public List<DonacionAsignadaDTO> getDonaciones() {
     return donaciones;
   }
 
@@ -97,12 +99,7 @@ public class Entrega {
     return fotosRecepcion;
   }
 
-  private void notificarAInvolucrados(String mensaje) {
-    this.destino.getContactoPrincipal().notificar(mensaje);
-    
-    this.donaciones.stream()
-        .map(Donacion::getDonante)
-        .distinct()
-        .forEach(donante -> donante.getContactoPrincipal().notificar(mensaje));
-}
+  public void setId(String id) {
+    this.id = id;
+  }
 }

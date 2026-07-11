@@ -15,6 +15,23 @@ public class NecesidadRecurrente extends Necesidad {
     this.periodo = periodo;
   }
 
+  public Integer getCantidadPorPeriodo() {
+    return cantidadPorPeriodo;
+  }
+
+  public Periodo getPeriodo() {
+    return periodo;
+  }
+
+  public void actualizarDatos(Subcategoria subcategoria,
+                              String descripcion,
+                              int cantidadPorPeriodo,
+                              Periodo periodo) {
+    super.actualizarDatos(subcategoria, descripcion);
+    this.cantidadPorPeriodo = cantidadPorPeriodo;
+    this.periodo = periodo;
+  }
+
   @Override
   public Boolean esSatisfecha() {
     return getCantidadRecibida() >= cantidadPorPeriodo;
