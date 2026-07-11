@@ -3,9 +3,11 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.mqtt;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Coordenada;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class GpsMensaje {
@@ -13,12 +15,5 @@ public class GpsMensaje {
   private String nivelBateria;
   private String latitud;
   private String longitud;
-
-  public GpsMensaje(String id, String nivelBateria, String latitud, String longitud) {
-    this.id = id;
-    this.nivelBateria = nivelBateria;
-    this.latitud = latitud;
-    this.longitud = longitud;
-  }
 
 }

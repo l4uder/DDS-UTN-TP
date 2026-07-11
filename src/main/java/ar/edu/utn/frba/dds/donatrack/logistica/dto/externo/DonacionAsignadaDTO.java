@@ -1,12 +1,16 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dto.externo;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class DonacionAsignadaDTO {
-  private final String id;
-  private final String descripcion;
-  private final BeneficiarioDTO beneficiario;
+  private String id;
+  private String descripcion;
+  private BeneficiarioDTO beneficiario;
 }

@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.service;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
@@ -34,7 +36,12 @@ public class DonacionService {
   }
 
   public Donacion crear(DonacionRequest request) {
-    Donacion donacion = DonacionMapper.aDominio(request);
+    List<Donante> donantes = request.donanteIds().stream()
+      .map(id -> DonanteRepository.getInstancia().buscarPorId(id)
+      .orElseThrow(() -> new DomainValidationException("Donante no encontrado con ID: " + id)))
+      .toList();
+
+    Donacion donacion = DonacionMapper.aDominio(request, donantes);
     repository.guardarDonacion(donacion);
     return donacion;
   }

@@ -6,6 +6,6 @@ import java.util.List;
 
 public record DonacionRequest(
     List<BienDto> bienes,
-    String donanteId
+    List<String> donanteIds
 ) {
 }

@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
@@ -62,6 +63,12 @@ public class NotificadorTest {
         .conRepresentantes(List.of(rep));
 
     message = "Hola..";
+
+    //Mock de Motor de correos exclusivo para los tests
+    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
+        // No hace nada de red, solo simula que lo envió
+        System.out.println("TEST - Simulando envío a: " + destino);
+    });
   }
 
   @Test

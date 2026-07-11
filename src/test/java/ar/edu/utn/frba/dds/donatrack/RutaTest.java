@@ -1,5 +1,14 @@
 package ar.edu.utn.frba.dds.donatrack;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.*;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.*;
+import ar.edu.utn.frba.dds.donatrack.builder.*;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Chofer;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
@@ -23,14 +32,40 @@ public class RutaTest {
   private Ruta ruta;
   private BeneficiarioDTO beneficiario;
 
+  private Donante donantePrueba;
+
   @BeforeEach
   void setUp() {
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
     chofer = new Chofer("Juan", "Gómez", "12345678");
 
-    beneficiario = new BeneficiarioDTO("ben-1", "Comedor San José", "Av. Siempre Viva 123");
+    WhatsappDeContato contactoWhatsapp =
+        new WhatsappDeContato("132212212");
+
+    CorreoDeContato contactoCorreo = 
+      new CorreoDeContato("comedor@prueba.com");
+    
+    List<MedioContacto> listaContactos =
+        List.of(contactoCorreo); //Cambio a correo a la espera de la implementación de envio por Whatsapp
+
+    //Mock de Motor de correos exclusivo para los tests
+    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
+        // No hace nada de red, solo simula que lo envió
+        System.out.println("TEST - Simulando envío a: " + destino);
+    });
+
+    donantePrueba = new PersonaHumanaBuilder()
+      .conNombre("Juan")
+      .conApellido("Pérez")
+      .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+      .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+      .build();
 
     DonacionAsignadaDTO donacion = new DonacionAsignadaDTO("don-1", "Fideos", beneficiario);
+    
+    //donacion.confirmarAsignacion(beneficiario);
+    beneficiario = new BeneficiarioDTO("ben-1", "Comedor San José", "Av. Siempre Viva 123");
+
 
     entrega = new Entrega(beneficiario, List.of(donacion), camion);
     ruta = new Ruta(camion, LocalDate.now(), List.of(entrega));

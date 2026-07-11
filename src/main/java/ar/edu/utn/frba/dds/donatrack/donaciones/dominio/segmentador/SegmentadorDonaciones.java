@@ -21,10 +21,10 @@ public class SegmentadorDonaciones {
         .values().stream()
         .map(el-> {
           List<Bien> bienes = new ArrayList<>();
-          List<String> donanteIds = new ArrayList<>();
+          List<Donante> donanteIds = new ArrayList<>();
           el.forEach(byd -> {
             bienes.add(byd.b);
-            donanteIds.add(byd.d.getId());
+            donanteIds.add(byd.d);
           });
           return new Donacion(bienes, donanteIds);
         })

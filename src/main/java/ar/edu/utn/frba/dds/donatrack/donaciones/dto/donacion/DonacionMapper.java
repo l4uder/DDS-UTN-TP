@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.NoPerecedero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.Perecedero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.beneficiario.BeneficiarioMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteMapper;
@@ -20,8 +21,8 @@ public class DonacionMapper {
   private DonacionMapper() {
   }
 
-  public static Donacion aDominio(DonacionRequest request) {
-    return new Donacion(aBienes(request.bienes()), List.of(request.donanteId()));
+  public static Donacion aDominio(DonacionRequest request, List<Donante> donantes) {
+      return new Donacion(aBienes(request.bienes()), donantes);
   }
 
   public static List<Bien> aBienes(List<BienDto> bienes) {

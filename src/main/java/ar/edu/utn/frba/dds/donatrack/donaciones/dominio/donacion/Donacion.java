@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
@@ -20,16 +21,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Donacion {
+
   private String id;
   private String descripcion;
   private List<Bien> bienes;
   private List<EstadoDonacion> historialEstados;
+
   //Doble asociacion bidericcional
   private Beneficiario beneficiario;
   @Getter
-  private List<String> donanteIds;
+  private List<Donante> donanteIds;
 
-  public Donacion(List<Bien> bienes, List<String> donanteIds) {
+  public Donacion(List<Bien> bienes, List<Donante> donanteIds) {
     if (bienes == null || bienes.isEmpty()) {
       throw new DomainValidationException("Una donación debe tener al menos un bien");
     }
@@ -41,6 +44,10 @@ public class Donacion {
     this.bienes = new ArrayList<>(bienes);
     this.historialEstados = new ArrayList<>();
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
+  }
+
+  public List<Donante> getDonantes(){
+    return this.donanteIds;
   }
 
   public String getId() {
@@ -86,7 +93,6 @@ public class Donacion {
         .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
         .findFirst()
         .orElseThrow(() -> new DomainValidationException("Donacion no posee fecha de asignacion"));
-
     estadoAsignacion.setFecha(fechaAsignacion);
   }
 
@@ -113,6 +119,13 @@ public class Donacion {
     this.historialEstados.add(
         new EstadoDonacion(TipoEstadoDonacion.ENTREGA_FALLIDA, observacion)
     );
+
+    // Notificación de falla delegada al dominio de Donaciones
+    String mensaje = "La entrega no pudo concretarse. Motivo: " + observacion;
+    this.beneficiario.getContactoPrincipal().notificar(mensaje);
+    this.donanteIds.forEach(donanteIndividual -> 
+      donanteIndividual.getContactoPrincipal().notificar(mensaje)
+    );
   }
 
   public void confirmarEntrega() {
@@ -125,6 +138,13 @@ public class Donacion {
       );
     }
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.ENTREGADA));
+
+    // Notificación de éxito delegada al dominio de Donaciones
+    String mensaje = "¡Entrega finalizada con éxito!";
+    this.beneficiario.getContactoPrincipal().notificar(mensaje);
+    this.donanteIds.forEach(donanteIndividual -> 
+      donanteIndividual.getContactoPrincipal().notificar(mensaje)
+    );
   }
 
   public void confirmarTrasladoEnCurso() {
@@ -137,6 +157,13 @@ public class Donacion {
       );
     }
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_TRASLADO));
+
+    // Notificación de inicio de traslado delegada al dominio de Donaciones
+    String mensaje = "La entrega está en camino. ¡Atentos al recorrido!";
+    this.beneficiario.getContactoPrincipal().notificar(mensaje);
+    this.donanteIds.forEach(donanteIndividual -> 
+        donanteIndividual.getContactoPrincipal().notificar(mensaje)
+    );
   }
 
   public void confirmarRuta() {
@@ -166,6 +193,14 @@ public class Donacion {
     ));
     this.beneficiario = beneficiario;
     beneficiario.asignarDonacion(this);
+
+    String mensajeBeneficiario = "Se le ha asignado una nueva donación: " + this.descripcion;
+    beneficiario.getContactoPrincipal().notificar(mensajeBeneficiario);
+
+    String mensajeDonante = "Tu donación ha sido asignada a la entidad: " + beneficiario.getRazonSocial();
+    this.donanteIds.forEach(donanteIndividual -> 
+      donanteIndividual.getContactoPrincipal().notificar(mensajeDonante)
+    );
   }
 
   public void marcarVencida() {
@@ -186,7 +221,7 @@ public class Donacion {
     }
     if (getEstadoActual() != TipoEstadoDonacion.ENTREGA_FALLIDA) {
       throw new CambioDeEstadoNoPermitidoException(
-          "No se puede recivir en deposito a menos que la entrega fracase"
+          "No se puede recibir en deposito a menos que la entrega falle"
       );
     }
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));

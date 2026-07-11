@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.cargabatch.OrquestadorCargaDonantes;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BatchJobException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
@@ -17,6 +18,12 @@ public class OrquestadorCargaDonantesIntegrationTest {
   @BeforeEach
   public void configuracionInicial() {
       archivoSimple = "simple.csv"; //3 donantes 2 validos
+
+      //Mock de Motor de correos exclusivo para los tests
+      ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
+          // No hace nada de red, solo simula que lo envió
+          System.out.println("TEST - Simulando envío a: " + destino);
+      });
   }
 
   @Test
