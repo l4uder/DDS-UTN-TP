@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.controller;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.Ranking;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.asignacion.AsignacionRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.asignacion.RankingMapper;
@@ -12,6 +12,8 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationExceptio
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import com.google.gson.JsonSyntaxException;
 import io.javalin.http.Context;
+import java.util.List;
+import java.util.Map;
 
 public class AsignacionController {
 
@@ -23,12 +25,21 @@ public class AsignacionController {
 
   public void ejecutarMatchmaking(Context ctx) {
     try {
-      Ranking ranking = service.ejecutarMatchmaking(ctx.pathParam("id"));
-      ctx.json(RankingMapper.aResponse(ranking));
+      service.ejecutarMatchmaking();
+      ctx.status(200).json(Map.of( "mensaje", "Matchmaking ejecutado correctamente"));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     } catch (CambioDeEstadoNoPermitidoException e) {
       ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void obtenerRankings(Context ctx) {
+    try {
+      List<Ranking> rankings = service.obtenerRankings();
+      ctx.json(rankings.stream().map(r -> RankingMapper.aResponse(r)).toList());
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     }
   }
 
@@ -43,8 +54,11 @@ public class AsignacionController {
 
   public void confirmarAsignacion(Context ctx) {
     try {
-      AsignacionRequest request = ctx.bodyAsClass(AsignacionRequest.class);
-      Donacion donacion = service.confirmarAsignacion(ctx.pathParam("id"), request);
+      String idDonacion = ctx.pathParam("id");
+      Map<String, String> body = ctx.bodyAsClass(Map.class);
+      String idBeneficiario = body.get("beneficiarioId");
+
+      Donacion donacion = service.confirmarAsignacion(idDonacion, idBeneficiario);
       ctx.json(DonacionMapper.aResponse(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));

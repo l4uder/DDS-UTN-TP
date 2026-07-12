@@ -17,8 +17,12 @@ public class BeneficiarioService {
   }
 
   public Beneficiario obtener(String id) {
-    return repository.buscarPorId(id)
-        .orElseThrow(() -> new RecursoNoEncontradoException("No existe beneficiario con id " + id));
+    Beneficiario beneficiario = this.repository.buscarPorId(id);
+    if (beneficiario == null) {
+      throw new RecursoNoEncontradoException("No existe beneficiario con id " + id);
+    }
+
+    return beneficiario;
   }
 
   public Beneficiario crear(BeneficiarioRequest request) {

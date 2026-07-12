@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;

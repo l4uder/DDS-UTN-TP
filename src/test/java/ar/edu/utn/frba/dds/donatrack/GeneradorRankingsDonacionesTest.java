@@ -5,15 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.Asignador;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.AlgoritmoMatchmaking;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.GeneradorRankings;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.AlgoritmoMatchmaking;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AsignadorDonacionesTest {
+public class GeneradorRankingsDonacionesTest {
   //los algoritmos
   private AlgoritmoMatchmaking algoritmoMock1;
   private AlgoritmoMatchmaking algoritmoMock2;
@@ -25,11 +26,11 @@ public class AsignadorDonacionesTest {
   private Beneficiario beneficiario3;
   private Beneficiario beneficiario4;
   //asignador
-  private Asignador asignador;
+  private GeneradorRankings generadorRankings;
 
   @BeforeEach
   void configuracionIncial() {
-    asignador = new Asignador();
+    generadorRankings = new GeneradorRankings();
 
     algoritmoMock1 = mock(AlgoritmoMatchmaking.class);
     algoritmoMock2 = mock(AlgoritmoMatchmaking.class);
@@ -43,42 +44,46 @@ public class AsignadorDonacionesTest {
 
   @Test
   void siAmbosAlgoritmosConcuerdanDevolverEse() {
-    asignador.agregarAlgoritmo(algoritmoMock1);
-    asignador.agregarAlgoritmo(algoritmoMock2);
+    generadorRankings.agregarAlgoritmo(algoritmoMock1);
+    generadorRankings.agregarAlgoritmo(algoritmoMock2);
 
     List<Beneficiario> beneficiarios = List.of(beneficiario1, beneficiario2, beneficiario3);
 
     when(algoritmoMock1.generarRanking(donacion, beneficiarios)).thenReturn(List.of(beneficiario1, beneficiario2));
     when(algoritmoMock2.generarRanking(donacion, beneficiarios)).thenReturn(List.of(beneficiario2, beneficiario3));
 
-    List<Beneficiario> resultado = asignador.asignar(donacion, beneficiarios);
+    List<Ranking> resultado = generadorRankings.asignar(List.of(donacion), beneficiarios);
+    List<Beneficiario> posiblesBeneficiarios = resultado.get(0).getCandidatos();
 
-    assertEquals(1, resultado.size());
-    assertEquals(beneficiario2, resultado.get(0), "por que el beneficiario2, se encuentra en ambas listas");
+    assertEquals(1, resultado.size(), "por que solo hay una donación");
+    assertEquals(beneficiario2, posiblesBeneficiarios.get(0), "por que el beneficiario2, se encuentra en ambas listas");
   }
 
   @Test
   void siNoHayCoincidenciasDevolverTodosLosBeneficiarios() {
-    asignador.agregarAlgoritmo(algoritmoMock1);
-    asignador.agregarAlgoritmo(algoritmoMock2);
+    generadorRankings.agregarAlgoritmo(algoritmoMock1);
+    generadorRankings.agregarAlgoritmo(algoritmoMock2);
 
     List<Beneficiario> beneficiarios = List.of(beneficiario1, beneficiario2, beneficiario3, beneficiario4);
 
     when(algoritmoMock1.generarRanking(donacion, beneficiarios)).thenReturn(List.of(beneficiario1, beneficiario2));
     when(algoritmoMock2.generarRanking(donacion, beneficiarios)).thenReturn(List.of(beneficiario3, beneficiario4));
 
-    List<Beneficiario> resultado = asignador.asignar(donacion, beneficiarios);
+    List<Ranking> resultado = generadorRankings.asignar(List.of(donacion), beneficiarios);
+    List<Beneficiario> posiblesBeneficiarios = resultado.get(0).getCandidatos();
 
-    assertEquals(4, resultado.size());
-    assertEquals(beneficiarios, resultado);
+    assertEquals(1, resultado.size(), "por que solo hay una donación");
+    assertEquals(4, posiblesBeneficiarios.size());
+    assertEquals(beneficiarios, posiblesBeneficiarios, "al no coincidir ningun beneficiario en cada algorito, devuelve la concatenacion");
   }
 
   @Test
   void siNoTieneAlgoritmosDebeDevolverUnaListaVacia() {
     List<Beneficiario> beneficiarios = List.of(beneficiario1, beneficiario2, beneficiario3);
 
-    List<Beneficiario> resultado = asignador.asignar(donacion, beneficiarios);
+    List<Ranking> resultado = generadorRankings.asignar(List.of(donacion), beneficiarios);
+    List<Beneficiario> posiblesBeneficiarios = resultado.get(0).getCandidatos();
 
-    assertTrue(resultado.isEmpty());
+    assertTrue(posiblesBeneficiarios.isEmpty());
   }
 }

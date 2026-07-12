@@ -30,8 +30,10 @@ public class DonacionService {
   }
 
   public Donacion obtener(String id) {
-    return repository.buscarPorId(id)
-        .orElseThrow(() -> new RecursoNoEncontradoException("No existe donacion con id " + id));
+    Donacion donacion = this.repository.buscarPorId(id);
+    if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + id);
+
+    return donacion;
   }
 
   public Donacion crear(DonacionRequest request) {

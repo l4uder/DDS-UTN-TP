@@ -1,14 +1,14 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Asignador {
+public class GeneradorRankings {
   private List<AlgoritmoMatchmaking> algoritmosMatch;
 
-  public Asignador() {
+  public GeneradorRankings() {
     this.algoritmosMatch = new ArrayList<>();
   }
 
@@ -16,13 +16,13 @@ public class Asignador {
     this.algoritmosMatch.add(algoritmo);
   }
 
-  public List<ResultadoAsignacion> asignar(List<Donacion> donaciones,
+  public List<Ranking> asignar(List<Donacion> donaciones,
                                            List<Beneficiario> beneficiarios) {
     return donaciones.stream()
-        .map(d -> new ResultadoAsignacion(d, asignar(d, beneficiarios))).toList();
+        .map(d -> new Ranking(d, asignar(d, beneficiarios))).toList();
   }
 
-  public List<Beneficiario> asignar(Donacion donacion, List<Beneficiario> beneficiarios) {
+  private List<Beneficiario> asignar(Donacion donacion, List<Beneficiario> beneficiarios) {
     List<List<Beneficiario>> rankingsPorAlgoritmo = algoritmosMatch.stream()
         .map(a -> a.generarRanking(donacion, beneficiarios))
         .toList();

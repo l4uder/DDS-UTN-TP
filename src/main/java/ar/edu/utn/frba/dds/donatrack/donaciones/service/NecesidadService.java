@@ -47,8 +47,10 @@ public class NecesidadService {
   }
 
   private Beneficiario obtenerBeneficiario(String id) {
-    return repository.buscarPorId(id)
-        .orElseThrow(() -> new RecursoNoEncontradoException("No existe beneficiario con id " + id));
+    Beneficiario beneficia = repository.buscarPorId(id);
+    if (beneficia == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + id);
+
+    return beneficia;
   }
 
   private Necesidad obtenerNecesidad(Beneficiario beneficiario, String necesidadId) {

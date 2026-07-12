@@ -25,10 +25,26 @@ public class DonacionRepository {
       donacion.setId(UUID.randomUUID().toString());
     }
     this.donaciones.put(donacion.getId(), donacion);
+
+    /*
+    if (donacion.getId() != null) {
+      throw new IllegalArgumentException("Constraint Violations: " +
+          "No se puede crear la donación porque ya tiene un ID asignado: " + donacion.getId());
+    }
+    donacion.setId(UUID.randomUUID().toString());
+    this.donaciones.put(donacion.getId(), donacion);
+     */
   }
 
-  public Optional<Donacion> buscarPorId(String id) {
-    return Optional.ofNullable(donaciones.get(id));
+  public Donacion buscarPorId(String id) {
+    return donaciones.get(id);
+  }
+
+  public void actualizar(Donacion donacion) {
+    if (donacion.getId() == null || !this.donaciones.containsKey(donacion.getId())) {
+      throw new IllegalArgumentException("La donación No existe en la base de dato");
+    }
+    this.donaciones.put(donacion.getId(), donacion);
   }
 
   public void eliminar(String id) {

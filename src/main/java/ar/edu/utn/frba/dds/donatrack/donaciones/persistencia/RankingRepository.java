@@ -1,7 +1,9 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.Ranking;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,8 +23,12 @@ public final class RankingRepository {
     rankingsPorDonacion.put(ranking.getDonacionId(), ranking);
   }
 
-  public Optional<Ranking> buscarPorDonacion(String donacionId) {
-    return Optional.ofNullable(rankingsPorDonacion.get(donacionId));
+  public Ranking buscarPorDonacion(Donacion donacion) {
+    return rankingsPorDonacion.get(donacion.getId());
+  }
+
+  public List<Ranking> buscarTodos() {
+    return rankingsPorDonacion.values().stream().toList();
   }
 
   public void eliminar(String donacionId) {

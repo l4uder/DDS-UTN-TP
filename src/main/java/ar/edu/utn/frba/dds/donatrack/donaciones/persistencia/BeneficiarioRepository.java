@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,15 @@ public final class BeneficiarioRepository {
     beneficiariosStore.put(beneficiario.getId(), beneficiario);
   }
 
-  public Optional<Beneficiario> buscarPorId(String id) {
-    return Optional.ofNullable(beneficiariosStore.get(id));
+  public Beneficiario buscarPorId(String id) {
+    return beneficiariosStore.get(id);
+  }
+
+  public void actualizar(Beneficiario beneficiario) {
+    if (beneficiario.getId() == null || !this.beneficiariosStore.containsKey(beneficiario.getId())) {
+      throw new IllegalArgumentException("El beneficiario No existe en la base de dato");
+    }
+    this.beneficiariosStore.put(beneficiario.getId(), beneficiario);
   }
 
   public void eliminar(String id) {

@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dto.asignacion;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.Ranking;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import java.util.ArrayList;
 import java.util.List;

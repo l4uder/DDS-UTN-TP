@@ -1,75 +1,63 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.service;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.Asignador;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.Ranking;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.algoritmos.CompatibilidadSemantica;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.asignador.algoritmos.PrioridadSubAtendidos;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.GeneradorRankings;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.algoritmos.CompatibilidadSemantica;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.algoritmos.PrioridadSubAtendidos;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.asignacion.AsignacionRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.util.List;
 
 public class AsignacionService {
+  private final DonacionRepository repoDonaciones = DonacionRepository.getInstancia();
+  private final BeneficiarioRepository repoBeneficiarios = BeneficiarioRepository.getInstancia();
+  private final RankingRepository repoRankings = RankingRepository.getInstancia();
 
-  private static final int MAXIMO_CANDIDATOS = 10;
+  public void ejecutarMatchmaking() {
+    GeneradorRankings generadorRankings = new GeneradorRankings();
+    generadorRankings.agregarAlgoritmo(new CompatibilidadSemantica());
+    generadorRankings.agregarAlgoritmo(new PrioridadSubAtendidos());
 
-  private final DonacionRepository donaciones = DonacionRepository.getInstancia();
-  private final BeneficiarioRepository beneficiarios = BeneficiarioRepository.getInstancia();
-  private final RankingRepository rankings = RankingRepository.getInstancia();
+    List<Beneficiario> beneficiarios = repoBeneficiarios.buscarTodos();
+    List<Donacion> donaciones = repoDonaciones.buscarTodos();
 
-  public Ranking ejecutarMatchmaking(String donacionId) {
-    Donacion donacion = obtenerDonacion(donacionId);
-    if (donacion.getEstadoActual() != TipoEstadoDonacion.EN_DEPOSITO) {
-      throw new CambioDeEstadoNoPermitidoException(
-          "El matchmaking solo puede ejecutarse sobre una donacion en deposito");
-    }
+    List<Ranking> resultados = generadorRankings.asignar(donaciones, beneficiarios);
 
-    Asignador asignador = new Asignador();
-    asignador.agregarAlgoritmo(new CompatibilidadSemantica());
-    asignador.agregarAlgoritmo(new PrioridadSubAtendidos());
+    resultados.forEach(r -> repoRankings.guardar(r));
+  }
 
-    List<Beneficiario> candidatos = asignador
-        .asignar(donacion, beneficiarios.buscarTodos())
-        .stream().limit(MAXIMO_CANDIDATOS).toList();
-
-    Ranking ranking = new Ranking(donacion.getId(), candidatos);
-    rankings.guardar(ranking);
-    return ranking;
+  public List<Ranking> obtenerRankings() {
+    return repoRankings.buscarTodos();
   }
 
   public Ranking obtenerRanking(String donacionId) {
-    obtenerDonacion(donacionId);
-    return rankings.buscarPorDonacion(donacionId)
-        .orElseThrow(() -> new RecursoNoEncontradoException(
-            "La donacion " + donacionId + " no tiene un ranking generado"));
+    Donacion donacion = repoDonaciones.buscarPorId(donacionId);
+    if (donacion == null) throw new RecursoNoEncontradoException("No se encontró ninguna donación con el ID: " + donacionId);
+
+    Ranking ranking = repoRankings.buscarPorDonacion(donacion);
+    if (ranking == null) throw new RecursoNoEncontradoException("La donacion " + donacionId + " no tiene un ranking generado");
+
+    return ranking;
   }
 
-  public Donacion confirmarAsignacion(String donacionId, AsignacionRequest request) {
-    if (request == null || request.beneficiarioId() == null || request.beneficiarioId().isBlank()) {
-      throw new DomainValidationException("El body necesita 'beneficiarioId'");
-    }
-    Donacion donacion = obtenerDonacion(donacionId);
-    Beneficiario beneficiario = beneficiarios.buscarPorId(request.beneficiarioId())
-        .orElseThrow(() -> new RecursoNoEncontradoException(
-            "No existe beneficiario con id " + request.beneficiarioId()));
+  public Donacion confirmarAsignacion(String donacionId, String beneficiarioId) {
+    Donacion donacion = repoDonaciones.buscarPorId(donacionId);
+    if (donacion == null) throw new RecursoNoEncontradoException("No se encontró ninguna donación con el ID: " + donacionId);
+
+    Beneficiario beneficiario = repoBeneficiarios.buscarPorId(beneficiarioId);
+    if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario con id: " + beneficiarioId);
 
     donacion.confirmarAsignacion(beneficiario);
-    donaciones.guardarDonacion(donacion);
-    beneficiarios.guardarBeneficiario(beneficiario);
-    rankings.eliminar(donacionId);
+    repoDonaciones.actualizar(donacion);
+    repoBeneficiarios.actualizar(beneficiario);
+    repoRankings.eliminar(donacionId);
     return donacion;
-  }
-
-  private Donacion obtenerDonacion(String id) {
-    return donaciones.buscarPorId(id)
-        .orElseThrow(() -> new RecursoNoEncontradoException("No existe donacion con id " + id));
   }
 
 }
