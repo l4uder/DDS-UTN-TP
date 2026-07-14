@@ -3,8 +3,8 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implement
 public class ProveedorClienteCorreo {
     private static ClienteCorreo instancia;
 
-    public static void inicializar(ClienteCorreo cliente) {
-        instancia = cliente;
+    public static void inicializar(ClienteCorreo motorDeCorreo) {
+        instancia = motorDeCorreo;
     }
 
     public static ClienteCorreo getInstancia() {

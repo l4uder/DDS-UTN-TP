@@ -17,9 +17,15 @@ public class DonacionesApp {
   public static final int PUERTO = 7070;
 
   public static void main(String[] args) {
+    String password = System.getenv("DONATRACK_EMAIL_PASSWORD");
+
+    if (password == null || password.isEmpty()) {
+        throw new RuntimeException("Falta configurar la variable de entorno DONATRACK_EMAIL_PASSWORD");
+    }
+
     ProveedorClienteCorreo.inicializar(new ClienteCorreoRealJavaMail(
         "donatrack.sistema@gmail.com", 
-        "uawj zaab mxhy bmuo"
+        password
     ));
 
     Notificador.init(AppEventBus.getInstance());
