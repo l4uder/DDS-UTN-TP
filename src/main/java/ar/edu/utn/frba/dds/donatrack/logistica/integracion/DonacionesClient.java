@@ -69,15 +69,15 @@ public class DonacionesClient {
   }
 
   public void cambiarEstadoDonacion(String donacionId, CambioEstadoEntregadaRequest body) {
-    cambiarEstadoDonacion(donacionId, Optional.of(gson.toJson(body)), "entregada");
+    cambiarEstadoDonacion(donacionId, Optional.of(gson.toJson(body)), buildUrl(donacionId, "entregada"));
   }
 
   public void cambiarEstadoDonacion(String donacionId, CambioEstadoErrorEntregaRequest body) {
-    cambiarEstadoDonacion(donacionId, Optional.of(gson.toJson(body)), "error-entrega");
+    cambiarEstadoDonacion(donacionId, Optional.of(gson.toJson(body)), buildUrl(donacionId, "error-entrega"));
   }
 
   public void cambiarEstadoDonacion(String donacionId, CambioEstadoInicioRutaRequest body) {
-    cambiarEstadoDonacion(donacionId, Optional.of(gson.toJson(body)), "en-ruta");
+    cambiarEstadoDonacion(donacionId, Optional.of(gson.toJson(body)), buildUrl(donacionId, "en-ruta"));
   }
 
   public void cambiarEstadoDonacionVueltaDeposito(String donacionId) {
@@ -106,7 +106,7 @@ public class DonacionesClient {
   }
 
   private String buildUrl(String donacionId, String path){
-    return baseUrl + "/donaciones/" + donacionId + "/" + path;
+    return baseUrl + "/donaciones/" + donacionId + "/estado/" + path;
   }
 
   private HttpResponse<String> enviar(HttpRequest request, String operacion) {
