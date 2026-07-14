@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dto.camion;
 
-public record CamionRequest(
+public record CrearCamionRequest(
     String patente,
     Float capacidadVolumen,
     Float altura,

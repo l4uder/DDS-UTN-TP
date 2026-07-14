@@ -12,6 +12,14 @@ public class Coordenada {
     this.longitud = longitud;
   }
 
+  public String getLatitud() {
+    return latitud;
+  }
+
+  public String getLongitud() {
+    return longitud;
+  }
+
   @Override
   public String toString() {
     return "(" + latitud + ", " + longitud + ")";

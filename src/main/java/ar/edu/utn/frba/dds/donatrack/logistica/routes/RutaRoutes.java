@@ -11,10 +11,11 @@ public class RutaRoutes {
                                EntregaController entregaController) {
     // Rutas
     app.get("/rutas", rutaController::listar);
-    app.post("/rutas/planificar", rutaController::planificar);
     app.get("/rutas/{id}", rutaController::obtener);
     app.post("/rutas/{id}/chofer", rutaController::asignarChofer);
-    app.post("/rutas/{id}/iniciar", rutaController::iniciarRecorrido);
+    app.post("/rutas/{id}/inicio", rutaController::iniciar);
+
+    app.post("/planificaciones", rutaController::planificar);
 
     // Entregas
     app.get("/entregas", entregaController::listar);
@@ -24,7 +25,7 @@ public class RutaRoutes {
     app.post("/entregas/{id}/reingresar", entregaController::reingresarADeposito);
     app.post("/entregas/{id}/fotos", entregaController::agregarFoto);
 
-    //Callback
-    app.post("/rutas/callback-planificacion", rutaController::recibirCallback);
+    // Callback:
+    app.post("/rutas/callback-planificacion", rutaController::callback);
   }
 }

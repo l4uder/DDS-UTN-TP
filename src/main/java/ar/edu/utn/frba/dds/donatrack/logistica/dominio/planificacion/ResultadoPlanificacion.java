@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.dominio.orquestadorlogistica;
+package ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
