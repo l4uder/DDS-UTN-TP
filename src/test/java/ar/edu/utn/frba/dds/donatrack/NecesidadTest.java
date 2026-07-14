@@ -20,7 +20,7 @@ public class NecesidadTest {
         "descripcion",
         30);
     necesidad1.recibirBienes(34);
-    assertTrue(necesidad1.esSatisfecha());
+    assertTrue(necesidad1.estaSatisfecha());
   }
   @Test
   public void necesidadRecurrenteEsSatisfecha(){
@@ -32,6 +32,6 @@ public class NecesidadTest {
         10,
         Periodo.SEMANAL);
     necesidad2.recibirBienes(23);
-    assertTrue(necesidad2.esSatisfecha());
+    assertTrue(necesidad2.estaSatisfecha());
   }
 }

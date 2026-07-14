@@ -93,7 +93,7 @@ public class NecesidadMapper {
         necesidad.getSubcategoria().getCategoria().getNombre(),
         necesidad.getSubcategoria().getNombre(),
         necesidad.getCantidadRecibida(),
-        necesidad.esSatisfecha(),
+        necesidad.estaSatisfecha(),
         esRecurrente ? ((NecesidadRecurrente) necesidad).getCantidadPorPeriodo() : null,
         esRecurrente ? ((NecesidadRecurrente) necesidad).getPeriodo().name() : null,
         esRecurrente ? null : ((NecesidadExtraordinaria) necesidad).getCantidadRequerida());

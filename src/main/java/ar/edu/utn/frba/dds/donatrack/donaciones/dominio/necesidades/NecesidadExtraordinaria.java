@@ -24,7 +24,12 @@ public class NecesidadExtraordinaria extends Necesidad {
   }
 
   @Override
-  public Boolean esSatisfecha() {
+  public Boolean estaSatisfecha() {
     return getCantidadRecibida() >= cantidadRequerida;
+  }
+
+  @Override
+  protected Integer getCantidad() {
+    return this.cantidadRequerida;
   }
 }

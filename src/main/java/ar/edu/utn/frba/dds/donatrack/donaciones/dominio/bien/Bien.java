@@ -68,4 +68,8 @@ public class Bien {
     TipoBien tipoBien = new NoPerecedero(usado);
     return new Bien(descripcion, cantidad, unidad, foto, subcategoria, tipoBien);
   }
+
+  public double getCantidadMenorMedida() {
+    return this.unidad.convertirAMenorMedida(cantidad);
+  }
 }

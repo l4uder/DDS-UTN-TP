@@ -22,13 +22,23 @@ public class CompatibilidadSemantica extends AlgoritmoMatchmaking {
   }
 
   private Integer calcularnecesidadesCubiertas(Beneficiario beneficiario, Donacion donacion) {
-    List<Necesidad> necesidades = beneficiario.getNecesidades();
+    List<Necesidad> necesidadesBeneficiario = beneficiario.getNecesidades();
 
-    List<Necesidad> necesidadesCubiertas = necesidades.stream()
-        .filter(n -> donacion.getBienes()
-            .stream().anyMatch(b -> b.getSubcategoria().esIgual(n.getSubcategoria()))).toList();
+    List<Necesidad> necesidadesCubiertas = necesidadesBeneficiario.stream()
+        .filter(n -> { if(n.estaSatisfecha()) return false;
+          double cantidadAportada = calculoAportacion(donacion, n);
+          double cantidadNecesaria = n.getCantidadFaltanteEnMenorMedida();
+          return cantidadAportada >= cantidadNecesaria;
+        }).toList();
 
     return necesidadesCubiertas.size();
+  }
+
+  private double calculoAportacion(Donacion donacion, Necesidad necesidad) {
+    return donacion.getBienes().stream()
+        .filter(b -> b.getSubcategoria().esIgual(necesidad.getSubcategoria()))
+        .mapToDouble(b -> b.getCantidadMenorMedida())
+        .sum();
   }
 
   @Override

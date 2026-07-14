@@ -33,8 +33,13 @@ public class NecesidadRecurrente extends Necesidad {
   }
 
   @Override
-  public Boolean esSatisfecha() {
+  public Boolean estaSatisfecha() {
     return getCantidadRecibida() >= cantidadPorPeriodo;
+  }
+
+  @Override
+  protected Integer getCantidad() {
+    return this.cantidadPorPeriodo;
   }
 }
 
