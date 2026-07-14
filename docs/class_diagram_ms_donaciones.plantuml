@@ -94,11 +94,34 @@ class Categoria {
 interface ClienteCorreo << interface >> {
   + enviarCorreo(String, String): void
 }
+
+class ClienteCorreoRealJavaMail {
+  - usuario: String
+  - contrasenia: String
+  + enviarCorreo(String, String): void
+}
+
+class ProveedorClienteCorreo {
+  - {static} instancia: ClienteCorreo
+  + {static} inicializar(ClienteCorreo): void
+  + {static} getInstancia(): ClienteCorreo
+}
+
 interface ClienteSms << interface >> {
   + enviarSms(String, String): void
 }
+
 interface ClienteWhatsapp << interface >> {
   + enviarMensaje(String, String): void
+}
+
+class Notificador {
+  - {static} INSTANCE: Notificador
+  + {static} init(EventBus): void
+  + onAsignacionDeDonacion(EventoAsignacionDeDonacion): void
+  + onEntregaFallida(EventoEntregaFallida): void
+  + onEntregaExitosa(EventoEntregaExitosa): void
+  + onInicioDeRuta(EventoInicioDeRuta): void
 }
 class CompatibilidadSemantica {
   # modoOrdenamiento(): Comparator<Entry<Beneficiario, Integer>>
@@ -135,11 +158,12 @@ entity DocumentoDto << record >> {
   + tipo(): String
 }
 class Donacion {
-  - historialEstados: List<EstadoDonacion>
-  - bienes: List<Bien>
-  - beneficiario: Beneficiario
   - id: String
   - descripcion: String
+  - bienes: List<Bien>
+  - historialEstados: List<EstadoDonacion>
+  - beneficiario: Beneficiario
+  - donantes : List<Donante>
   + marcarVencida(): void
   + confirmarTrasladoEnCurso(): void
   + confirmarRecepcionDeposito(): void
@@ -378,8 +402,10 @@ entity RankingResponse << record >> {
   + candidatos(): List<CandidatoDto>
 }
 class RegistroEntrega {
-  - bienes: List<Bien>
   - fecha: LocalDateTime
+  - descripcionGeneral : String
+  - bienes: List<Bien>
+  - donante : Donante
   + agregarBien(Bien): void
    bienes: List<Bien>
    fecha: LocalDateTime
@@ -511,5 +537,10 @@ SmsDeContato             "1" *-[#595959,plain]-> "clienteSms\n1" ClienteSms
 SmsDeContato              -[#000082,plain]-^  MedioContacto            
 Subcategoria             "1" *-[#595959,plain]-> "categoria\n1" Categoria                
 WhatsappDeContato        "1" *-[#595959,plain]-> "clienteWhatsapp\n1" ClienteWhatsapp          
-WhatsappDeContato         -[#000082,plain]-^  MedioContacto            
+WhatsappDeContato         -[#000082,plain]-^  MedioContacto          
+ClienteCorreoRealJavaMail -[#008200,dashed]-^ ClienteCorreo
+ProveedorClienteCorreo   "1" *-[#595959,plain]-> "instancia\n1" ClienteCorreo
+Donacion                 "1" *-[#595959,plain]-> "donantes\n*" Donante
+RegistroEntrega          "1" *-[#595959,plain]-> "donante\n1" Donante
+Notificador               -[#595959,dashed]->  Donacion                 : "«listens to»"  
 @enduml
