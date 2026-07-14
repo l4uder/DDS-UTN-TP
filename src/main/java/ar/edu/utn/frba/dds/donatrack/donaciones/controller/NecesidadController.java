@@ -43,7 +43,8 @@ public class NecesidadController {
   public void crear(Context ctx) {
     try {
       NecesidadRequest request = ctx.bodyAsClass(NecesidadRequest.class);
-      Necesidad creada = service.crear(ctx.pathParam("id"), request);
+      Necesidad necesidad = NecesidadMapper.aDominio(request);
+      Necesidad creada = service.crear(ctx.pathParam("id"), necesidad);
       ctx.status(201).json(NecesidadMapper.aResponse(creada));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
@@ -57,9 +58,10 @@ public class NecesidadController {
   public void actualizar(Context ctx) {
     try {
       NecesidadRequest request = ctx.bodyAsClass(NecesidadRequest.class);
-      Necesidad actualizada = service.actualizar(
-          ctx.pathParam("id"), ctx.pathParam("nid"), request);
-      ctx.json(NecesidadMapper.aResponse(actualizada));
+      Necesidad necesidad = service.obtener(ctx.pathParam("id"), ctx.pathParam("nid"));
+      NecesidadMapper.actualizarDominio(necesidad, request);
+      service.guardar(ctx.pathParam("id"));
+      ctx.json(NecesidadMapper.aResponse(necesidad));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {

@@ -4,7 +4,8 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiari
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.beneficiario.BeneficiarioMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.beneficiario.BeneficiarioRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.beneficiario.BeneficiarioResponse;
-import ar.edu.utn.frba.dds.donatrack.donaciones.service.BeneficiarioService;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dto.comun.ContactoMapper;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
@@ -14,14 +15,10 @@ import java.util.List;
 
 public class BeneficiarioController {
 
-  private final BeneficiarioService service;
-
-  public BeneficiarioController(BeneficiarioService service) {
-    this.service = service;
-  }
+  private final BeneficiarioRepository repository = BeneficiarioRepository.getInstancia();
 
   public void listar(Context ctx) {
-    List<BeneficiarioResponse> beneficiarios = service.listar().stream()
+    List<BeneficiarioResponse> beneficiarios = repository.buscarTodos().stream()
         .map(BeneficiarioMapper::aResponse)
         .toList();
     ctx.json(beneficiarios);
@@ -29,8 +26,7 @@ public class BeneficiarioController {
 
   public void obtener(Context ctx) {
     try {
-      Beneficiario beneficiario = service.obtener(ctx.pathParam("id"));
-      ctx.json(BeneficiarioMapper.aResponse(beneficiario));
+      ctx.json(BeneficiarioMapper.aResponse(repository.obtenerPorId(ctx.pathParam("id"))));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     }
@@ -39,7 +35,8 @@ public class BeneficiarioController {
   public void crear(Context ctx) {
     try {
       BeneficiarioRequest request = ctx.bodyAsClass(BeneficiarioRequest.class);
-      Beneficiario creado = service.crear(request);
+      Beneficiario creado = BeneficiarioMapper.aDominio(request);
+      repository.guardarBeneficiario(creado);
       ctx.status(201).json(BeneficiarioMapper.aResponse(creado));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
@@ -50,9 +47,14 @@ public class BeneficiarioController {
 
   public void actualizar(Context ctx) {
     try {
+      Beneficiario beneficiario = repository.obtenerPorId(ctx.pathParam("id"));
       BeneficiarioRequest request = ctx.bodyAsClass(BeneficiarioRequest.class);
-      Beneficiario actualizado = service.actualizar(ctx.pathParam("id"), request);
-      ctx.json(BeneficiarioMapper.aResponse(actualizado));
+      BeneficiarioMapper.validar(request);
+      beneficiario.actualizarDatos(request.razonSocial(),
+          request.direccion(),
+          ContactoMapper.aDominio(request.contactos()));
+      repository.guardarBeneficiario(beneficiario);
+      ctx.json(BeneficiarioMapper.aResponse(beneficiario));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
@@ -64,11 +66,11 @@ public class BeneficiarioController {
 
   public void eliminar(Context ctx) {
     try {
-      service.eliminar(ctx.pathParam("id"));
+      repository.obtenerPorId(ctx.pathParam("id"));
+      repository.eliminar(ctx.pathParam("id"));
       ctx.status(204);
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     }
   }
-
 }

@@ -2,8 +2,6 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.service;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dto.necesidad.NecesidadMapper;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dto.necesidad.NecesidadRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.util.List;
@@ -22,21 +20,16 @@ public class NecesidadService {
     return obtenerNecesidad(beneficiario, necesidadId);
   }
 
-  public Necesidad crear(String beneficiarioId, NecesidadRequest request) {
+  public Necesidad crear(String beneficiarioId, Necesidad necesidad) {
     Beneficiario beneficiario = obtenerBeneficiario(beneficiarioId);
-    Necesidad necesidad = NecesidadMapper.aDominio(request);
     necesidad.setId(UUID.randomUUID().toString());
     beneficiario.agregarNecesidad(necesidad);
     repository.guardarBeneficiario(beneficiario);
     return necesidad;
   }
 
-  public Necesidad actualizar(String beneficiarioId, String necesidadId, NecesidadRequest request) {
-    Beneficiario beneficiario = obtenerBeneficiario(beneficiarioId);
-    Necesidad necesidad = obtenerNecesidad(beneficiario, necesidadId);
-    NecesidadMapper.actualizarDominio(necesidad, request);
-    repository.guardarBeneficiario(beneficiario);
-    return necesidad;
+  public void guardar(String beneficiarioId) {
+    repository.guardarBeneficiario(obtenerBeneficiario(beneficiarioId));
   }
 
   public void eliminar(String beneficiarioId, String necesidadId) {

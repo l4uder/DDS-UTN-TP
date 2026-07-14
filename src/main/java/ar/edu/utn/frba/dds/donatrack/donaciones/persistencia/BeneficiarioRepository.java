@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,14 @@ public final class BeneficiarioRepository {
 
   public Beneficiario buscarPorId(String id) {
     return beneficiariosStore.get(id);
+  }
+
+  public Beneficiario obtenerPorId(String id) {
+    Beneficiario beneficiario = beneficiariosStore.get(id);
+    if (beneficiario == null) {
+      throw new RecursoNoEncontradoException("No existe beneficiario con id " + id);
+    }
+    return beneficiario;
   }
 
   public void actualizar(Beneficiario beneficiario) {

@@ -1,10 +1,12 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.controller;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaHumana;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaJuridica;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteResponse;
-import ar.edu.utn.frba.dds.donatrack.donaciones.service.DonanteService;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
@@ -14,27 +16,28 @@ import java.util.List;
 
 public class DonanteController {
 
-  private final DonanteService service;
-
-  public DonanteController(DonanteService service) {
-    this.service = service;
-  }
+  private final DonanteRepository repository = DonanteRepository.getInstancia();
 
   public void listar(Context ctx) {
-    try {
-      List<DonanteResponse> donantes = service.listar(ctx.queryParam("tipo")).stream()
-          .map(DonanteMapper::aResponse)
-          .toList();
-      ctx.json(donantes);
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    String tipo = ctx.queryParam("tipo");
+    List<Donante> todos = repository.buscarTodos();
+    List<Donante> filtrados;
+    if (tipo == null) {
+      filtrados = todos;
+    } else if (tipo.equalsIgnoreCase("HUMANA")) {
+      filtrados = todos.stream().filter(d -> d instanceof PersonaHumana).toList();
+    } else if (tipo.equalsIgnoreCase("JURIDICA")) {
+      filtrados = todos.stream().filter(d -> d instanceof PersonaJuridica).toList();
+    } else {
+      ctx.status(400).json(new ErrorResponse(400, "Tipo invalido: " + tipo + " (humana o juridica)"));
+      return;
     }
+    ctx.json(filtrados.stream().map(DonanteMapper::aResponse).toList());
   }
 
   public void obtener(Context ctx) {
     try {
-      Donante donante = service.obtener(ctx.pathParam("id"));
-      ctx.json(DonanteMapper.aResponse(donante));
+      ctx.json(DonanteMapper.aResponse(repository.obtenerPorId(ctx.pathParam("id"))));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     }
@@ -43,7 +46,8 @@ public class DonanteController {
   public void crear(Context ctx) {
     try {
       DonanteRequest request = ctx.bodyAsClass(DonanteRequest.class);
-      Donante creado = service.crear(request);
+      Donante creado = DonanteMapper.aDominio(request);
+      repository.guardarDonante(creado);
       ctx.status(201).json(DonanteMapper.aResponse(creado));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
@@ -54,8 +58,11 @@ public class DonanteController {
 
   public void actualizar(Context ctx) {
     try {
+      repository.obtenerPorId(ctx.pathParam("id"));
       DonanteRequest request = ctx.bodyAsClass(DonanteRequest.class);
-      Donante actualizado = service.actualizar(ctx.pathParam("id"), request);
+      Donante actualizado = DonanteMapper.aDominio(request);
+      actualizado.setId(ctx.pathParam("id"));
+      repository.guardarDonante(actualizado);
       ctx.json(DonanteMapper.aResponse(actualizado));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
@@ -68,20 +75,11 @@ public class DonanteController {
 
   public void eliminar(Context ctx) {
     try {
-      service.eliminar(ctx.pathParam("id"));
+      repository.obtenerPorId(ctx.pathParam("id"));
+      repository.eliminar(ctx.pathParam("id"));
       ctx.status(204);
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     }
   }
-
 }
-/*
-* public void crear(Context ctx){
-*   try{
-*     DonanteRequest request = ctx.bodyAsClass(DonanteRequest.class) //aca bodyAsClass te combierte json en parametros de la clase DonanteRequest, es como que te matchea los parametros en json con los parametros del constructor de la clase DonanteRequest
-*     Donante donante = DonanteMapper.aDominio(request)
-*     DonanteRepository guardado = guardarDonante
-* }
-* }
-* */

@@ -30,5 +30,6 @@ target
 
 # Ignorar carpetas autogeneradas del broker MQTT
 Estacion-dds-*/
-
 /.devcontainer/devcontainer.json
+
+cp.txt

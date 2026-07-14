@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.routes;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.controller.CamionController;
-import ar.edu.utn.frba.dds.donatrack.logistica.service.CamionService;
 import io.javalin.Javalin;
 
 public class CamionRoutes {
@@ -9,7 +8,7 @@ public class CamionRoutes {
   }
 
   public static void registrar(Javalin app) {
-    CamionController controller = new CamionController(new CamionService());
+    CamionController controller = new CamionController();
 
     app.get("/camiones", controller::listar);
     app.post("/camiones", controller::crear);

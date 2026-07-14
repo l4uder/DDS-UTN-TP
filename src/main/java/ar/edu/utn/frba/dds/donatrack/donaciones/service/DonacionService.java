@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.service;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
@@ -8,8 +9,6 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonac
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaExitosa;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaFallida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoInicioDeRuta;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donacion.DonacionMapper;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donacion.DonacionRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.server.AppEventBus;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
@@ -36,20 +35,20 @@ public class DonacionService {
     return donacion;
   }
 
-  public Donacion crear(DonacionRequest request) {
-    List<Donante> donantes = request.donanteIds().stream()
+  public Donacion crear(List<Bien> bienes, List<String> donanteIds) {
+    List<Donante> donantes = donanteIds.stream()
       .map(id -> DonanteRepository.getInstancia().buscarPorId(id)
       .orElseThrow(() -> new DomainValidationException("Donante no encontrado con ID: " + id)))
       .toList();
 
-    Donacion donacion = DonacionMapper.aDominio(request, donantes);
+    Donacion donacion = new Donacion(bienes, donantes);
     repository.guardarDonacion(donacion);
     return donacion;
   }
 
-  public Donacion actualizar(String id, DonacionRequest request) {
+  public Donacion actualizar(String id, List<Bien> bienes) {
     Donacion donacion = obtener(id);
-    donacion.reemplazarBienes(DonacionMapper.aBienes(request.bienes()));
+    donacion.reemplazarBienes(bienes);
     repository.guardarDonacion(donacion);
     return donacion;
   }

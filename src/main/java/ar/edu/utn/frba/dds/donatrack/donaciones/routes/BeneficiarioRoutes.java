@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.routes;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.controller.BeneficiarioController;
-import ar.edu.utn.frba.dds.donatrack.donaciones.service.BeneficiarioService;
 import io.javalin.Javalin;
 
 public class BeneficiarioRoutes {
@@ -9,7 +8,7 @@ public class BeneficiarioRoutes {
   }
 
   public static void registrar(Javalin app) {
-    BeneficiarioController controller = new BeneficiarioController(new BeneficiarioService());
+    BeneficiarioController controller = new BeneficiarioController();
 
     app.get("/beneficiarios", controller::listar);
     app.post("/beneficiarios", controller::crear);

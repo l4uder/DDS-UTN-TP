@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.controller;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donacion.DonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donacion.DonacionRequest;
@@ -48,7 +49,8 @@ public class DonacionController {
   public void crear(Context ctx) {
     try {
       DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
-      Donacion creada = service.crear(request);
+      List<Bien> bienes = DonacionMapper.aBienes(request.bienes());
+      Donacion creada = service.crear(bienes, request.donanteIds());
       ctx.status(201).json(DonacionMapper.aResponse(creada));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
@@ -60,7 +62,8 @@ public class DonacionController {
   public void actualizar(Context ctx) {
     try {
       DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
-      Donacion actualizada = service.actualizar(ctx.pathParam("id"), request);
+      List<Bien> bienes = DonacionMapper.aBienes(request.bienes());
+      Donacion actualizada = service.actualizar(ctx.pathParam("id"), bienes);
       ctx.json(DonacionMapper.aResponse(actualizada));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));

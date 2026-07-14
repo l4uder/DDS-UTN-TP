@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,11 @@ public final class DonanteRepository {
 
   public Optional<Donante> buscarPorId(String id) {
     return Optional.ofNullable(donantesStore.get(id));
+  }
+
+  public Donante obtenerPorId(String id) {
+    return buscarPorId(id)
+        .orElseThrow(() -> new RecursoNoEncontradoException("No existe donante con id " + id));
   }
 
   public Optional<Donante> buscarPorEmail(String email) {

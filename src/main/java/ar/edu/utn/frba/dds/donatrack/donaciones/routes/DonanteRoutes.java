@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.routes;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.controller.DonanteController;
-import ar.edu.utn.frba.dds.donatrack.donaciones.service.DonanteService;
 import io.javalin.Javalin;
 
 public class DonanteRoutes {
@@ -10,7 +9,7 @@ public class DonanteRoutes {
   }
 
   public static void registrar(Javalin app) {
-    DonanteController controller = new DonanteController(new DonanteService());
+    DonanteController controller = new DonanteController();
 
     app.get("/donantes", controller::listar);
     app.post("/donantes", controller::crear);
