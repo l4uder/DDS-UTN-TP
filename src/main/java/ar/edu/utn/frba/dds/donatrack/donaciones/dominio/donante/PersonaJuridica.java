@@ -25,6 +25,11 @@ public class PersonaJuridica extends Donante {
                             ? new ArrayList<>() : new ArrayList<>(representantes);
   }
 
+  @Override
+  public TipoDonante getTipo() {
+    return TipoDonante.JURIDICA;
+  }
+
   public String getRazonSocial() {
     return razonSocial;
   }

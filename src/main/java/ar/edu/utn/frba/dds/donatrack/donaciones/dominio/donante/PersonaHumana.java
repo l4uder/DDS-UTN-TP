@@ -27,6 +27,11 @@ public class PersonaHumana extends Donante {
     this.direccion = direccion;
   }
 
+  @Override
+  public TipoDonante getTipo() {
+    return TipoDonante.HUMANA;
+  }
+
   public Integer getEdad() {
     return Period.between(fechaNacimiento, LocalDate.now()).getYears();
   }

@@ -28,6 +28,8 @@ public abstract class Donante {
     }
   }
 
+  public abstract TipoDonante getTipo();
+
   public String getId() {
     return this.id;
   }

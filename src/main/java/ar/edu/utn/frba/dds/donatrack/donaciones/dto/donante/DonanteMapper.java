@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Genero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaHumana;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaJuridica;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDonante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoOrganizacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.comun.ContactoDto;
@@ -31,9 +32,10 @@ public class DonanteMapper {
         parseEnum(TipoDocumento.class, request.documento().tipo(), "tipo de documento"),
         request.documento().numero());
     List<MedioContacto> contactos = aContactos(request.contactos());
+    TipoDonante tipo = parseEnum(TipoDonante.class, request.tipo(), "tipo de donante");
 
-    return switch (request.tipo().toUpperCase()) {
-      case "HUMANA" -> new PersonaHumana(
+    return switch (tipo) {
+      case HUMANA -> new PersonaHumana(
           request.nombre(),
           request.apellido(),
           documento,
@@ -41,7 +43,7 @@ public class DonanteMapper {
           request.genero() == null ? null : parseEnum(Genero.class, request.genero(), "genero"),
           request.direccion(),
           contactos);
-      case "JURIDICA" -> new PersonaJuridica(
+      case JURIDICA -> new PersonaJuridica(
           request.razonSocial(),
           request.tipoOrganizacion() == null
               ? TipoOrganizacion.SIN_ESPECIFICAR
@@ -51,8 +53,6 @@ public class DonanteMapper {
           documento,
           null,
           contactos);
-      default -> throw new DomainValidationException(
-          "Tipo de donante invalido: " + request.tipo() + " (HUMANA o JURIDICA)");
     };
   }
 

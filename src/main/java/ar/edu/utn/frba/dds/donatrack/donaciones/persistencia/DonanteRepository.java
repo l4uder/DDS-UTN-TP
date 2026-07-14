@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDonante;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.util.HashMap;
 import java.util.List;
@@ -56,5 +57,11 @@ public final class DonanteRepository {
 
   public List<Donante> buscarTodos() {
     return donantesStore.values().stream().toList();
+  }
+
+  public List<Donante> buscarPorTipo(TipoDonante tipo) {
+    return donantesStore.values().stream()
+        .filter(d -> d.getTipo() == tipo)
+        .toList();
   }
 }

@@ -1,8 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.controller;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaHumana;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaJuridica;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDonante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteResponse;
@@ -20,19 +19,14 @@ public class DonanteController {
 
   public void listar(Context ctx) {
     String tipo = ctx.queryParam("tipo");
-    List<Donante> todos = repository.buscarTodos();
-    List<Donante> filtrados;
-    if (tipo == null) {
-      filtrados = todos;
-    } else if (tipo.equalsIgnoreCase("HUMANA")) {
-      filtrados = todos.stream().filter(d -> d instanceof PersonaHumana).toList();
-    } else if (tipo.equalsIgnoreCase("JURIDICA")) {
-      filtrados = todos.stream().filter(d -> d instanceof PersonaJuridica).toList();
-    } else {
+    try {
+      List<Donante> donantes = (tipo == null)
+          ? repository.buscarTodos()
+          : repository.buscarPorTipo(TipoDonante.valueOf(tipo.toUpperCase()));
+      ctx.json(donantes.stream().map(DonanteMapper::aResponse).toList());
+    } catch (IllegalArgumentException e) {
       ctx.status(400).json(new ErrorResponse(400, "Tipo invalido: " + tipo + " (humana o juridica)"));
-      return;
     }
-    ctx.json(filtrados.stream().map(DonanteMapper::aResponse).toList());
   }
 
   public void obtener(Context ctx) {
