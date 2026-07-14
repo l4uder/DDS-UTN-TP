@@ -11,13 +11,15 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.routes.NecesidadRoutes;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
 import io.javalin.Javalin;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class DonacionesApp {
 
   public static final int PUERTO = 7070;
 
   public static void main(String[] args) {
-    String password = System.getenv("DONATRACK_EMAIL_PASSWORD");
+    Dotenv dotenv = Dotenv.load();
+    String password = dotenv.get("DONATRACK_EMAIL_PASSWORD");
 
     if (password == null || password.isEmpty()) {
         throw new RuntimeException("Falta configurar la variable de entorno DONATRACK_EMAIL_PASSWORD");
