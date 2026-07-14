@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio;
 
 import lombok.Getter;
 
+import java.util.UUID;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class Ruta {
   private boolean iniciada;
 
   public Ruta(Camion camion, LocalDate fecha, List<Entrega> entregasOrdenadas) {
+    this.id = java.util.UUID.randomUUID().toString();
     this.camion = camion;
     this.chofer = null;
     this.fecha = fecha;
