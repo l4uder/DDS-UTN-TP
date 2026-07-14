@@ -15,17 +15,45 @@ import ar.edu.utn.frba.dds.donatrack.logistica.routes.CamionRoutes;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
 import io.javalin.Javalin;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class LogisticaApp {
 
   public static final int PUERTO = 7071;
 
   public static void main(String[] args) {
-    crearApp().start(PUERTO);
+    AppLogistica resultado = crearApp();
+
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    long minutosHasta = calcularMinutosHasta(LocalTime.of(2, 0));
+
+    scheduler.scheduleAtFixedRate(
+        () -> {
+          try {
+            resultado.procesoLogistica().ejecutar();
+          } catch (Exception e) {
+            System.err.println("[Cron] Error en planificación: " + e.getMessage());
+          }
+        },
+        minutosHasta,
+        24 * 60,
+        TimeUnit.MINUTES
+    );
+
+    System.out.println("[Cron] Planificación programada en " + minutosHasta + " minutos");
+    resultado.app().start(PUERTO);
   }
 
-  public static Javalin crearApp() {
+  private static long calcularMinutosHasta(LocalTime hora) {
+    long minutos = ChronoUnit.MINUTES.between(LocalTime.now(), hora);
+    return minutos < 0 ? minutos + 24 * 60 : minutos;
+  }
 
+  public static AppLogistica crearApp() {
     Javalin app = Javalin.create(config -> {
       config.jsonMapper(GsonConfig.jsonMapper());
       config.http.defaultContentType = "application/json";
@@ -78,12 +106,11 @@ public class LogisticaApp {
       ctx.status(200);
     });
 
-    return app;
+    return new AppLogistica(app, procesoLogistica);
   }
 
-  public record Health(
-      String servicio,
-      String estado
-  ) {}
+  public record AppLogistica(Javalin app, ProcesoLogistica procesoLogistica) {}
+
+  public record Health(String servicio, String estado) {}
 
 }

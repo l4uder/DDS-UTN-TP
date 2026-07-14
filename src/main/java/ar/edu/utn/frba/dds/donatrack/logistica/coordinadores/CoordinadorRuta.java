@@ -98,7 +98,7 @@ public class CoordinadorRuta {
   }
 
   public void ejecutarPlanificacionDiaria() {
-    List<Entrega> entregas = planificarEntregasPendientes(); // ya arma y guarda
+    List<Entrega> entregas = planificarEntregasPendientes();
     List<List<Entrega>> lotes = planificador.armarLotesEntrega(entregas);
 
     lotes.forEach(lote -> {
