@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.server;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteCorreoRealJavaMail;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.Notificador;
 import ar.edu.utn.frba.dds.donatrack.donaciones.routes.AsignacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.routes.BeneficiarioRoutes;
@@ -15,6 +17,11 @@ public class DonacionesApp {
   public static final int PUERTO = 7070;
 
   public static void main(String[] args) {
+    ProveedorClienteCorreo.inicializar(new ClienteCorreoRealJavaMail(
+        "donatrack.sistema@gmail.com", 
+        "uawj zaab mxhy bmuo"
+    ));
+
     Notificador.init(AppEventBus.getInstance());
     crearApp().start(PUERTO);
   }
