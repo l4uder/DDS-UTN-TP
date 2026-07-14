@@ -39,7 +39,7 @@ public class DonacionMapper {
         donacion.getEstadoActual().name(),
         donacion.getBeneficiario() == null
             ? null
-            : BeneficiarioMapper.aResponse(donacion.getBeneficiario()),
+            : BeneficiarioMapper.aResumen(donacion.getBeneficiario()),
         donacion.getBienes().stream().map(DonacionMapper::aBienDto).toList());
   }
 

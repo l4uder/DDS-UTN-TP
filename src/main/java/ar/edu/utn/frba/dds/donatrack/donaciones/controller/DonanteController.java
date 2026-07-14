@@ -4,7 +4,6 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDonante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteRequest;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dto.donante.DonanteResponse;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
@@ -23,7 +22,7 @@ public class DonanteController {
       List<Donante> donantes = (tipo == null)
           ? repository.buscarTodos()
           : repository.buscarPorTipo(TipoDonante.valueOf(tipo.toUpperCase()));
-      ctx.json(donantes.stream().map(DonanteMapper::aResponse).toList());
+      ctx.json(donantes.stream().map(DonanteMapper::aResumen).toList());
     } catch (IllegalArgumentException e) {
       ctx.status(400).json(new ErrorResponse(400, "Tipo invalido: " + tipo + " (humana o juridica)"));
     }

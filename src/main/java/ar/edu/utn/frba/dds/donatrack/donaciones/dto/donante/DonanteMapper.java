@@ -80,6 +80,20 @@ public class DonanteMapper {
         juridica.getRubro());
   }
 
+  public static DonanteResumenResponse aResumen(Donante donante) {
+    return new DonanteResumenResponse(
+        donante.getId(),
+        donante.getTipo().name(),
+        nombreVisible(donante));
+  }
+
+  private static String nombreVisible(Donante donante) {
+    if (donante instanceof PersonaHumana humana) {
+      return humana.getNombre() + " " + humana.getApellido();
+    }
+    return ((PersonaJuridica) donante).getRazonSocial();
+  }
+
   private static List<MedioContacto> aContactos(List<ContactoDto> contactos) {
     if (contactos == null || contactos.isEmpty()) {
       throw new DomainValidationException("La lista de contactos no puede estar vacía ni ser null");

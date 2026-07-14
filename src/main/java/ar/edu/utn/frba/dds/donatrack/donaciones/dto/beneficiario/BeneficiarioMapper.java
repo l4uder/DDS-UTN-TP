@@ -34,4 +34,11 @@ public class BeneficiarioMapper {
         beneficiario.getContactos().stream().map(ContactoMapper::aDto).toList());
   }
 
+  public static BeneficiarioResumenDto aResumen(Beneficiario beneficiario) {
+    return new BeneficiarioResumenDto(
+        beneficiario.getId(),
+        beneficiario.getRazonSocial(),
+        beneficiario.getDireccion());
+  }
+
 }

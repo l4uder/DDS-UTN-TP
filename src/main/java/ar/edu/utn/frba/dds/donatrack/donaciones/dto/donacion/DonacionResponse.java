@@ -1,13 +1,13 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dto.donacion;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dto.beneficiario.BeneficiarioResponse;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dto.beneficiario.BeneficiarioResumenDto;
 import java.util.List;
 
 public record DonacionResponse(
     String id,
     String descripcion,
     String estado,
-    BeneficiarioResponse beneficiario,
+    BeneficiarioResumenDto beneficiario,
     List<BienDto> bienes
 ) {
 }
