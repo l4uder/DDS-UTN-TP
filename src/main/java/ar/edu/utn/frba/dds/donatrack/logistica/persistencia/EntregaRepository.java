@@ -27,6 +27,8 @@ public class EntregaRepository {
     return entrega;
   }
 
+  public void eliminar(String id) {store.remove(id);}
+
   public List<Entrega> buscarTodas() {
     return new ArrayList<>(store.values());
   }

@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio;
 
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import java.util.ArrayList;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -7,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Ruta {
+
   private String id;
   private Camion camion;
   private Chofer chofer;
@@ -14,38 +17,81 @@ public class Ruta {
   private List<Entrega> entregasOrdenadas;
   private boolean iniciada;
 
-  public Ruta(Camion camion, LocalDate fecha, List<Entrega> entregasOrdenadas) {
-    this.id = java.util.UUID.randomUUID().toString();
+
+  public Ruta(
+      Camion camion,
+      LocalDate fecha,
+      List<Entrega> entregasOrdenadas
+  ) {
+
+    if (camion == null) {
+      throw new DomainValidationException(
+          "La ruta debe tener un camión asignado"
+      );
+    }
+
+    if (fecha == null) {
+      throw new DomainValidationException(
+          "La ruta debe tener fecha"
+      );
+    }
+
+    if (entregasOrdenadas == null) {
+      throw new DomainValidationException(
+          "La ruta debe tener entregas"
+      );
+    }
+
+    this.id = UUID.randomUUID().toString();
     this.camion = camion;
-    this.chofer = null;
     this.fecha = fecha;
-    this.entregasOrdenadas = entregasOrdenadas;
+    this.entregasOrdenadas = new ArrayList<>(entregasOrdenadas);
     this.iniciada = false;
   }
 
-  public String getId() { return id; }
 
   public void iniciarRecorrido() {
+
     if (iniciada) {
-      throw new IllegalStateException("La ruta ya fue iniciada");
+      throw new IllegalStateException(
+          "La ruta ya fue iniciada"
+      );
     }
+
     if (chofer == null) {
-      throw new IllegalStateException("La ruta debe tener chofer");
+      throw new IllegalStateException(
+          "La ruta debe tener chofer"
+      );
     }
-    this.iniciada = true;
-    this.entregasOrdenadas.forEach(e -> e.iniciarTraslado());
+
+    iniciada = true;
+
+    entregasOrdenadas.forEach(
+        Entrega::iniciarTraslado
+    );
   }
 
+
   public void asignarChofer(Chofer chofer) {
-    if (this.chofer != null) {
-      throw new IllegalStateException("La ruta ya tiene un chofer asignado");
+
+    if (chofer == null) {
+      throw new DomainValidationException(
+          "El chofer no puede ser nulo"
+      );
     }
+
+    if (this.chofer != null) {
+      throw new IllegalStateException(
+          "La ruta ya tiene chofer asignado"
+      );
+    }
+
     this.chofer = chofer;
   }
 
-  public LocalDate getFecha() { return fecha; }
-  public boolean isIniciada() {
-    return iniciada;
+
+  public String getId() {
+    return id;
   }
 
   public Camion getCamion() {
@@ -56,15 +102,15 @@ public class Ruta {
     return chofer;
   }
 
+  public LocalDate getFecha() {
+    return fecha;
+  }
+
   public List<Entrega> getEntregasOrdenadas() {
-    return entregasOrdenadas;
+    return List.copyOf(entregasOrdenadas);
   }
 
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getLinkMapa(){
-    return "https://map.donaciones.ar/camion/" + camion.getPatente();
+  public boolean isIniciada() {
+    return iniciada;
   }
 }

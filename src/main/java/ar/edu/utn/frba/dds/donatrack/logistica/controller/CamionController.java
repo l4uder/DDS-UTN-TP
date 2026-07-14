@@ -1,9 +1,9 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.controller;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
-import ar.edu.utn.frba.dds.donatrack.logistica.dto.camion.CamionMapper;
-import ar.edu.utn.frba.dds.donatrack.logistica.dto.camion.CamionRequest;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.camion.ActualizarCamionRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.camion.CamionResponse;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.camion.CrearCamionRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
@@ -18,14 +18,16 @@ public class CamionController {
 
   public void listar(Context ctx) {
     List<CamionResponse> camiones = repository.buscarTodos().stream()
-        .map(CamionMapper::aResponse)
+        .map(CamionResponse::desde)
         .toList();
+
     ctx.json(camiones);
   }
 
   public void obtener(Context ctx) {
     try {
-      ctx.json(CamionMapper.aResponse(repository.obtenerPorPatente(ctx.pathParam("patente"))));
+      Camion camion = repository.obtenerPorPatente(ctx.pathParam("patente"));
+      ctx.json(CamionResponse.desde(camion));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     }
@@ -33,11 +35,23 @@ public class CamionController {
 
   public void crear(Context ctx) {
     try {
-      Camion creado = CamionMapper.aDominio(ctx.bodyAsClass(CamionRequest.class));
-      repository.insertar(creado);
-      ctx.status(201).json(CamionMapper.aResponse(creado));
+      CrearCamionRequest request =
+          ctx.bodyAsClass(CrearCamionRequest.class);
+
+      Camion camion = new Camion(
+          request.patente(),
+          request.capacidadVolumen(),
+          request.altura(),
+          request.capacidadCarga()
+      );
+
+      repository.insertar(camion);
+
+      ctx.status(201).json(CamionResponse.desde(camion));
+
     } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+      ctx.status(400).json(
+          new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
       ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
     }
@@ -45,12 +59,25 @@ public class CamionController {
 
   public void actualizar(Context ctx) {
     try {
-      Camion camion = repository.obtenerPorPatente(ctx.pathParam("patente"));
-      CamionMapper.actualizarDominio(camion, ctx.bodyAsClass(CamionRequest.class));
+      Camion camion =
+          repository.obtenerPorPatente(ctx.pathParam("patente"));
+
+      ActualizarCamionRequest request =
+          ctx.bodyAsClass(ActualizarCamionRequest.class);
+
+      camion.actualizarDatos(
+          request.capacidadVolumen(),
+          request.altura(),
+          request.capacidadCarga()
+      );
+
       repository.guardar(camion);
-      ctx.json(CamionMapper.aResponse(camion));
+
+      ctx.json(CamionResponse.desde(camion));
+
     } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+      ctx.status(400).json(
+          new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
       ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
     } catch (RecursoNoEncontradoException e) {
@@ -60,9 +87,13 @@ public class CamionController {
 
   public void eliminar(Context ctx) {
     try {
-      repository.obtenerPorPatente(ctx.pathParam("patente"));
-      repository.eliminar(ctx.pathParam("patente"));
+      String patente = ctx.pathParam("patente");
+
+      repository.obtenerPorPatente(patente);
+      repository.eliminar(patente);
+
       ctx.status(204);
+
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     }

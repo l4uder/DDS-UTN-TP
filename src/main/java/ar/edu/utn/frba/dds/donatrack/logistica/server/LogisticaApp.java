@@ -1,15 +1,16 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.server;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.coordinadores.CoordinadorEntrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.coordinadores.CoordinadorRuta;
+import ar.edu.utn.frba.dds.donatrack.logistica.cron.ProcesoLogistica;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.PlanificadorLogistico;
 import ar.edu.utn.frba.dds.donatrack.logistica.integracion.DonacionesClient;
-import ar.edu.utn.frba.dds.donatrack.logistica.service.GestorRuta;
-import ar.edu.utn.frba.dds.donatrack.logistica.service.GestorEntrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.controller.RutaController;
 import ar.edu.utn.frba.dds.donatrack.logistica.controller.EntregaController;
-import ar.edu.utn.frba.dds.donatrack.logistica.routes.RutaRoutes;
-import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
+import ar.edu.utn.frba.dds.donatrack.logistica.routes.RutaRoutes;
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.routes.CamionRoutes;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
@@ -24,6 +25,7 @@ public class LogisticaApp {
   }
 
   public static Javalin crearApp() {
+
     Javalin app = Javalin.create(config -> {
       config.jsonMapper(GsonConfig.jsonMapper());
       config.http.defaultContentType = "application/json";
@@ -31,30 +33,57 @@ public class LogisticaApp {
 
     ExceptionHandlers.registrar(app);
 
-    app.get("/health", ctx -> ctx.json(new Health("logistica-service", "OK")));
+    app.get("/health",
+        ctx -> ctx.json(new Health("logistica-service", "OK"))
+    );
 
     CamionRoutes.registrar(app);
 
     DonacionesClient donacionesClient = new DonacionesClient();
 
-    GestorRuta gestorRuta = new GestorRuta(
-        RutaRepository.getInstancia(),
-        CamionRepository.getInstancia(),
-        EntregaRepository.getInstancia(),
+    EntregaRepository entregaRepository = EntregaRepository.getInstancia();
+    CamionRepository camionRepository = CamionRepository.getInstancia();
+    RutaRepository rutaRepository = RutaRepository.getInstancia();
+
+    CoordinadorEntrega coordinadorEntrega = new CoordinadorEntrega(
+        entregaRepository,
         donacionesClient
     );
-    GestorEntrega gestorEntrega = new GestorEntrega(
-        EntregaRepository.getInstancia(),
-        donacionesClient
+
+    EntregaController entregaController = new EntregaController(
+        entregaRepository,
+        coordinadorEntrega
     );
-    RutaController rutaController = new RutaController(gestorRuta);
-    EntregaController entregaController = new EntregaController(gestorEntrega);
+
+    PlanificadorLogistico planificador = new PlanificadorLogistico();
+
+    CoordinadorRuta coordinadorRuta = new CoordinadorRuta(
+        rutaRepository,
+        camionRepository,
+        entregaRepository,
+        donacionesClient,
+        planificador
+    );
+
+    RutaController rutaController = new RutaController(
+        rutaRepository,
+        coordinadorRuta
+    );
+
     RutaRoutes.registrar(app, rutaController, entregaController);
+
+    ProcesoLogistica procesoLogistica = new ProcesoLogistica(coordinadorRuta);
+    app.post("/admin/planificar", ctx -> {
+      procesoLogistica.ejecutar();
+      ctx.status(200);
+    });
 
     return app;
   }
 
-  public record Health(String servicio, String estado) {
-  }
+  public record Health(
+      String servicio,
+      String estado
+  ) {}
 
 }

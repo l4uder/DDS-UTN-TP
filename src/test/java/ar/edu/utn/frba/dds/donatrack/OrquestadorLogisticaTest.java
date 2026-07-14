@@ -2,8 +2,6 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.*;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.*;
-import ar.edu.utn.frba.dds.donatrack.builder.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
@@ -11,7 +9,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeCo
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.orquestadorlogistica.OrquestadorLogistica;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.OrquestadorLogistica;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
 import org.junit.jupiter.api.BeforeEach;
