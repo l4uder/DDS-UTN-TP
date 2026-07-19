@@ -1,0 +1,192 @@
+package ar.edu.utn.frba.dds.donatrack.donaciones.web.controller;
+
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionMapper;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionRequest;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionResponse;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.EstadoDonacionDto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.service.DonacionService;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
+import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
+import com.google.gson.JsonSyntaxException;
+import io.javalin.http.Context;
+import java.util.List;
+
+public class DonacionController {
+
+  private final DonacionService service;
+
+  public DonacionController(DonacionService service) {
+    this.service = service;
+  }
+
+  public void listar(Context ctx) {
+    try {
+      List<DonacionResponse> donaciones = service.listar(ctx.queryParam("estado")).stream()
+          .map(DonacionMapper::aResponse)
+          .toList();
+      ctx.json(donaciones);
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    }
+  }
+
+  public void obtener(Context ctx) {
+    try {
+      Donacion donacion = service.obtener(ctx.pathParam("id"));
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    }
+  }
+
+  public void crear(Context ctx) {
+    try {
+      DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
+      List<Bien> bienes = DonacionMapper.aBienes(request.bienes());
+      Donacion creada = service.crear(bienes, request.donanteIds());
+      ctx.status(201).json(DonacionMapper.aResponse(creada));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    }
+  }
+
+  public void actualizar(Context ctx) {
+    try {
+      DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
+      List<Bien> bienes = DonacionMapper.aBienes(request.bienes());
+      Donacion actualizada = service.actualizar(ctx.pathParam("id"), bienes);
+      ctx.json(DonacionMapper.aResponse(actualizada));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void cambiarEstadoADeposito(Context ctx) {
+    try {
+      Donacion donacion = service.cambiarEstadoEnDeposito(ctx.pathParam("id"));
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void cambiarEstadoAVencida(Context ctx) {
+    try {
+      Donacion donacion = service.cambiarEstadoVencida(ctx.pathParam("id"));
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void cambiarEstadoALista(Context ctx) {
+    try {
+      Donacion donacion = service.cambiarEstadoListaEntregar(ctx.pathParam("id"));
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void cambiarEstadoAEntregada(Context ctx) {
+    try {
+      var request = ctx.bodyAsClass(CambioEstadoEntregadaRequest.class);
+      Donacion donacion = service.cambiarEstadoEntregada(ctx.pathParam("id"), request.camionId());
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void cambiarEstadoAErrorEntrega(Context ctx) {
+    try {
+      var request = ctx.bodyAsClass(CambioEstadoErrorEntregaRequest.class);
+      Donacion donacion = service.cambiarEstadoErrorEntrega(ctx.pathParam("id"), request.observacion());
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void cambiarEstadoAEnTraslado(Context ctx) {
+    try {
+      var request = ctx.bodyAsClass(CambioEstadoInicioRutaRequest.class);
+      Donacion donacion = service.cambiarEstadoEnTraslado(ctx.pathParam("id"), request.linkMapa());
+      ctx.json(DonacionMapper.aResponse(donacion));
+    } catch (JsonSyntaxException e) {
+      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (CambioDeEstadoNoPermitidoException e) {
+      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    }
+  }
+
+  public void listarEstados(Context ctx) {
+    try {
+      List<EstadoDonacionDto> historial = service.listarEstados(ctx.pathParam("id")).stream()
+          .map(DonacionMapper::aEstadoDto)
+          .toList();
+      ctx.json(historial);
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    }
+  }
+
+  public void eliminar(Context ctx) {
+    try {
+      service.eliminar(ctx.pathParam("id"));
+      ctx.status(204);
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    }
+  }
+
+}

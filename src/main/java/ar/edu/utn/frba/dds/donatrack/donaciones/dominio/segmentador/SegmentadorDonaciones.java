@@ -4,7 +4,6 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.RegistroEntrega;
-import ar.edu.utn.frba.dds.donatrack.donaciones.server.AppEventBus;
 
 import java.util.ArrayList;
 import java.util.List;

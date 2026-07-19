@@ -5,8 +5,6 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Ruta;
-import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
-import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

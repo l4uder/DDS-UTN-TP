@@ -10,7 +10,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoE
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaFallida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoInicioDeRuta;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
-import ar.edu.utn.frba.dds.donatrack.donaciones.server.AppEventBus;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.server.AppEventBus;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 
