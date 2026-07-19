@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.*;
@@ -18,19 +20,16 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDate;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RutaTest {
-
   private Camion camion;
   private Chofer chofer;
   private Entrega entrega;
   private Ruta ruta;
-  private BeneficiarioDTO beneficiario;
+  private Beneficiario beneficiario;
 
   private Donante donantePrueba;
 
@@ -39,20 +38,9 @@ public class RutaTest {
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
     chofer = new Chofer("Juan", "Gómez", "12345678");
 
-    WhatsappDeContato contactoWhatsapp =
-        new WhatsappDeContato("132212212");
-
-    CorreoDeContato contactoCorreo = 
-      new CorreoDeContato("comedor@prueba.com");
-    
-    List<MedioContacto> listaContactos =
-        List.of(contactoCorreo); //Cambio a correo a la espera de la implementación de envio por Whatsapp
-
-    //Mock de Motor de correos exclusivo para los tests
-    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
-        // No hace nada de red, solo simula que lo envió
-        System.out.println("TEST - Simulando envío a: " + destino);
-    });
+    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212");
+    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com");
+    List<MedioContacto> listaContactos = List.of(contactoCorreo);
 
     donantePrueba = new PersonaHumanaBuilder()
       .conNombre("Juan")
@@ -61,11 +49,19 @@ public class RutaTest {
       .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
       .build();
 
-    DonacionAsignadaDTO donacion = new DonacionAsignadaDTO("don-1", "Fideos", beneficiario);
-    
-    //donacion.confirmarAsignacion(beneficiario);
-    beneficiario = new BeneficiarioDTO("ben-1", "Comedor San José", "Av. Siempre Viva 123");
+    Bien bien = new BienBuilder().conDescripcion("Arroz").conCantidad(3).conUsado(false).buildNoPerecedero();
 
+    beneficiario = new BeneficiarioBuilder().conRazonSocial("Comedor San José").conDireccion("Av. Siempre Viva 123").conAgregarContacto(contactoWhatsapp).build();
+
+    Donante donante = new PersonaHumanaBuilder()
+        .conNombre("Juan")
+        .conApellido("Pérez")
+        .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .build();
+
+    Donacion donacion = new Donacion(List.of(bien), List.of(donante));
+    donacion.confirmarAsignacion(beneficiario);
 
     entrega = new Entrega(beneficiario, List.of(donacion), camion);
     ruta = new Ruta(camion, LocalDate.now(), List.of(entrega));

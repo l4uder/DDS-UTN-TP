@@ -1,5 +1,11 @@
 package ar.edu.utn.frba.dds.donatrack;
 
+import ar.edu.utn.frba.dds.donatrack.builder.BeneficiarioBuilder;
+import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
+import ar.edu.utn.frba.dds.donatrack.builder.CamionBuilder;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
@@ -9,92 +15,130 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeCo
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.OrquestadorLogistica;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.PlanificadorLogistico;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrquestadorLogisticaTest {
-
-  private BeneficiarioDTO beneficiarioA;
-  private BeneficiarioDTO beneficiarioB;
-  private List<DonacionAsignadaDTO> donaciones;
+  private Beneficiario beneficiarioA;
+  private Beneficiario beneficiarioB;
+  private Donacion donacion1;
+  private Donacion donacion2;
+  private Donacion donacion3;
+  private List<Donacion> donaciones;
   private List<Camion> camiones;
-
-  private Donante donantePrueba;
 
   @BeforeEach
   void setUp() {
-    WhatsappDeContato contactoWhatsapp = new WhatsappDeContato("132212212");
-    SmsDeContato contactoSms = new SmsDeContato("112322222");
-    CorreoDeContato contactoCorreo = new CorreoDeContato("comedor@prueba.com");
-    CorreoDeContato contactoCorreoB = new CorreoDeContato("comedorB@prueba.com");
+    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212");
+    MedioContacto contactoSms = new SmsDeContato("112322222");
+    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com");
+    MedioContacto contactoCorreoB = new CorreoDeContato("comedorB@prueba.com");
 
-    List<MedioContacto> listaContactosA = List.of(contactoCorreo); //Cambio a correo a la espera de la implementación de envio por Whatsapp
-    //List<MedioContacto> listaContactosB = List.of(contactoSms); Comentada a la espera de la implementación de envío por SMS
-    List<MedioContacto> listaContactosB = List.of(contactoCorreo);
-    //VERRR
-    beneficiarioA = new BeneficiarioDTO("ben-a", "Comedor A", "Av. BeneficiarioA");
-    beneficiarioB = new BeneficiarioDTO("ben-b", "Comedor B", "Av. BeneficiarioB");
+    List<MedioContacto> listaContactosA = List.of(contactoCorreo);
+    List<MedioContacto> listaContactosB = List.of(contactoCorreoB);
 
-    donaciones = new ArrayList<>();
-    camiones = List.of(new Camion("AB123CD", 10f, 2.5f, 1500f));
+    beneficiarioA = new BeneficiarioBuilder()
+        .conRazonSocial("Comedor A")
+        .conDireccion("Av. BeneficiarioA")
+        .conAgregarContacto(contactoWhatsapp)
+        .build();
+    beneficiarioB = new BeneficiarioBuilder()
+        .conRazonSocial("Comedor B")
+        .conDireccion("Av. BeneficiarioB")
+        .conAgregarContacto(contactoSms)
+        .build();
 
-    //Mock de Motor de correos exclusivo para los tests
-    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
-        // No hace nada de red, solo simula que lo envió
-        System.out.println("TEST - Simulando envío a: " + destino);
-    });
+    Camion camion = new CamionBuilder().conPatente("AB123CD").conCapacidadVolumen(10f).conAltura(2.5f).conCapacidadCarga(1500f).build();
+    camiones = List.of(camion);
 
-    donantePrueba = new PersonaHumanaBuilder()
+    Bien bien = new BienBuilder().conDescripcion("Arroz").conCantidad(3).conUsado(false).buildNoPerecedero();
+
+    Donante donante = new PersonaHumanaBuilder()
       .conNombre("Juan")
       .conApellido("Pérez")
       .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
       .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
       .build();
-  }
-//VERRR
-  private DonacionAsignadaDTO donacionAsignadaA(BeneficiarioDTO beneficiario, int nro) {
-    return new DonacionAsignadaDTO(
-        "don-" + beneficiario.getId() + "-" + nro,
-        "Arroz",
-        beneficiario
-    );
+
+    donacion1 = new Donacion(List.of(bien), List.of(donante));
+    donacion2 = new Donacion(List.of(bien), List.of(donante));
+    donacion3 = new Donacion(List.of(bien), List.of(donante));
+
+    donaciones = new ArrayList<>();
   }
 
   @Test
   void agrupaDonacionesPorDestinoEnEntregas() {
-    donaciones.add(donacionAsignadaA(beneficiarioA, 1));
-    donaciones.add(donacionAsignadaA(beneficiarioA, 2));
-    donaciones.add(donacionAsignadaA(beneficiarioB, 1));
+    donacion1.confirmarAsignacion(beneficiarioA);
+    donacion2.confirmarAsignacion(beneficiarioA);
+    donacion3.confirmarAsignacion(beneficiarioB);
+    donaciones = List.of(donacion1, donacion2, donacion3);
 
-    OrquestadorLogistica orquestador = new OrquestadorLogistica(camiones, donaciones);
-    List<Entrega> entregas = orquestador.armarEntregasPendientes();
+    PlanificadorLogistico planificador = new PlanificadorLogistico();
+    List<Entrega> entregas = planificador.armarEntregasPendientes(donaciones);
+    Entrega entregaBenfeciarioA = entregaPorBeneficiario(beneficiarioA, entregas);
+    Entrega entregaBenfeciarioB = entregas.stream().filter(e -> beneficiarioB.esIgual(e.getDestino())).toList().get(0);
 
-    assertEquals(2, entregas.size());
-    assertTrue(entregas.stream().anyMatch(e ->
-        e.getDestino().equals(beneficiarioA) && e.getDonaciones().size() == 2));
-    assertTrue(entregas.stream().anyMatch(e ->
-        e.getDestino().equals(beneficiarioB) && e.getDonaciones().size() == 1));
+    assertEquals(2, entregas.size(), "son dos, porque una es de el beneficiarioA y la otra para el beneficiarioB");
+    assertEquals(2, entregaBenfeciarioA.getDonaciones().size(), "el beneficiarioA tiene dos donaciones");
+    assertEquals(1, entregaBenfeciarioB.getDonaciones().size(), "el beneficiarioB tiene una donación");
   }
 
   @Test
   void armaLotesRespetandoElLimiteDeCienDonaciones() {
+    donacion1.confirmarAsignacion(beneficiarioA);
     for (int i = 0; i < 150; i++) {
-      donaciones.add(donacionAsignadaA(beneficiarioA, i));
+      donaciones.add(donacion1);
     }
 
-    OrquestadorLogistica orquestador = new OrquestadorLogistica(camiones, donaciones);
-    List<Entrega> entregas = orquestador.armarEntregasPendientes();
-    List<List<Entrega>> lotes = orquestador.armarLotesEntrega(entregas);
+    PlanificadorLogistico planificador = new PlanificadorLogistico();
+    List<Entrega> entregas = planificador.armarEntregasPendientes(donaciones);
+    List<List<Entrega>> lotes = planificador.armarLotesEntrega(entregas);
 
-    assertFalse(lotes.isEmpty());
+    assertEquals(1, entregas.size(), "es uno, porque solo hay un beneficiario");
+    assertEquals(150, cantDonaciones(entregas), "el único beneficiario tiene ciento cincuenta donaciones");
+    assertEquals(2, lotes.size(), "porque 150 es mucho y se debe dividir en dos, uno de cien y el otro de cincuenta");
   }
 
+  @Test
+  void armaLotesRespetandoElLimiteDeCienDonacionesParte2() {
+    donacion1.confirmarAsignacion(beneficiarioA);
+    donacion2.confirmarAsignacion(beneficiarioA);
+    donacion3.confirmarAsignacion(beneficiarioB);
+
+    for (int i = 0; i < 60; i++) {
+      donaciones.add(donacion1);
+    }
+    for (int i = 0; i < 30; i++) {
+      donaciones.add(donacion2);
+    }
+    for (int i = 0; i < 20; i++) {
+      donaciones.add(donacion3);
+    }
+
+    PlanificadorLogistico planificador = new PlanificadorLogistico();
+    List<Entrega> entregas = planificador.armarEntregasPendientes(donaciones);
+    List<List<Entrega>> lotes = planificador.armarLotesEntrega(entregas);
+
+    assertEquals(2, entregas.size(), "son dos, porque una es de el beneficiarioA y la otra para el beneficiarioB");
+    assertEquals(110, cantDonaciones(entregas), "el beneficiarioA tiene 90 donaciones el beneficiarioB tiene 20 donaciones");
+    assertEquals(2, lotes.size(), "porque 110 es mucho y se debe dividir en dos, uno de cien y el otro de diez");
+  }
+
+  private Entrega entregaPorBeneficiario(Beneficiario beneficiario, List<Entrega> entregas) {
+    return entregas.stream().filter(e -> beneficiario.esIgual(e.getDestino()))
+        .findFirst().orElseThrow(() -> new DomainValidationException("el beneficiario no existe en esas Entregas"));
+  }
+
+  private Integer cantDonaciones(List<Entrega> entregas) {
+    return entregas.stream().flatMap(e -> e.getDonaciones().stream()).toList().size();
+  }
 }

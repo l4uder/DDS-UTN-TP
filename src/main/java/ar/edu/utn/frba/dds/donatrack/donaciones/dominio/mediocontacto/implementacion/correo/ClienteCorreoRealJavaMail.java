@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo;
 
 import java.util.Properties;
 import javax.mail.Authenticator;

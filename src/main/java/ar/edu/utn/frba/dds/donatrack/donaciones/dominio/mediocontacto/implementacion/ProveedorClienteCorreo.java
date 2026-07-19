@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreo;
+
 public class ProveedorClienteCorreo {
     private static ClienteCorreo instancia;
 

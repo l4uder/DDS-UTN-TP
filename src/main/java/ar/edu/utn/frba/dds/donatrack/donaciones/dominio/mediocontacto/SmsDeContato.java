@@ -1,7 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSmsMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteSms;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSms;
 
 public class SmsDeContato extends MedioContacto {
   private String telefono;
@@ -13,6 +14,7 @@ public class SmsDeContato extends MedioContacto {
     }
     this.telefono = telefono;
     this.esPrincipal = false;
+    this.clienteSms = new ClienteSmsMock();
   }
 
   @Override

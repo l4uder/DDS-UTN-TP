@@ -1,7 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 
 public class CorreoDeContato extends MedioContacto {
@@ -15,7 +16,7 @@ public class CorreoDeContato extends MedioContacto {
     this.correo = correo;
     this.esPrincipal = false;
 
-    this.clienteCorreo = ProveedorClienteCorreo.getInstancia();
+    this.clienteCorreo = new ClienteCorreoMock();
   }
 
   @Override

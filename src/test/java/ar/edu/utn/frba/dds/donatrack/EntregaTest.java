@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.*;
@@ -13,45 +15,45 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.TipoEstadoEntrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntregaTest {
-
-  private BeneficiarioDTO beneficiario;
-  private DonacionAsignadaDTO donacion;
+  private Beneficiario beneficiario;
+  private Donacion donacion;
   private Camion camion;
   private Entrega entrega;
-
   private Donante donantePrueba;
 
   @BeforeEach
   void setUp() {
-    WhatsappDeContato contactoWhatsapp =
-        new WhatsappDeContato("132212212");
+    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212");
+    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com");
+    List<MedioContacto> listaContactos = List.of(contactoCorreo, contactoWhatsapp);
 
-    CorreoDeContato contactoCorreo = 
-        new CorreoDeContato("comedor@prueba.com");
+    beneficiario = new BeneficiarioBuilder()
+        .conRazonSocial("Comedor San José")
+        .conDireccion("Av. Siempre Viva 123")
+        .conAgregarContacto(contactoWhatsapp)
+        .build();
 
-    List<MedioContacto> listaContactos =
-        List.of(contactoCorreo); //Cambio a correo a la espera de la implementación de envio por Whatsapp
+    Bien bien = new BienBuilder().conDescripcion("Arroz").conCantidad(3).conUsado(false).buildNoPerecedero();
 
-    beneficiario = new BeneficiarioDTO("ben-1", "Comedor San José", "Av. Siempre Viva 123");
+    Donante donante = new PersonaHumanaBuilder()
+        .conNombre("Juan")
+        .conApellido("Pérez")
+        .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .build();
 
-    donacion = new DonacionAsignadaDTO("don-1", "Fideos", beneficiario); //VERRR
+    donacion = new Donacion(List.of(bien), List.of(donante));
+    donacion.confirmarAsignacion(beneficiario);
 
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
-
-    //Mock de Motor de correos exclusivo para los tests
-    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
-        // No hace nada de red, solo simula que lo envió
-        System.out.println("TEST - Simulando envío a: " + destino);
-    });
 
     donantePrueba = new PersonaHumanaBuilder()
       .conNombre("Juan")
@@ -59,8 +61,6 @@ public class EntregaTest {
       .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
       .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
       .build();
-
-    //donacion.confirmarAsignacion(beneficiario);
 
     entrega = new Entrega(beneficiario, List.of(donacion), camion);
   }
@@ -71,9 +71,9 @@ public class EntregaTest {
   }
 
   @Test
-  void confirmarListaParaEntregarNoCambiaEstadoDeEntrega() {
+  void confirmarListaParaEntregarCambiaEstadoDeEntrega() {
     entrega.confirmarListaParaEntregar();
-    assertEquals(TipoEstadoEntrega.PENDIENTE, entrega.getEstadoActual());
+    assertEquals(TipoEstadoEntrega.LISTA_PARA_ENTREGAR, entrega.getEstadoActual());
   }
 
   @Test
@@ -110,12 +110,7 @@ public class EntregaTest {
   }
 
   @Test
-  void agregarFotoRecepcionIgnoraValoresVacios() {
-    entrega.agregarFotoRecepcion("");
-    entrega.agregarFotoRecepcion(null);
-    assertFalse(entrega.tieneFotos());
-
-    entrega.agregarFotoRecepcion("https://storage.donatrack.com/foto1.jpg");
-    assertTrue(entrega.tieneFotos());
+  void noSePuedeAgregarFotoDeValoresVacios() {
+    assertThrows(DomainValidationException.class, () -> entrega.agregarFotoRecepcion(""));
   }
 }

@@ -5,34 +5,34 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioConta
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
 
-public class EntidadBeneficiariaBuilder {
+public class BeneficiarioBuilder {
   private String razonSocial;
   private String direccion;
-  private List<MedioContacto> contactoRepresentantes;
+  private List<MedioContacto> contactos;
   private List<Necesidad> necesidades;
 
-  public EntidadBeneficiariaBuilder(){
+  public BeneficiarioBuilder(){
+    this.contactos = new ArrayList<>();
     this.necesidades = new ArrayList<>();
   }
 
-  public EntidadBeneficiariaBuilder conRazonSocial(String razonSocial) {
+  public BeneficiarioBuilder conRazonSocial(String razonSocial) {
     this.razonSocial = razonSocial;
     return this;
   }
 
-  public EntidadBeneficiariaBuilder conDireccion(String direccion) {
+  public BeneficiarioBuilder conDireccion(String direccion) {
     this.direccion = direccion;
     return this;
   }
 
-  public EntidadBeneficiariaBuilder conMediosContactos(List<MedioContacto> medioContactos) {
-    this.contactoRepresentantes = medioContactos;
+  public BeneficiarioBuilder conAgregarContacto(MedioContacto medioContacto) {
+    this.contactos.add(medioContacto);
     return this;
   }
 
   public Beneficiario build(){
-    return new Beneficiario(razonSocial, direccion, contactoRepresentantes);
+    return new Beneficiario(razonSocial, direccion, contactos);
   }
 }

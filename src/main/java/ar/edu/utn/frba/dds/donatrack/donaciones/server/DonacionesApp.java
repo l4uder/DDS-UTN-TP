@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.server;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteCorreoRealJavaMail;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoRealJavaMail;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.Notificador;
 import ar.edu.utn.frba.dds.donatrack.donaciones.routes.AsignacionRoutes;

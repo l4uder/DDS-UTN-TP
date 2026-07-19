@@ -1,7 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsappMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteWhatsapp;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsapp;
 
 public class WhatsappDeContato extends MedioContacto {
   private String telefono;
@@ -13,6 +14,7 @@ public class WhatsappDeContato extends MedioContacto {
     }
     this.telefono = telefono;
     this.esPrincipal = false;
+    this.clienteWhatsapp = new ClienteWhatsappMock();
   }
 
   @Override

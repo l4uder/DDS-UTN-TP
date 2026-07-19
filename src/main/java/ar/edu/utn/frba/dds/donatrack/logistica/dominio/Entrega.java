@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
@@ -8,99 +10,59 @@ import java.util.List;
 import java.util.UUID;
 
 public class Entrega {
-
   private String id;
-  private BeneficiarioDTO destino;
-  private List<DonacionAsignadaDTO> donaciones;
+  private Beneficiario destino;
+  private List<Donacion> donaciones;
   private Camion camionAsignado;
   private List<EstadoEntrega> historialEstados;
   private List<String> fotosRecepcion;
 
-
-  public Entrega(
-      BeneficiarioDTO destino,
-      List<DonacionAsignadaDTO> donaciones,
-      Camion camion
-  ) {
-    this.id = UUID.randomUUID().toString();
+  public Entrega(Beneficiario destino, List<Donacion> donaciones, Camion camion) {
+    this.id = UUID.randomUUID().toString();//Todo: Porque este id lo ponemos nosotros y no un repo como en los demás casos ?
     this.destino = destino;
     this.donaciones = donaciones;
     this.camionAsignado = camion;
     this.historialEstados = new ArrayList<>();
     this.fotosRecepcion = new ArrayList<>();
 
-    historialEstados.add(
-        new EstadoEntrega(
-            TipoEstadoEntrega.PENDIENTE,
-            camion
-        )
-    );
+    historialEstados.add(new EstadoEntrega(TipoEstadoEntrega.PENDIENTE, camion));
   }
-
 
   public void iniciarTraslado() {
-    cambiarEstado(TipoEstadoEntrega.EN_TRASLADO,"Iniciando recorrido"
-    );
+    cambiarEstado(TipoEstadoEntrega.EN_TRASLADO,"Iniciando recorrido");
   }
-
 
   public void confirmarRecepcion() {
     cambiarEstado(TipoEstadoEntrega.ENTREGADA,null);
   }
 
-
   public void marcarNoRecibida(String motivo) {
-
     if (motivo == null || motivo.isBlank()) {
-      throw new DomainValidationException(
-          "Debe indicar un motivo"
-      );
+      throw new DomainValidationException("Debe indicar un motivo");
     }
 
     cambiarEstado(TipoEstadoEntrega.NO_RECIBIDA,motivo);
   }
 
-
   public void reingresarDeposito() {
-
     if (getEstadoActual() != TipoEstadoEntrega.NO_RECIBIDA) {
-      throw new IllegalStateException(
-          "Solo una entrega no recibida puede volver al depósito"
-      );
+      throw new IllegalStateException("Solo una entrega no recibida puede volver al depósito");
     }
 
-    cambiarEstado(
-        TipoEstadoEntrega.PENDIENTE,
-        "Entrega devuelta al depósito"
-    );
+    cambiarEstado(TipoEstadoEntrega.PENDIENTE, "Entrega devuelta al depósito");
   }
 
-
   public void agregarFotoRecepcion(String url) {
-
     if(url == null || url.isBlank()) {
-      throw new DomainValidationException(
-          "La URL de la foto es obligatoria"
-      );
+      throw new DomainValidationException("La URL de la foto es obligatoria");
     }
 
     fotosRecepcion.add(url);
   }
 
-
-  private void cambiarEstado(
-      TipoEstadoEntrega estado,
-      String detalle
-  ){
-    historialEstados.add(
-        new EstadoEntrega(
-            estado,
-            detalle,
-            camionAsignado
-        )
-    );
+  private void cambiarEstado(TipoEstadoEntrega estado, String detalle){
+    historialEstados.add(new EstadoEntrega(estado, detalle, camionAsignado));
   }
-
 
   public TipoEstadoEntrega getEstadoActual(){
     return historialEstados
@@ -112,6 +74,7 @@ public class Entrega {
     if (camion == null) {
       throw new DomainValidationException("El camión no puede ser nulo");
     }
+
     this.camionAsignado = camion;
   }
 
@@ -125,7 +88,7 @@ public class Entrega {
     return id;
   }
 
-  public List<DonacionAsignadaDTO> getDonaciones() {
+  public List<Donacion> getDonaciones() {
     return donaciones;
   }
 
@@ -133,7 +96,7 @@ public class Entrega {
     return camionAsignado;
   }
 
-  public BeneficiarioDTO getDestino() {
+  public Beneficiario getDestino() {
     return destino;
   }
 
@@ -143,5 +106,9 @@ public class Entrega {
 
   public List<EstadoEntrega> getHistorialEstados() {
     return historialEstados;
+  }
+
+  public boolean tieneFotos() {
+    return !fotosRecepcion.isEmpty();
   }
 }

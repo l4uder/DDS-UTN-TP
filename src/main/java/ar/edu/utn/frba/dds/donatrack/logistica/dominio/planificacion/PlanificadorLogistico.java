@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Ruta;
@@ -12,32 +14,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PlanificadorLogistico {
-
   private static final int MAX_DONACIONES_POR_LOTE = 100;
 
-
-  public List<Entrega> armarEntregasPendientes(
-      List<DonacionAsignadaDTO> donacionesAsignadas
-  ) {
-
-    Map<BeneficiarioDTO, List<DonacionAsignadaDTO>> agrupadasPorBeneficiario =
+  public List<Entrega> armarEntregasPendientes(List<Donacion> donacionesAsignadas) {
+    Map<Beneficiario, List<Donacion>> agrupadasPorBeneficiario =
         donacionesAsignadas.stream()
-            .collect(Collectors.groupingBy(
-                DonacionAsignadaDTO::getBeneficiario
-            ));
-
+            .collect(Collectors.groupingBy(d -> d.getBeneficiario()));
 
     List<Entrega> entregas = new ArrayList<>();
 
     agrupadasPorBeneficiario.forEach(
         (beneficiario, donaciones) ->
-            entregas.add(
-                new Entrega(
-                    beneficiario,
-                    donaciones,
-                    null
-                )
-            )
+            entregas.add(new Entrega( beneficiario, donaciones,null ))
     );
 
     return entregas;

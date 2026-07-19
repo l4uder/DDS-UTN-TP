@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.coordinadores;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Chofer;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
@@ -15,13 +16,13 @@ import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class CoordinadorRuta {
-
   private final RutaRepository rutaRepository;
   private final CamionRepository camionRepository;
   private final EntregaRepository entregaRepository;
@@ -40,7 +41,8 @@ public class CoordinadorRuta {
 
   public List<Entrega> planificarEntregasPendientes() {
     List<DonacionAsignadaDTO> donacionesAsignadas = donacionesClient.buscarDonacionesAsignadas();
-    List<Entrega> entregas = planificador.armarEntregasPendientes(donacionesAsignadas);
+    List<Donacion> donaciones = new ArrayList<>(); //Todo donaciones = conversor(donacionesAsignadas) falta algún conversor de DonacionAsignadaDTO a donacion ó que directamente el metodo buscarDonacionesAsignadas() te devuelva ya asi.
+    List<Entrega> entregas = planificador.armarEntregasPendientes(donaciones);
     entregas.forEach(entregaRepository::guardar);
     return entregas;
   }
