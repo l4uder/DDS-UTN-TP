@@ -5,7 +5,11 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioConta
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class PersonaHumana extends Donante {
   private String nombre;
   private String apellido;
@@ -32,28 +36,13 @@ public class PersonaHumana extends Donante {
     return TipoDonante.HUMANA;
   }
 
+  @Override
+  public String getNombreCompleto() {
+    return getNombre() +  " " + getApellido();
+  }
+
   public Integer getEdad() {
     return Period.between(fechaNacimiento, LocalDate.now()).getYears();
-  }
-
-  public LocalDate getFechaNacimiento() {
-    return this.fechaNacimiento;
-  }
-
-  public Genero getGenero() {
-    return this.genero;
-  }
-
-  public String getDireccion() {
-    return this.direccion;
-  }
-
-  public String getNombre() {
-    return this.nombre;
-  }
-
-  public String getApellido() {
-    return this.apellido;
   }
 
   @Override

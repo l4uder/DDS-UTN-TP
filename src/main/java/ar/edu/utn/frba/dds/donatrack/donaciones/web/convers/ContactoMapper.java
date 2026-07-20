@@ -1,0 +1,52 @@
+package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
+
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.contacto.ContactoDto;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import java.util.List;
+
+public class ContactoMapper {
+
+  private ContactoMapper() { }
+
+  public static MedioContacto aDominio(ContactoDto contactoDto) {
+    if (contactoDto.medio() == null || contactoDto.valor() == null) {
+      throw new DomainValidationException("Cada contacto necesita 'medio' y 'valor'");
+    }
+    MedioContacto contacto = switch (contactoDto.medio().toUpperCase()) {
+      case "EMAIL" -> new CorreoDeContato(contactoDto.valor());
+      case "SMS" -> new SmsDeContato(contactoDto.valor());
+      case "WHATSAPP" -> new WhatsappDeContato(contactoDto.valor());
+      default -> throw new DomainValidationException(
+          "Medio de contacto invalido: " + contactoDto.medio() + " (EMAIL, SMS o WHATSAPP)");
+    };
+    contacto.setPrincipal(Boolean.TRUE.equals(contactoDto.principal()));
+    return contacto;
+  }
+
+  public static ContactoDto aDto(MedioContacto contacto) {
+    if (contacto instanceof CorreoDeContato correo) {
+      return new ContactoDto("EMAIL", correo.getCorreo(), correo.getPrincipal());
+    }
+    if (contacto instanceof SmsDeContato sms) {
+      return new ContactoDto("SMS", sms.getTelefono(), sms.getPrincipal());
+    }
+    WhatsappDeContato whatsapp = (WhatsappDeContato) contacto;
+    return new ContactoDto("WHATSAPP", whatsapp.getTelefono(), whatsapp.getPrincipal());
+  }
+
+  public static List<MedioContacto> aDominio(List<ContactoDto> contactosDto) {
+    if (contactosDto == null || contactosDto.isEmpty()) {
+      throw new DomainValidationException("La lista de contactos no puede estar vacía ni ser null");
+    }
+    return contactosDto.stream().map(ContactoMapper::aDominio).toList();
+  }
+
+  public static List<ContactoDto> aDto(List<MedioContacto> contactos) {
+    return contactos.stream().map(ContactoMapper::aDto).toList();
+  }
+
+}

@@ -10,6 +10,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Algori
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,10 +28,12 @@ public class GeneradorRankingsDonacionesTest {
   private Beneficiario beneficiario4;
   //asignador
   private GeneradorRankings generadorRankings;
+  private RankingRepository repoRankings;
 
   @BeforeEach
   void configuracionIncial() {
-    generadorRankings = new GeneradorRankings();
+    repoRankings = mock(RankingRepository.class);
+    generadorRankings = new GeneradorRankings(repoRankings);
 
     algoritmoMock1 = mock(AlgoritmoMatchmaking.class);
     algoritmoMock2 = mock(AlgoritmoMatchmaking.class);

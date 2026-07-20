@@ -24,19 +24,19 @@ public class NecesidadService {
     Beneficiario beneficiario = obtenerBeneficiario(beneficiarioId);
     necesidad.setId(UUID.randomUUID().toString());
     beneficiario.agregarNecesidad(necesidad);
-    repository.guardarBeneficiario(beneficiario);
+    repository.guardar(beneficiario);
     return necesidad;
   }
 
   public void guardar(String beneficiarioId) {
-    repository.guardarBeneficiario(obtenerBeneficiario(beneficiarioId));
+    repository.guardar(obtenerBeneficiario(beneficiarioId));
   }
 
   public void eliminar(String beneficiarioId, String necesidadId) {
     Beneficiario beneficiario = obtenerBeneficiario(beneficiarioId);
     Necesidad necesidad = obtenerNecesidad(beneficiario, necesidadId);
     beneficiario.eliminarNecesidad(necesidad);
-    repository.guardarBeneficiario(beneficiario);
+    repository.guardar(beneficiario);
   }
 
   private Beneficiario obtenerBeneficiario(String id) {

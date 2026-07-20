@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.service;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.GeneradorRankings;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.algoritmos.CompatibilidadSemantica;
@@ -13,21 +14,20 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoExcep
 import java.util.List;
 
 public class AsignacionService {
+  /*
   private final DonacionRepository repoDonaciones = DonacionRepository.getInstancia();
   private final BeneficiarioRepository repoBeneficiarios = BeneficiarioRepository.getInstancia();
   private final RankingRepository repoRankings = RankingRepository.getInstancia();
 
   public void ejecutarMatchmaking() {
-    GeneradorRankings generadorRankings = new GeneradorRankings();
+    GeneradorRankings generadorRankings = new GeneradorRankings(repoRankings);
     generadorRankings.agregarAlgoritmo(new CompatibilidadSemantica());
     generadorRankings.agregarAlgoritmo(new PrioridadSubAtendidos());
 
     List<Beneficiario> beneficiarios = repoBeneficiarios.buscarTodos();
-    List<Donacion> donaciones = repoDonaciones.buscarTodos();
+    List<Donacion> donaciones = repoDonaciones.buscarPorEstado(TipoEstadoDonacion.EN_DEPOSITO);
 
-    List<Ranking> resultados = generadorRankings.asignar(donaciones, beneficiarios);
-
-    resultados.forEach(r -> repoRankings.guardar(r));
+    generadorRankings.asignar(donaciones, beneficiarios);
   }
 
   public List<Ranking> obtenerRankings() {
@@ -57,5 +57,7 @@ public class AsignacionService {
     repoRankings.eliminar(donacionId);
     return donacion;
   }
+
+   */
 
 }

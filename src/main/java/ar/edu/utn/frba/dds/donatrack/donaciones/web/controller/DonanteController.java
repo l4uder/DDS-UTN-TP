@@ -2,7 +2,8 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.web.controller;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDonante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteMapper;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.EstadoRanking;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonanteMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
@@ -13,66 +14,102 @@ import io.javalin.http.Context;
 import java.util.List;
 
 public class DonanteController {
+  private final DonanteRepository repoDonantes;
 
-  private final DonanteRepository repository = DonanteRepository.getInstancia();
-
-  public void listar(Context ctx) {
-    String tipo = ctx.queryParam("tipo");
-    try {
-      List<Donante> donantes = (tipo == null)
-          ? repository.buscarTodos()
-          : repository.buscarPorTipo(TipoDonante.valueOf(tipo.toUpperCase()));
-      ctx.json(donantes.stream().map(DonanteMapper::aResumen).toList());
-    } catch (IllegalArgumentException e) {
-      ctx.status(400).json(new ErrorResponse(400, "Tipo invalido: " + tipo + " (humana o juridica)"));
-    }
-  }
-
-  public void obtener(Context ctx) {
-    try {
-      ctx.json(DonanteMapper.aResponse(repository.obtenerPorId(ctx.pathParam("id"))));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    }
+  public DonanteController() {
+    this.repoDonantes = DonanteRepository.getInstancia();
   }
 
   public void crear(Context ctx) {
     try {
       DonanteRequest request = ctx.bodyAsClass(DonanteRequest.class);
-      Donante creado = DonanteMapper.aDominio(request);
-      repository.guardarDonante(creado);
-      ctx.status(201).json(DonanteMapper.aResponse(creado));
+      Donante donante = DonanteMapper.aDominio(request);
+      repoDonantes.guardar(donante);
+      ctx.status(201).json(DonanteMapper.aDto(donante));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
       ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (Exception e) {
+      e.printStackTrace();
+      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
+    }
+  }
+
+  public void obtenerTodos(Context ctx) {
+    try {
+      TipoDonante tipo = aTipoDonante(ctx.queryParam("tipo"));
+      List<Donante> donantes = (tipo == null)
+          ? repoDonantes.buscarTodos()
+          : repoDonantes.buscarPorTipo(tipo);
+      ctx.json(donantes.stream().map(DonanteMapper::aDtoResumen).toList());
+    } catch (DomainValidationException e) {
+      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
+    } catch (Exception e) {
+      e.printStackTrace();
+      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
+    }
+  }
+
+  public void obtener(Context ctx) {
+    try {
+      String idDonante = ctx.pathParam("id");
+      Donante donante = repoDonantes.buscarPorId(idDonante);
+      if (donante == null) throw new RecursoNoEncontradoException("El donante: " + idDonante + " no existe");
+
+      ctx.json(DonanteMapper.aDto(donante));
+    } catch (RecursoNoEncontradoException e) {
+      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (Exception e) {
+      e.printStackTrace();
+      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
     }
   }
 
   public void actualizar(Context ctx) {
     try {
-      repository.obtenerPorId(ctx.pathParam("id"));
+      String idDonante = ctx.pathParam("id");
+      Donante donante = repoDonantes.buscarPorId(idDonante);
+      if (donante == null) throw new RecursoNoEncontradoException("No se encontró el donante con id: " + idDonante);
       DonanteRequest request = ctx.bodyAsClass(DonanteRequest.class);
-      Donante actualizado = DonanteMapper.aDominio(request);
-      actualizado.setId(ctx.pathParam("id"));
-      repository.guardarDonante(actualizado);
-      ctx.json(DonanteMapper.aResponse(actualizado));
+      DonanteMapper.actualizar(donante, request);
+
+      repoDonantes.actualizar(donante);
+      ctx.json(DonanteMapper.aDto(donante));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
       ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (Exception e) {
+      e.printStackTrace();
+      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
     }
   }
 
   public void eliminar(Context ctx) {
     try {
-      repository.obtenerPorId(ctx.pathParam("id"));
-      repository.eliminar(ctx.pathParam("id"));
+      String idDonante = ctx.pathParam("id");
+      Donante donante = repoDonantes.buscarPorId(idDonante);
+      if (donante == null) throw new RecursoNoEncontradoException("No se encontró el donante con id: " + idDonante);
+      repoDonantes.eliminar(idDonante);
       ctx.status(204);
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (Exception e) {
+      e.printStackTrace();
+      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
     }
   }
+
+  private TipoDonante aTipoDonante(String tipo) {
+    if (tipo == null || tipo.trim().isEmpty()) return null;
+    try {
+      return TipoDonante.valueOf(tipo.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      throw new DomainValidationException("El tipo: " + tipo + " no existe");
+    }
+  }
+
 }

@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.ContactoMapper;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
@@ -16,10 +17,15 @@ public class Beneficiario {
   private List<MedioContacto> contactos;
   private List<Necesidad> necesidades;
   private List<Donacion> donaciones;
-  public Beneficiario(String razon,
-                      String direccion,
-                      List<MedioContacto> contactos) {
-    this.razonSocial = razon;
+
+  public Beneficiario(String razonSocial, String direccion, List<MedioContacto> contactos) {
+    if (razonSocial == null || razonSocial.isBlank()) {
+      throw new DomainValidationException("El campo 'razonSocial' es obligatorio");
+    }
+    if (direccion == null || direccion.isBlank()) {
+      throw new DomainValidationException("El campo 'direccion' es obligatorio");
+    }
+    this.razonSocial = razonSocial;
     this.direccion = direccion;
     this.contactos = new ArrayList<>(contactos);
     this.necesidades = new ArrayList<>();
@@ -44,14 +50,6 @@ public class Beneficiario {
 
   public List<MedioContacto> getContactos() {
     return new ArrayList<>(this.contactos);
-  }
-
-  public void actualizarDatos(String razonSocial,
-                              String direccion,
-                              List<MedioContacto> contactos) {
-    this.razonSocial = razonSocial;
-    this.direccion = direccion;
-    this.contactos = new ArrayList<>(contactos);
   }
 
   public List<Necesidad> getNecesidades() {
@@ -97,5 +95,12 @@ public class Beneficiario {
         return this.contactos.get(0);
     }
     throw new DomainValidationException("El beneficiario no posee contactos");
-}
+  }
+
+  public void actualizacionParcial(String razonSocial, String direccion, List<MedioContacto> contactos) {
+    if (razonSocial != null) this.razonSocial = razonSocial;
+    if (direccion != null) this.direccion = direccion;
+    if (contactos != null) this.contactos = new ArrayList<>(contactos);
+  }
+
 }

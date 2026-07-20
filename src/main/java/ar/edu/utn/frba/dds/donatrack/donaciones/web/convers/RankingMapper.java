@@ -1,16 +1,17 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion;
+package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion.CandidatoDto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion.RankingResponse;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RankingMapper {
 
-  private RankingMapper() {
-  }
+  private RankingMapper() {}
 
-  public static RankingResponse aResponse(Ranking ranking) {
+  public static RankingResponse aDto(Ranking ranking) {
     List<Beneficiario> beneficiarios = ranking.getCandidatos();
     List<CandidatoDto> candidatos = new ArrayList<>();
     for (int i = 0; i < beneficiarios.size(); i++) {
@@ -22,7 +23,7 @@ public class RankingMapper {
           beneficiario.getDireccion()));
     }
     return new RankingResponse(
-        ranking.getDonacionId(),
+        ranking.getDonacion().getId(),
         ranking.getFechaGeneracion(),
         candidatos);
   }

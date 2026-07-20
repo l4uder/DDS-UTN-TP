@@ -4,7 +4,11 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationExceptio
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class PersonaJuridica extends Donante {
   private String razonSocial;
   private TipoOrganizacion tipoOrganizacion;
@@ -30,20 +34,9 @@ public class PersonaJuridica extends Donante {
     return TipoDonante.JURIDICA;
   }
 
-  public String getRazonSocial() {
-    return razonSocial;
-  }
-
-  public TipoOrganizacion getTipoOrganizacion() {
-    return tipoOrganizacion;
-  }
-
-  public String getRubro() {
-    return rubro;
-  }
-
-  public List<Representante> getRepresentantes() {
-    return representantes;
+  @Override
+  public String getNombreCompleto() {
+    return getRazonSocial();
   }
 
   public void agregarRepresentante(Representante representante) {

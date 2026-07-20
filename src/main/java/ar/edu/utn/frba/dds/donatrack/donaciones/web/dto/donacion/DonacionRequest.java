@@ -7,3 +7,4 @@ public record DonacionRequest(
     List<String> donanteIds
 ) {
 }
+

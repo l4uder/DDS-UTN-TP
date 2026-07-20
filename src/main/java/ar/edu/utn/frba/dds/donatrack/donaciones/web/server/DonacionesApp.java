@@ -18,7 +18,7 @@ public class DonacionesApp {
   public static final int PUERTO = 7070;
 
   public static void main(String[] args) {
-    Dotenv dotenv = Dotenv.load();
+  /*  Dotenv dotenv = Dotenv.load();
     String password = dotenv.get("DONATRACK_EMAIL_PASSWORD");
 
     if (password == null || password.isEmpty()) {
@@ -26,10 +26,10 @@ public class DonacionesApp {
     }
 
     ProveedorClienteCorreo.inicializar(new ClienteCorreoRealJavaMail(
-        "donatrack.sistema@gmail.com", 
+        "donatrack.sistema@gmail.com",
         password
     ));
-
+*/
     Notificador.init(AppEventBus.getInstance());
     crearApp().start(PUERTO);
   }
@@ -43,11 +43,11 @@ public class DonacionesApp {
     ExceptionHandlers.registrar(app);
 
     app.get("/health", ctx -> ctx.json(new Health("donaciones-service", "OK")));
-    DonanteRoutes.registrar(app);
-    DonacionRoutes.registrar(app);
-    BeneficiarioRoutes.registrar(app);
-    NecesidadRoutes.registrar(app);
     AsignacionRoutes.registrar(app);
+    BeneficiarioRoutes.registrar(app);
+    DonacionRoutes.registrar(app);
+    DonanteRoutes.registrar(app);
+    NecesidadRoutes.registrar(app);
 
     return app;
   }

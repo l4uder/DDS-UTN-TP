@@ -60,7 +60,7 @@ public class OrquestadorCargaDonantes {
           registroErrores.add(new Error(resultado.filaNro()));
           continue;
         }
-        repository.guardarDonante(donanteNuevo);
+        repository.guardar(donanteNuevo);
         cargadosCorrectamente++;
       }
     } catch (IOException e) {

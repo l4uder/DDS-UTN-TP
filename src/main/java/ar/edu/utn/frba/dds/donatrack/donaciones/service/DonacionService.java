@@ -16,6 +16,7 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoExcep
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class DonacionService {
 
@@ -25,7 +26,7 @@ public class DonacionService {
     if (estado == null) {
       return repository.buscarTodos();
     }
-    return repository.buscarPorEstado(parseEstado(estado));
+    return repository.buscarTodoPorEstado(parseEstado(estado));
   }
 
   public Donacion obtener(String id) {
@@ -37,19 +38,19 @@ public class DonacionService {
 
   public Donacion crear(List<Bien> bienes, List<String> donanteIds) {
     List<Donante> donantes = donanteIds.stream()
-      .map(id -> DonanteRepository.getInstancia().buscarPorId(id)
+      .map(id -> Optional.ofNullable(DonanteRepository.getInstancia().buscarPorId(id))
       .orElseThrow(() -> new DomainValidationException("Donante no encontrado con ID: " + id)))
       .toList();
 
     Donacion donacion = new Donacion(bienes, donantes);
-    repository.guardarDonacion(donacion);
+    repository.guardar(donacion);
     return donacion;
   }
 
   public Donacion actualizar(String id, List<Bien> bienes) {
     Donacion donacion = obtener(id);
     donacion.reemplazarBienes(bienes);
-    repository.guardarDonacion(donacion);
+    repository.guardar(donacion);
     return donacion;
   }
 
@@ -61,21 +62,21 @@ public class DonacionService {
   public Donacion cambiarEstadoVencida(String id) {
     Donacion donacion = obtener(id);
     donacion.marcarVencida();
-    repository.guardarDonacion(donacion);
+    repository.guardar(donacion);
     return donacion;
   }
 
   public Donacion cambiarEstadoEnDeposito(String id) {
     Donacion donacion = obtener(id);
     donacion.confirmarRecepcionDeposito();
-    repository.guardarDonacion(donacion);
+    repository.guardar(donacion);
     return donacion;
   }
 
   public Donacion cambiarEstadoListaEntregar(String id) {
     Donacion donacion = obtener(id);
     donacion.confirmarRuta();
-    repository.guardarDonacion(donacion);
+    repository.guardar(donacion);
     return donacion;
   }
 
@@ -83,7 +84,7 @@ public class DonacionService {
     Donacion donacion = obtener(id);
     donacion.confirmarEntrega();
     AppEventBus.getInstance().post(new EventoEntregaExitosa(donacion, LocalDate.now(), idCamion));
-    repository.guardarDonacion(donacion);
+    repository.guardar(donacion);
     return donacion;
   }
 
@@ -91,7 +92,7 @@ public class DonacionService {
     Donacion donacion = obtener(id);
     donacion.notificarEntregaFallida(observacion);
     AppEventBus.getInstance().post(new EventoEntregaFallida(observacion, donacion, LocalDate.now()));
-    repository.guardarDonacion(donacion);
+    repository.guardar(donacion);
     return donacion;
   }
 
@@ -99,7 +100,7 @@ public class DonacionService {
     Donacion donacion = obtener(id);
     donacion.confirmarTrasladoEnCurso();
     AppEventBus.getInstance().post(new EventoInicioDeRuta(donacion, LocalDate.now(), linkMapa));
-    repository.guardarDonacion(donacion);
+    repository.guardar(donacion);
     return donacion;
   }
 

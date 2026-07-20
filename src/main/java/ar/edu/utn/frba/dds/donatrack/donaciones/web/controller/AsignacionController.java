@@ -1,10 +1,19 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.controller;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.EstadoRanking;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.GeneradorRankings;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion.RankingMapper;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionMapper;
-import ar.edu.utn.frba.dds.donatrack.donaciones.service.AsignacionService;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.algoritmos.CompatibilidadSemantica;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.algoritmos.PrioridadSubAtendidos;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.RankingMapper;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonacionMapper;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion.ConfirmacionBody;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
@@ -15,50 +24,89 @@ import java.util.List;
 import java.util.Map;
 
 public class AsignacionController {
+  private final DonacionRepository repoDonaciones;
+  private final BeneficiarioRepository repoBeneficiarios;
+  private final RankingRepository repoRankings;
 
-  private final AsignacionService service;
-
-  public AsignacionController(AsignacionService service) {
-    this.service = service;
+  public AsignacionController(/*DonacionRepository repoDonaciones, BeneficiarioRepository repoBeneficiarios, RankingRepository repoRankings*/) {
+    this.repoDonaciones = DonacionRepository.getInstancia();//= repoDonaciones;
+    this.repoBeneficiarios = BeneficiarioRepository.getInstancia();//= repoBeneficiarios;
+    this.repoRankings = RankingRepository.getInstancia();//= repoRankings;
   }
 
-  public void ejecutarMatchmaking(Context ctx) {
+  public void crearRankings(Context ctx) {
     try {
-      service.ejecutarMatchmaking();
+      GeneradorRankings generadorRankings = new GeneradorRankings(repoRankings);
+      generadorRankings.agregarAlgoritmo(new CompatibilidadSemantica());
+      generadorRankings.agregarAlgoritmo(new PrioridadSubAtendidos());
+
+      List<Beneficiario> beneficiarios = repoBeneficiarios.buscarTodos();
+      List<Donacion> donaciones = repoDonaciones.buscarTodoPorEstado(TipoEstadoDonacion.EN_DEPOSITO);
+
+      generadorRankings.asignar(donaciones, beneficiarios);
+
       ctx.status(200).json(Map.of( "mensaje", "Matchmaking ejecutado correctamente"));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     } catch (CambioDeEstadoNoPermitidoException e) {
       ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    } catch (Exception e) {
+      e.printStackTrace();
+      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
     }
   }
 
-  public void obtenerRankings(Context ctx) {
+  public void obtenerTodos(Context ctx) {
     try {
-      List<Ranking> rankings = service.obtenerRankings();
-      ctx.json(rankings.stream().map(r -> RankingMapper.aResponse(r)).toList());
+      List<Ranking> rankings = repoRankings.buscarTodos();
+      ctx.status(200).json(rankings.stream().map(RankingMapper::aDto).toList());
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (Exception e) {
+      e.printStackTrace();
+      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
     }
   }
 
-  public void obtenerRanking(Context ctx) {
+  public void obtener(Context ctx) {
     try {
-      Ranking ranking = service.obtenerRanking(ctx.pathParam("id"));
-      ctx.json(RankingMapper.aResponse(ranking));
+      String idRanking = ctx.pathParam("id");
+      Ranking ranking = repoRankings.buscarPorId(idRanking);
+      if (ranking == null) throw new RecursoNoEncontradoException("El ranking " + idRanking + " no existe");
+      ctx.json(RankingMapper.aDto(ranking));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
+    } catch (Exception e) {
+      e.printStackTrace();
+      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
     }
   }
 
-  public void confirmarAsignacion(Context ctx) {
+  public void confirmar(Context ctx) {
     try {
-      String idDonacion = ctx.pathParam("id");
-      Map<String, String> body = ctx.bodyAsClass(Map.class);
-      String idBeneficiario = body.get("beneficiarioId");
+      String idRanking = ctx.pathParam("id");
+      ConfirmacionBody body = ctx.bodyAsClass(ConfirmacionBody.class);
+      String stringEstado = body.getEstado();
+      String idBeneficiario = body.getBeneficiarioId();
 
-      Donacion donacion = service.confirmarAsignacion(idDonacion, idBeneficiario);
-      ctx.json(DonacionMapper.aResponse(donacion));
+      Ranking ranking = repoRankings.buscarPorId(idRanking);
+      if (ranking == null) throw new RecursoNoEncontradoException("El ranking " + idRanking + " no existe");
+
+      Beneficiario beneficiario = repoBeneficiarios.buscarPorId(idBeneficiario);
+      if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario con id: " + idBeneficiario);
+
+      EstadoRanking estado = aEstadoRanking(stringEstado);
+      if (estado == null) throw new DomainValidationException("No existe el estado de ranking: " + stringEstado);
+
+      ranking.setEstado(estado);
+      Donacion donacion = ranking.getDonacion();
+      donacion.confirmarAsignacion(beneficiario);
+
+      repoDonaciones.actualizar(donacion);
+      repoBeneficiarios.actualizar(beneficiario);
+      repoRankings.actualizar(ranking);
+
+      ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
@@ -67,7 +115,17 @@ public class AsignacionController {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     } catch (CambioDeEstadoNoPermitidoException e) {
       ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
+    } catch (Exception e) {
+      e.printStackTrace();
+      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
     }
   }
 
+  private EstadoRanking aEstadoRanking(String estado) {
+    try {
+      return EstadoRanking.valueOf(estado.toUpperCase());
+    } catch (IllegalArgumentException | NullPointerException f) {
+      return null;
+    }
+  }
 }

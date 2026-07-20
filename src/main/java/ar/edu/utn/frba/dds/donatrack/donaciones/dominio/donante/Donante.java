@@ -9,10 +9,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public abstract class Donante {
+  @Setter
   protected String id;
+  @Setter
   protected Documento documento;
+  @Setter
   protected List<MedioContacto> contactos;
   protected List<RegistroEntrega> entregas = new ArrayList<>();
 
@@ -29,18 +35,6 @@ public abstract class Donante {
   }
 
   public abstract TipoDonante getTipo();
-
-  public String getId() {
-    return this.id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public Documento getDocumento() {
-    return this.documento;
-  }
 
   public void agregarContactoPrincipal(MedioContacto contacto) {
     if (contacto == null) {
@@ -100,10 +94,6 @@ public abstract class Donante {
         .findFirst();
   }
 
-  private List<MedioContacto> getContactos() {
-    return this.contactos;
-  }
-
   public void recibirNotificacion(String mensaje) {
     List<MedioContacto> contactos = getContactos();
     contactos.forEach(c -> c.notificar(mensaje));
@@ -119,13 +109,12 @@ public abstract class Donante {
 
   public boolean estaAusentePorMasDe(Integer dias) {
     RegistroEntrega ultima = this.getUltimaEntrega();
-
-    if (ultima == null) {
-      return false; // A los nuevos no los vamos a considerar como ausentes
-    }
+    if (ultima == null) return false; // A los nuevos No los vamos a considerar como ausentes
 
     LocalDateTime fechaLimite = LocalDateTime.now().minusDays(dias);
     return ultima.getFecha().isBefore(fechaLimite);
   }
+
+  abstract public String getNombreCompleto();
 
 }
