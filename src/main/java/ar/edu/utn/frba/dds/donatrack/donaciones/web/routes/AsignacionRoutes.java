@@ -4,7 +4,6 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioReposit
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.AsignacionController;
-import ar.edu.utn.frba.dds.donatrack.donaciones.service.AsignacionService;
 import io.javalin.Javalin;
 
 public class AsignacionRoutes {

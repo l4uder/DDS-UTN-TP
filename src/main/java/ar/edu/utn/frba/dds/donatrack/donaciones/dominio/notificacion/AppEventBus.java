@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion;
 
 import com.google.common.eventbus.EventBus;
 import lombok.AccessLevel;

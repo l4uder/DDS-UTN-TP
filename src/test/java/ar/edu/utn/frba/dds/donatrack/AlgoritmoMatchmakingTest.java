@@ -134,11 +134,12 @@ public class AlgoritmoMatchmakingTest {
     prioridadASubAtendidos = new PrioridadSubAtendidos();
     //Donante
     donantePrueba = new PersonaHumanaBuilder()
-      .conNombre("Juan")
-      .conApellido("Pérez")
-      .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-      .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
-      .build();
+        .conNombre("Juan")
+        .conApellido("Pérez")
+        .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conDireccion("alguna dirección")
+        .build();
   }
 
   @Test

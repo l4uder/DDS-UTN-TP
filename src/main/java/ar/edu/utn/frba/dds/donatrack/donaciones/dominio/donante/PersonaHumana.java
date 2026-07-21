@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class PersonaHumana extends Donante {
   private String nombre;
   private String apellido;
@@ -21,14 +20,25 @@ public class PersonaHumana extends Donante {
                        LocalDate fechaNacimiento, Genero genero, String direccion,
                        List<MedioContacto> contactos) {
     super(documento, contactos);
-    if (documento.getTipoDocumento() == TipoDocumento.CUIT) {
-      throw new DomainValidationException("La persona humana no puede tener un CUIT");
-    }
+    checkDatos(nombre, documento, direccion);
     this.nombre = nombre;
     this.apellido = apellido;
     this.fechaNacimiento = fechaNacimiento;
-    this.genero = genero;
+    this.genero = genero == null ? Genero.SIN_ESPECIFICAR : genero;
     this.direccion = direccion;
+  }
+
+  private void checkDatos(String nombre, Documento documento, String direccion) {
+    if (nombre == null || nombre.isBlank()) {
+      throw new DomainValidationException("El campo 'nombre' es obligatorio");
+    }
+    TipoDocumento tipo = documento.getTipoDocumento();
+    if (!(tipo == TipoDocumento.DNI || tipo == TipoDocumento.PASAPORTE)) {
+      throw new DomainValidationException("El campo 'documento' por ser Humano, solo puede ser DNI o PASAPORTE");
+    }
+    if (direccion == null || direccion.isBlank()) {
+      throw new DomainValidationException("El campo 'direccion' es obligatorio");
+    }
   }
 
   @Override
@@ -45,13 +55,24 @@ public class PersonaHumana extends Donante {
     return Period.between(fechaNacimiento, LocalDate.now()).getYears();
   }
 
+  public void actualizarDatos(String nombre, String apellido, Documento documento,
+                              LocalDate fechaNacimiento, Genero genero, String direccion,
+                              List<MedioContacto> contactos) {
+    super.actualizarDatosBase(documento, contactos);
+    checkDatos(nombre, documento, direccion);
+    this.nombre = nombre;
+    this.apellido = apellido;
+    this.fechaNacimiento = fechaNacimiento;
+    this.genero = genero == null ? Genero.SIN_ESPECIFICAR : genero;
+    this.direccion = direccion;
+  }
+
   @Override
   public String toString() {
     return "PersonaHumana{"
-        + "nombre: " + nombre
-        + ", apellido: " + apellido
-        + ", documento: " + documento.getTipoDocumento().toString()
-        + documento.getDetalle()
+        + "nombre completo: " + nombre + " " + apellido + " "
+        + "documento: " + documento.getTipoDocumento().toString() + " " + documento.getDetalle()
         + '}';
   }
+
 }

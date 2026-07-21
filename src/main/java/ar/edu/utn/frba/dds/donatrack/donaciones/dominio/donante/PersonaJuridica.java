@@ -5,10 +5,8 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioConta
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class PersonaJuridica extends Donante {
   private String razonSocial;
   private TipoOrganizacion tipoOrganizacion;
@@ -19,14 +17,24 @@ public class PersonaJuridica extends Donante {
                         String rubro, Documento documento,
                         List<Representante> representantes, List<MedioContacto> contactos) {
     super(documento, contactos);
-    if (documento.getTipoDocumento() != TipoDocumento.CUIT) {
-      throw new DomainValidationException("La persona juridica debe tener un CUIT");
-    }
+    checkDatos(razonSocial, documento);
     this.razonSocial = razonSocial;
-    this.tipoOrganizacion = tipo;
+    this.tipoOrganizacion = tipo == null ? TipoOrganizacion.SIN_ESPECIFICAR : tipo;
     this.rubro = rubro;
-    this.representantes = representantes == null
-                            ? new ArrayList<>() : new ArrayList<>(representantes);
+    this.representantes = representantes != null ? new ArrayList<>(representantes) : new ArrayList<>();
+  }
+
+  private void checkDatos(String razonSocial, Documento documento) {
+    if (razonSocial == null || razonSocial.isBlank()) {
+      throw new DomainValidationException("El campo 'razonSocial' es obligatorio");
+    }
+    if (documento.getTipoDocumento() != TipoDocumento.CUIT) {
+      throw new DomainValidationException("El campo 'documento' por ser Jurídica, solo puede ser CUIT");
+    }
+  }
+
+  public void agregarRepresentante(Representante representante) {
+    representantes.add(representante);
   }
 
   @Override
@@ -39,15 +47,20 @@ public class PersonaJuridica extends Donante {
     return getRazonSocial();
   }
 
-  public void agregarRepresentante(Representante representante) {
-    representantes.add(representante);
+  public void actualizarDatos(String razonSocial, TipoOrganizacion tipo, String rubro,
+                              Documento documento, List<Representante> representantes,
+                              List<MedioContacto> contactos) {
+    super.actualizarDatosBase(documento, contactos);
+    checkDatos(razonSocial, documento);
+    this.razonSocial = razonSocial;
+    this.tipoOrganizacion = tipo == null ? TipoOrganizacion.SIN_ESPECIFICAR : tipo;
+    this.rubro = rubro;
+    this.representantes = representantes != null ? new ArrayList<>(representantes) : new ArrayList<>();
   }
 
   @Override
   public String toString() {
-    return "PersonaJuridica{"
-        + "razonSocial: " + razonSocial
-        + ", rubro: " + rubro
-        + '}';
+    return "PersonaJuridica{" + "razonSocial: " + razonSocial + ", rubro: " + rubro + '}';
   }
+
 }

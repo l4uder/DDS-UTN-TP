@@ -21,8 +21,11 @@ public class BeneficiarioController {
 
   public void crear(Context ctx) {
     try {
-      BeneficiarioRequest request = ctx.bodyAsClass(BeneficiarioRequest.class);
-      Beneficiario beneficiario = BeneficiarioMapper.aDominio(request);
+      //Cosas que recibo por URL --> Query param
+      BeneficiarioRequest beneficiarioDto = ctx.bodyAsClass(BeneficiarioRequest.class);
+
+      Beneficiario beneficiario = BeneficiarioMapper.aDominio(beneficiarioDto);
+
       repoBeneficiarios.guardar(beneficiario);
       ctx.status(201).json(BeneficiarioMapper.aDto(beneficiario));
     } catch (JsonSyntaxException e) {
@@ -49,9 +52,11 @@ public class BeneficiarioController {
 
   public void obtener(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
-      Beneficiario beneficiario = repoBeneficiarios.buscarPorId(idBeneficiario);
-      if (beneficiario == null) throw new RecursoNoEncontradoException("El beneficiario no existe: " + idBeneficiario);
+
+      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+
       ctx.status(200).json(BeneficiarioMapper.aDto(beneficiario));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
@@ -63,14 +68,14 @@ public class BeneficiarioController {
 
   public void actualizar(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
-      Beneficiario beneficiario = repoBeneficiarios.buscarPorId(idBeneficiario);
-      if (beneficiario == null) throw new RecursoNoEncontradoException("El beneficiario no existe: " + idBeneficiario);
-      BeneficiarioRequest request = ctx.bodyAsClass(BeneficiarioRequest.class);
-      beneficiario.actualizacionParcial(
-          request.razonSocial(),
-          request.direccion(),
-          request.contactos() == null ? null : ContactoMapper.aDominio(request.contactos()));
+      //Cosas que recibo por Body
+      BeneficiarioRequest beneficiarioDto = ctx.bodyAsClass(BeneficiarioRequest.class);
+
+      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+      BeneficiarioMapper.actualizarDominio(beneficiario, beneficiarioDto);
+
       repoBeneficiarios.actualizar(beneficiario);
       ctx.json(BeneficiarioMapper.aDto(beneficiario));
     } catch (JsonSyntaxException e) {
@@ -87,9 +92,11 @@ public class BeneficiarioController {
 
   public void eliminar(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
-      Beneficiario beneficiario = repoBeneficiarios.buscarPorId(idBeneficiario);
-      if (beneficiario == null) throw new RecursoNoEncontradoException("El beneficiario no existe: " + idBeneficiario);
+
+      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+
       repoBeneficiarios.eliminar(idBeneficiario);
       ctx.status(204);
     } catch (RecursoNoEncontradoException e) {
@@ -98,6 +105,13 @@ public class BeneficiarioController {
       e.printStackTrace();
       ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
     }
+  }
+
+  //================= FUNCIONES AUXILIARES ===================
+  private Beneficiario buscarBeneficiarioPorId(String id) {
+    Beneficiario beneficiario = repoBeneficiarios.buscarPorId(id);
+    if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + id);
+    return beneficiario;
   }
 
 }

@@ -13,8 +13,9 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.BienMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.EstadoDonacionMapper;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.bien.BienDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionRequest;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.AppEventBus;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.AppEventBus;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
@@ -39,12 +40,14 @@ public class DonacionController {
 
   public void crear(Context ctx) {
     try {
+      //Cosas que recibo por Body
       DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
-      List<Donante> donantes = request.donanteIds().stream()
-          .map(id -> Optional.ofNullable(repoDonantes.buscarPorId(id))
-              .orElseThrow(() -> new RecursoNoEncontradoException("Donante no encontrado: " + id)))
-          .toList();
-      Donacion donacion = DonacionMapper.aDominio(request, donantes);
+      List<String> idDonantes = request.donanteIds();
+      List<BienDto> bienesDto = request.bienes();
+
+      List<Donante> donantes = idDonantes.stream().map(id -> buscarDonantePorId(id)).toList();
+      Donacion donacion = DonacionMapper.aDominio(bienesDto, donantes);
+
       repoDonaciones.guardar(donacion);
       ctx.status(201).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
@@ -59,10 +62,12 @@ public class DonacionController {
 
   public void obtenerTodos(Context ctx) {
     try {
-      TipoEstadoDonacion estadoDonacion = aEstadoDonacion(ctx.queryParam("estado"));
-      List<Donacion> donaciones = estadoDonacion != null
-          ? repoDonaciones.buscarTodoPorEstado(estadoDonacion)
-          : repoDonaciones.buscarTodos();
+      //Cosas que recibo por URL --> Query param
+      String estadoDonacion = ctx.queryParam("estado");
+
+      TipoEstadoDonacion estado = aEstadoDonacion(estadoDonacion);
+
+      List<Donacion> donaciones = estado == null ? repoDonaciones.buscarTodos() : repoDonaciones.buscarTodoPorEstado(estado);
       ctx.status(200).json(DonacionMapper.aDto(donaciones));
     } catch (DomainValidationException e) {
       ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
@@ -74,9 +79,11 @@ public class DonacionController {
 
   public void obtener(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
-      Donacion donacion = this.repoDonaciones.buscarPorId(idDonacion);
-      if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
+
+      Donacion donacion = buscarDonacionPorId(idDonacion);
+
       ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
@@ -86,18 +93,19 @@ public class DonacionController {
     }
   }
 
-  //todo despues cambiar a patch con cambios parciales
   public void actualizar(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
-      Donacion donacion = repoDonaciones.buscarPorId(idDonacion);
-      if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
-
+      //Cosas que recibo por Body
       DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
-      List<Bien> bienes = BienMapper.aDominio(request.bienes());
+      List<BienDto> bienesDto = request.bienes();
+
+      Donacion donacion = buscarDonacionPorId(idDonacion);
+      List<Bien> bienes = BienMapper.aDominio(bienesDto);
 
       donacion.reemplazarBienes(bienes);
-      repoDonaciones.guardar(donacion);
+      repoDonaciones.actualizar(donacion);
       ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
@@ -115,9 +123,11 @@ public class DonacionController {
 
   public void eliminar(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
-      Donacion donacion = repoDonaciones.buscarPorId(idDonacion);
-      if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
+
+      Donacion donacion = buscarDonacionPorId(idDonacion);
+
       repoDonaciones.eliminar(idDonacion);
       ctx.status(204);
     } catch (RecursoNoEncontradoException e) {
@@ -130,12 +140,14 @@ public class DonacionController {
 
   public void cambiarEstadoADeposito(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
-      Donacion donacion = repoDonaciones.buscarPorId(idDonacion);
-      if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
+
+      Donacion donacion = buscarDonacionPorId(idDonacion);
+
       donacion.confirmarRecepcionDeposito();
       repoDonaciones.guardar(donacion);
-      ctx.json(DonacionMapper.aDto(donacion));
+      ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
@@ -152,12 +164,14 @@ public class DonacionController {
 
   public void cambiarEstadoAVencida(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
-      Donacion donacion = repoDonaciones.buscarPorId(idDonacion);
-      if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
+
+      Donacion donacion = buscarDonacionPorId(idDonacion);
+
       donacion.marcarVencida();
       repoDonaciones.guardar(donacion);
-      ctx.json(DonacionMapper.aDto(donacion));
+      ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
@@ -174,12 +188,14 @@ public class DonacionController {
 
   public void cambiarEstadoALista(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
-      Donacion donacion = repoDonaciones.buscarPorId(idDonacion);
-      if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
+
+      Donacion donacion = buscarDonacionPorId(idDonacion);
+
       donacion.confirmarRuta();
       repoDonaciones.guardar(donacion);
-      ctx.json(DonacionMapper.aDto(donacion));
+      ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
@@ -196,15 +212,18 @@ public class DonacionController {
 
   public void cambiarEstadoAEntregada(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
-      Donacion donacion = repoDonaciones.buscarPorId(idDonacion);
-      if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
-
+      //Cosas que recibo por Body
       CambioEstadoEntregadaRequest request = ctx.bodyAsClass(CambioEstadoEntregadaRequest.class);
+      String idCamion = request.camionId();
+
+      Donacion donacion = buscarDonacionPorId(idDonacion);
+
       donacion.confirmarEntrega();
-      AppEventBus.getInstance().post(new EventoEntregaExitosa(donacion, LocalDate.now(), request.camionId()));
+      AppEventBus.getInstance().post(new EventoEntregaExitosa(donacion, LocalDate.now(), idCamion));
       repoDonaciones.guardar(donacion);
-      ctx.json(DonacionMapper.aDto(donacion));
+      ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
@@ -221,15 +240,18 @@ public class DonacionController {
 
   public void cambiarEstadoAErrorEntrega(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
-      Donacion donacion = repoDonaciones.buscarPorId(idDonacion);
-      if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
-
+      //Cosas que recibo por Body
       CambioEstadoErrorEntregaRequest request = ctx.bodyAsClass(CambioEstadoErrorEntregaRequest.class);
-      donacion.notificarEntregaFallida(request.observacion());
-      AppEventBus.getInstance().post(new EventoEntregaFallida(request.observacion(), donacion, LocalDate.now()));
+      String observacion = request.observacion();
+
+      Donacion donacion = buscarDonacionPorId(idDonacion);
+
+      donacion.notificarEntregaFallida(observacion);
+      AppEventBus.getInstance().post(new EventoEntregaFallida(observacion, donacion, LocalDate.now()));
       repoDonaciones.guardar(donacion);
-      ctx.json(DonacionMapper.aDto(donacion));
+      ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
@@ -246,15 +268,18 @@ public class DonacionController {
 
   public void cambiarEstadoAEnTraslado(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
-      Donacion donacion = repoDonaciones.buscarPorId(idDonacion);
-      if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
-
+      //Cosas que recibo por Body
       CambioEstadoInicioRutaRequest request = ctx.bodyAsClass(CambioEstadoInicioRutaRequest.class);
+      String mapa = request.linkMapa();
+
+      Donacion donacion = buscarDonacionPorId(idDonacion);
+
       donacion.confirmarTrasladoEnCurso();
-      AppEventBus.getInstance().post(new EventoInicioDeRuta(donacion, LocalDate.now(), request.linkMapa()));
+      AppEventBus.getInstance().post(new EventoInicioDeRuta(donacion, LocalDate.now(), mapa));
       repoDonaciones.guardar(donacion);
-      ctx.json(DonacionMapper.aDto(donacion));
+      ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
@@ -271,11 +296,13 @@ public class DonacionController {
 
   public void historialEstados(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
-      Donacion donacion = repoDonaciones.buscarPorId(idDonacion);
-      if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
+
+      Donacion donacion = buscarDonacionPorId(idDonacion);
+
       List<EstadoDonacion> historialEstados = donacion.getHistorialEstados();
-      ctx.json(EstadoDonacionMapper.aDto(historialEstados));
+      ctx.status(200).json(EstadoDonacionMapper.aDto(historialEstados));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     } catch (Exception e) {
@@ -287,12 +314,23 @@ public class DonacionController {
   //================ FUNCIONES AUXILIARES ===============
   private TipoEstadoDonacion aEstadoDonacion(String estado) {
     if (estado == null) return null;
-
     try {
       return TipoEstadoDonacion.valueOf(estado.toUpperCase());
     } catch (IllegalArgumentException e) {
       throw new DomainValidationException("No se conoce el estado de donación: " + estado);
     }
+  }
+
+  private Donante buscarDonantePorId(String id) {
+    Donante donante = repoDonantes.buscarPorId(id);
+    if (donante == null) throw new RecursoNoEncontradoException("No existe donante: " + id);
+    return donante;
+  }
+
+  private Donacion buscarDonacionPorId(String id) {
+    Donacion donacion = repoDonaciones.buscarPorId(id);
+    if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + id);
+    return donacion;
   }
 
 }

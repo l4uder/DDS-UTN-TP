@@ -44,6 +44,7 @@ public class RutaTest {
       .conApellido("Pérez")
       .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
       .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+      .conDireccion("alguna dirección")
       .build();
 
     Bien bien = new BienBuilder().conDescripcion("Arroz").conCantidad(3).conUsado(false).buildNoPerecedero();
@@ -55,6 +56,7 @@ public class RutaTest {
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
         .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conDireccion("alguna dirección")
         .build();
 
     Donacion donacion = new Donacion(List.of(bien), List.of(donante));

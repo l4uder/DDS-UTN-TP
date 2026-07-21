@@ -22,12 +22,14 @@ public class NecesidadController {
 
   public void crear(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
-      Beneficiario beneficiario = repoBeneficiarios.buscarPorId(idBeneficiario);
-      if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + idBeneficiario);
+      //Cosas que recibo por Body
+      NecesidadRequest necesidadDto = ctx.bodyAsClass(NecesidadRequest.class);
 
-      NecesidadRequest request = ctx.bodyAsClass(NecesidadRequest.class);
-      Necesidad necesidad = NecesidadMapper.aDominio(request);
+      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+      Necesidad necesidad = NecesidadMapper.aDominio(necesidadDto);
+
       necesidad.setId(UUID.randomUUID().toString());
       beneficiario.agregarNecesidad(necesidad);
       repoBeneficiarios.actualizar(beneficiario);
@@ -46,9 +48,11 @@ public class NecesidadController {
 
   public void obtenerTodos(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
-      Beneficiario beneficiario = repoBeneficiarios.buscarPorId(idBeneficiario);
-      if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + idBeneficiario);
+
+      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+
       List<Necesidad> necesidades = beneficiario.getNecesidades();
       ctx.status(200).json(NecesidadMapper.aDto(necesidades));
     } catch (RecursoNoEncontradoException e) {
@@ -61,11 +65,13 @@ public class NecesidadController {
 
   public void obtener(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
       String idNecesidad = ctx.pathParam("nid");
-      Beneficiario beneficiario = repoBeneficiarios.buscarPorId(idBeneficiario);
-      if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + idBeneficiario);
+
+      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
       Necesidad necesidad = beneficiario.buscarNecesidadPorId(idNecesidad);
+
       ctx.status(200).json(NecesidadMapper.aDto(necesidad));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
@@ -77,14 +83,16 @@ public class NecesidadController {
 
   public void actualizar(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
       String idNecesidad = ctx.pathParam("nid");
-      Beneficiario beneficiario = repoBeneficiarios.buscarPorId(idBeneficiario);
-      if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + idBeneficiario);
-      Necesidad necesidad = beneficiario.buscarNecesidadPorId(idNecesidad);
+      //Cosas que recibo por Body
+      NecesidadRequest necesidadDto = ctx.bodyAsClass(NecesidadRequest.class);
 
-      NecesidadRequest request = ctx.bodyAsClass(NecesidadRequest.class);
-      NecesidadMapper.actualizarDominio(necesidad, request);
+      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+      Necesidad necesidad = beneficiario.buscarNecesidadPorId(idNecesidad);
+      NecesidadMapper.actualizarDominio(necesidad, necesidadDto);
+
       repoBeneficiarios.actualizar(beneficiario);
       ctx.status(200).json(NecesidadMapper.aDto(necesidad));
     } catch (JsonSyntaxException e) {
@@ -101,11 +109,13 @@ public class NecesidadController {
 
   public void eliminar(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
       String idNecesidad = ctx.pathParam("nid");
-      Beneficiario beneficiario = repoBeneficiarios.buscarPorId(idBeneficiario);
-      if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + idBeneficiario);
+
+      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
       beneficiario.eliminarNecesidadPorId(idNecesidad);
+
       repoBeneficiarios.actualizar(beneficiario);
       ctx.status(204);
     } catch (RecursoNoEncontradoException e) {
@@ -114,6 +124,13 @@ public class NecesidadController {
       e.printStackTrace();
       ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
     }
+  }
+
+  //====================== FUNCIONES AUXILIARES ========================
+  private Beneficiario buscarBeneficiarioPorId(String id) {
+    Beneficiario beneficiario = repoBeneficiarios.buscarPorId(id);
+    if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + id);
+    return beneficiario;
   }
 
 }

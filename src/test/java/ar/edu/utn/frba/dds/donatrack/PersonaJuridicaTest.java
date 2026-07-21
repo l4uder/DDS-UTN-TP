@@ -27,9 +27,11 @@ public class PersonaJuridicaTest {
 
   @Test
   public void sePuedeCrearUnaPersonaJuridicaConDatosValidos() {
-    PersonaJuridica empresa = new PersonaJuridicaBuilder().conRazonSocial("Empresa Test S.A.")
+    PersonaJuridica empresa = new PersonaJuridicaBuilder()
+        .conRazonSocial("Empresa Test S.A.")
         .conDocumento(new Documento(TipoDocumento.CUIT, "30-12345678-9"))
-        .conContactoPrincipal(new CorreoDeContato("empresaTest@gmail.com")).build();
+        .conContactoPrincipal(new CorreoDeContato("empresaTest@gmail.com"))
+        .build();
 
     assertNotNull(empresa.getContactoPrincipal());
   }
@@ -38,9 +40,12 @@ public class PersonaJuridicaTest {
   public void sePuedeAgregarUnRepresentante() {
     PersonaJuridica empresa = new PersonaJuridicaBuilder()
         .conDocumento(new Documento(TipoDocumento.CUIT, "30-12345678-9"))
-        .conContactoPrincipal(new CorreoDeContato("empresaTest@gmail.com")).build();
+        .conContactoPrincipal(new CorreoDeContato("empresaTest@gmail.com"))
+        .conRazonSocial("EmpresaSRL")
+        .build();
 
-    Representante representante = new RepresentanteBuilder().conDocumento(new Documento(TipoDocumento.DNI, "235325554"))
+    Representante representante = new RepresentanteBuilder()
+        .conDocumento(new Documento(TipoDocumento.DNI, "235325554"))
         .conNombre("Marcelo").build();
 
     empresa.agregarRepresentante(representante);

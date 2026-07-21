@@ -6,7 +6,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.BeneficiarioRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.DonacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.DonanteRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.NecesidadRoutes;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.AppEventBus;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.AppEventBus;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
 import io.javalin.Javalin;

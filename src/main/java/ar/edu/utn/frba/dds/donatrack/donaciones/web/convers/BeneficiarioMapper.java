@@ -1,10 +1,12 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioResponse;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioResumenDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import java.util.List;
 
 public class BeneficiarioMapper {
 
@@ -30,6 +32,14 @@ public class BeneficiarioMapper {
         beneficiario.getId(),
         beneficiario.getRazonSocial(),
         beneficiario.getDireccion());
+  }
+
+  public static void actualizarDominio(Beneficiario beneficiario, BeneficiarioRequest request) {
+    String razonSocialMerge = request.razonSocial() != null ? request.razonSocial() : beneficiario.getRazonSocial();
+    String direccionMerge = request.direccion() != null ? request.direccion() : beneficiario.getDireccion();
+    List<MedioContacto> contactosMerge = request.contactos() != null ? ContactoMapper.aDominio(request.contactos()) : beneficiario.getContactos();
+
+    beneficiario.actualizarDatos(razonSocialMerge, direccionMerge, contactosMerge);
   }
 
 }

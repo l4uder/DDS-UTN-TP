@@ -25,9 +25,12 @@ public class PersonaHumanaTest {
 
   @Test
   public void sePuedeCrearUnaPersonaHumanaConDatosValidos() {
-    PersonaHumana persona = new PersonaHumanaBuilder().conNombre("Esteban")
+    PersonaHumana persona = new PersonaHumanaBuilder()
+        .conNombre("Esteban")
         .conDocumento(new Documento(TipoDocumento.DNI, "45123456"))
-        .conContactoPrincipal(new CorreoDeContato("estebancarp@gmail.com")).build();
+        .conContactoPrincipal(new CorreoDeContato("estebancarp@gmail.com"))
+        .conDireccion("alguna dirección")
+        .build();
 
     assertNotNull(persona.getContactoPrincipal());
     assertEquals("Esteban", persona.getNombre());

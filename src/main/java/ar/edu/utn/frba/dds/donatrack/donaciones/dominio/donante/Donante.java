@@ -16,25 +16,27 @@ import lombok.Setter;
 public abstract class Donante {
   @Setter
   protected String id;
-  @Setter
   protected Documento documento;
-  @Setter
   protected List<MedioContacto> contactos;
   protected List<RegistroEntrega> entregas = new ArrayList<>();
 
   public Donante(Documento documento, List<MedioContacto> contactos) {
-    if (contactos == null || contactos.isEmpty()) {
-      throw new DomainValidationException("La lista de contactos no puede estar vacía ni ser null");
-    }
+    checkDatosBase(documento, contactos);
     this.documento = documento;
     this.contactos = new ArrayList<>(contactos);
+  }
 
-    if (this.contactos.stream().noneMatch(MedioContacto::getPrincipal)) {
+  private void checkDatosBase(Documento documento, List<MedioContacto> contactos) {
+    if (documento == null) {
+      throw new DomainValidationException("El documento es obligatorio");
+    }
+    if (contactos == null || contactos.isEmpty()) {
+      throw new DomainValidationException("Debe proporcionar al menos un contacto");
+    }
+    if (contactos.stream().noneMatch(MedioContacto::getPrincipal)) {
       throw new DomainValidationException("Debe tener al menos un contacto principal");
     }
   }
-
-  public abstract TipoDonante getTipo();
 
   public void agregarContactoPrincipal(MedioContacto contacto) {
     if (contacto == null) {
@@ -73,8 +75,7 @@ public abstract class Donante {
     return this.contactos.stream()
         .filter(MedioContacto::getPrincipal)
         .findFirst()
-        .orElseThrow(() -> new DomainValidationException(
-            "El donante no posee ningún contacto configurado como principal"));
+        .orElseThrow(() -> new DomainValidationException( "El donante no posee ningún contacto configurado como principal"));
   }
 
   public List<MedioContacto> getContactosSecundarios() {
@@ -101,9 +102,8 @@ public abstract class Donante {
 
   public RegistroEntrega getUltimaEntrega() {
     //return this.entregas.stream().max(Comparator.comparing(r -> r.getFecha())).orElse(null);
-    if (this.entregas.isEmpty()) {
-      return null;
-    }
+    if (this.entregas.isEmpty()) return null;
+
     return this.entregas.get(this.entregas.size() - 1);
   }
 
@@ -116,5 +116,13 @@ public abstract class Donante {
   }
 
   abstract public String getNombreCompleto();
+
+  public abstract TipoDonante getTipo();
+
+  protected void actualizarDatosBase(Documento documento, List<MedioContacto> contactos) {
+    checkDatosBase(documento, contactos);
+    this.documento = documento;
+    this.contactos = new ArrayList<>(contactos);
+  }
 
 }

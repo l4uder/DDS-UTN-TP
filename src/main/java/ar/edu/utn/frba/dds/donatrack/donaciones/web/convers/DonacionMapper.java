@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.bien.BienDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionResponse;
 
@@ -11,8 +12,8 @@ public class DonacionMapper {
 
   private DonacionMapper() { }
 
-  public static Donacion aDominio(DonacionRequest request, List<Donante> donantes) {
-      return new Donacion(BienMapper.aDominio(request.bienes()), donantes);
+  public static Donacion aDominio(List<BienDto> bienesDto, List<Donante> donantes) {
+      return new Donacion(BienMapper.aDominio(bienesDto), donantes);
   }
 
   public static DonacionResponse aDto(Donacion donacion) {

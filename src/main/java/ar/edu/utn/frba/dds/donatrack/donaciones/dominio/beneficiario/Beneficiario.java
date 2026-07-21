@@ -37,9 +37,9 @@ public class Beneficiario {
     if (direccion == null || direccion.isBlank()) {
       throw new DomainValidationException("El campo 'direccion' es obligatorio");
     }
-    //if (contactos == null || contactos.isEmpty()) {
-    //  throw new DomainValidationException( "Debe tener al menos un medio de contacto");
-    //}
+    if (contactos == null || contactos.isEmpty()) {
+      throw new DomainValidationException( "Debe tener al menos un medio de contacto");
+    }
   }
 
   public void agregarNecesidad(Necesidad necesidad) {
@@ -81,10 +81,11 @@ public class Beneficiario {
     throw new DomainValidationException("El beneficiario no posee contactos");
   }
 
-  public void actualizacionParcial(String razonSocial, String direccion, List<MedioContacto> contactos) {
-    if (razonSocial != null) this.razonSocial = razonSocial;
-    if (direccion != null) this.direccion = direccion;
-    if (contactos != null) this.contactos = new ArrayList<>(contactos);
+  public void actualizarDatos(String razonSocial, String direccion, List<MedioContacto> contactos) {
+    checkDatos(razonSocial, direccion, contactos);
+    this.razonSocial = razonSocial;
+    this.direccion = direccion;
+    this.contactos = new ArrayList<>(contactos);
   }
 
 }

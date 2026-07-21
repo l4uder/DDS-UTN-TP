@@ -27,18 +27,12 @@ public abstract class Necesidad {
     if (subcategoria == null || subcategoria.getNombre().isBlank()) {
       throw new DomainValidationException("El campo 'subcategoria' es obligatorio");
     }
-    if (descripcion == null || descripcion.isBlank()) {
-      throw new DomainValidationException("El campo 'descripcion' es obligatorio");
-    }
     if (unidadMedida == null) {
       throw new DomainValidationException("El campo 'unidadMedida' es obligatorio");
     }
-  }
-
-  protected void actualizarDatosBase(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion) {
-    checkDatosBase(subcategoria, unidadMedida, descripcion);
-    this.subcategoria = subcategoria;
-    this.descripcion = descripcion;
+    if (descripcion == null || descripcion.isBlank()) {
+      throw new DomainValidationException("El campo 'descripcion' es obligatorio");
+    }
   }
 
   public void recibirBienes(Integer cantidad) {
@@ -59,5 +53,11 @@ public abstract class Necesidad {
   }
 
   abstract public String getTipo();
+
+  protected void actualizarDatosBase(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion) {
+    checkDatosBase(subcategoria, unidadMedida, descripcion);
+    this.subcategoria = subcategoria;
+    this.descripcion = descripcion;
+  }
 
 }

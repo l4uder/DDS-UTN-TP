@@ -44,6 +44,7 @@ public class EntregaTest {
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
         .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conDireccion("alguna dirección")
         .build();
 
     donacion = new Donacion(List.of(bien), List.of(donante));
@@ -53,11 +54,12 @@ public class EntregaTest {
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
 
     donantePrueba = new PersonaHumanaBuilder()
-      .conNombre("Juan")
-      .conApellido("Pérez")
-      .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-      .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
-      .build();
+        .conNombre("Juan")
+        .conApellido("Pérez")
+        .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conDireccion("alguna dirección")
+        .build();
 
     entrega = new Entrega(beneficiario, List.of(donacion), camion);
   }

@@ -59,11 +59,12 @@ public class OrquestadorLogisticaTest {
     Bien bien = new BienBuilder().conDescripcion("Arroz").conCantidad(3).conUsado(false).buildNoPerecedero();
 
     Donante donante = new PersonaHumanaBuilder()
-      .conNombre("Juan")
-      .conApellido("Pérez")
-      .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-      .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
-      .build();
+        .conNombre("Juan")
+        .conApellido("Pérez")
+        .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conDireccion("alguna dirección")
+        .build();
 
     donacion1 = new Donacion(List.of(bien), List.of(donante));
     donacion2 = new Donacion(List.of(bien), List.of(donante));

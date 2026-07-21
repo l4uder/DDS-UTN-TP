@@ -69,11 +69,6 @@ public class SegmentadorDonacionesTest {
     //Registros
     buildRegistro = new RegistroEntregaBuilder();
 
-    //Mock de Motor de correos exclusivo para los tests
-    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
-        // No hace nada de red, solo simula que lo envió
-        System.out.println("TEST - Simulando envío a: " + destino);
-    });
   }
 
   @Test

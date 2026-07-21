@@ -54,11 +54,12 @@ public class EstadosDonacionTest {
     });
 
     donantePrueba = new PersonaHumanaBuilder()
-      .conNombre("Juan")
-      .conApellido("Pérez")
-      .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-      .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
-      .build();
+        .conNombre("Juan")
+        .conApellido("Pérez")
+        .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conDireccion("alguna dirección")
+        .build();
   }
 
   @Test
@@ -116,7 +117,7 @@ public class EstadosDonacionTest {
     donacion.confirmarTrasladoEnCurso();
 
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRuta);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new Beneficiario("razon", "direccion", List.of())));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.confirmarAsignacion(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com")))));
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::marcarVencida);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::confirmarRecepcionDeposito);
 

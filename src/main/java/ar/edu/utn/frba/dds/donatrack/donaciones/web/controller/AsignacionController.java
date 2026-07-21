@@ -44,7 +44,6 @@ public class AsignacionController {
       List<Donacion> donaciones = repoDonaciones.buscarTodoPorEstado(TipoEstadoDonacion.EN_DEPOSITO);
 
       generadorRankings.asignar(donaciones, beneficiarios);
-
       ctx.status(200).json(Map.of( "mensaje", "Matchmaking ejecutado correctamente"));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
@@ -70,10 +69,12 @@ public class AsignacionController {
 
   public void obtener(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idRanking = ctx.pathParam("id");
-      Ranking ranking = repoRankings.buscarPorId(idRanking);
-      if (ranking == null) throw new RecursoNoEncontradoException("El ranking " + idRanking + " no existe");
-      ctx.json(RankingMapper.aDto(ranking));
+
+      Ranking ranking = buscarRankingPorId(idRanking);
+
+      ctx.status(200).json(RankingMapper.aDto(ranking));
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
     } catch (Exception e) {
@@ -84,28 +85,22 @@ public class AsignacionController {
 
   public void confirmar(Context ctx) {
     try {
+      //Cosas que recibo por URL --> Path param
       String idRanking = ctx.pathParam("id");
+
+      //Cosas que recibo por Body
       ConfirmacionBody body = ctx.bodyAsClass(ConfirmacionBody.class);
-      String stringEstado = body.getEstado();
       String idBeneficiario = body.getBeneficiarioId();
 
-      Ranking ranking = repoRankings.buscarPorId(idRanking);
-      if (ranking == null) throw new RecursoNoEncontradoException("El ranking " + idRanking + " no existe");
+      Ranking ranking = buscarRankingPorId(idRanking);
+      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
-      Beneficiario beneficiario = repoBeneficiarios.buscarPorId(idBeneficiario);
-      if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario con id: " + idBeneficiario);
-
-      EstadoRanking estado = aEstadoRanking(stringEstado);
-      if (estado == null) throw new DomainValidationException("No existe el estado de ranking: " + stringEstado);
-
-      ranking.setEstado(estado);
+      ranking.setEstado(EstadoRanking.CERRADO);
       Donacion donacion = ranking.getDonacion();
       donacion.confirmarAsignacion(beneficiario);
-
       repoDonaciones.actualizar(donacion);
       repoBeneficiarios.actualizar(beneficiario);
       repoRankings.actualizar(ranking);
-
       ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
@@ -121,11 +116,26 @@ public class AsignacionController {
     }
   }
 
-  private EstadoRanking aEstadoRanking(String estado) {
+  //=================== FUNCIONES AUXILIARES ========================
+  private EstadoRanking aEstadoRanking(String valor) {
+    if (valor == null) return null;
     try {
-      return EstadoRanking.valueOf(estado.toUpperCase());
+      return EstadoRanking.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException | NullPointerException f) {
-      return null;
+      throw new DomainValidationException("No existe el estado de ranking: " + valor);
     }
   }
+
+  private Beneficiario buscarBeneficiarioPorId(String id) {
+    Beneficiario beneficiario = repoBeneficiarios.buscarPorId(id);
+    if (beneficiario == null) throw new RecursoNoEncontradoException("No existe el beneficiario: " + id);
+    return beneficiario;
+  }
+
+  private Ranking buscarRankingPorId(String id) {
+    Ranking ranking = repoRankings.buscarPorId(id);
+    if (ranking == null) throw new RecursoNoEncontradoException("No existe el ranking: " + id);
+    return ranking;
+  }
+
 }
