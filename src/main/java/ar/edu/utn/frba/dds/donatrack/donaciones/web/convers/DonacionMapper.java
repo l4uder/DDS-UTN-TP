@@ -2,10 +2,8 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionResponse;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.EstadoDonacionDto;
 
 import java.util.List;
 

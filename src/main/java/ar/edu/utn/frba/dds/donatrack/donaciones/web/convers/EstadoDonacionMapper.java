@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.EstadoDonacionDto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.estadodonacion.EstadoDonacionDto;
 import java.util.List;
 
 public class EstadoDonacionMapper {

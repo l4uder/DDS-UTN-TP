@@ -102,7 +102,7 @@ public class OrquestadorLogisticaTest {
 
     assertEquals(1, entregas.size(), "es uno, porque solo hay un beneficiario");
     assertEquals(150, cantDonaciones(entregas), "el único beneficiario tiene ciento cincuenta donaciones");
-    assertEquals(2, lotes.size(), "porque 150 es mucho y se debe dividir en dos, uno de cien y el otro de cincuenta");
+    assertEquals(2, lotes.size(), "se debe dividir en dos, porque 150 es mucho, quedando uno de cien y el otro de cincuenta");
   }
 
   @Test
@@ -127,7 +127,7 @@ public class OrquestadorLogisticaTest {
 
     assertEquals(2, entregas.size(), "son dos, porque una es de el beneficiarioA y la otra para el beneficiarioB");
     assertEquals(110, cantDonaciones(entregas), "el beneficiarioA tiene 90 donaciones el beneficiarioB tiene 20 donaciones");
-    assertEquals(2, lotes.size(), "porque 110 es mucho y se debe dividir en dos, uno de cien y el otro de diez");
+    assertEquals(2, lotes.size(), "se debe dividir en dos, porque 110 es mucho quedando uno de cien y el otro de diez");
   }
 
   private Entrega entregaPorBeneficiario(Beneficiario beneficiario, List<Entrega> entregas) {

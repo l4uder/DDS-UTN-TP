@@ -6,7 +6,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.NoPerecedero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.Perecedero;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.BienDto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.bien.BienDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.util.List;
 

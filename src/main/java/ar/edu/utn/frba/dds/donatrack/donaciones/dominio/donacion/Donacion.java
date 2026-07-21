@@ -12,22 +12,20 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Setter;
 
+@Getter
 public class Donacion {
+  @Setter
   private String id;
   private String descripcion;
   private List<Bien> bienes;
   private List<EstadoDonacion> historialEstados;
-  private Beneficiario beneficiario;//Doble asociacion bidericcional
+  private Beneficiario beneficiario;//Doble asociación bidireccional
   private List<Donante> donantes;
 
   public Donacion(List<Bien> bienes, List<Donante> donantes) {
-    if (bienes == null || bienes.isEmpty()) {
-      throw new DomainValidationException("Una donación debe tener al menos un bien");
-    }
-    if (donantes == null || donantes.isEmpty()) {
-      throw new DomainValidationException("Una donación debe tener al menos un donante");
-    }
+    checkDatos(bienes, donantes);
     this.donantes = donantes;
     this.descripcion = this.descripcionGeneral(bienes);
     this.bienes = new ArrayList<>(bienes);
@@ -35,20 +33,13 @@ public class Donacion {
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
   }
 
-  public List<Donante> getDonantes(){
-    return this.donantes;
-  }
-
-  public String getId() {
-    return this.id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getDescripcion() {
-    return this.descripcion;
+  private void checkDatos(List<Bien> bienes, List<Donante> donantes) {
+    if (bienes == null || bienes.isEmpty()) {
+      throw new DomainValidationException("Una donación debe tener al menos un bien");
+    }
+    if (donantes == null || donantes.isEmpty()) {
+      throw new DomainValidationException("Una donación debe tener al menos un donante");
+    }
   }
 
   public void reemplazarBienes(List<Bien> nuevosBienes) {
@@ -216,19 +207,8 @@ public class Donacion {
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
   }
 
-  public List<EstadoDonacion> getHistorialEstados() {
-    return new ArrayList<>(historialEstados);
-  }
-
   public Subcategoria getSubcategoria() {
     return this.bienes.get(0).getSubcategoria(); // todos tienen la misma
   }
 
-  public List<Bien> getBienes() {
-    return new ArrayList<>(bienes);
-  }
-
-  public Beneficiario getBeneficiario() {
-    return this.beneficiario;
-  }
 }

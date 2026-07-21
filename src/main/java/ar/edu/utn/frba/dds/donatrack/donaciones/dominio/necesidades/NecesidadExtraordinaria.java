@@ -1,25 +1,29 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import lombok.Getter;
 
+@Getter
 public class NecesidadExtraordinaria extends Necesidad {
   private Integer cantidadRequerida;
 
-  public NecesidadExtraordinaria(Subcategoria subcategoria,
-                                 String descripcion,
-                                 int cantidadRequerida) {
-    super(subcategoria, descripcion);
+  public NecesidadExtraordinaria(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, int cantidadRequerida) {
+    super(subcategoria, unidadMedida, descripcion);
+    checkDatos(cantidadRequerida);
     this.cantidadRequerida = cantidadRequerida;
   }
 
-  public Integer getCantidadRequerida() {
-    return cantidadRequerida;
+  private void checkDatos(Integer cantidadRequerida) {
+    if (cantidadRequerida == null || cantidadRequerida <= 0) {
+      throw new DomainValidationException("Una necesidad extraordinaria necesita 'cantidadRequerida' mayor a cero");
+    }
   }
 
-  public void actualizarDatos(Subcategoria subcategoria,
-                              String descripcion,
-                              int cantidadRequerida) {
-    super.actualizarDatos(subcategoria, descripcion);
+  public void actualizarDatos(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, Integer cantidadRequerida) {
+    super.actualizarDatosBase(subcategoria, unidadMedida, descripcion);
+    checkDatos(cantidadRequerida);
     this.cantidadRequerida = cantidadRequerida;
   }
 
@@ -31,5 +35,10 @@ public class NecesidadExtraordinaria extends Necesidad {
   @Override
   protected Integer getCantidad() {
     return this.cantidadRequerida;
+  }
+
+  @Override
+  public String getTipo() {
+    return "EXTRAORDINARIA";
   }
 }

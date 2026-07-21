@@ -14,8 +14,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.BienMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.EstadoDonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionRequest;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.EstadoDonacionDto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.server.AppEventBus;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.AppEventBus;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
@@ -91,13 +90,15 @@ public class DonacionController {
   public void actualizar(Context ctx) {
     try {
       String idDonacion = ctx.pathParam("id");
-      DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
-      List<Bien> bienes = BienMapper.aDominio(request.bienes());
       Donacion donacion = repoDonaciones.buscarPorId(idDonacion);
       if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + idDonacion);
+
+      DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
+      List<Bien> bienes = BienMapper.aDominio(request.bienes());
+
       donacion.reemplazarBienes(bienes);
       repoDonaciones.guardar(donacion);
-      ctx.json(DonacionMapper.aDto(donacion));
+      ctx.status(200).json(DonacionMapper.aDto(donacion));
     } catch (JsonSyntaxException e) {
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
     } catch (DomainValidationException e) {
@@ -282,7 +283,6 @@ public class DonacionController {
       ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
     }
   }
-
 
   //================ FUNCIONES AUXILIARES ===============
   private TipoEstadoDonacion aEstadoDonacion(String estado) {

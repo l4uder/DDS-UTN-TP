@@ -1,19 +1,17 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.web.server;
+package ar.edu.utn.frba.dds.donatrack.donaciones.web;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoRealJavaMail;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.Notificador;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.AsignacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.BeneficiarioRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.DonacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.DonanteRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.NecesidadRoutes;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.AppEventBus;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
 import io.javalin.Javalin;
-import io.github.cdimascio.dotenv.Dotenv;
 
-public class DonacionesApp {
+public class App {
 
   public static final int PUERTO = 7070;
 

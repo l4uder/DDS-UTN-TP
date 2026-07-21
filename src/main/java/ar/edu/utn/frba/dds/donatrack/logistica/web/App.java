@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.web.server;
+package ar.edu.utn.frba.dds.donatrack.logistica.web;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorEntrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorRuta;
@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class LogisticaApp {
+public class App {
 
   public static final int PUERTO = 7071;
 

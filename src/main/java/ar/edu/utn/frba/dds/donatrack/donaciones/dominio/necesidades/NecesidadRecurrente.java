@@ -1,33 +1,34 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import lombok.Getter;
 
+@Getter
 public class NecesidadRecurrente extends Necesidad {
   private Integer cantidadPorPeriodo;
   private Periodo periodo;
 
-  public NecesidadRecurrente(Subcategoria subcategoria,
-                             String descripcion,
-                             int cantidadPorPeriodo,
-                             Periodo periodo) {
-    super(subcategoria, descripcion);
+  public NecesidadRecurrente(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, int cantidadPorPeriodo, Periodo periodo) {
+    super(subcategoria, unidadMedida, descripcion);
+    checkDatos(cantidadPorPeriodo, periodo);
     this.cantidadPorPeriodo = cantidadPorPeriodo;
     this.periodo = periodo;
   }
 
-  public Integer getCantidadPorPeriodo() {
-    return cantidadPorPeriodo;
+  private void checkDatos(Integer cantidadPorPeriodo, Periodo periodo) {
+    if (cantidadPorPeriodo == null || cantidadPorPeriodo <= 0) {
+      throw new DomainValidationException( "Una necesidad recurrente necesita 'cantidadPorPeriodo' mayor a cero");
+    }
+    if (periodo == null) {
+      throw new DomainValidationException( "Una necesidad recurrente necesita 'periodo' (DIARIO, SEMANAL o MENSUAL)");
+    }
   }
 
-  public Periodo getPeriodo() {
-    return periodo;
-  }
-
-  public void actualizarDatos(Subcategoria subcategoria,
-                              String descripcion,
-                              int cantidadPorPeriodo,
-                              Periodo periodo) {
-    super.actualizarDatos(subcategoria, descripcion);
+  public void actualizarDatos(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, int cantidadPorPeriodo, Periodo periodo) {
+    super.actualizarDatosBase(subcategoria, unidadMedida, descripcion);
+    checkDatos(cantidadPorPeriodo, periodo);
     this.cantidadPorPeriodo = cantidadPorPeriodo;
     this.periodo = periodo;
   }
@@ -40,6 +41,11 @@ public class NecesidadRecurrente extends Necesidad {
   @Override
   protected Integer getCantidad() {
     return this.cantidadPorPeriodo;
+  }
+
+  @Override
+  public String getTipo() {
+    return "RECURRENTE";
   }
 }
 

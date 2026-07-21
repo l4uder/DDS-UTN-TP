@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion;
+package ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.bien;
 
 import java.time.LocalDate;
 

@@ -143,14 +143,11 @@ public class AlgoritmoMatchmakingTest {
 
   @Test
   void debeQuitarBeneficiariosSinCoincidencias() {
-    NecesidadExtraordinaria necesitaRemeras = new NecesidadExtraordinaria(remera, "....", 2);
-    necesitaRemeras.setUnidadMedida(UnidadMedida.SIN_UNIDAD);
+    NecesidadExtraordinaria necesitaRemeras = new NecesidadExtraordinaria(remera, UnidadMedida.SIN_UNIDAD, "....", 2);
     beneficiario1.agregarNecesidad(necesitaRemeras);
-    NecesidadExtraordinaria necesitaSillas = new NecesidadExtraordinaria(sillas, "....", 3);
-    necesitaSillas.setUnidadMedida(UnidadMedida.SIN_UNIDAD);
+    NecesidadExtraordinaria necesitaSillas = new NecesidadExtraordinaria(sillas, UnidadMedida.SIN_UNIDAD, "....", 3);
     beneficiario2.agregarNecesidad(necesitaSillas);
-    NecesidadExtraordinaria necesitaFrutas = new NecesidadExtraordinaria(frutas, "....", 3);
-    necesitaFrutas.setUnidadMedida(UnidadMedida.KILOGRAMOS);
+    NecesidadExtraordinaria necesitaFrutas = new NecesidadExtraordinaria(frutas, UnidadMedida.KILOGRAMOS, "....", 3);
     beneficiario3.agregarNecesidad(necesitaFrutas);
 
     donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
@@ -163,14 +160,11 @@ public class AlgoritmoMatchmakingTest {
 
   @Test
   void debePriorizarAlBeneficiariosQueMasLeConviene() {
-    NecesidadExtraordinaria necesita2KGFrutas = new NecesidadExtraordinaria(frutas, "....", 2);
-    necesita2KGFrutas.setUnidadMedida(UnidadMedida.KILOGRAMOS);
+    NecesidadExtraordinaria necesita2KGFrutas = new NecesidadExtraordinaria(frutas, UnidadMedida.KILOGRAMOS, "....", 2);
     beneficiario1.agregarNecesidad(necesita2KGFrutas);
-    NecesidadExtraordinaria necesitaLacteos = new NecesidadExtraordinaria(lacteos, "....", 1);
-    necesitaLacteos.setUnidadMedida(UnidadMedida.LITROS);
+    NecesidadExtraordinaria necesitaLacteos = new NecesidadExtraordinaria(lacteos, UnidadMedida.LITROS, "....", 1);
     beneficiario1.agregarNecesidad(necesitaLacteos);
-    NecesidadExtraordinaria necesita3KGFrutas = new NecesidadExtraordinaria(frutas, "....", 3);
-    necesita3KGFrutas.setUnidadMedida(UnidadMedida.KILOGRAMOS);
+    NecesidadExtraordinaria necesita3KGFrutas = new NecesidadExtraordinaria(frutas, UnidadMedida.KILOGRAMOS, "....", 3);
     beneficiario2.agregarNecesidad(necesita3KGFrutas);
 
     donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
