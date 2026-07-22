@@ -2,20 +2,18 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.*;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.*;
-import ar.edu.utn.frba.dds.donatrack.builder.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Chofer;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Ruta;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.TipoEstadoEntrega;
-import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
-import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Chofer;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.TipoEstadoEntrega;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +28,7 @@ public class RutaTest {
   private Chofer chofer;
   private Entrega entrega;
   private Ruta ruta;
-  private BeneficiarioDTO beneficiario;
+  private Beneficiario beneficiario;
 
   private Donante donantePrueba;
 
@@ -61,10 +59,10 @@ public class RutaTest {
       .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
       .build();
 
-    DonacionAsignadaDTO donacion = new DonacionAsignadaDTO("don-1", "Fideos", beneficiario);
+    DonacionEnTransito donacion = new DonacionEnTransito("don-1", "Fideos", beneficiario);
     
     //donacion.confirmarAsignacion(beneficiario);
-    beneficiario = new BeneficiarioDTO("ben-1", "Comedor San José", "Av. Siempre Viva 123");
+    beneficiario = new Beneficiario("ben-1", "Comedor San José", "Av. Siempre Viva 123");
 
 
     entrega = new Entrega(beneficiario, List.of(donacion), camion);

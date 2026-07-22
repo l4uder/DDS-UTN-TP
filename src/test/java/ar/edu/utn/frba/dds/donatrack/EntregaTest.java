@@ -2,17 +2,16 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.*;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.*;
-import ar.edu.utn.frba.dds.donatrack.builder.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.TipoEstadoEntrega;
-import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
-import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.TipoEstadoEntrega;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntregaTest {
 
-  private BeneficiarioDTO beneficiario;
-  private DonacionAsignadaDTO donacion;
+  private Beneficiario beneficiario;
+  private DonacionEnTransito donacion;
   private Camion camion;
   private Entrega entrega;
 
@@ -40,9 +39,9 @@ public class EntregaTest {
     List<MedioContacto> listaContactos =
         List.of(contactoCorreo); //Cambio a correo a la espera de la implementación de envio por Whatsapp
 
-    beneficiario = new BeneficiarioDTO("ben-1", "Comedor San José", "Av. Siempre Viva 123");
+    beneficiario = new Beneficiario("ben-1", "Comedor San José", "Av. Siempre Viva 123");
 
-    donacion = new DonacionAsignadaDTO("don-1", "Fideos", beneficiario); //VERRR
+    donacion = new DonacionEnTransito("don-1", "Fideos", beneficiario);
 
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
@@ -110,12 +109,22 @@ public class EntregaTest {
   }
 
   @Test
-  void agregarFotoRecepcionIgnoraValoresVacios() {
-    entrega.agregarFotoRecepcion("");
-    entrega.agregarFotoRecepcion(null);
-    assertFalse(entrega.tieneFotos());
+  void agregarFotoRecepcionRechazaValoresVacios() {
+    entrega.confirmarListaParaEntregar();
+    entrega.iniciarTraslado();
+    entrega.confirmarRecepcion();
+
+    assertThrows(DomainValidationException.class, () -> entrega.agregarFotoRecepcion(""));
+    assertThrows(DomainValidationException.class, () -> entrega.agregarFotoRecepcion(null));
+    assertTrue(entrega.getFotosRecepcion().isEmpty());
 
     entrega.agregarFotoRecepcion("https://storage.donatrack.com/foto1.jpg");
-    assertTrue(entrega.tieneFotos());
+    assertFalse(entrega.getFotosRecepcion().isEmpty());
+  }
+
+  @Test
+  void agregarFotoRecepcionRechazaSiLaEntregaNoFueConfirmada() {
+    assertThrows(IllegalStateException.class,
+        () -> entrega.agregarFotoRecepcion("https://storage.donatrack.com/foto1.jpg"));
   }
 }

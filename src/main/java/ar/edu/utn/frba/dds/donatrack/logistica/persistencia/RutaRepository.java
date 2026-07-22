@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.persistencia;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Ruta;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 
 import java.util.*;
