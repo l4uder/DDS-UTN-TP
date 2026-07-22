@@ -3,9 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.builder;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaJuridica;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Representante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoOrganizacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,13 +46,7 @@ public class PersonaJuridicaBuilder {
     return this;
   }
 
-  public PersonaJuridicaBuilder conContactoPrincipal(MedioContacto contacto) {
-    contacto.setPrincipal(true);
-    this.contactos.add(contacto);
-    return this;
-  }
-
-  public PersonaJuridicaBuilder conContactoSecundario(MedioContacto contacto) {
+  public PersonaJuridicaBuilder conAgregarContacto(MedioContacto contacto) {
     this.contactos.add(contacto);
     return this;
   }

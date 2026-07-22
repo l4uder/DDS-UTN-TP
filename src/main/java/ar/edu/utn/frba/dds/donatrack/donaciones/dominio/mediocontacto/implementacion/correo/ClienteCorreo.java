@@ -2,6 +2,6 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implement
 
 public interface ClienteCorreo {
 
-  public void enviarCorreo(String correo, String mensaje);
+  public void enviarCorreo(String correoDestino, String mensaje);
 
 }

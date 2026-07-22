@@ -17,25 +17,24 @@ public class ContactoMapper {
       throw new DomainValidationException("Cada contacto necesita 'medio' y 'valor'");
     }
     MedioContacto contacto = switch (contactoDto.medio().toUpperCase()) {
-      case "EMAIL" -> new CorreoDeContato(contactoDto.valor());
-      case "SMS" -> new SmsDeContato(contactoDto.valor());
-      case "WHATSAPP" -> new WhatsappDeContato(contactoDto.valor());
+      case "EMAIL" -> new CorreoDeContato(contactoDto.valor(), Boolean.TRUE.equals(contactoDto.principal()));
+      case "SMS" -> new SmsDeContato(contactoDto.valor(), Boolean.TRUE.equals(contactoDto.principal()));
+      case "WHATSAPP" -> new WhatsappDeContato(contactoDto.valor(), Boolean.TRUE.equals(contactoDto.principal()));
       default -> throw new DomainValidationException(
           "Medio de contacto invalido: " + contactoDto.medio() + " (EMAIL, SMS o WHATSAPP)");
     };
-    contacto.setPrincipal(Boolean.TRUE.equals(contactoDto.principal()));
     return contacto;
   }
 
   public static ContactoDto aDto(MedioContacto contacto) {
     if (contacto instanceof CorreoDeContato correo) {
-      return new ContactoDto("EMAIL", correo.getCorreo(), correo.getPrincipal());
+      return new ContactoDto("EMAIL", correo.getCorreo(), correo.getEsPrincipal());
     }
     if (contacto instanceof SmsDeContato sms) {
-      return new ContactoDto("SMS", sms.getTelefono(), sms.getPrincipal());
+      return new ContactoDto("SMS", sms.getTelefono(), sms.getEsPrincipal());
     }
     WhatsappDeContato whatsapp = (WhatsappDeContato) contacto;
-    return new ContactoDto("WHATSAPP", whatsapp.getTelefono(), whatsapp.getPrincipal());
+    return new ContactoDto("WHATSAPP", whatsapp.getTelefono(), whatsapp.getEsPrincipal());
   }
 
   public static List<MedioContacto> aDominio(List<ContactoDto> contactosDto) {

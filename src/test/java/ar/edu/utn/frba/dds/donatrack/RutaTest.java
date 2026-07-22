@@ -35,15 +35,15 @@ public class RutaTest {
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
     chofer = new Chofer("Juan", "Gómez", "12345678");
 
-    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212");
-    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com");
+    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212", true);
+    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com", true);
     List<MedioContacto> listaContactos = List.of(contactoCorreo);
 
     donantePrueba = new PersonaHumanaBuilder()
       .conNombre("Juan")
       .conApellido("Pérez")
       .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-      .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+      .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
       .conDireccion("alguna dirección")
       .build();
 
@@ -55,7 +55,7 @@ public class RutaTest {
         .conNombre("Juan")
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
         .conDireccion("alguna dirección")
         .build();
 

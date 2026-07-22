@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implement
 
 public class ClienteCorreoMock implements ClienteCorreo{
   @Override
-  public void enviarCorreo(String correo, String mensaje) {
-    System.out.println("Enviando: " + mensaje + " Al correo: " + correo);
+  public void enviarCorreo(String correoDestino, String mensaje) {
+    System.out.println("mensaje: " + mensaje + " enviado al correo: " + correoDestino);
   }
 }

@@ -27,8 +27,8 @@ public class EntregaTest {
 
   @BeforeEach
   void setUp() {
-    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212");
-    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com");
+    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212", true);
+    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com", true);
     List<MedioContacto> listaContactos = List.of(contactoCorreo, contactoWhatsapp);
 
     beneficiario = new BeneficiarioBuilder()
@@ -43,7 +43,7 @@ public class EntregaTest {
         .conNombre("Juan")
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
         .conDireccion("alguna dirección")
         .build();
 
@@ -57,7 +57,7 @@ public class EntregaTest {
         .conNombre("Juan")
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
         .conDireccion("alguna dirección")
         .build();
 

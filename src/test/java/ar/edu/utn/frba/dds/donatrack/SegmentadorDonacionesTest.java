@@ -3,7 +3,6 @@ package ar.edu.utn.frba.dds.donatrack;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.CategoriaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.RegistroEntregaBuilder;

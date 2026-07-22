@@ -1,10 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Genero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaHumana;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -53,22 +51,8 @@ public class PersonaHumanaBuilder {
     return this;
   }
 
-  public PersonaHumanaBuilder conContactoPrincipal(MedioContacto contacto) {
-    contacto.setPrincipal(true);
+  public PersonaHumanaBuilder conAgregarContacto(MedioContacto contacto) {
     this.contactos.add(contacto);
-    return this;
-  }
-
-  public PersonaHumanaBuilder conContactoSecundario(MedioContacto contacto) {
-    this.contactos.add(contacto);
-    return this;
-  }
-
-  public PersonaHumanaBuilder conContactosSecundarios(List<MedioContacto> contactosSecundarios) {
-    if (contactosSecundarios != null) {
-      contactosSecundarios.forEach(c -> c.setPrincipal(false));
-      this.contactos.addAll(contactosSecundarios);
-    }
     return this;
   }
 

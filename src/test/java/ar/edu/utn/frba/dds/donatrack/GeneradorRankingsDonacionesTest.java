@@ -40,10 +40,10 @@ public class GeneradorRankingsDonacionesTest {
     algoritmoMock2 = mock(AlgoritmoMatchmaking.class);
     donacion = mock(Donacion.class);
 
-    beneficiario1 = new Beneficiario("1111", "Direccion 1", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com")));
-    beneficiario2 = new Beneficiario("2222", "Direccion 2", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com")));
-    beneficiario3 = new Beneficiario("3333", "Direccion 3", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com")));
-    beneficiario4 = new Beneficiario("4444", "Direccion 4", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com")));
+    beneficiario1 = new Beneficiario("1111", "Direccion 1", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com", true)));
+    beneficiario2 = new Beneficiario("2222", "Direccion 2", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com", true)));
+    beneficiario3 = new Beneficiario("3333", "Direccion 3", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com", true)));
+    beneficiario4 = new Beneficiario("4444", "Direccion 4", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com", true)));
   }
 
   @Test

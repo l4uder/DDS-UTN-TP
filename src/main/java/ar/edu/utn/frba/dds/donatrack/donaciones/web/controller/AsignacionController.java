@@ -28,10 +28,10 @@ public class AsignacionController {
   private final BeneficiarioRepository repoBeneficiarios;
   private final RankingRepository repoRankings;
 
-  public AsignacionController(/*DonacionRepository repoDonaciones, BeneficiarioRepository repoBeneficiarios, RankingRepository repoRankings*/) {
-    this.repoDonaciones = DonacionRepository.getInstancia();//= repoDonaciones;
-    this.repoBeneficiarios = BeneficiarioRepository.getInstancia();//= repoBeneficiarios;
-    this.repoRankings = RankingRepository.getInstancia();//= repoRankings;
+  public AsignacionController() {
+    this.repoDonaciones = DonacionRepository.getInstancia();
+    this.repoBeneficiarios = BeneficiarioRepository.getInstancia();
+    this.repoRankings = RankingRepository.getInstancia();
   }
 
   public void crearRankings(Context ctx) {
@@ -87,7 +87,6 @@ public class AsignacionController {
     try {
       //Cosas que recibo por URL --> Path param
       String idRanking = ctx.pathParam("id");
-
       //Cosas que recibo por Body
       ConfirmacionBody body = ctx.bodyAsClass(ConfirmacionBody.class);
       String idBeneficiario = body.getBeneficiarioId();

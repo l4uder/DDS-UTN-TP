@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.FabricaClienteCorreoReal;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.cargabatch.DonanteParser;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
@@ -15,15 +15,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DonanteParserTest {
-
-    @BeforeEach
-    public void configuracionInicial(){
-        //Mock de Motor de correos exclusivo para los tests
-        ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
-            // No hace nada de red, solo simula que lo envió
-            System.out.println("TEST - Simulando envío a: " + destino);
-        });
-    }
 
     @Test
     public void testParseCsvSuccess() {

@@ -1,8 +1,5 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.routes;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
-import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
-import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.AsignacionController;
 import io.javalin.Javalin;
 

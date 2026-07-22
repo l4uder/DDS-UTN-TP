@@ -16,7 +16,7 @@ public class RegistroEntregaBuilder {
       .conNombre("Juan")
       .conApellido("Pérez")
       .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-      .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+      .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
       .conDireccion("alguna dirección")
       .build();
 

@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
@@ -70,12 +69,6 @@ public class AlgoritmoMatchmakingTest {
 
   @BeforeEach
   void configuracionInicial() {
-    //Mock de Motor de correos exclusivo para los tests
-    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
-        // No hace nada de red, solo simula que lo envió
-        System.out.println("TEST - Simulando envío a: " + destino);
-    });
-
     //Categorias
     alimentos = new CategoriaBuilder().conNombre("Alimentos").build();
     muebles = new CategoriaBuilder().conNombre("Muebles").build();
@@ -115,7 +108,7 @@ public class AlgoritmoMatchmakingTest {
     //Donacion
     //donacion = new Donacion(List.of(fideos));
     //MedioContacto
-    correo = new CorreoDeContato("correo@gmail.com");
+    correo = new CorreoDeContato("correo@gmail.com", true);
     //Beneficiario
     beneficiario1 = new Beneficiario("4444", "av. Varela 1800", List.of(correo));
     beneficiario2 = new Beneficiario("5555", "av. Irigoyen 88", List.of(correo));
@@ -137,7 +130,7 @@ public class AlgoritmoMatchmakingTest {
         .conNombre("Juan")
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
         .conDireccion("alguna dirección")
         .build();
   }

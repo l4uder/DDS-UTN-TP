@@ -34,10 +34,10 @@ public class OrquestadorLogisticaTest {
 
   @BeforeEach
   void setUp() {
-    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212");
-    MedioContacto contactoSms = new SmsDeContato("112322222");
-    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com");
-    MedioContacto contactoCorreoB = new CorreoDeContato("comedorB@prueba.com");
+    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212", true);
+    MedioContacto contactoSms = new SmsDeContato("112322222", true);
+    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com", true);
+    MedioContacto contactoCorreoB = new CorreoDeContato("comedorB@prueba.com", true);
 
     List<MedioContacto> listaContactosA = List.of(contactoCorreo);
     List<MedioContacto> listaContactosB = List.of(contactoCorreoB);
@@ -62,7 +62,7 @@ public class OrquestadorLogisticaTest {
         .conNombre("Juan")
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
+        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
         .conDireccion("alguna dirección")
         .build();
 

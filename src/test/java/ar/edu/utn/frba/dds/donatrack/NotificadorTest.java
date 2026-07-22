@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
@@ -53,7 +52,7 @@ public class NotificadorTest {
             new Documento(TipoDocumento.DNI, "30123456"),
             Genero.MASCULINO,
             "Av. San Martín 100",
-            new CorreoDeContato("carlos@srl.com")
+            new CorreoDeContato("carlos@srl.com", true)
     );
 
     buildPersonaJuridica = new PersonaJuridicaBuilder().conRazonSocial("Constructora Junior SRL")
@@ -63,19 +62,13 @@ public class NotificadorTest {
         .conRepresentantes(List.of(rep));
 
     message = "Hola..";
-
-    //Mock de Motor de correos exclusivo para los tests
-    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
-        // No hace nada de red, solo simula que lo envió
-        System.out.println("TEST - Simulando envío a: " + destino);
-    });
   }
 
   @Test
   void notificarAUnaPersonaHumanaPorCorreo() {
-    CorreoDeContato correoJuan = new CorreoDeContato("juanpepe@gmail.com");
+    CorreoDeContato correoJuan = new CorreoDeContato("juanpepe@gmail.com", true);
     correoJuan.setClienteCorreo(clienteMockCorreo);
-    PersonaHumana juan = buildPersona.conContactoPrincipal(correoJuan).build();
+    PersonaHumana juan = buildPersona.conAgregarContacto(correoJuan).build();
 
     juan.recibirNotificacion(message);
 
@@ -84,9 +77,9 @@ public class NotificadorTest {
 
   @Test
   void notificarAUnaPersonaJuridicaPorSMS() {
-    SmsDeContato numeroSms = new SmsDeContato("434644456");
+    SmsDeContato numeroSms = new SmsDeContato("434644456", true);
     numeroSms.setClienteSms(clienteMockSms);
-    PersonaJuridica constructoraSRL = buildPersonaJuridica.conContactoPrincipal(numeroSms).build();
+    PersonaJuridica constructoraSRL = buildPersonaJuridica.conAgregarContacto(numeroSms).build();
 
     constructoraSRL.recibirNotificacion(message);
 
@@ -95,9 +88,9 @@ public class NotificadorTest {
 
   @Test
   void notificarAUnaPersonaHumanaPorWhashapp() {
-    WhatsappDeContato numeroWhatsapp = new WhatsappDeContato("235254543");
+    WhatsappDeContato numeroWhatsapp = new WhatsappDeContato("235254543", true);
     numeroWhatsapp.setClienteWhatsapp(clienteMockWhatsapp);
-    PersonaHumana juan = buildPersona.conContactoPrincipal(numeroWhatsapp).build();
+    PersonaHumana juan = buildPersona.conAgregarContacto(numeroWhatsapp).build();
 
     juan.recibirNotificacion(message);
 
@@ -106,11 +99,11 @@ public class NotificadorTest {
 
   @Test
   void notificarAUnaPersonaHumanaConVariosCorreos() {
-    CorreoDeContato correo1 = new CorreoDeContato("juanpepe@gmail.com");
-    CorreoDeContato correo2 = new CorreoDeContato("juanSecundario@gmail.com");
+    CorreoDeContato correo1 = new CorreoDeContato("juanpepe@gmail.com", true);
+    CorreoDeContato correo2 = new CorreoDeContato("juanSecundario@gmail.com", false);
     correo1.setClienteCorreo(clienteMockCorreo);
     correo2.setClienteCorreo(clienteMockCorreo);
-    PersonaHumana juan = buildPersona.conContactoPrincipal(correo1).conContactoSecundario(correo2).build();
+    PersonaHumana juan = buildPersona.conAgregarContacto(correo1).conAgregarContacto(correo2).build();
 
     juan.recibirNotificacion(message);
 

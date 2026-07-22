@@ -10,12 +10,11 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class ClienteCorreoRealJavaMail implements ClienteCorreo {
-
+public class ClienteCorreoReal implements ClienteCorreo {
   private final String correoRemitente;
   private final String password;
 
-  public ClienteCorreoRealJavaMail(String correoRemitente, String password) {
+  public ClienteCorreoReal(String correoRemitente, String password) {
     this.correoRemitente = correoRemitente;
     this.password = password;
   }
@@ -48,7 +47,7 @@ public class ClienteCorreoRealJavaMail implements ClienteCorreo {
       message.setText(mensajeCuerpo);
 
       Transport.send(message);
-      System.out.println("Éxito: Correo enviado a " + correoDestino);
+      System.out.println("mensaje por correo enviado con éxito a: " + correoDestino);
 
     } catch (MessagingException e) {
       throw new RuntimeException("Error crítico al intentar enviar el correo a: " + correoDestino, e);

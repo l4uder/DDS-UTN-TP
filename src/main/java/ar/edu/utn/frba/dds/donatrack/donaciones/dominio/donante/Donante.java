@@ -33,53 +33,20 @@ public abstract class Donante {
     if (contactos == null || contactos.isEmpty()) {
       throw new DomainValidationException("Debe proporcionar al menos un contacto");
     }
-    if (contactos.stream().noneMatch(MedioContacto::getPrincipal)) {
+    if (contactos.stream().noneMatch(MedioContacto::getEsPrincipal)) {
       throw new DomainValidationException("Debe tener al menos un contacto principal");
-    }
-  }
-
-  public void agregarContactoPrincipal(MedioContacto contacto) {
-    if (contacto == null) {
-      throw new DomainValidationException("El medio de contacto principal no puede ser null");
-    }
-
-    this.contactos.forEach(c -> c.setPrincipal(false));
-
-    MedioContacto contactoExistente = this.contactos.stream()
-        .filter(c -> c.esIgualA(contacto))
-        .findFirst()
-        .orElse(null);
-
-    if (contactoExistente != null) { // if existe
-      contactoExistente.setPrincipal(true);
-    } else {
-      contacto.setPrincipal(true);
-      this.contactos.add(contacto);
-    }
-  }
-
-  public void agregarContactoSecundario(MedioContacto contacto) {
-    if (contacto == null) {
-      throw new DomainValidationException("El medio de contacto no puede ser null");
-    }
-
-    boolean existe = this.contactos.stream().anyMatch(c -> c.esIgualA(contacto));
-
-    if (!existe) {
-      contacto.setPrincipal(false);
-      this.contactos.add(contacto);
     }
   }
 
   public MedioContacto getContactoPrincipal() {
     return this.contactos.stream()
-        .filter(MedioContacto::getPrincipal)
+        .filter(MedioContacto::getEsPrincipal)
         .findFirst()
         .orElseThrow(() -> new DomainValidationException( "El donante no posee ningún contacto configurado como principal"));
   }
 
   public List<MedioContacto> getContactosSecundarios() {
-    return this.contactos.stream().filter(c -> !c.getPrincipal()).toList();
+    return this.contactos.stream().filter(c -> !c.getEsPrincipal()).toList();
   }
 
   public String getEmail() {

@@ -10,8 +10,7 @@ public class DonanteFactory {
                               String nombreCompleto, MedioContacto contactoPrincipal,
                               MedioContacto contactoSecundario) {
 
-    contactoPrincipal.setPrincipal(true);
-
+    //contactoPrincipal.setPrincipal(true);
     if (tipoPersona.equals("HUMANA")) {
       String[] partimosNombre = nombreCompleto.trim().split(" +", 2);
       String nombre = partimosNombre[0];
