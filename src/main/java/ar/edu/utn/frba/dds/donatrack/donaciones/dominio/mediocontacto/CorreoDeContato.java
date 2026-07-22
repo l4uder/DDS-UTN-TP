@@ -3,10 +3,14 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreo;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class CorreoDeContato implements MedioContacto {
   private String correo;
   private Boolean esPrincipal;
+  @Setter
   private ClienteCorreo clienteCorreo;
 
   public CorreoDeContato(String correo, Boolean esPrincipal) {
@@ -26,25 +30,12 @@ public class CorreoDeContato implements MedioContacto {
   }
 
   @Override
-  public Boolean getEsPrincipal() {
-    return this.esPrincipal;
-  }
-
-  @Override
   public void notificar(String message) {
     if (clienteCorreo == null) {
       throw new DomainValidationException("clienteCorreo no asignado para enviar notificaciones");
     }
 
     clienteCorreo.enviarCorreo(correo, message);
-  }
-
-  public void setClienteCorreo(ClienteCorreo clienteCorreo) {
-    this.clienteCorreo = clienteCorreo;
-  }
-
-  public String getCorreo() {
-    return correo;
   }
 
   @Override

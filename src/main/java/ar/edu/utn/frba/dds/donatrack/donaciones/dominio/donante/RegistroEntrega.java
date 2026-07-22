@@ -7,11 +7,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
+
+@Getter
 public class RegistroEntrega {
   private LocalDateTime fecha;
   private String descripcionGeneral;
   private List<Bien> bienes;
-  @Getter
   private Donante donante;
 
   public RegistroEntrega(String descripcionGeneral, List<Bien> bienes, Donante donante) {
@@ -21,15 +22,8 @@ public class RegistroEntrega {
     this.bienes = new ArrayList<>(bienes);
   }
 
-  public LocalDateTime getFecha() {
-    return this.fecha;
-  }
-
   public void agregarBien(Bien bien) {
     this.bienes.add(bien);
   }
 
-  public List<Bien> getBienes() {
-    return bienes;
-  }
 }

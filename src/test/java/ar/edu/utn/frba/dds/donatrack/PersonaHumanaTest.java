@@ -21,7 +21,7 @@ public class PersonaHumanaTest {
         .conDireccion("alguna dirección")
         .build();
 
-    assertNotNull(persona.getContactoPrincipal());
+    assertNotNull(persona.getPrimerContactoPrincipal());
     assertEquals("Esteban", persona.getNombre());
   }
 

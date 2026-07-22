@@ -6,10 +6,11 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion.CandidatoDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion.RankingResponse;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RankingMapper {
-
-  private RankingMapper() {}
 
   public static RankingResponse aDto(Ranking ranking) {
     List<Beneficiario> beneficiarios = ranking.getCandidatos();

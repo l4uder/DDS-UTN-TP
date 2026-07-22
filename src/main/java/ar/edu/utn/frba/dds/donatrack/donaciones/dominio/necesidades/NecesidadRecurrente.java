@@ -39,7 +39,7 @@ public class NecesidadRecurrente extends Necesidad {
   }
 
   @Override
-  protected Integer getCantidad() {
+  protected Integer getCantidadQueNecesita() {
     return this.cantidadPorPeriodo;
   }
 

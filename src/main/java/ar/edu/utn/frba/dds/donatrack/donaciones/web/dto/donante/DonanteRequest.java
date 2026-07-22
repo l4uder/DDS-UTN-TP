@@ -17,5 +17,4 @@ public record DonanteRequest(
     String razonSocial,
     String tipoOrganizacion,
     String rubro
-) {
-}
+) { }

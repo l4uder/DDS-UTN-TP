@@ -7,5 +7,4 @@ public record BeneficiarioRequest(
     String razonSocial,
     String direccion,
     List<ContactoDto> contactos
-) {
-}
+) { }

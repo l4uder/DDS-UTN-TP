@@ -14,9 +14,8 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NecesidadMapper {
-
-  private NecesidadMapper() { }
 
   public static Necesidad aDominio(NecesidadRequest request) {
     if (request.tipo() == null) throw new DomainValidationException("El campo 'tipo' es obligatorio (RECURRENTE o EXTRAORDINARIA)");

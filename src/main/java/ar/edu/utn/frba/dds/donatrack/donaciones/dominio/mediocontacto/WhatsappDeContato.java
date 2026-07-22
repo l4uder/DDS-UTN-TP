@@ -3,10 +3,14 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsappMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsapp;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class WhatsappDeContato implements MedioContacto {
   private String telefono;
   private Boolean esPrincipal;
+  @Setter
   private ClienteWhatsapp clienteWhatsapp;
 
   public WhatsappDeContato(String telefono, Boolean esPrincipal) {
@@ -26,25 +30,11 @@ public class WhatsappDeContato implements MedioContacto {
   }
 
   @Override
-  public Boolean getEsPrincipal() {
-    return this.esPrincipal;
-  }
-
-  @Override
   public void notificar(String message) {
     if (clienteWhatsapp == null) {
       throw new DomainValidationException("clienteWhatsapp no asignado para enviar notificaciones");
     }
-
     clienteWhatsapp.enviarMensaje(telefono, message);
-  }
-
-  public void setClienteWhatsapp(ClienteWhatsapp clienteWhatsapp) {
-    this.clienteWhatsapp = clienteWhatsapp;
-  }
-
-  public String getTelefono() {
-    return telefono;
   }
 
   @Override
@@ -52,7 +42,6 @@ public class WhatsappDeContato implements MedioContacto {
     if (!(otro instanceof WhatsappDeContato numeroWhatsapp)) {
       return false;
     }
-
     return this.telefono.equals(numeroWhatsapp.getTelefono());
   }
 }

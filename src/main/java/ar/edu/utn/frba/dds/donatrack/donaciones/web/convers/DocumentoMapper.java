@@ -4,7 +4,10 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.documento.DocumentoDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DocumentoMapper {
 
   public static Documento aDominio(DocumentoDto documentoDto) {

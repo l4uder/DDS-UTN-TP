@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public final class DonanteRepository {
   private static final DonanteRepository INSTANCE = new DonanteRepository();
-  private Map<String, Donante> storeDonantes;
+  private final Map<String, Donante> storeDonantes;
 
   private DonanteRepository() {
     storeDonantes = new HashMap<>();
@@ -59,8 +59,8 @@ public final class DonanteRepository {
     this.storeDonantes.put(donante.getId(), donante);
   }
 
-  public void eliminar(String id) {
-    storeDonantes.remove(id);
+  public void eliminar(Donante donante) {
+    storeDonantes.remove(donante.getId());
   }
 
 }

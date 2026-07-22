@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.web.controller;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.EstadoRanking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.GeneradorRankings;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
@@ -89,12 +88,12 @@ public class AsignacionController {
       String idRanking = ctx.pathParam("id");
       //Cosas que recibo por Body
       ConfirmacionBody body = ctx.bodyAsClass(ConfirmacionBody.class);
-      String idBeneficiario = body.getBeneficiarioId();
+      String idBeneficiario = body.beneficiarioId();
 
       Ranking ranking = buscarRankingPorId(idRanking);
       Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
-      ranking.setEstado(EstadoRanking.CERRADO);
+      ranking.confirmada();
       Donacion donacion = ranking.getDonacion();
       donacion.confirmarAsignacion(beneficiario);
       repoDonaciones.actualizar(donacion);
@@ -116,15 +115,6 @@ public class AsignacionController {
   }
 
   //=================== FUNCIONES AUXILIARES ========================
-  private EstadoRanking aEstadoRanking(String valor) {
-    if (valor == null) return null;
-    try {
-      return EstadoRanking.valueOf(valor.toUpperCase());
-    } catch (IllegalArgumentException | NullPointerException f) {
-      throw new DomainValidationException("No existe el estado de ranking: " + valor);
-    }
-  }
-
   private Beneficiario buscarBeneficiarioPorId(String id) {
     Beneficiario beneficiario = repoBeneficiarios.buscarPorId(id);
     if (beneficiario == null) throw new RecursoNoEncontradoException("No existe el beneficiario: " + id);

@@ -22,7 +22,7 @@ public class PersonaJuridicaTest {
         .conAgregarContacto(new CorreoDeContato("empresaTest@gmail.com", true))
         .build();
 
-    assertNotNull(empresa.getContactoPrincipal());
+    assertNotNull(empresa.getPrimerContactoPrincipal());
   }
 
   @Test

@@ -12,5 +12,4 @@ public record BienDto(
     String subcategoria,
     LocalDate fechaVencimiento,
     Boolean usado
-) {
-}
+) { }

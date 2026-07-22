@@ -5,5 +5,4 @@ public record CandidatoDto(
     String beneficiarioId,
     String razonSocial,
     String direccion
-) {
-}
+) { }

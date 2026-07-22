@@ -97,7 +97,7 @@ public class BeneficiarioController {
 
       Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
-      repoBeneficiarios.eliminar(idBeneficiario);
+      repoBeneficiarios.eliminar(beneficiario);
       ctx.status(204);
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));

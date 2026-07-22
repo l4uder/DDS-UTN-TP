@@ -10,5 +10,4 @@ public record DonacionResponse(
     String estado,
     BeneficiarioResumenDto beneficiario,
     List<BienDto> bienes
-) {
-}
+) { }

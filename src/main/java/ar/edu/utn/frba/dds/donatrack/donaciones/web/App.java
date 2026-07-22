@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.DonacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.DonanteRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.NecesidadRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.AppEventBus;
+import ar.edu.utn.frba.dds.donatrack.shared.ConfiguracionEntorno;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
 import io.javalin.Javalin;
@@ -16,20 +17,9 @@ public class App {
   public static final int PUERTO = 7070;
 
   public static void main(String[] args) {
-  /*  Dotenv dotenv = Dotenv.load();
-    String password = dotenv.get("DONATRACK_EMAIL_PASSWORD");
-
-    if (password == null || password.isEmpty()) {
-        throw new RuntimeException("Falta configurar la variable de entorno DONATRACK_EMAIL_PASSWORD");
-    }
-
-    ProveedorClienteCorreo.inicializar(new ClienteCorreoRealJavaMail(
-        "donatrack.sistema@gmail.com",
-        password
-    ));
-*/
+    ConfiguracionEntorno config = ConfiguracionEntorno.getInstance();
     Notificador.init(AppEventBus.getInstance());
-    crearApp().start(PUERTO);
+    crearApp().start(config.elegirPuertoDonaciones(PUERTO));
   }
 
   public static Javalin crearApp() {

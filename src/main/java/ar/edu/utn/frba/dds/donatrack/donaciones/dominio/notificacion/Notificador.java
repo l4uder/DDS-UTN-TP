@@ -11,7 +11,6 @@ import com.google.common.eventbus.Subscribe;
 import java.time.format.DateTimeFormatter;
 
 public class Notificador {
-
   private static Notificador INSTANCE;
 
   public static void init(EventBus eventBus) {

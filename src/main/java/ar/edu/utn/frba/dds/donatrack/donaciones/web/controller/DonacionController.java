@@ -128,7 +128,7 @@ public class DonacionController {
 
       Donacion donacion = buscarDonacionPorId(idDonacion);
 
-      repoDonaciones.eliminar(idDonacion);
+      repoDonaciones.eliminar(donacion);
       ctx.status(204);
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));

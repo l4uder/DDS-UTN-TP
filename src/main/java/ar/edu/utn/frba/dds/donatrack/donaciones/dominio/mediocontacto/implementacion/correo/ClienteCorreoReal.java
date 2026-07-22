@@ -53,4 +53,5 @@ public class ClienteCorreoReal implements ClienteCorreo {
       throw new RuntimeException("Error crítico al intentar enviar el correo a: " + correoDestino, e);
     }
   }
+
 }

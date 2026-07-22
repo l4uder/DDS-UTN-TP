@@ -3,10 +3,8 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
@@ -38,11 +36,14 @@ public abstract class Donante {
     }
   }
 
-  public MedioContacto getContactoPrincipal() {
-    return this.contactos.stream()
-        .filter(MedioContacto::getEsPrincipal)
+  public MedioContacto getPrimerContactoPrincipal() {
+    return getContactosPrincipales().stream()
         .findFirst()
         .orElseThrow(() -> new DomainValidationException( "El donante no posee ningún contacto configurado como principal"));
+  }
+
+  public List<MedioContacto> getContactosPrincipales() {
+    return this.contactos.stream().filter(c -> c.getEsPrincipal()).toList();
   }
 
   public List<MedioContacto> getContactosSecundarios() {

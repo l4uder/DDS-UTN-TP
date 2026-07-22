@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public final class BeneficiarioRepository {
   private static final BeneficiarioRepository INSTANCE = new BeneficiarioRepository();
-  private Map<String, Beneficiario> storeBeneficiarios;
+  private final Map<String, Beneficiario> storeBeneficiarios;
 
   private BeneficiarioRepository() {
     storeBeneficiarios = new HashMap<>();
@@ -41,7 +41,7 @@ public final class BeneficiarioRepository {
     this.storeBeneficiarios.put(beneficiario.getId(), beneficiario);
   }
 
-  public void eliminar(String id) {
-    storeBeneficiarios.remove(id);
+  public void eliminar(Beneficiario beneficiario) {
+    storeBeneficiarios.remove(beneficiario.getId());
   }
 }

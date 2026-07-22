@@ -13,9 +13,9 @@ public class PersonaJuridica extends Donante {
   private String rubro;
   private List<Representante> representantes;
 
-  public PersonaJuridica(String razonSocial, TipoOrganizacion tipo,
-                        String rubro, Documento documento,
-                        List<Representante> representantes, List<MedioContacto> contactos) {
+  public PersonaJuridica(String razonSocial, TipoOrganizacion tipo, String rubro,
+                         Documento documento, List<Representante> representantes,
+                         List<MedioContacto> contactos) {
     super(documento, contactos);
     checkDatos(razonSocial, documento);
     this.razonSocial = razonSocial;

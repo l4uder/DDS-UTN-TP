@@ -7,10 +7,11 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionRequest
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionResponse;
 
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DonacionMapper {
-
-  private DonacionMapper() { }
 
   public static Donacion aDominio(List<BienDto> bienesDto, List<Donante> donantes) {
       return new Donacion(BienMapper.aDominio(bienesDto), donantes);

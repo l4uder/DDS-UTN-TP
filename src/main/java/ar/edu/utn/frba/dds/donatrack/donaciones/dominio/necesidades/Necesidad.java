@@ -41,10 +41,10 @@ public abstract class Necesidad {
 
   public abstract Boolean estaSatisfecha();
 
-  protected abstract Integer getCantidad();
+  protected abstract Integer getCantidadQueNecesita();
 
   public Integer getCantidadFaltante() {
-    int cantidadFaltante = this.getCantidad() - this.cantidadRecibida;
+    int cantidadFaltante = getCantidadQueNecesita() - this.cantidadRecibida;
     return Math.max(0, cantidadFaltante);
   }
 
@@ -57,6 +57,7 @@ public abstract class Necesidad {
   protected void actualizarDatosBase(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion) {
     checkDatosBase(subcategoria, unidadMedida, descripcion);
     this.subcategoria = subcategoria;
+    this.unidadMedida = unidadMedida;
     this.descripcion = descripcion;
   }
 

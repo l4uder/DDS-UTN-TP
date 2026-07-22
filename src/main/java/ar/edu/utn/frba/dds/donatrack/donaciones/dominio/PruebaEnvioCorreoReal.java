@@ -22,7 +22,7 @@ public class PruebaEnvioCorreoReal {
 
     persona.recibirNotificacion("mensaje de prueba");
     correo.setClienteCorreo(FabricaClienteCorreoReal.start());
-    persona.recibirNotificacion("mensaje real");
+    persona.recibirNotificacion("mensaje nuevooooo");
   }
 
 }

@@ -7,7 +7,7 @@ import java.util.*;
 
 public final class AdministratorRepository {
   private static final AdministratorRepository INSTANCE = new AdministratorRepository();
-  private List<MedioContacto> administradores;
+  private final List<MedioContacto> administradores;
 
   private AdministratorRepository() {
     administradores = new ArrayList<>();

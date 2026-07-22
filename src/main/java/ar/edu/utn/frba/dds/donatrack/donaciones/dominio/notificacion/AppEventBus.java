@@ -11,4 +11,5 @@ public final class AppEventBus extends EventBus {
   public static AppEventBus getInstance(){
     return INSTANCE;
   }
+
 }

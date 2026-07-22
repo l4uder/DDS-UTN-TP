@@ -49,4 +49,5 @@ public class GeneradorRankings {
 
     return beneficiariosElegidos;
   }
+
 }

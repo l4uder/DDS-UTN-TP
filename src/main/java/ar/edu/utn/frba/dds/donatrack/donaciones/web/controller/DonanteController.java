@@ -103,7 +103,7 @@ public class DonanteController {
 
       Donante donante = buscarDonantePorId(idDonante);
 
-      repoDonantes.eliminar(idDonante);
+      repoDonantes.eliminar(donante);
       ctx.status(204);
     } catch (RecursoNoEncontradoException e) {
       ctx.status(404).json(new ErrorResponse(404, e.getMessage()));

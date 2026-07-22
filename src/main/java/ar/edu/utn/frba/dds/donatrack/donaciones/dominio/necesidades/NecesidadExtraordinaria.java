@@ -33,7 +33,7 @@ public class NecesidadExtraordinaria extends Necesidad {
   }
 
   @Override
-  protected Integer getCantidad() {
+  protected Integer getCantidadQueNecesita() {
     return this.cantidadRequerida;
   }
 

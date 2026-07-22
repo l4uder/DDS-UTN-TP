@@ -8,5 +8,4 @@ public record BeneficiarioResponse(
     String razonSocial,
     String direccion,
     List<ContactoDto> contactos
-) {
-}
+) { }

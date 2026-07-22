@@ -4,5 +4,4 @@ public record BeneficiarioResumenDto(
     String id,
     String razonSocial,
     String direccion
-) {
-}
+) { }

@@ -18,5 +18,4 @@ public record DonanteResponse(
     String razonSocial,
     String tipoOrganizacion,
     String rubro
-) {
-}
+) { }

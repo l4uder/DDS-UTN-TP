@@ -1,5 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante;
 
+import lombok.Getter;
+
+@Getter
 public class Documento {
   private TipoDocumento tipoDocumento;
   private String detalle;
@@ -9,16 +12,9 @@ public class Documento {
     this.detalle = detalle;
   }
 
-  public TipoDocumento getTipoDocumento() {
-    return tipoDocumento;
-  }
-
-  public String getDetalle() {
-    return detalle;
-  }
-
   public Boolean esIgualA(Documento otrodocumento) {
     return this.tipoDocumento == otrodocumento.getTipoDocumento()
             && this.detalle.equalsIgnoreCase(otrodocumento.getDetalle());
   }
+
 }

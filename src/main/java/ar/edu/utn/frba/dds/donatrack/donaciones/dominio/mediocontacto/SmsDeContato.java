@@ -3,10 +3,14 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSmsMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSms;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class SmsDeContato implements MedioContacto {
   private String telefono;
   private Boolean esPrincipal;
+  @Setter
   private ClienteSms clienteSms;
 
   public SmsDeContato(String telefono, Boolean esPrincipal) {
@@ -26,25 +30,12 @@ public class SmsDeContato implements MedioContacto {
   }
 
   @Override
-  public Boolean getEsPrincipal() {
-    return this.esPrincipal;
-  }
-
-  @Override
   public void notificar(String message) {
     if (clienteSms == null) {
       throw new DomainValidationException("clienteSms no asignado para enviar notificaciones");
     }
 
     clienteSms.enviarSms(telefono, message);
-  }
-
-  public void setClienteSms(ClienteSms clienteSms) {
-    this.clienteSms = clienteSms;
-  }
-
-  public String getTelefono() {
-    return telefono;
   }
 
   @Override

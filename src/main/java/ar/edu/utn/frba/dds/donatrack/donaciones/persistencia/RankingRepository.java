@@ -1,8 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +40,8 @@ public final class RankingRepository {
     this.storeRankings.put(ranking.getId(), ranking);
   }
 
-  public void eliminar(String donacionId) {
-    storeRankings.remove(donacionId);
+  public void eliminar(Ranking ranking) {
+    storeRankings.remove(ranking.getId());
   }
+
 }

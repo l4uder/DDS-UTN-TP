@@ -17,10 +17,11 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteResumenRe
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DonanteMapper {
-
-  private DonanteMapper() {}
 
   public static Donante aDominio(DonanteRequest request) {
     Documento documento = DocumentoMapper.aDominio(request.documento());

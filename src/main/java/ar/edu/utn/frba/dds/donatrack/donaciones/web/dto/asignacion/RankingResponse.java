@@ -7,5 +7,4 @@ public record RankingResponse(
     String donacionId,
     LocalDateTime fechaGeneracion,
     List<CandidatoDto> candidatos
-) {
-}
+) { }

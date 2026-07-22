@@ -9,10 +9,11 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.Perecedero
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.bien.BienDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BienMapper {
-
-  private BienMapper() {}
 
   private static Bien aDominio(BienDto bienDto) {
     if (bienDto.tipo() == null) throw new DomainValidationException( "Cada bien necesita 'tipo' (PERECEDERO o NO_PERECEDERO)");
@@ -75,4 +76,5 @@ public class BienMapper {
       throw new DomainValidationException("Valor invalido para unidad de medida: " + valor);
     }
   }
+
 }

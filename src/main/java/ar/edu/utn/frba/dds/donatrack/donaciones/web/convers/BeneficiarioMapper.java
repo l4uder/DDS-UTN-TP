@@ -7,10 +7,11 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.Beneficiari
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioResumenDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BeneficiarioMapper {
-
-  private BeneficiarioMapper() {}
 
   public static Beneficiario aDominio(BeneficiarioRequest request) {
     return new Beneficiario(

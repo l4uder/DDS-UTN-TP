@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class DonacionRepository {
   private static DonacionRepository INSTANCE = new DonacionRepository();
-  private Map<String, Donacion> storeDonaciones;
+  private final Map<String, Donacion> storeDonaciones;
 
   private DonacionRepository() {
     storeDonaciones = new HashMap<>();
@@ -46,8 +46,8 @@ public class DonacionRepository {
     this.storeDonaciones.put(donacion.getId(), donacion);
   }
 
-  public void eliminar(String id) {
-    storeDonaciones.remove(id);
+  public void eliminar(Donacion donacion) {
+    storeDonaciones.remove(donacion.getId());
   }
 
 }

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SegmentadorDonaciones {
-
   private record BienYDonante(Bien b, Donante d){}
 
   public List<Donacion> segmentar(List<RegistroEntrega> registros) {

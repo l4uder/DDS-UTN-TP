@@ -9,5 +9,4 @@ public record NecesidadRequest(
     Integer cantidadPorPeriodo,
     String periodo,
     Integer cantidadRequerida
-) {
-}
+) { }

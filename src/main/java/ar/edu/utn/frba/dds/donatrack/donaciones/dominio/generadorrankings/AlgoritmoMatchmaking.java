@@ -24,4 +24,5 @@ public abstract class AlgoritmoMatchmaking {
                                                               List<Beneficiario> beneficiarios);
 
   protected abstract Comparator<Map.Entry<Beneficiario, Integer>> modoOrdenamiento();
+
 }

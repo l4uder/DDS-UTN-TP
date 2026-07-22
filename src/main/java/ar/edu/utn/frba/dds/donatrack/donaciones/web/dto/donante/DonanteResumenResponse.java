@@ -4,5 +4,4 @@ public record DonanteResumenResponse(
     String id,
     String tipo,
     String nombre
-) {
-}
+) { }

@@ -7,10 +7,11 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDe
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.contacto.ContactoDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ContactoMapper {
-
-  private ContactoMapper() { }
 
   public static MedioContacto aDominio(ContactoDto contactoDto) {
     if (contactoDto.medio() == null || contactoDto.valor() == null) {
