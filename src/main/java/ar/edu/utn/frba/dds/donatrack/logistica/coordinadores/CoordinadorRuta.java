@@ -2,10 +2,11 @@ package ar.edu.utn.frba.dds.donatrack.logistica.coordinadores;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Chofer;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ClientePlanificadorExterno;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Ruta;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.PlanificadorLogistico;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.ResultadoPlanificacion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.BeneficiarioDTO;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.externo.DonacionAsignadaDTO;
 import ar.edu.utn.frba.dds.donatrack.logistica.dto.planificacion.CallbackPlanificacionRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.integracion.DonacionesClient;
@@ -15,35 +16,50 @@ import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class CoordinadorRuta {
+  private static final int MAX_DONACIONES_POR_LOTE = 100;
+  private static final String CALLBACK_URL = "http://donatrack.com/rutas/callback-planificacion";
 
   private final RutaRepository rutaRepository;
   private final CamionRepository camionRepository;
   private final EntregaRepository entregaRepository;
   private final DonacionesClient donacionesClient;
-  private final PlanificadorLogistico planificador;
+  private final ClientePlanificadorExterno clienteExterno;
 
   public CoordinadorRuta(RutaRepository rutaRepository, CamionRepository camionRepository,
                          EntregaRepository entregaRepository, DonacionesClient donacionesClient,
-                         PlanificadorLogistico planificador) {
+                         ClientePlanificadorExterno clienteExterno){
     this.rutaRepository = rutaRepository;
     this.camionRepository = camionRepository;
     this.entregaRepository = entregaRepository;
     this.donacionesClient = donacionesClient;
-    this.planificador = planificador;
+    this.clienteExterno = clienteExterno;
   }
 
   public List<Entrega> planificarEntregasPendientes() {
     List<DonacionAsignadaDTO> donacionesAsignadas = donacionesClient.buscarDonacionesAsignadas();
-    List<Entrega> entregas = planificador.armarEntregasPendientes(donacionesAsignadas);
+    List<Entrega> entregas = armarEntregasPendientes(donacionesAsignadas);
     entregas.forEach(entregaRepository::guardar);
     return entregas;
   }
+
+  public void ejecutarPlanificacionDiaria() {
+    List<Entrega> entregas = planificarEntregasPendientes();
+    List<Camion> camiones = camionRepository.buscarTodos();
+    List<List<Entrega>> lotes = armarLotesEntrega(entregas);
+
+    lotes.forEach(lote ->
+        clienteExterno.enviarLote(lote, camiones, CALLBACK_URL)
+    );
+  }
+
 
   public List<Ruta> procesarCallback(CallbackPlanificacionRequest request) {
     LocalDate fecha = LocalDate.parse(request.fecha());
@@ -52,7 +68,9 @@ public class CoordinadorRuta {
     request.entregasPorPatente().forEach((patente, idsEntregas) -> {
       Camion camion = camionRepository.buscarPorPatente(patente)
           .orElseThrow(() -> new RecursoNoEncontradoException("Camión no encontrado: " + patente));
-      List<Entrega> entregas = idsEntregas.stream().map(entregaRepository::buscarPorId).toList();
+      List<Entrega> entregas = idsEntregas.stream()
+          .map(entregaRepository::buscarPorId)
+          .toList();
       entregasPorCamion.put(camion, entregas);
     });
 
@@ -67,7 +85,7 @@ public class CoordinadorRuta {
     sinAsignar.forEach(e -> entregaRepository.eliminar(e.getId()));
 
     ResultadoPlanificacion resultado = new ResultadoPlanificacion(entregasPorCamion, sinAsignar);
-    List<Ruta> rutas = planificador.procesarResultadoPlanificacion(resultado, fecha);
+    List<Ruta> rutas = procesarResultadoPlanificacion(resultado, fecha);
 
     rutas.forEach(rutaRepository::guardar);
     rutas.forEach(ruta -> ruta.getEntregasOrdenadas().forEach(e ->
@@ -76,35 +94,72 @@ public class CoordinadorRuta {
     return rutas;
   }
 
-  public void iniciarRecorrido(String id) {
-    Ruta ruta = rutaRepository.buscarPorId(id);
-    ruta.iniciarRecorrido();
-    rutaRepository.guardar(ruta);
+ // -- Rutas --
+ public void iniciarRecorrido(String id) {
+   Ruta ruta = rutaRepository.buscarPorId(id);
+   ruta.iniciarRecorrido();
+   rutaRepository.guardar(ruta);
 
-    String linkMapa = ruta.getCamion().getLinkSeguimiento();
-    ruta.getEntregasOrdenadas().forEach(e ->
-        propagarEstadoDonaciones(e, donacionId ->
-            donacionesClient.cambiarEstadoDonacion(donacionId, new CambioEstadoInicioRutaRequest(linkMapa))));
-  }
+   String linkMapa = ruta.getCamion().getLinkSeguimiento();
+   ruta.getEntregasOrdenadas().forEach(e ->
+       propagarEstadoDonaciones(e, donacionId ->
+           donacionesClient.cambiarEstadoDonacion(
+               donacionId, new CambioEstadoInicioRutaRequest(linkMapa))));
+ }
 
   public void asignarChofer(String id, Chofer chofer) {
     Ruta ruta = rutaRepository.buscarPorId(id);
     ruta.asignarChofer(chofer);
     rutaRepository.guardar(ruta);
   }
+  //-- Entregas --
+  private List<Entrega> armarEntregasPendientes(List<DonacionAsignadaDTO> donacionesAsignadas) {
+    Map<BeneficiarioDTO, List<DonacionAsignadaDTO>> agrupadas = donacionesAsignadas.stream()
+        .collect(Collectors.groupingBy(DonacionAsignadaDTO::getBeneficiario));
 
-  private void propagarEstadoDonaciones(Entrega entrega, Consumer<String> command) {
-    entrega.getDonaciones().forEach(d -> command.accept(d.getId()));
+    List<Entrega> entregas = new ArrayList<>();
+    agrupadas.forEach((beneficiario, donaciones) ->
+        entregas.add(new Entrega(beneficiario, donaciones, null)));
+    return entregas;
   }
 
-  public void ejecutarPlanificacionDiaria() {
-    List<Entrega> entregas = planificarEntregasPendientes();
-    List<List<Entrega>> lotes = planificador.armarLotesEntrega(entregas);
+  private List<List<Entrega>> armarLotesEntrega(List<Entrega> entregas) {
+    List<List<Entrega>> lotes = new ArrayList<>();
+    List<Entrega> loteActual = new ArrayList<>();
+    int contadorDonaciones = 0;
 
-    lotes.forEach(lote -> {
-      System.out.println("Enviando lote de " + lote.size() + " entregas al planificador externo");
-      // Falta la llamada HTTP real al componente externo de planificación (no implementado
-      // en este TP — el callback en /rutas/callback-planificacion simula respuesta).
+    for (Entrega entrega : entregas) {
+      int cantidad = entrega.getDonaciones().size();
+      if (contadorDonaciones + cantidad > MAX_DONACIONES_POR_LOTE && !loteActual.isEmpty()) {
+        lotes.add(loteActual);
+        loteActual = new ArrayList<>();
+        contadorDonaciones = 0;
+      }
+      loteActual.add(entrega);
+      contadorDonaciones += cantidad;
+    }
+    if (!loteActual.isEmpty()) {
+      lotes.add(loteActual);
+    }
+    return lotes;
+  }
+
+  private List<Ruta> procesarResultadoPlanificacion(ResultadoPlanificacion resultado, LocalDate fecha) {
+    List<Ruta> rutasCreadas = new ArrayList<>();
+
+    resultado.entregasPorCamion().forEach((camion, entregasOrdenadas) -> {
+      entregasOrdenadas.forEach(entrega -> {
+        entrega.reasignarCamion(camion);
+        entrega.confirmarListaParaEntregar();
+      });
+      rutasCreadas.add(new Ruta(camion, fecha, entregasOrdenadas));
     });
+
+    return rutasCreadas;
+  }
+
+  //--Helper--
+  private void propagarEstadoDonaciones(Entrega entrega, Consumer<String> command) {
+    entrega.getDonaciones().forEach(d -> command.accept(d.getId()));
   }
 }

@@ -48,23 +48,6 @@ public class RutaController {
     }
   }
 
-  public void planificar(Context ctx) {
-    List<Entrega> entregas = coordinador.planificarEntregasPendientes();
-    ctx.status(202).json(entregas);
-  }
-
-  public void callback(Context ctx) {
-    try {
-      CallbackPlanificacionRequest request = ctx.bodyAsClass(CallbackPlanificacionRequest.class);
-      List<Ruta> rutas = coordinador.procesarCallback(request);
-      ctx.status(201).json(rutas);
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ExceptionHandlers.ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ExceptionHandlers.ErrorResponse(404, e.getMessage()));
-    }
-  }
-
   public void iniciar(Context ctx) {
     try {
       coordinador.iniciarRecorrido(ctx.pathParam("id"));
