@@ -20,50 +20,50 @@ public class BeneficiarioController {
   }
 
   public void crear(Context ctx) {
-      //Cosas que recibo por URL --> Query param
-      BeneficiarioRequest beneficiarioDto = ctx.bodyAsClass(BeneficiarioRequest.class);
+    //Cosas que recibo por URL --> Query param
+    BeneficiarioRequest beneficiarioDto = ctx.bodyAsClass(BeneficiarioRequest.class);
 
-      Beneficiario beneficiario = BeneficiarioMapper.aDominio(beneficiarioDto);
+    Beneficiario beneficiario = BeneficiarioMapper.aDominio(beneficiarioDto);
 
-      repoBeneficiarios.guardar(beneficiario);
-      ctx.status(201).json(BeneficiarioMapper.aDto(beneficiario));
+    repoBeneficiarios.guardar(beneficiario);
+    ctx.status(201).json(BeneficiarioMapper.aDto(beneficiario));
   }
 
   public void obtenerTodos(Context ctx) {
-      List<Beneficiario> beneficiarios = repoBeneficiarios.buscarTodos();
-      ctx.status(200).json(beneficiarios.stream().map(BeneficiarioMapper::aDtoResumen).toList());
+    List<Beneficiario> beneficiarios = repoBeneficiarios.buscarTodos();
+    ctx.status(200).json(beneficiarios.stream().map(BeneficiarioMapper::aDtoResumen).toList());
   }
 
   public void obtener(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idBeneficiario = ctx.pathParam("id");
+    //Cosas que recibo por URL --> Path param
+    String idBeneficiario = ctx.pathParam("id");
 
-      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+    Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
-      ctx.status(200).json(BeneficiarioMapper.aDto(beneficiario));
+    ctx.status(200).json(BeneficiarioMapper.aDto(beneficiario));
   }
 
   public void actualizar(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idBeneficiario = ctx.pathParam("id");
-      //Cosas que recibo por Body
-      BeneficiarioRequest beneficiarioDto = ctx.bodyAsClass(BeneficiarioRequest.class);
+    //Cosas que recibo por URL --> Path param
+    String idBeneficiario = ctx.pathParam("id");
+    //Cosas que recibo por Body
+    BeneficiarioRequest beneficiarioDto = ctx.bodyAsClass(BeneficiarioRequest.class);
 
-      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
-      BeneficiarioMapper.actualizarDominio(beneficiario, beneficiarioDto);
+    Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+    BeneficiarioMapper.actualizarDominio(beneficiario, beneficiarioDto);
 
-      repoBeneficiarios.actualizar(beneficiario);
-      ctx.status(200).json(BeneficiarioMapper.aDto(beneficiario));
+    repoBeneficiarios.actualizar(beneficiario);
+    ctx.status(200).json(BeneficiarioMapper.aDto(beneficiario));
   }
 
   public void eliminar(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idBeneficiario = ctx.pathParam("id");
+    //Cosas que recibo por URL --> Path param
+    String idBeneficiario = ctx.pathParam("id");
 
-      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+    Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
-      repoBeneficiarios.eliminar(beneficiario);
-      ctx.status(204);
+    repoBeneficiarios.eliminar(beneficiario);
+    ctx.status(204);
   }
 
   //================= FUNCIONES AUXILIARES ===================

@@ -12,10 +12,10 @@ public class AsignacionRoutes {
   private AsignacionRoutes() {}
 
   public static void registrar(Javalin app) {
-    app.post("/donaciones/rankings", controller::crearRankings);
-    app.get("/donaciones/rankings", controller::obtenerTodos);
-    app.get("/donaciones/rankings/{id}", controller::obtener);
-    app.patch("/donaciones/rankings/{id}", controller::confirmar);
+    app.post("/rankings", controller::crearRankings);
+    app.get("/rankings", controller::obtenerTodos);
+    app.get("/rankings/{id}", controller::obtener);
+    app.patch("/rankings/{id}", controller::confirmar);//paso 2 Asignación Realizada
   }
 
 }

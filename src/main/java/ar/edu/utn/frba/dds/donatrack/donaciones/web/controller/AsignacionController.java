@@ -31,48 +31,49 @@ public class AsignacionController {
   }
 
   public void crearRankings(Context ctx) {
-      GeneradorRankings generadorRankings = new GeneradorRankings(repoRankings);
-      generadorRankings.agregarAlgoritmo(new CompatibilidadSemantica());
-      generadorRankings.agregarAlgoritmo(new PrioridadSubAtendidos());
+    repoRankings.vaciarSoft();
+    GeneradorRankings generadorRankings = new GeneradorRankings(repoRankings);
+    generadorRankings.agregarAlgoritmo(new CompatibilidadSemantica());
+    generadorRankings.agregarAlgoritmo(new PrioridadSubAtendidos());
 
-      List<Beneficiario> beneficiarios = repoBeneficiarios.buscarTodos();
-      List<Donacion> donaciones = repoDonaciones.buscarTodoPorEstado(TipoEstadoDonacion.EN_DEPOSITO);
+    List<Beneficiario> beneficiarios = repoBeneficiarios.buscarTodos();
+    List<Donacion> donaciones = repoDonaciones.buscarTodoPorEstado(TipoEstadoDonacion.EN_DEPOSITO);
 
-      generadorRankings.asignar(donaciones, beneficiarios);
-      ctx.status(200).json(Map.of( "mensaje", "Matchmaking ejecutado correctamente"));
+    generadorRankings.asignar(donaciones, beneficiarios);
+    ctx.status(200).json(Map.of( "mensaje", "Matchmaking ejecutado correctamente"));
   }
 
   public void obtenerTodos(Context ctx) {
-      List<Ranking> rankings = repoRankings.buscarTodos();
-      ctx.status(200).json(rankings.stream().map(RankingMapper::aDto).toList());
+    List<Ranking> rankings = repoRankings.buscarTodos();
+    ctx.status(200).json(rankings.stream().map(RankingMapper::aDto).toList());
   }
 
   public void obtener(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idRanking = ctx.pathParam("id");
+    //Cosas que recibo por URL --> Path param
+    String idRanking = ctx.pathParam("id");
 
-      Ranking ranking = buscarRankingPorId(idRanking);
+    Ranking ranking = buscarRankingPorId(idRanking);
 
-      ctx.status(200).json(RankingMapper.aDto(ranking));
+    ctx.status(200).json(RankingMapper.aDto(ranking));
   }
 
   public void confirmar(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idRanking = ctx.pathParam("id");
-      //Cosas que recibo por Body
-      ConfirmacionBody body = ctx.bodyAsClass(ConfirmacionBody.class);
-      String idBeneficiario = body.beneficiarioId();
+    //Cosas que recibo por URL --> Path param
+    String idRanking = ctx.pathParam("id");
+    //Cosas que recibo por Body
+    ConfirmacionBody body = ctx.bodyAsClass(ConfirmacionBody.class);
+    String idBeneficiario = body.beneficiarioId();
 
-      Ranking ranking = buscarRankingPorId(idRanking);
-      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+    Ranking ranking = buscarRankingPorId(idRanking);
+    Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
-      ranking.confirmada();
-      Donacion donacion = ranking.getDonacion();
-      donacion.confirmarAsignacion(beneficiario);
-      repoDonaciones.actualizar(donacion);
-      repoBeneficiarios.actualizar(beneficiario);
-      repoRankings.actualizar(ranking);
-      ctx.status(200).json(DonacionMapper.aDto(donacion));
+    ranking.vencida();
+    Donacion donacion = ranking.getDonacion();
+    donacion.confirmarAsignacion(beneficiario);
+    repoDonaciones.actualizar(donacion);
+    repoBeneficiarios.actualizar(beneficiario);
+    repoRankings.actualizar(ranking);
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
   //=================== FUNCIONES AUXILIARES ========================
@@ -84,7 +85,8 @@ public class AsignacionController {
 
   private Ranking buscarRankingPorId(String id) {
     Ranking ranking = repoRankings.buscarPorId(id);
-    if (ranking == null) throw new RecursoNoEncontradoException("No existe el ranking: " + id);
+    if (ranking == null) throw new RecursoNoEncontradoException("El ranking: " + id + " no existe");
+    if(!ranking.getEsVigente()) throw new RecursoNoEncontradoException("El ranking esta vencido: " + id);
     return ranking;
   }
 

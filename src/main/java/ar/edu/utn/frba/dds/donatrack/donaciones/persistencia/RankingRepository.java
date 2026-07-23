@@ -30,7 +30,7 @@ public final class RankingRepository {
   }
 
   public List<Ranking> buscarTodos() {
-    return storeRankings.values().stream().toList();
+    return storeRankings.values().stream().filter(Ranking::getEsVigente).toList();
   }
 
   public void actualizar(Ranking ranking) {
@@ -40,8 +40,8 @@ public final class RankingRepository {
     this.storeRankings.put(ranking.getId(), ranking);
   }
 
-  public void eliminar(Ranking ranking) {
-    storeRankings.remove(ranking.getId());
+  public void vaciarSoft() {
+    buscarTodos().forEach(Ranking::vencida);
   }
 
 }

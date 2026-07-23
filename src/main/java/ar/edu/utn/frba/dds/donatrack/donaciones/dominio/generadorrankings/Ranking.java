@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class Ranking {
     this.fechaGeneracion = LocalDateTime.now();
   }
 
-  public void confirmada() {
+  public void vencida() {
     this.esVigente = false;
   }
 

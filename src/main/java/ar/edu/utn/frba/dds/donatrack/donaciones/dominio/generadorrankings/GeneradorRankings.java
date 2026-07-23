@@ -2,13 +2,15 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.algoritmos.AlgoritmoMatchmaking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GeneradorRankings {
-  private List<AlgoritmoMatchmaking> algoritmosMatch;
-  private RankingRepository repoRankings;
+  private final List<AlgoritmoMatchmaking> algoritmosMatch;
+  private final RankingRepository repoRankings;
 
   public GeneradorRankings(RankingRepository repoRankings) {
     this.algoritmosMatch = new ArrayList<>();
@@ -20,6 +22,8 @@ public class GeneradorRankings {
   }
 
   public List<Ranking> asignar(List<Donacion> donaciones, List<Beneficiario> beneficiarios) {
+    if (beneficiarios == null || beneficiarios.isEmpty()) throw new DomainValidationException("No se puede generar rankings sino hay beneficiarios");
+
     List<Ranking> rankings = donaciones.stream()
         .map(d -> new Ranking(d, asignar(d, beneficiarios)))
         .toList();
@@ -44,6 +48,7 @@ public class GeneradorRankings {
                     .anyMatch(b -> b.esIgual(beneficiario)))).toList();
 
     if (beneficiariosElegidos.isEmpty()) {
+      System.out.println("nose encontró coincidencias entre los algoritmos se devuelve todo");
       return todosLosPosiblesBeneficiarios;
     }
 

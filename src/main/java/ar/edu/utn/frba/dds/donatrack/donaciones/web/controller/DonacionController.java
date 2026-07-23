@@ -36,60 +36,60 @@ public class DonacionController {
   }
 
   public void crear(Context ctx) {
-      //Cosas que recibo por Body
-      DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
-      List<String> idDonantes = request.donanteIds();
-      List<BienDto> bienesDto = request.bienes();
+    //Cosas que recibo por Body
+    DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
+    List<String> idDonantes = request.donanteIds();
+    List<BienDto> bienesDto = request.bienes();
 
-      List<Donante> donantes = idDonantes.stream().map(this::buscarDonantePorId).toList();
-      Donacion donacion = DonacionMapper.aDominio(bienesDto, donantes);
+    List<Donante> donantes = idDonantes.stream().map(this::buscarDonantePorId).toList();
+    Donacion donacion = DonacionMapper.aDominio(bienesDto, donantes);
 
-      repoDonaciones.guardar(donacion);
-      ctx.status(201).json(DonacionMapper.aDto(donacion));
+    repoDonaciones.guardar(donacion);
+    ctx.status(201).json(DonacionMapper.aDto(donacion));
   }
 
   public void obtenerTodos(Context ctx) {
-      //Cosas que recibo por URL --> Query param
-      String estadoDonacion = ctx.queryParam("estado");
+    //Cosas que recibo por URL --> Query param
+    String estadoDonacion = ctx.queryParam("estado");
 
-      TipoEstadoDonacion estado = aTipoEstadoDonacion(estadoDonacion);
+    TipoEstadoDonacion estado = aTipoEstadoDonacion(estadoDonacion);
 
-      List<Donacion> donaciones = estado == null ? repoDonaciones.buscarTodos() : repoDonaciones.buscarTodoPorEstado(estado);
-      ctx.status(200).json(DonacionMapper.aDto(donaciones));
+    List<Donacion> donaciones = estado == null ? repoDonaciones.buscarTodos() : repoDonaciones.buscarTodoPorEstado(estado);
+    ctx.status(200).json(DonacionMapper.aDto(donaciones));
   }
 
   public void obtener(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonacion = ctx.pathParam("id");
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
 
-      Donacion donacion = buscarDonacionPorId(idDonacion);
+    Donacion donacion = buscarDonacionPorId(idDonacion);
 
-      ctx.status(200).json(DonacionMapper.aDto(donacion));
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
   public void actualizar(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonacion = ctx.pathParam("id");
-      //Cosas que recibo por Body
-      DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
-      List<BienDto> bienesDto = request.bienes();
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
+    //Cosas que recibo por Body
+    DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
+    List<BienDto> bienesDto = request.bienes();
 
-      Donacion donacion = buscarDonacionPorId(idDonacion);
-      List<Bien> bienes = BienMapper.aDominio(bienesDto);
+    Donacion donacion = buscarDonacionPorId(idDonacion);
+    List<Bien> bienes = BienMapper.aDominio(bienesDto);
 
-      donacion.reemplazarBienes(bienes);
-      repoDonaciones.actualizar(donacion);
-      ctx.status(200).json(DonacionMapper.aDto(donacion));
+    donacion.reemplazarBienes(bienes);
+    repoDonaciones.actualizar(donacion);
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
   public void eliminar(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonacion = ctx.pathParam("id");
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
 
-      Donacion donacion = buscarDonacionPorId(idDonacion);
+    Donacion donacion = buscarDonacionPorId(idDonacion);
 
-      repoDonaciones.eliminar(donacion);
-      ctx.status(204);
+    repoDonaciones.eliminar(donacion);
+    ctx.status(204);
   }
 
   public void historialEstados(Context ctx) {
@@ -103,14 +103,14 @@ public class DonacionController {
   }
 
   public void donacionDevueltaADeposito(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonacion = ctx.pathParam("id");
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
 
-      Donacion donacion = buscarDonacionPorId(idDonacion);
+    Donacion donacion = buscarDonacionPorId(idDonacion);
 
-      donacion.confirmarRecepcionDeposito();
-      repoDonaciones.actualizar(donacion);
-      ctx.status(200).json(DonacionMapper.aDto(donacion));
+    donacion.confirmarRecepcionDeposito();
+    repoDonaciones.actualizar(donacion);
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
   public void donacionEnTraslado(Context ctx) {
@@ -128,56 +128,56 @@ public class DonacionController {
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
-  public void cambiarEstadoAVencida(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonacion = ctx.pathParam("id");
+  public void donacionVencida(Context ctx) {
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
 
-      Donacion donacion = buscarDonacionPorId(idDonacion);
+    Donacion donacion = buscarDonacionPorId(idDonacion);
 
-      donacion.marcarVencida();
-      repoDonaciones.actualizar(donacion);
-      ctx.status(200).json(DonacionMapper.aDto(donacion));
+    donacion.marcarVencida();
+    repoDonaciones.actualizar(donacion);
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
   public void donacionListaParaEntregar(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonacion = ctx.pathParam("id");
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
 
-      Donacion donacion = buscarDonacionPorId(idDonacion);
+    Donacion donacion = buscarDonacionPorId(idDonacion);
 
-      donacion.confirmarRuta();
-      repoDonaciones.actualizar(donacion);
-      ctx.status(200).json(DonacionMapper.aDto(donacion));
+    donacion.confirmarRuta();
+    repoDonaciones.actualizar(donacion);
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
   public void donacionEntregada(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonacion = ctx.pathParam("id");
-      //Cosas que recibo por Body
-      CambioEstadoEntregadaRequest request = ctx.bodyAsClass(CambioEstadoEntregadaRequest.class);
-      String idCamion = request.camionId();
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
+    //Cosas que recibo por Body
+    CambioEstadoEntregadaRequest request = ctx.bodyAsClass(CambioEstadoEntregadaRequest.class);
+    String idCamion = request.camionId();
 
-      Donacion donacion = buscarDonacionPorId(idDonacion);
+    Donacion donacion = buscarDonacionPorId(idDonacion);
 
-      donacion.confirmarEntrega();
-      AppEventBus.getInstance().post(new EventoEntregaExitosa(donacion, LocalDate.now(), idCamion));
-      repoDonaciones.actualizar(donacion);
-      ctx.status(200).json(DonacionMapper.aDto(donacion));
+    donacion.confirmarEntrega();
+    AppEventBus.getInstance().post(new EventoEntregaExitosa(donacion, LocalDate.now(), idCamion));
+    repoDonaciones.actualizar(donacion);
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
   public void donacionEntregaFallida(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonacion = ctx.pathParam("id");
-      //Cosas que recibo por Body
-      CambioEstadoErrorEntregaRequest request = ctx.bodyAsClass(CambioEstadoErrorEntregaRequest.class);
-      String observacion = request.observacion();
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
+    //Cosas que recibo por Body
+    CambioEstadoErrorEntregaRequest request = ctx.bodyAsClass(CambioEstadoErrorEntregaRequest.class);
+    String observacion = request.observacion();
 
-      Donacion donacion = buscarDonacionPorId(idDonacion);
+    Donacion donacion = buscarDonacionPorId(idDonacion);
 
-      donacion.notificarEntregaFallida(observacion);
-      AppEventBus.getInstance().post(new EventoEntregaFallida(observacion, donacion, LocalDate.now()));
-      repoDonaciones.actualizar(donacion);
-      ctx.status(200).json(DonacionMapper.aDto(donacion));
+    donacion.notificarEntregaFallida(observacion);
+    AppEventBus.getInstance().post(new EventoEntregaFallida(observacion, donacion, LocalDate.now()));
+    repoDonaciones.actualizar(donacion);
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
   //================ FUNCIONES AUXILIARES ===============
