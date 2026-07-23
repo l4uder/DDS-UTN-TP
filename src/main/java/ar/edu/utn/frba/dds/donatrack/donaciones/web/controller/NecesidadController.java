@@ -21,66 +21,66 @@ public class NecesidadController {
   }
 
   public void crear(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idBeneficiario = ctx.pathParam("id");
-      //Cosas que recibo por Body
-      NecesidadRequest necesidadDto = ctx.bodyAsClass(NecesidadRequest.class);
+    //Cosas que recibo por URL --> Path param
+    String idBeneficiario = ctx.pathParam("id");
+    //Cosas que recibo por Body
+    NecesidadRequest necesidadDto = ctx.bodyAsClass(NecesidadRequest.class);
 
-      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
-      Necesidad necesidad = NecesidadMapper.aDominio(necesidadDto);
+    Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+    Necesidad necesidad = NecesidadMapper.aDominio(necesidadDto);
 
-      necesidad.setId(UUID.randomUUID().toString());
-      beneficiario.agregarNecesidad(necesidad);
-      repoBeneficiarios.actualizar(beneficiario);
-      ctx.status(201).json(NecesidadMapper.aDto(necesidad));
+    necesidad.setId(UUID.randomUUID().toString());
+    beneficiario.agregarNecesidad(necesidad);
+    repoBeneficiarios.actualizar(beneficiario);
+    ctx.status(201).json(NecesidadMapper.aDto(necesidad));
   }
 
   public void obtenerTodos(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idBeneficiario = ctx.pathParam("id");
+    //Cosas que recibo por URL --> Path param
+    String idBeneficiario = ctx.pathParam("id");
 
-      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+    Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
-      List<Necesidad> necesidades = beneficiario.getNecesidades();
-      ctx.status(200).json(NecesidadMapper.aDto(necesidades));
+    List<Necesidad> necesidades = beneficiario.getNecesidades();
+    ctx.status(200).json(NecesidadMapper.aDto(necesidades));
   }
 
   public void obtener(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idBeneficiario = ctx.pathParam("id");
-      String idNecesidad = ctx.pathParam("nid");
+    //Cosas que recibo por URL --> Path param
+    String idBeneficiario = ctx.pathParam("id");
+    String idNecesidad = ctx.pathParam("nid");
 
-      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
-      Necesidad necesidad = beneficiario.buscarNecesidadPorId(idNecesidad);
+    Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+    Necesidad necesidad = beneficiario.buscarNecesidadPorId(idNecesidad);
 
-      ctx.status(200).json(NecesidadMapper.aDto(necesidad));
+    ctx.status(200).json(NecesidadMapper.aDto(necesidad));
   }
 
   public void actualizar(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idBeneficiario = ctx.pathParam("id");
-      String idNecesidad = ctx.pathParam("nid");
-      //Cosas que recibo por Body
-      NecesidadRequest necesidadDto = ctx.bodyAsClass(NecesidadRequest.class);
+    //Cosas que recibo por URL --> Path param
+    String idBeneficiario = ctx.pathParam("id");
+    String idNecesidad = ctx.pathParam("nid");
+    //Cosas que recibo por Body
+    NecesidadRequest necesidadDto = ctx.bodyAsClass(NecesidadRequest.class);
 
-      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
-      Necesidad necesidad = beneficiario.buscarNecesidadPorId(idNecesidad);
-      NecesidadMapper.actualizarDominio(necesidad, necesidadDto);
+    Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+    Necesidad necesidad = beneficiario.buscarNecesidadPorId(idNecesidad);
+    NecesidadMapper.actualizarDominio(necesidad, necesidadDto);
 
-      repoBeneficiarios.actualizar(beneficiario);
-      ctx.status(200).json(NecesidadMapper.aDto(necesidad));
+    repoBeneficiarios.actualizar(beneficiario);
+    ctx.status(200).json(NecesidadMapper.aDto(necesidad));
   }
 
   public void eliminar(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idBeneficiario = ctx.pathParam("id");
-      String idNecesidad = ctx.pathParam("nid");
+    //Cosas que recibo por URL --> Path param
+    String idBeneficiario = ctx.pathParam("id");
+    String idNecesidad = ctx.pathParam("nid");
 
-      Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
-      beneficiario.eliminarNecesidadPorId(idNecesidad);
+    Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
+    beneficiario.eliminarNecesidadPorId(idNecesidad);
 
-      repoBeneficiarios.actualizar(beneficiario);
-      ctx.status(204);
+    repoBeneficiarios.actualizar(beneficiario);
+    ctx.status(204);
   }
 
   //====================== FUNCIONES AUXILIARES ========================

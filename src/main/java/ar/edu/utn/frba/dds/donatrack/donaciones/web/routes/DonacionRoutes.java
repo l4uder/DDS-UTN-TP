@@ -11,21 +11,18 @@ public class DonacionRoutes {
   private DonacionRoutes() {}
 
   public static void registrar(Javalin app) {
-    app.post("/donaciones", controller::crear);
+    app.post("/donaciones", controller::crear);//paso 1 En Depósito
     app.get("/donaciones", controller::obtenerTodos);
     app.get("/donaciones/{id}", controller::obtener);
     app.patch("/donaciones/{id}", controller::actualizar);
     app.delete("/donaciones/{id}", controller::eliminar);
     app.get("/donaciones/{id}/estados", controller::historialEstados);
-    app.patch("/donaciones/{id}/vencida", controller::cambiarEstadoAVencida);//paso 1B (el paso 1 está en el proceso matchmaking)
-    app.patch("/donaciones/{id}/lista-para-entregar", controller::donacionListaParaEntregar);//paso 2
-    app.patch("/donaciones/{id}/en-ruta", controller::donacionEnTraslado);//paso 3
-    app.patch("/donaciones/{id}/entregada", controller::donacionEntregada);//paso 4A
-    app.patch("/donaciones/{id}/error-entrega", controller::donacionEntregaFallida);//paso 4B
-    app.patch("/donaciones/{id}/vuelta-deposito", controller::donacionDevueltaADeposito); //paso 5 viene de 4B
-
-
-
+    app.patch("/donaciones/{id}/vencida", controller::donacionVencida);//paso 2B (el paso 2 está en el proceso matchmaking)
+    app.patch("/donaciones/{id}/lista", controller::donacionListaParaEntregar);//paso 3 Lista Para Entregar
+    app.patch("/donaciones/{id}/en-camino", controller::donacionEnTraslado);//paso 4 En Traslado
+    app.patch("/donaciones/{id}/entregada", controller::donacionEntregada);//paso 5 Entregada Fin
+    app.patch("/donaciones/{id}/falla-entrega", controller::donacionEntregaFallida);//paso 5B
+    app.patch("/donaciones/{id}/vuelta-deposito", controller::donacionDevueltaADeposito); //paso 6 que viene de 5B
   }
 
 }

@@ -22,55 +22,55 @@ public class DonanteController {
   }
 
   public void crear(Context ctx) {
-      //Cosas que recibo por Body
-      DonanteRequest donanteDto = ctx.bodyAsClass(DonanteRequest.class);
+    //Cosas que recibo por Body
+    DonanteRequest donanteDto = ctx.bodyAsClass(DonanteRequest.class);
 
-      Donante donante = DonanteMapper.aDominio(donanteDto);
+    Donante donante = DonanteMapper.aDominio(donanteDto);
 
-      repoDonantes.guardar(donante);
-      ctx.status(201).json(DonanteMapper.aDto(donante));
+    repoDonantes.guardar(donante);
+    ctx.status(201).json(DonanteMapper.aDto(donante));
   }
 
   public void obtenerTodos(Context ctx) {
-      //Cosas que recibo por URL --> Query param
-      String tipo = ctx.queryParam("tipo");
+    //Cosas que recibo por URL --> Query param
+    String tipo = ctx.queryParam("tipo");
 
-      TipoDonante tipoDonante = aTipoDonante(tipo);
+    TipoDonante tipoDonante = aTipoDonante(tipo);
 
-      List<Donante> donantes = (tipoDonante == null) ? repoDonantes.buscarTodos() : repoDonantes.buscarPorTipo(tipoDonante);
-      ctx.status(200).json(donantes.stream().map(DonanteMapper::aDtoResumen).toList());
+    List<Donante> donantes = (tipoDonante == null) ? repoDonantes.buscarTodos() : repoDonantes.buscarPorTipo(tipoDonante);
+    ctx.status(200).json(donantes.stream().map(DonanteMapper::aDtoResumen).toList());
   }
 
   public void obtener(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonante = ctx.pathParam("id");
+    //Cosas que recibo por URL --> Path param
+    String idDonante = ctx.pathParam("id");
 
-      Donante donante = buscarDonantePorId(idDonante);
+    Donante donante = buscarDonantePorId(idDonante);
 
-      ctx.status(200).json(DonanteMapper.aDto(donante));
+    ctx.status(200).json(DonanteMapper.aDto(donante));
   }
 
   public void actualizar(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonante = ctx.pathParam("id");
-      //Cosas que recibo por Body
-      DonanteRequest donanteDto = ctx.bodyAsClass(DonanteRequest.class);
+    //Cosas que recibo por URL --> Path param
+    String idDonante = ctx.pathParam("id");
+    //Cosas que recibo por Body
+    DonanteRequest donanteDto = ctx.bodyAsClass(DonanteRequest.class);
 
-      Donante donante = buscarDonantePorId(idDonante);
-      DonanteMapper.actualizarDominio(donante, donanteDto);
+    Donante donante = buscarDonantePorId(idDonante);
+    DonanteMapper.actualizarDominio(donante, donanteDto);
 
-      repoDonantes.actualizar(donante);
-      ctx.status(200).json(DonanteMapper.aDto(donante));
+    repoDonantes.actualizar(donante);
+    ctx.status(200).json(DonanteMapper.aDto(donante));
   }
 
   public void eliminar(Context ctx) {
-      //Cosas que recibo por URL --> Path param
-      String idDonante = ctx.pathParam("id");
+    //Cosas que recibo por URL --> Path param
+    String idDonante = ctx.pathParam("id");
 
-      Donante donante = buscarDonantePorId(idDonante);
+    Donante donante = buscarDonantePorId(idDonante);
 
-      repoDonantes.eliminar(donante);
-      ctx.status(204);
+    repoDonantes.eliminar(donante);
+    ctx.status(204);
   }
 
   private TipoDonante aTipoDonante(String tipo) {

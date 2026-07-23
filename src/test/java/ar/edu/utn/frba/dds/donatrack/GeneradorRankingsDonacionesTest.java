@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.GeneradorRankings;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.AlgoritmoMatchmaking;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.algoritmos.AlgoritmoMatchmaking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;

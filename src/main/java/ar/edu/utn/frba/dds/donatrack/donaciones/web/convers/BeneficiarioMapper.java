@@ -4,8 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiari
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioResponse;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioResumenDto;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioResumenResponse;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -28,8 +27,8 @@ public class BeneficiarioMapper {
         ContactoMapper.aDto(beneficiario.getContactos()));
   }
 
-  public static BeneficiarioResumenDto aDtoResumen(Beneficiario beneficiario) {
-    return new BeneficiarioResumenDto(
+  public static BeneficiarioResumenResponse aDtoResumen(Beneficiario beneficiario) {
+    return new BeneficiarioResumenResponse(
         beneficiario.getId(),
         beneficiario.getRazonSocial(),
         beneficiario.getDireccion());

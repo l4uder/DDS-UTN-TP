@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.algoritmos;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.AlgoritmoMatchmaking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import java.time.LocalDateTime;

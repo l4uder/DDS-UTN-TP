@@ -51,7 +51,7 @@ public class Donacion {
         .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
         .findFirst()
         .map(EstadoDonacion::getFecha)
-        .orElseThrow(() -> new DomainValidationException("Donacion no posee fecha de asignacion"));
+        .orElseThrow(() -> new DomainValidationException("Donación no posee fecha de asignación"));
   }
 
   /*Solo para poder probar un test despues ver como mejorar quitando esto*/
@@ -59,7 +59,7 @@ public class Donacion {
     EstadoDonacion estadoAsignacion = this.historialEstados.stream()
         .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
         .findFirst()
-        .orElseThrow(() -> new DomainValidationException("Donacion no posee fecha de asignacion"));
+        .orElseThrow(() -> new DomainValidationException("Donación no posee fecha de asignación"));
     estadoAsignacion.setFecha(fechaAsignacion);
   }
 
