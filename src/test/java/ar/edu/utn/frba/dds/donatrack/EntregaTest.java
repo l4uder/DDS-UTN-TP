@@ -1,14 +1,15 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.*;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.TipoEstadoEntrega;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
@@ -30,14 +31,9 @@ public class EntregaTest {
 
   @BeforeEach
   void setUp() {
-    WhatsappDeContato contactoWhatsapp =
-        new WhatsappDeContato("132212212");
-
-    CorreoDeContato contactoCorreo = 
-        new CorreoDeContato("comedor@prueba.com");
-
-    List<MedioContacto> listaContactos =
-        List.of(contactoCorreo); //Cambio a correo a la espera de la implementación de envio por Whatsapp
+    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212", true);
+    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com", true);
+    List<MedioContacto> listaContactos = List.of(contactoCorreo, contactoWhatsapp);
 
     beneficiario = new Beneficiario("ben-1", "Comedor San José", "Av. Siempre Viva 123");
 
@@ -46,20 +42,13 @@ public class EntregaTest {
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
 
-    //Mock de Motor de correos exclusivo para los tests
-    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
-        // No hace nada de red, solo simula que lo envió
-        System.out.println("TEST - Simulando envío a: " + destino);
-    });
-
     donantePrueba = new PersonaHumanaBuilder()
-      .conNombre("Juan")
-      .conApellido("Pérez")
-      .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-      .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
-      .build();
-
-    //donacion.confirmarAsignacion(beneficiario);
+        .conNombre("Juan")
+        .conApellido("Pérez")
+        .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
+        .conDireccion("alguna dirección")
+        .build();
 
     entrega = new Entrega(beneficiario, List.of(donacion), camion);
   }
