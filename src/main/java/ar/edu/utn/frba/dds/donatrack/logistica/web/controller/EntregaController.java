@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.controller;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega.EntregaFotoRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega.EntregaNoRecibidaRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega.EntregaResponse;

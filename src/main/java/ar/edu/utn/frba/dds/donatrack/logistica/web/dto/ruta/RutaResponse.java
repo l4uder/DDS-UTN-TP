@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.dto.ruta;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Ruta;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
 import java.time.LocalDate;
 import java.util.List;
 

@@ -1,28 +1,32 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.*;
-import ar.edu.utn.frba.dds.donatrack.builder.*;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.TipoEstadoEntrega;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.TipoEstadoEntrega;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntregaTest {
+
   private Beneficiario beneficiario;
-  private Donacion donacion;
+  private DonacionEnTransito donacion;
   private Camion camion;
   private Entrega entrega;
+
   private Donante donantePrueba;
 
   @BeforeEach
@@ -31,24 +35,9 @@ public class EntregaTest {
     MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com", true);
     List<MedioContacto> listaContactos = List.of(contactoCorreo, contactoWhatsapp);
 
-    beneficiario = new BeneficiarioBuilder()
-        .conRazonSocial("Comedor San José")
-        .conDireccion("Av. Siempre Viva 123")
-        .conAgregarContacto(contactoWhatsapp)
-        .build();
+    beneficiario = new Beneficiario("ben-1", "Comedor San José", "Av. Siempre Viva 123");
 
-    Bien bien = new BienBuilder().conDescripcion("Arroz").conCantidad(3).conUsado(false).buildNoPerecedero();
-
-    Donante donante = new PersonaHumanaBuilder()
-        .conNombre("Juan")
-        .conApellido("Pérez")
-        .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
-        .conDireccion("alguna dirección")
-        .build();
-
-    donacion = new Donacion(List.of(bien), List.of(donante));
-    donacion.confirmarAsignacion(beneficiario);
+    donacion = new DonacionEnTransito("don-1", "Fideos", beneficiario);
 
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
@@ -70,9 +59,9 @@ public class EntregaTest {
   }
 
   @Test
-  void confirmarListaParaEntregarCambiaEstadoDeEntrega() {
+  void confirmarListaParaEntregarNoCambiaEstadoDeEntrega() {
     entrega.confirmarListaParaEntregar();
-    assertEquals(TipoEstadoEntrega.LISTA_PARA_ENTREGAR, entrega.getEstadoActual());
+    assertEquals(TipoEstadoEntrega.PENDIENTE, entrega.getEstadoActual());
   }
 
   @Test
@@ -109,7 +98,22 @@ public class EntregaTest {
   }
 
   @Test
-  void noSePuedeAgregarFotoDeValoresVacios() {
+  void agregarFotoRecepcionRechazaValoresVacios() {
+    entrega.confirmarListaParaEntregar();
+    entrega.iniciarTraslado();
+    entrega.confirmarRecepcion();
+
     assertThrows(DomainValidationException.class, () -> entrega.agregarFotoRecepcion(""));
+    assertThrows(DomainValidationException.class, () -> entrega.agregarFotoRecepcion(null));
+    assertTrue(entrega.getFotosRecepcion().isEmpty());
+
+    entrega.agregarFotoRecepcion("https://storage.donatrack.com/foto1.jpg");
+    assertFalse(entrega.getFotosRecepcion().isEmpty());
+  }
+
+  @Test
+  void agregarFotoRecepcionRechazaSiLaEntregaNoFueConfirmada() {
+    assertThrows(IllegalStateException.class,
+        () -> entrega.agregarFotoRecepcion("https://storage.donatrack.com/foto1.jpg"));
   }
 }

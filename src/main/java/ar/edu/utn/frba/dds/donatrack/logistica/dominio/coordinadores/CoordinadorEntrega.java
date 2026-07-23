@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.DonacionesClient;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
@@ -48,17 +48,13 @@ public class CoordinadorEntrega {
   }
 
   public void reingresarDeposito(String id){
-
     Entrega entrega = repository.buscarPorId(id);
-
     entrega.reingresarDeposito();
 
-    entrega.getDonaciones().forEach(d -> donacionesClient
-                .cambiarEstadoDonacionVueltaDeposito(
-                    d.getId()
-                )
-        );
+    entrega.getDonaciones().forEach(d ->
+        donacionesClient.cambiarEstadoDonacionVueltaDeposito(d.getId())
+    );
 
-    repository.guardar(entrega);
+    repository.eliminar(id);
   }
 }

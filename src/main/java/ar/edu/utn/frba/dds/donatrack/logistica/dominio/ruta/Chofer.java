@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.dominio;
+package ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta;
 
 public class Chofer {
   private String nombre;

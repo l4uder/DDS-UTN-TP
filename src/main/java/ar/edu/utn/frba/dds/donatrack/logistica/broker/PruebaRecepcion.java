@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.broker;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.broker.suscriptor.EstacionRecepcion;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Gps;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Gps;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.GpsRepository;
 

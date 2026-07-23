@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.dto.chofer;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Chofer;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Chofer;
 
 public record ChoferRequest(String nombre, String apellido, String licenciaConducir) {
   public Chofer aDominio() {

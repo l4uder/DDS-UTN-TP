@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.integracion;
 
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.config.DonacionesServiceConfig;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.externo.BeneficiarioDTO;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.externo.DonacionAsignadaDTO;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
@@ -46,7 +46,7 @@ public class DonacionesClient {
     this.gson = gson;
   }
 
-  public List<DonacionAsignadaDTO> buscarDonacionesAsignadas() {
+  public List<DonacionEnTransito> buscarDonacionesAsignadas() {
     String url = baseUrl + "/donaciones?estado=" + ESTADO_ASIGNACION_REALIZADA;
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
@@ -65,7 +65,7 @@ public class DonacionesClient {
     if (remotas == null) {
       return List.of();
     }
-    return remotas.stream().map(this::aDonacionAsignada).toList();
+    return remotas.stream().map(this::aDominio).toList();
   }
 
   public void cambiarEstadoDonacion(String donacionId, CambioEstadoEntregadaRequest body) {
@@ -122,17 +122,18 @@ public class DonacionesClient {
     }
   }
 
-  private DonacionAsignadaDTO aDonacionAsignada(DonacionRemotaResponse remota) {
+  private DonacionEnTransito aDominio(DonacionRemotaResponse remota) {
     DonacionRemotaResponse.BeneficiarioRemotoResponse beneficiarioRemoto = remota.beneficiario();
     if (beneficiarioRemoto == null) {
       throw new ServicioExternoException(
           "Donación asignada sin beneficiario: id=" + remota.id());
     }
-    BeneficiarioDTO beneficiario = new BeneficiarioDTO(
+    Beneficiario beneficiario = new Beneficiario(
         beneficiarioRemoto.id(),
         beneficiarioRemoto.razonSocial(),
         beneficiarioRemoto.direccion()
     );
-    return new DonacionAsignadaDTO(remota.id(), remota.descripcion(), beneficiario);
+    return new DonacionEnTransito(remota.id(), remota.descripcion(), beneficiario);
   }
+
 }

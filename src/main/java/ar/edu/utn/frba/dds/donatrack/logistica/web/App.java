@@ -1,14 +1,18 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web;
 
+import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.PlanificacionController;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorEntrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorRuta;
 import ar.edu.utn.frba.dds.donatrack.logistica.cron.ProcesoLogistica;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.PlanificadorLogistico;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ClientePlanificadorExterno;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ClientePlanificadorExternoMock;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.DonacionesClient;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.RutaController;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.EntregaController;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.routes.EntregaRoutes;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.routes.PlanificacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.routes.RutaRoutes;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.routes.CamionRoutes;
@@ -65,9 +69,8 @@ public class App {
         ctx -> ctx.json(new Health("logistica-service", "OK"))
     );
 
-    CamionRoutes.registrar(app);
-
     DonacionesClient donacionesClient = new DonacionesClient();
+    ClientePlanificadorExterno clienteExterno = new ClientePlanificadorExternoMock();
 
     EntregaRepository entregaRepository = EntregaRepository.getInstancia();
     CamionRepository camionRepository = CamionRepository.getInstancia();
@@ -78,19 +81,16 @@ public class App {
         donacionesClient
     );
 
+    CoordinadorRuta coordinadorRuta = new CoordinadorRuta(
+        rutaRepository, camionRepository, entregaRepository,
+        donacionesClient, clienteExterno
+    );
+
+    ProcesoLogistica procesoLogistica = new ProcesoLogistica(coordinadorRuta);
+
     EntregaController entregaController = new EntregaController(
         entregaRepository,
         coordinadorEntrega
-    );
-
-    PlanificadorLogistico planificador = new PlanificadorLogistico();
-
-    CoordinadorRuta coordinadorRuta = new CoordinadorRuta(
-        rutaRepository,
-        camionRepository,
-        entregaRepository,
-        donacionesClient,
-        planificador
     );
 
     RutaController rutaController = new RutaController(
@@ -98,13 +98,15 @@ public class App {
         coordinadorRuta
     );
 
-    RutaRoutes.registrar(app, rutaController, entregaController);
+    PlanificacionController planificacionController = new PlanificacionController(
+        coordinadorRuta,
+        procesoLogistica
+    );
 
-    ProcesoLogistica procesoLogistica = new ProcesoLogistica(coordinadorRuta);
-    app.post("/admin/planificar", ctx -> {
-      procesoLogistica.ejecutar();
-      ctx.status(200);
-    });
+    CamionRoutes.registrar(app);
+    RutaRoutes.registrar(app, rutaController);
+    EntregaRoutes.registrar(app, entregaController);
+    PlanificacionRoutes.registrar(app, planificacionController);
 
     return new AppLogistica(app, procesoLogistica);
   }

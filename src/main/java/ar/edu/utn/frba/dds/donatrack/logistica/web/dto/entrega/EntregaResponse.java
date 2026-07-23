@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Entrega;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import java.util.List;
 
 public record EntregaResponse(

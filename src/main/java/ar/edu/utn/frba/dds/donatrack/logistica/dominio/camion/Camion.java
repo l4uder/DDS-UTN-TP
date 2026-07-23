@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.dominio;
+package ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion;
 
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.util.ArrayList;

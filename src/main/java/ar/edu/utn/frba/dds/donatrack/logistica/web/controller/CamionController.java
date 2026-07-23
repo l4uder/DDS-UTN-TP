@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.controller;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.camion.ActualizarCamionRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.camion.CamionResponse;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.camion.CrearCamionRequest;
