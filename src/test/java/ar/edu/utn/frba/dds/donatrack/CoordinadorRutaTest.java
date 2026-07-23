@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.Lote;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ClientePlanificadorExterno;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
@@ -90,7 +91,7 @@ public class CoordinadorRutaTest {
     coordinador.ejecutarPlanificacionDiaria();
 
     // 150 entregas de 1 donación -> deberían repartirse en exactamente 2 lotes (100 + 50)
-    verify(clienteExterno, times(2)).enviarLote(anyList(), eq(camiones), anyString());
+    verify(clienteExterno, times(2)).enviarLote(any(Lote.class), eq(camiones), anyString());
   }
 
   @Test
@@ -107,9 +108,9 @@ public class CoordinadorRutaTest {
 
     coordinador.ejecutarPlanificacionDiaria();
 
-    ArgumentCaptor<List<Entrega>> loteCaptor = ArgumentCaptor.forClass(List.class);
+    ArgumentCaptor<Lote> loteCaptor = ArgumentCaptor.forClass(Lote.class);
     verify(clienteExterno, times(1)).enviarLote(loteCaptor.capture(), eq(camiones), anyString());
-    assertEquals(1, loteCaptor.getValue().size());
-    assertEquals(150, loteCaptor.getValue().get(0).getDonaciones().size());
+    assertEquals(1, loteCaptor.getValue().getEntregas().size());
+    assertEquals(150, loteCaptor.getValue().cantidadDonaciones());
   }
 }

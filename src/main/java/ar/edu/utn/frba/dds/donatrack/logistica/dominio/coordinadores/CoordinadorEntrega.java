@@ -48,17 +48,13 @@ public class CoordinadorEntrega {
   }
 
   public void reingresarDeposito(String id){
-
     Entrega entrega = repository.buscarPorId(id);
-
     entrega.reingresarDeposito();
 
-    entrega.getDonaciones().forEach(d -> donacionesClient
-                .cambiarEstadoDonacionVueltaDeposito(
-                    d.getId()
-                )
-        );
+    entrega.getDonaciones().forEach(d ->
+        donacionesClient.cambiarEstadoDonacionVueltaDeposito(d.getId())
+    );
 
-    repository.guardar(entrega);
+    repository.eliminar(id);
   }
 }

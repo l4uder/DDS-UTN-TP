@@ -7,8 +7,8 @@ public class PlanificacionRoutes {
   private PlanificacionRoutes() {}
 
   public static void registrar(Javalin app, PlanificacionController planificacionController) {
-    app.post("/planificaciones/entregas-pendientes", planificacionController::planificar);
-    app.post("/planificaciones/callback", planificacionController::callback);
-    app.post("/planificaciones/ejecucion-manual", planificacionController::ejecutarManual);
+    app.post("/planificaciones", planificacionController::planificar);
+    app.post("/planificaciones/callback-externo", planificacionController::callback);// webhook del proveedor
+    app.post("/planificaciones/manual", planificacionController::ejecutarManual);      // disparo manual del cron
   }
 }

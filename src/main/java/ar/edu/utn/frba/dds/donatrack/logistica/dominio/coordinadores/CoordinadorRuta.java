@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.Lote;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Chofer;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ClientePlanificadorExterno;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
@@ -24,8 +25,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class CoordinadorRuta {
-  private static final int MAX_DONACIONES_POR_LOTE = 100;
-  private static final String CALLBACK_URL = "http://donatrack.com/rutas/callback-planificacion";
+  private static final String CALLBACK_URL = "http://localhost:7071/planificaciones/callback-externo";
 
   private final RutaRepository rutaRepository;
   private final CamionRepository camionRepository;
@@ -53,11 +53,9 @@ public class CoordinadorRuta {
   public void ejecutarPlanificacionDiaria() {
     List<Entrega> entregas = planificarEntregasPendientes();
     List<Camion> camiones = camionRepository.buscarTodos();
-    List<List<Entrega>> lotes = armarLotesEntrega(entregas);
+    List<Lote> lotes = Lote.armarLotes(entregas);
 
-    lotes.forEach(lote ->
-        clienteExterno.enviarLote(lote, camiones, CALLBACK_URL)
-    );
+    lotes.forEach(lote -> clienteExterno.enviarLote(lote, camiones, CALLBACK_URL));
   }
 
 
@@ -121,27 +119,6 @@ public class CoordinadorRuta {
     agrupadas.forEach((beneficiario, donaciones) ->
         entregas.add(new Entrega(beneficiario, donaciones, null)));
     return entregas;
-  }
-
-  private List<List<Entrega>> armarLotesEntrega(List<Entrega> entregas) {
-    List<List<Entrega>> lotes = new ArrayList<>();
-    List<Entrega> loteActual = new ArrayList<>();
-    int contadorDonaciones = 0;
-
-    for (Entrega entrega : entregas) {
-      int cantidad = entrega.getDonaciones().size();
-      if (contadorDonaciones + cantidad > MAX_DONACIONES_POR_LOTE && !loteActual.isEmpty()) {
-        lotes.add(loteActual);
-        loteActual = new ArrayList<>();
-        contadorDonaciones = 0;
-      }
-      loteActual.add(entrega);
-      contadorDonaciones += cantidad;
-    }
-    if (!loteActual.isEmpty()) {
-      lotes.add(loteActual);
-    }
-    return lotes;
   }
 
   private List<Ruta> procesarResultadoPlanificacion(ResultadoPlanificacion resultado, LocalDate fecha) {

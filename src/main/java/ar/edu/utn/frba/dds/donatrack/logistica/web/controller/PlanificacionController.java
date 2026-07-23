@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.planificacion.CallbackPlanificacionRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ServicioExternoException;
 import com.google.gson.JsonSyntaxException;
 import java.util.List;
 import io.javalin.http.Context;
@@ -39,7 +40,12 @@ public class PlanificacionController {
   }
 
   public void ejecutarManual(Context ctx) {
-    procesoLogistica.ejecutar();
-    ctx.status(202);
+    try {
+      procesoLogistica.ejecutar();
+      ctx.status(202);
+    } catch (ServicioExternoException e) {
+      ctx.status(502).json(new ExceptionHandlers.ErrorResponse(502,
+          "No se pudo completar la planificación: " + e.getMessage()));
+    }
   }
 }

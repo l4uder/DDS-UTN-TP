@@ -1,3 +1,5 @@
+gps*-tcpbrokerhivemqcom1883
+cp.txt
 .env
 # Compiled class file
 *.class
@@ -31,6 +33,3 @@ target
 # Ignorar carpetas autogeneradas del broker MQTT
 Estacion-dds-*/
 /.devcontainer/devcontainer.json
-gpsA-tcpbrokerhivemqcom1883
-
-cp.txt

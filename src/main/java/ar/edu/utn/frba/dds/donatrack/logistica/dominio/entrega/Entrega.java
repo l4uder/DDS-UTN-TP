@@ -33,29 +33,34 @@ public class Entrega {
     historialEstados.add(new EstadoEntrega(TipoEstadoEntrega.PENDIENTE, camion));
   }
 
+  public void confirmarListaParaEntregar() {
+    validarTransicionDesde(TipoEstadoEntrega.PENDIENTE, "confirmar como lista para entregar");
+    cambiarEstado(TipoEstadoEntrega.LISTA_PARA_ENTREGAR,
+        "Asignada a camión " + camionAsignado.getPatente());
+  }
+
   public void iniciarTraslado() {
-    cambiarEstado(TipoEstadoEntrega.EN_TRASLADO,"Iniciando recorrido");
+    validarTransicionDesde(TipoEstadoEntrega.LISTA_PARA_ENTREGAR, "iniciar traslado");
+    cambiarEstado(TipoEstadoEntrega.EN_TRASLADO, "Iniciando recorrido");
   }
 
   public void confirmarRecepcion() {
-    cambiarEstado(TipoEstadoEntrega.ENTREGADA,null);
+    validarTransicionDesde(TipoEstadoEntrega.EN_TRASLADO, "confirmar recepción");
+    cambiarEstado(TipoEstadoEntrega.ENTREGADA, null);
   }
-
 
   public void marcarNoRecibida(String motivo) {
     if (motivo == null || motivo.isBlank()) {
       throw new DomainValidationException("Debe indicar un motivo");
     }
-    cambiarEstado(TipoEstadoEntrega.NO_RECIBIDA,motivo);
+    validarTransicionDesde(TipoEstadoEntrega.EN_TRASLADO, "marcar como no recibida");
+    cambiarEstado(TipoEstadoEntrega.NO_RECIBIDA, motivo);
   }
 
   public void reingresarDeposito() {
-    if (getEstadoActual() != TipoEstadoEntrega.NO_RECIBIDA) {
-      throw new IllegalStateException("Solo una entrega no recibida puede volver al depósito");
-    }
-    cambiarEstado(TipoEstadoEntrega.PENDIENTE,"Entrega devuelta al depósito");
+    validarTransicionDesde(TipoEstadoEntrega.NO_RECIBIDA, "reingresar a depósito");
+    cambiarEstado(TipoEstadoEntrega.PENDIENTE, "Entrega devuelta al depósito");
   }
-
   public void agregarFotoRecepcion(String url) {
     if (getEstadoActual() != TipoEstadoEntrega.ENTREGADA) {
       throw new IllegalStateException(
@@ -67,8 +72,23 @@ public class Entrega {
     fotosRecepcion.add(url);
   }
 
+  public void reasignarCamion(Camion camion) {
+    if (camion == null) {
+      throw new DomainValidationException("El camión no puede ser nulo");
+    }
+    validarTransicionDesde(TipoEstadoEntrega.PENDIENTE, "reasignar camión");
+    this.camionAsignado = camion;
+  }
+
   private void cambiarEstado(TipoEstadoEntrega estado, String detalle) {
     historialEstados.add(new EstadoEntrega(estado, detalle, camionAsignado));
+  }
+
+  private void validarTransicionDesde(TipoEstadoEntrega esperado, String accion) {
+    if (getEstadoActual() != esperado) {
+      throw new IllegalStateException(
+          "No se puede " + accion + " desde el estado " + getEstadoActual());
+    }
   }
 
   public TipoEstadoEntrega getEstadoActual(){
@@ -76,19 +96,6 @@ public class Entrega {
         .get(historialEstados.size()-1)
         .getTipoEstado();
   }
-
-  public void reasignarCamion(Camion camion) {
-    if (camion == null) {
-      throw new DomainValidationException("El camión no puede ser nulo");
-    }
-    this.camionAsignado = camion;
-  }
-
-  public void confirmarListaParaEntregar() {
-    cambiarEstado(TipoEstadoEntrega.LISTA_PARA_ENTREGAR,
-        "Asignada a camión " + camionAsignado.getPatente());
-  }
-
 
   public String getId() {
     return id;
@@ -102,7 +109,9 @@ public class Entrega {
     return camionAsignado;
   }
 
-  public Beneficiario getDestino() { return destino; }
+  public Beneficiario getDestino() {
+    return destino;
+  }
 
   public List<String> getFotosRecepcion() {
     return fotosRecepcion;
