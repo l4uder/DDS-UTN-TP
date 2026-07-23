@@ -11,17 +11,17 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationExceptio
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import com.google.gson.JsonSyntaxException;
 import io.javalin.http.Context;
+import java.util.Arrays;
 import java.util.List;
 
 public class DonanteController {
   private final DonanteRepository repoDonantes;
 
-  public DonanteController() {
-    this.repoDonantes = DonanteRepository.getInstancia();
+  public DonanteController(DonanteRepository repoDonantes) {
+    this.repoDonantes = repoDonantes;
   }
 
   public void crear(Context ctx) {
-    try {
       //Cosas que recibo por Body
       DonanteRequest donanteDto = ctx.bodyAsClass(DonanteRequest.class);
 
@@ -29,51 +29,28 @@ public class DonanteController {
 
       repoDonantes.guardar(donante);
       ctx.status(201).json(DonanteMapper.aDto(donante));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void obtenerTodos(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Query param
       String tipo = ctx.queryParam("tipo");
 
       TipoDonante tipoDonante = aTipoDonante(tipo);
 
       List<Donante> donantes = (tipoDonante == null) ? repoDonantes.buscarTodos() : repoDonantes.buscarPorTipo(tipoDonante);
-      ctx.json(donantes.stream().map(DonanteMapper::aDtoResumen).toList());
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
+      ctx.status(200).json(donantes.stream().map(DonanteMapper::aDtoResumen).toList());
   }
 
   public void obtener(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idDonante = ctx.pathParam("id");
 
       Donante donante = buscarDonantePorId(idDonante);
 
-      ctx.json(DonanteMapper.aDto(donante));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
+      ctx.status(200).json(DonanteMapper.aDto(donante));
   }
 
   public void actualizar(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idDonante = ctx.pathParam("id");
       //Cosas que recibo por Body
@@ -83,21 +60,10 @@ public class DonanteController {
       DonanteMapper.actualizarDominio(donante, donanteDto);
 
       repoDonantes.actualizar(donante);
-      ctx.json(DonanteMapper.aDto(donante));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
+      ctx.status(200).json(DonanteMapper.aDto(donante));
   }
 
   public void eliminar(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idDonante = ctx.pathParam("id");
 
@@ -105,12 +71,6 @@ public class DonanteController {
 
       repoDonantes.eliminar(donante);
       ctx.status(204);
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   private TipoDonante aTipoDonante(String tipo) {
@@ -118,7 +78,7 @@ public class DonanteController {
     try {
       return TipoDonante.valueOf(tipo.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DomainValidationException("El tipo: " + tipo + " no existe");
+      throw new DomainValidationException("El tipo de donante: " + tipo + " no existe debe ser: " + Arrays.toString(TipoDonante.values()));
     }
   }
 

@@ -10,6 +10,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Periodo;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.necesidad.NecesidadRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.necesidad.NecesidadResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import java.util.Arrays;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -47,7 +48,7 @@ public class NecesidadMapper {
         .categoria(necesidad.getSubcategoria().getCategoria().getNombre())
         .subcategoria(necesidad.getSubcategoria().getNombre())
         .cantidadRecibida(necesidad.getCantidadRecibida())
-        .satisfecha(necesidad.estaSatisfecha());
+        .estaSatisfecha(necesidad.estaSatisfecha());
 
     if (necesidad instanceof NecesidadRecurrente nr) {
       responseBuilder.cantidadPorPeriodo(nr.getCantidadPorPeriodo());
@@ -90,20 +91,20 @@ public class NecesidadMapper {
   }
 
   private static Periodo aPeriodo(String valor) {
-    if (valor == null) throw new DomainValidationException("Una necesidad recurrente necesita 'periodo' (DIARIO, SEMANAL o MENSUAL)");
+    if (valor == null) throw new DomainValidationException("Una necesidad recurrente necesita 'periodo' puede ser: " + Arrays.toString(Periodo.values()));
     try {
       return Periodo.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DomainValidationException("Valor invalido para periodo: " + valor + " (DIARIO, SEMANAL o MENSUAL)");
+      throw new DomainValidationException("El periodo: " + valor + " no existe, debe ser: " + Arrays.toString(Periodo.values()));
     }
   }
 
   private static UnidadMedida aUnidadMedida(String valor) {
-    if (valor == null) throw new DomainValidationException("Una necesidad necesita 'unidadMedida' (KILOGRAMOS, GRAMOS, LITROS, MILILITROS, SIN_UNIDAD)");
+    if (valor == null) throw new DomainValidationException("Necesita 'unidadMedida' valores posibles: " + Arrays.toString(UnidadMedida.values()));
     try {
       return UnidadMedida.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DomainValidationException("Valor invalido para 'unidadMedida': " + valor + " (KILOGRAMOS, GRAMOS, LITROS, MILILITROS, SIN_UNIDAD)");
+      throw new DomainValidationException("La unidad de medida: " + valor + " no existe, debe ser: " + Arrays.toString(UnidadMedida.values()));
     }
   }
 

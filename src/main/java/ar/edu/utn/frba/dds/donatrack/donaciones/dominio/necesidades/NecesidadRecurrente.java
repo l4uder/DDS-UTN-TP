@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
@@ -22,7 +23,7 @@ public class NecesidadRecurrente extends Necesidad {
       throw new DomainValidationException( "Una necesidad recurrente necesita 'cantidadPorPeriodo' mayor a cero");
     }
     if (periodo == null) {
-      throw new DomainValidationException( "Una necesidad recurrente necesita 'periodo' (DIARIO, SEMANAL o MENSUAL)");
+      throw new DomainValidationException( "Una necesidad recurrente necesita 'periodo' puede ser: " + Arrays.toString(Periodo.values()));
     }
   }
 

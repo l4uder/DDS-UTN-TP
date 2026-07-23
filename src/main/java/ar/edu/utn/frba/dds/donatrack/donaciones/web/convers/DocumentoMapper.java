@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.documento.DocumentoDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import java.util.Arrays;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -29,7 +30,7 @@ public class DocumentoMapper {
     try {
       return TipoDocumento.valueOf(tipoDocumento.toUpperCase());
     } catch (IllegalArgumentException | NullPointerException e) {
-      throw new DomainValidationException("No existe el tipo de documento: " + tipoDocumento);
+      throw new DomainValidationException("El tipo de documento: " + tipoDocumento + " no existe, debe ser alguno de: " + Arrays.toString(TipoDocumento.values()));
     }
   }
 

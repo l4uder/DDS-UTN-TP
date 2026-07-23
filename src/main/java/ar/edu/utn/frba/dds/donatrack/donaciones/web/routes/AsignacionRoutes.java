@@ -1,13 +1,15 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.routes;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.AsignacionController;
 import io.javalin.Javalin;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AsignacionRoutes {
-  private static final AsignacionController controller = new AsignacionController();
+  private static final AsignacionController controller = new AsignacionController(DonacionRepository.getInstancia(), BeneficiarioRepository.getInstancia(), RankingRepository.getInstancia());
+
+  private AsignacionRoutes() {}
 
   public static void registrar(Javalin app) {
     app.post("/donaciones/rankings", controller::crearRankings);

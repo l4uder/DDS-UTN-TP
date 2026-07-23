@@ -18,83 +18,56 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionRequest
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.AppEventBus;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
-import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
-import com.google.gson.JsonSyntaxException;
 import io.javalin.http.Context;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class DonacionController {
   private final DonacionRepository repoDonaciones;
   private final DonanteRepository repoDonantes;
 
-  public DonacionController() {
-    this.repoDonaciones = DonacionRepository.getInstancia();
-    this.repoDonantes = DonanteRepository.getInstancia();
+  public DonacionController(DonacionRepository repoDonaciones, DonanteRepository repoDonantes) {
+    this.repoDonaciones = repoDonaciones;
+    this.repoDonantes = repoDonantes;
   }
 
   public void crear(Context ctx) {
-    try {
       //Cosas que recibo por Body
       DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
       List<String> idDonantes = request.donanteIds();
       List<BienDto> bienesDto = request.bienes();
 
-      List<Donante> donantes = idDonantes.stream().map(id -> buscarDonantePorId(id)).toList();
+      List<Donante> donantes = idDonantes.stream().map(this::buscarDonantePorId).toList();
       Donacion donacion = DonacionMapper.aDominio(bienesDto, donantes);
 
       repoDonaciones.guardar(donacion);
       ctx.status(201).json(DonacionMapper.aDto(donacion));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void obtenerTodos(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Query param
       String estadoDonacion = ctx.queryParam("estado");
 
-      TipoEstadoDonacion estado = aEstadoDonacion(estadoDonacion);
+      TipoEstadoDonacion estado = aTipoEstadoDonacion(estadoDonacion);
 
       List<Donacion> donaciones = estado == null ? repoDonaciones.buscarTodos() : repoDonaciones.buscarTodoPorEstado(estado);
       ctx.status(200).json(DonacionMapper.aDto(donaciones));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void obtener(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
 
       Donacion donacion = buscarDonacionPorId(idDonacion);
 
       ctx.status(200).json(DonacionMapper.aDto(donacion));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void actualizar(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
       //Cosas que recibo por Body
@@ -107,22 +80,9 @@ public class DonacionController {
       donacion.reemplazarBienes(bienes);
       repoDonaciones.actualizar(donacion);
       ctx.status(200).json(DonacionMapper.aDto(donacion));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (CambioDeEstadoNoPermitidoException e) {
-      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void eliminar(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
 
@@ -130,88 +90,67 @@ public class DonacionController {
 
       repoDonaciones.eliminar(donacion);
       ctx.status(204);
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
-  public void cambiarEstadoADeposito(Context ctx) {
-    try {
+  public void historialEstados(Context ctx) {
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
+
+    Donacion donacion = buscarDonacionPorId(idDonacion);
+
+    List<EstadoDonacion> historialEstados = donacion.getHistorialEstados();
+    ctx.status(200).json(EstadoDonacionMapper.aDto(historialEstados));
+  }
+
+  public void donacionDevueltaADeposito(Context ctx) {
       //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
 
       Donacion donacion = buscarDonacionPorId(idDonacion);
 
       donacion.confirmarRecepcionDeposito();
-      repoDonaciones.guardar(donacion);
+      repoDonaciones.actualizar(donacion);
       ctx.status(200).json(DonacionMapper.aDto(donacion));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (CambioDeEstadoNoPermitidoException e) {
-      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
+  }
+
+  public void donacionEnTraslado(Context ctx) {
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
+    //Cosas que recibo por Body
+    CambioEstadoInicioRutaRequest request = ctx.bodyAsClass(CambioEstadoInicioRutaRequest.class);
+    String mapa = request.linkMapa();
+
+    Donacion donacion = buscarDonacionPorId(idDonacion);
+
+    donacion.confirmarTrasladoEnCurso();
+    AppEventBus.getInstance().post(new EventoInicioDeRuta(donacion, LocalDate.now(), mapa));
+    repoDonaciones.actualizar(donacion);
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
   public void cambiarEstadoAVencida(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
 
       Donacion donacion = buscarDonacionPorId(idDonacion);
 
       donacion.marcarVencida();
-      repoDonaciones.guardar(donacion);
+      repoDonaciones.actualizar(donacion);
       ctx.status(200).json(DonacionMapper.aDto(donacion));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (CambioDeEstadoNoPermitidoException e) {
-      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
-  public void cambiarEstadoALista(Context ctx) {
-    try {
+  public void donacionListaParaEntregar(Context ctx) {
       //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
 
       Donacion donacion = buscarDonacionPorId(idDonacion);
 
       donacion.confirmarRuta();
-      repoDonaciones.guardar(donacion);
+      repoDonaciones.actualizar(donacion);
       ctx.status(200).json(DonacionMapper.aDto(donacion));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (CambioDeEstadoNoPermitidoException e) {
-      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
-  public void cambiarEstadoAEntregada(Context ctx) {
-    try {
+  public void donacionEntregada(Context ctx) {
       //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
       //Cosas que recibo por Body
@@ -222,24 +161,11 @@ public class DonacionController {
 
       donacion.confirmarEntrega();
       AppEventBus.getInstance().post(new EventoEntregaExitosa(donacion, LocalDate.now(), idCamion));
-      repoDonaciones.guardar(donacion);
+      repoDonaciones.actualizar(donacion);
       ctx.status(200).json(DonacionMapper.aDto(donacion));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (CambioDeEstadoNoPermitidoException e) {
-      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
-  public void cambiarEstadoAErrorEntrega(Context ctx) {
-    try {
+  public void donacionEntregaFallida(Context ctx) {
       //Cosas que recibo por URL --> Path param
       String idDonacion = ctx.pathParam("id");
       //Cosas que recibo por Body
@@ -250,74 +176,17 @@ public class DonacionController {
 
       donacion.notificarEntregaFallida(observacion);
       AppEventBus.getInstance().post(new EventoEntregaFallida(observacion, donacion, LocalDate.now()));
-      repoDonaciones.guardar(donacion);
+      repoDonaciones.actualizar(donacion);
       ctx.status(200).json(DonacionMapper.aDto(donacion));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (CambioDeEstadoNoPermitidoException e) {
-      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
-  }
-
-  public void cambiarEstadoAEnTraslado(Context ctx) {
-    try {
-      //Cosas que recibo por URL --> Path param
-      String idDonacion = ctx.pathParam("id");
-      //Cosas que recibo por Body
-      CambioEstadoInicioRutaRequest request = ctx.bodyAsClass(CambioEstadoInicioRutaRequest.class);
-      String mapa = request.linkMapa();
-
-      Donacion donacion = buscarDonacionPorId(idDonacion);
-
-      donacion.confirmarTrasladoEnCurso();
-      AppEventBus.getInstance().post(new EventoInicioDeRuta(donacion, LocalDate.now(), mapa));
-      repoDonaciones.guardar(donacion);
-      ctx.status(200).json(DonacionMapper.aDto(donacion));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (CambioDeEstadoNoPermitidoException e) {
-      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
-  }
-
-  public void historialEstados(Context ctx) {
-    try {
-      //Cosas que recibo por URL --> Path param
-      String idDonacion = ctx.pathParam("id");
-
-      Donacion donacion = buscarDonacionPorId(idDonacion);
-
-      List<EstadoDonacion> historialEstados = donacion.getHistorialEstados();
-      ctx.status(200).json(EstadoDonacionMapper.aDto(historialEstados));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   //================ FUNCIONES AUXILIARES ===============
-  private TipoEstadoDonacion aEstadoDonacion(String estado) {
+  private TipoEstadoDonacion aTipoEstadoDonacion(String estado) {
     if (estado == null) return null;
     try {
       return TipoEstadoDonacion.valueOf(estado.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DomainValidationException("No se conoce el estado de donación: " + estado);
+      throw new DomainValidationException("El estado de donación: " + estado + " no existe, debe ser: " + Arrays.toString(TipoEstadoDonacion.values()));
     }
   }
 

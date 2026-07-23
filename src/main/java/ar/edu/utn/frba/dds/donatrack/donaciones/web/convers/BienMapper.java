@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.NoPerecede
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.Perecedero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.bien.BienDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import java.util.Arrays;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -35,7 +36,7 @@ public class BienMapper {
       case "NO_PERECEDERO" -> Bien.crearNoPerecedero(bienDto.descripcion(), bienDto.cantidad(), unidad,
           bienDto.foto(), subcategoria, Boolean.TRUE.equals(bienDto.usado()));
       default -> throw new DomainValidationException(
-          "Tipo de bien invalido: " + bienDto.tipo() + " (PERECEDERO o NO_PERECEDERO)");
+          "El tipo de bien: " + bienDto.tipo() + " no existe, debe ser: PERECEDERO o NO_PERECEDERO ");
     };
   }
 
@@ -68,12 +69,11 @@ public class BienMapper {
 
   //========= FUNCIONES AUXILIARES ==============
   private static UnidadMedida aUnidadMedida(String valor) {
-    if (valor == null) return UnidadMedida.SIN_UNIDAD;
-
+    if (valor == null) return UnidadMedida.UNIDADES;
     try {
       return UnidadMedida.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DomainValidationException("Valor invalido para unidad de medida: " + valor);
+      throw new DomainValidationException("La unidad de medida: " + valor + " no existe, debe ser: " + Arrays.toString(UnidadMedida.values()));
     }
   }
 

@@ -137,9 +137,9 @@ public class AlgoritmoMatchmakingTest {
 
   @Test
   void debeQuitarBeneficiariosSinCoincidencias() {
-    NecesidadExtraordinaria necesitaRemeras = new NecesidadExtraordinaria(remera, UnidadMedida.SIN_UNIDAD, "....", 2);
+    NecesidadExtraordinaria necesitaRemeras = new NecesidadExtraordinaria(remera, UnidadMedida.UNIDADES, "....", 2);
     beneficiario1.agregarNecesidad(necesitaRemeras);
-    NecesidadExtraordinaria necesitaSillas = new NecesidadExtraordinaria(sillas, UnidadMedida.SIN_UNIDAD, "....", 3);
+    NecesidadExtraordinaria necesitaSillas = new NecesidadExtraordinaria(sillas, UnidadMedida.UNIDADES, "....", 3);
     beneficiario2.agregarNecesidad(necesitaSillas);
     NecesidadExtraordinaria necesitaFrutas = new NecesidadExtraordinaria(frutas, UnidadMedida.KILOGRAMOS, "....", 3);
     beneficiario3.agregarNecesidad(necesitaFrutas);

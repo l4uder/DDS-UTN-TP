@@ -16,12 +16,11 @@ import java.util.UUID;
 public class NecesidadController {
   private final BeneficiarioRepository repoBeneficiarios;
 
-  public NecesidadController() {
-    this.repoBeneficiarios = BeneficiarioRepository.getInstancia();
+  public NecesidadController(BeneficiarioRepository repoBeneficiarios) {
+    this.repoBeneficiarios = repoBeneficiarios;
   }
 
   public void crear(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
       //Cosas que recibo por Body
@@ -34,20 +33,9 @@ public class NecesidadController {
       beneficiario.agregarNecesidad(necesidad);
       repoBeneficiarios.actualizar(beneficiario);
       ctx.status(201).json(NecesidadMapper.aDto(necesidad));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void obtenerTodos(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
 
@@ -55,16 +43,9 @@ public class NecesidadController {
 
       List<Necesidad> necesidades = beneficiario.getNecesidades();
       ctx.status(200).json(NecesidadMapper.aDto(necesidades));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void obtener(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
       String idNecesidad = ctx.pathParam("nid");
@@ -73,16 +54,9 @@ public class NecesidadController {
       Necesidad necesidad = beneficiario.buscarNecesidadPorId(idNecesidad);
 
       ctx.status(200).json(NecesidadMapper.aDto(necesidad));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void actualizar(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
       String idNecesidad = ctx.pathParam("nid");
@@ -95,20 +69,9 @@ public class NecesidadController {
 
       repoBeneficiarios.actualizar(beneficiario);
       ctx.status(200).json(NecesidadMapper.aDto(necesidad));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void eliminar(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idBeneficiario = ctx.pathParam("id");
       String idNecesidad = ctx.pathParam("nid");
@@ -118,12 +81,6 @@ public class NecesidadController {
 
       repoBeneficiarios.actualizar(beneficiario);
       ctx.status(204);
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   //====================== FUNCIONES AUXILIARES ========================

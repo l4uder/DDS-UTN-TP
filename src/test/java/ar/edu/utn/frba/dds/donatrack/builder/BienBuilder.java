@@ -64,6 +64,6 @@ public class BienBuilder {
       throw new DomainValidationException("es necesario saber si es usado o no, para ser No perecedero.");
     }
 
-    return Bien.crearNoPerecedero(descripcion, cantidad, UnidadMedida.SIN_UNIDAD, foto, subcategoria, usado);
+    return Bien.crearNoPerecedero(descripcion, cantidad, UnidadMedida.UNIDADES, foto, subcategoria, usado);
   }
 }

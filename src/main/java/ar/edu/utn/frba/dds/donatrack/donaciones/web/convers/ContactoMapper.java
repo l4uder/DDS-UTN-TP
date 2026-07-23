@@ -22,7 +22,7 @@ public class ContactoMapper {
       case "SMS" -> new SmsDeContato(contactoDto.valor(), Boolean.TRUE.equals(contactoDto.principal()));
       case "WHATSAPP" -> new WhatsappDeContato(contactoDto.valor(), Boolean.TRUE.equals(contactoDto.principal()));
       default -> throw new DomainValidationException(
-          "Medio de contacto invalido: " + contactoDto.medio() + " (EMAIL, SMS o WHATSAPP)");
+          "EL medio de contacto: " + contactoDto.medio() + " no existe debe ser: [EMAIL, SMS o WHATSAPP] ");
     };
     return contacto;
   }

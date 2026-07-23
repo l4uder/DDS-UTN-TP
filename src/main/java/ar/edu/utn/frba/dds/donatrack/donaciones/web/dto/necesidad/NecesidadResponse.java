@@ -11,7 +11,7 @@ public record NecesidadResponse(
     String categoria,
     String subcategoria,
     Integer cantidadRecibida,
-    Boolean satisfecha,
+    Boolean estaSatisfecha,
     Integer cantidadPorPeriodo,
     String periodo,
     Integer cantidadRequerida

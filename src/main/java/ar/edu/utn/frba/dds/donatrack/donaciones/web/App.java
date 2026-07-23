@@ -19,7 +19,7 @@ public class App {
   public static void main(String[] args) {
     ConfiguracionEntorno config = ConfiguracionEntorno.getInstance();
     Notificador.init(AppEventBus.getInstance());
-    crearApp().start(config.elegirPuertoDonaciones(PUERTO));
+    crearApp().start(config.puertoDonaciones(PUERTO));
   }
 
   public static Javalin crearApp() {
@@ -30,17 +30,14 @@ public class App {
 
     ExceptionHandlers.registrar(app);
 
-    app.get("/health", ctx -> ctx.json(new Health("donaciones-service", "OK")));
-    AsignacionRoutes.registrar(app);
-    BeneficiarioRoutes.registrar(app);
-    DonacionRoutes.registrar(app);
+    app.get("/health", ctx -> ctx.json("Micro servicio de donaciones funcionando"));
     DonanteRoutes.registrar(app);
+    DonacionRoutes.registrar(app);
+    BeneficiarioRoutes.registrar(app);
     NecesidadRoutes.registrar(app);
+    AsignacionRoutes.registrar(app);
 
     return app;
-  }
-
-  public record Health(String servicio, String estado) {
   }
 
 }

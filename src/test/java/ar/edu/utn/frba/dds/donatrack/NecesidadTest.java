@@ -30,7 +30,7 @@ public class NecesidadTest {
     Subcategoria sillas = new Subcategoria("sillas", muebleria);
     NecesidadRecurrente necesidad2 = new NecesidadRecurrente(
         sillas,
-        UnidadMedida.SIN_UNIDAD,
+        UnidadMedida.UNIDADES,
         "23 sillas",
         10,
         Periodo.SEMANAL);

@@ -16,6 +16,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteResponse;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteResumenResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ public class DonanteMapper {
   public static Donante aDominio(DonanteRequest request) {
     Documento documento = DocumentoMapper.aDominio(request.documento());
     List<MedioContacto> contactos = ContactoMapper.aDominio(request.contactos());
-    TipoDonante tipo = parseEnum(TipoDonante.class, request.tipo(), "tipo de donante");
+    TipoDonante tipo = aTipoDonante(request.tipo());
 
     return switch (tipo) {
       case HUMANA -> new PersonaHumana(
@@ -34,12 +35,12 @@ public class DonanteMapper {
           request.apellido(),
           documento,
           request.fechaNacimiento(),
-          request.genero() == null ? null : parseEnum(Genero.class, request.genero(), "genero"),
+          request.genero() == null ? null : aGenero(request.genero()),
           request.direccion(),
           contactos);
       case JURIDICA -> new PersonaJuridica(
           request.razonSocial(),
-          request.tipoOrganizacion() == null ? TipoOrganizacion.SIN_ESPECIFICAR : parseEnum(TipoOrganizacion.class, request.tipoOrganizacion(),"tipo de organizacion"),
+          request.tipoOrganizacion() == null ? TipoOrganizacion.SIN_ESPECIFICAR : aTipoOrganizacion(request.tipoOrganizacion()),
           request.rubro(),
           documento,
           null,
@@ -102,13 +103,13 @@ public class DonanteMapper {
       String apellidoMerge = request.apellido() != null ? request.apellido() : humana.getApellido();
       LocalDate nacimientoMerge = request.fechaNacimiento() != null ? request.fechaNacimiento() : humana.getFechaNacimiento();
       String direccionMerge = request.direccion() != null ? request.direccion() : humana.getDireccion();
-      Genero generoMerge = request.genero() != null ? parseEnum(Genero.class, request.genero(), "genero") : humana.getGenero();
+      Genero generoMerge = request.genero() != null ? aGenero(request.genero()) : humana.getGenero();
 
       humana.actualizarDatos(nombreMerge, apellidoMerge, documentoMerge, nacimientoMerge, generoMerge, direccionMerge, contactosMerge);
     } else if (donante instanceof PersonaJuridica juridica) {
       String razonSocialMerge = request.razonSocial() != null ? request.razonSocial() : juridica.getRazonSocial();
       String rubroMerge = request.rubro() != null ? request.rubro() : juridica.getRubro();
-      TipoOrganizacion tipoOrgMerge = request.tipoOrganizacion() != null ? parseEnum(TipoOrganizacion.class, request.tipoOrganizacion(), "tipo de organizacion") : juridica.getTipoOrganizacion();
+      TipoOrganizacion tipoOrgMerge = request.tipoOrganizacion() != null ? aTipoOrganizacion(request.tipoOrganizacion()) : juridica.getTipoOrganizacion();
       List<Representante> representantesMerge = juridica.getRepresentantes();
 
       juridica.actualizarDatos(razonSocialMerge, tipoOrgMerge, rubroMerge, documentoMerge, representantesMerge, contactosMerge);
@@ -118,11 +119,30 @@ public class DonanteMapper {
   }
 
   //================== FUNCIONES AUXILIARES ================
-  private static <E extends Enum<E>> E parseEnum(Class<E> tipo, String valor, String campo) {
+  private static TipoDonante aTipoDonante(String valor) {
+    if (valor == null || valor.isBlank()) return null;
     try {
-      return Enum.valueOf(tipo, valor.toUpperCase());
-    } catch (IllegalArgumentException | NullPointerException e) {
-      throw new DomainValidationException("Valor invalido para " + campo + ": " + valor);
+      return TipoDonante.valueOf(valor.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      throw new DomainValidationException("El tipo de donante: " + valor + " no existe debe ser: " + Arrays.toString(TipoDonante.values()));
+    }
+  }
+
+  private static Genero aGenero(String valor) {
+    if (valor == null || valor.isBlank()) return null;
+    try {
+      return Genero.valueOf(valor.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      throw new DomainValidationException("El genero: " + valor + " no existe debe ser: " + Arrays.toString(Genero.values()));
+    }
+  }
+
+  private static TipoOrganizacion aTipoOrganizacion(String valor) {
+    if (valor == null || valor.isBlank()) return null;
+    try {
+      return TipoOrganizacion.valueOf(valor.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      throw new DomainValidationException("El tipo de Organización: " + valor + " no existe debe ser: " + Arrays.toString(TipoOrganizacion.values()));
     }
   }
 

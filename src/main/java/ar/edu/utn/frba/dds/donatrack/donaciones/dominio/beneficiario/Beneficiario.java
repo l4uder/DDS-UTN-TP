@@ -22,7 +22,7 @@ public class Beneficiario {
   private List<Donacion> donaciones;
 
   public Beneficiario(String razonSocial, String direccion, List<MedioContacto> contactos) {
-    checkDatos(razonSocial, direccion, contactos);
+    checkDatos(razonSocial, contactos);
     this.razonSocial = razonSocial;
     this.direccion = direccion;
     this.contactos = new ArrayList<>(contactos);
@@ -30,15 +30,15 @@ public class Beneficiario {
     this.donaciones = new ArrayList<>();
   }
 
-  private void checkDatos(String razonSocial, String direccion, List<MedioContacto> contactos) {
+  private void checkDatos(String razonSocial, List<MedioContacto> contactos) {
     if (razonSocial == null || razonSocial.isBlank()) {
       throw new DomainValidationException("El campo 'razonSocial' es obligatorio");
     }
-    if (direccion == null || direccion.isBlank()) {
-      throw new DomainValidationException("El campo 'direccion' es obligatorio");
-    }
     if (contactos == null || contactos.isEmpty()) {
       throw new DomainValidationException( "Debe tener al menos un medio de contacto");
+    }
+    if (contactos.stream().noneMatch(MedioContacto::getEsPrincipal)) {
+      throw new DomainValidationException("Debe tener al menos un contacto principal");
     }
   }
 
@@ -82,7 +82,7 @@ public class Beneficiario {
   }
 
   public void actualizarDatos(String razonSocial, String direccion, List<MedioContacto> contactos) {
-    checkDatos(razonSocial, direccion, contactos);
+    checkDatos(razonSocial, contactos);
     this.razonSocial = razonSocial;
     this.direccion = direccion;
     this.contactos = new ArrayList<>(contactos);

@@ -13,11 +13,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.RankingMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion.ConfirmacionBody;
-import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
-import com.google.gson.JsonSyntaxException;
 import io.javalin.http.Context;
 import java.util.List;
 import java.util.Map;
@@ -27,14 +23,14 @@ public class AsignacionController {
   private final BeneficiarioRepository repoBeneficiarios;
   private final RankingRepository repoRankings;
 
-  public AsignacionController() {
-    this.repoDonaciones = DonacionRepository.getInstancia();
-    this.repoBeneficiarios = BeneficiarioRepository.getInstancia();
-    this.repoRankings = RankingRepository.getInstancia();
+  public AsignacionController(DonacionRepository repoDonaciones, BeneficiarioRepository repoBeneficiarios,
+                              RankingRepository repoRankings) {
+    this.repoDonaciones = repoDonaciones;
+    this.repoBeneficiarios = repoBeneficiarios;
+    this.repoRankings = repoRankings;
   }
 
   public void crearRankings(Context ctx) {
-    try {
       GeneradorRankings generadorRankings = new GeneradorRankings(repoRankings);
       generadorRankings.agregarAlgoritmo(new CompatibilidadSemantica());
       generadorRankings.agregarAlgoritmo(new PrioridadSubAtendidos());
@@ -44,46 +40,23 @@ public class AsignacionController {
 
       generadorRankings.asignar(donaciones, beneficiarios);
       ctx.status(200).json(Map.of( "mensaje", "Matchmaking ejecutado correctamente"));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (CambioDeEstadoNoPermitidoException e) {
-      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void obtenerTodos(Context ctx) {
-    try {
       List<Ranking> rankings = repoRankings.buscarTodos();
       ctx.status(200).json(rankings.stream().map(RankingMapper::aDto).toList());
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void obtener(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idRanking = ctx.pathParam("id");
 
       Ranking ranking = buscarRankingPorId(idRanking);
 
       ctx.status(200).json(RankingMapper.aDto(ranking));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   public void confirmar(Context ctx) {
-    try {
       //Cosas que recibo por URL --> Path param
       String idRanking = ctx.pathParam("id");
       //Cosas que recibo por Body
@@ -100,18 +73,6 @@ public class AsignacionController {
       repoBeneficiarios.actualizar(beneficiario);
       repoRankings.actualizar(ranking);
       ctx.status(200).json(DonacionMapper.aDto(donacion));
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    } catch (CambioDeEstadoNoPermitidoException e) {
-      ctx.status(409).json(new ErrorResponse(409, e.getMessage()));
-    } catch (Exception e) {
-      e.printStackTrace();
-      ctx.status(500).json(new ErrorResponse(500, "Ocurrió un error inesperado en el servidor"));
-    }
   }
 
   //=================== FUNCIONES AUXILIARES ========================

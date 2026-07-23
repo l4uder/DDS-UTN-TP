@@ -54,11 +54,11 @@ public class SegmentadorDonacionesTest {
     builtomate = new BienBuilder()
         .conDescripcion("tomate").conCantidad(1).conSubcategoria(SubcategoriaTomate)
         .conFechaVencimiento(LocalDate.of(2027, 1, 1))
-        .conUnidad(UnidadMedida.SIN_UNIDAD);
+        .conUnidad(UnidadMedida.UNIDADES);
     buildFideo = new BienBuilder()
         .conDescripcion("Fideos").conCantidad(100).conSubcategoria(SubcategoriaFideos)
         .conFechaVencimiento(LocalDate.of(2027, 1, 1))
-        .conUnidad(UnidadMedida.SIN_UNIDAD);
+        .conUnidad(UnidadMedida.UNIDADES);
     buildSilla = new BienBuilder()
         .conDescripcion("Silla").conCantidad(6).conSubcategoria(SubcategoriaSillas)
         .conUsado(true);

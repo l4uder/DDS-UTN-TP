@@ -101,7 +101,7 @@ public class Donacion {
     }
     if (getEstadoActual() != TipoEstadoDonacion.EN_TRASLADO) {
       throw new CambioDeEstadoNoPermitidoException(
-          "La donacion debe estar en traslado para confirmar entrega"
+          "La donación debe estar en traslado para confirmar entrega"
       );
     }
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.ENTREGADA));

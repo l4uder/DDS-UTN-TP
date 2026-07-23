@@ -23,12 +23,12 @@ public class ConfiguracionEntorno {
     return obtenerObligatorio("EMAIL_PASSWORD");
   }
 
-  public Integer elegirPuertoDonaciones(int puertoPorDefecto) {
-    return obtenerEnteroSeguro("PUERTO_DONACIONES", puertoPorDefecto);
+  public Integer puertoDonaciones(int puertoPorDefecto) {
+    return elegirPuerto("PUERTO_DONACIONES", puertoPorDefecto);
   }
 
-  public Integer elegirPuertoLogistica(int puertoPorDefecto) {
-    return obtenerEnteroSeguro("PUERTO_LOGISTICA", puertoPorDefecto);
+  public Integer puertoLogistica(int puertoPorDefecto) {
+    return elegirPuerto("PUERTO_LOGISTICA", puertoPorDefecto);
   }
 
   //=================== FUNCIONES AUXILIARES =====================
@@ -40,7 +40,7 @@ public class ConfiguracionEntorno {
     return clave;
   }
 
-  private int obtenerEnteroSeguro(String nombre, int valorPorDefecto) {
+  private int elegirPuerto(String nombre, int valorPorDefecto) {
     String valor = dotenv.get(nombre);
     if (valor == null || valor.isBlank()) {
       System.out.println("Falta la variable de entorno: '" + nombre + "' Se va a usar el puerto por default: " + valorPorDefecto);
