@@ -1,18 +1,32 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsappMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteWhatsapp;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsapp;
+import lombok.Getter;
+import lombok.Setter;
 
-public class WhatsappDeContato extends MedioContacto {
+@Getter
+public class WhatsappDeContato implements MedioContacto {
   private String telefono;
+  private Boolean esPrincipal;
+  @Setter
   private ClienteWhatsapp clienteWhatsapp;
 
-  public WhatsappDeContato(String telefono) {
+  public WhatsappDeContato(String telefono, Boolean esPrincipal) {
+    checkDatos(telefono, esPrincipal);
+    this.telefono = telefono;
+    this.esPrincipal = esPrincipal;
+    this.clienteWhatsapp = new ClienteWhatsappMock();
+  }
+
+  private void checkDatos(String telefono, Boolean estado) {
     if (!telefono.matches("^[+0-9 -]*$")) {
       throw new DomainValidationException("Telefono invalido");
     }
-    this.telefono = telefono;
-    this.esPrincipal = false;
+    if (estado == null) {
+      throw new DomainValidationException("Debe indicar si es un contacto principal o no");
+    }
   }
 
   @Override
@@ -20,16 +34,7 @@ public class WhatsappDeContato extends MedioContacto {
     if (clienteWhatsapp == null) {
       throw new DomainValidationException("clienteWhatsapp no asignado para enviar notificaciones");
     }
-
     clienteWhatsapp.enviarMensaje(telefono, message);
-  }
-
-  public void setClienteWhatsapp(ClienteWhatsapp clienteWhatsapp) {
-    this.clienteWhatsapp = clienteWhatsapp;
-  }
-
-  public String getTelefono() {
-    return telefono;
   }
 
   @Override
@@ -37,7 +42,6 @@ public class WhatsappDeContato extends MedioContacto {
     if (!(otro instanceof WhatsappDeContato numeroWhatsapp)) {
       return false;
     }
-
     return this.telefono.equals(numeroWhatsapp.getTelefono());
   }
 }

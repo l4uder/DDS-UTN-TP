@@ -10,6 +10,8 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Algori
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,19 +29,21 @@ public class GeneradorRankingsDonacionesTest {
   private Beneficiario beneficiario4;
   //asignador
   private GeneradorRankings generadorRankings;
+  private RankingRepository repoRankings;
 
   @BeforeEach
   void configuracionIncial() {
-    generadorRankings = new GeneradorRankings();
+    repoRankings = mock(RankingRepository.class);
+    generadorRankings = new GeneradorRankings(repoRankings);
 
     algoritmoMock1 = mock(AlgoritmoMatchmaking.class);
     algoritmoMock2 = mock(AlgoritmoMatchmaking.class);
     donacion = mock(Donacion.class);
 
-    beneficiario1 = new Beneficiario("1111", "Direccion 1", List.of());
-    beneficiario2 = new Beneficiario("2222", "Direccion 2", List.of());
-    beneficiario3 = new Beneficiario("3333", "Direccion 3", List.of());
-    beneficiario4 = new Beneficiario("4444", "Direccion 4", List.of());
+    beneficiario1 = new Beneficiario("1111", "Direccion 1", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com", true)));
+    beneficiario2 = new Beneficiario("2222", "Direccion 2", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com", true)));
+    beneficiario3 = new Beneficiario("3333", "Direccion 3", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com", true)));
+    beneficiario4 = new Beneficiario("4444", "Direccion 4", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com", true)));
   }
 
   @Test

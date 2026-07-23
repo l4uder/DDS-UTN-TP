@@ -1,17 +1,11 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
-public abstract class MedioContacto {
-  protected Boolean esPrincipal;
+public interface MedioContacto {
 
-  public Boolean getPrincipal() {
-    return this.esPrincipal;
-  }
+  Boolean getEsPrincipal();
 
-  public void setPrincipal(Boolean esPrincipal) {
-    this.esPrincipal = esPrincipal;
-  }
+  void notificar(String message);
 
-  public abstract void notificar(String message);
+  boolean esIgualA(MedioContacto otro);
 
-  public abstract boolean esIgualA(MedioContacto otro);
 }

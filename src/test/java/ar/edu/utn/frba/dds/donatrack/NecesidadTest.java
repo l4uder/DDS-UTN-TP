@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Categoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadExtraordinaria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadRecurrente;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Periodo;
@@ -17,6 +18,7 @@ public class NecesidadTest {
     Subcategoria arroz = new Subcategoria("arroz", alimentos);
     NecesidadExtraordinaria necesidad1 = new NecesidadExtraordinaria(
         arroz,
+        UnidadMedida.KILOGRAMOS,
         "descripcion",
         30);
     necesidad1.recibirBienes(34);
@@ -28,6 +30,7 @@ public class NecesidadTest {
     Subcategoria sillas = new Subcategoria("sillas", muebleria);
     NecesidadRecurrente necesidad2 = new NecesidadRecurrente(
         sillas,
+        UnidadMedida.UNIDADES,
         "23 sillas",
         10,
         Periodo.SEMANAL);

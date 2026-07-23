@@ -7,8 +7,8 @@ public enum UnidadMedida {
   //medidas de capacidad
   LITROS("lt", 1000),
   MILILITROS("ml", 1),
-  //indefinido
-  SIN_UNIDAD("sin medida", 1);
+  //valores por unidad
+  UNIDADES("unidad", 1);
 
   private final String abreviatura;
   private final Integer factorConversor;
@@ -22,8 +22,4 @@ public enum UnidadMedida {
     return cantidad * factorConversor;
   }
 
-  @Override
-  public String toString() {
-    return this.abreviatura;
-  }
 }

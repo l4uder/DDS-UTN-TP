@@ -2,30 +2,31 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class Ranking {
-  private final Donacion donacion;
-  private final List<Beneficiario> candidatos;
-  private final LocalDateTime fechaGeneracion;
+  @Setter
+  private String id;
+  private Donacion donacion;
+  private List<Beneficiario> candidatos;
+  private Boolean esVigente;
+  private LocalDateTime fechaGeneracion;
 
   public Ranking(Donacion donacion, List<Beneficiario> candidatos) {
     this.donacion = donacion;
     this.candidatos = new ArrayList<>(candidatos);
+    this.esVigente = true;
     this.fechaGeneracion = LocalDateTime.now();
   }
 
-  public String getDonacionId() {
-    return donacion.getId();
+  public void confirmada() {
+    this.esVigente = false;
   }
 
-  public List<Beneficiario> getCandidatos() {
-    return new ArrayList<>(candidatos);
-  }
-
-  public LocalDateTime getFechaGeneracion() {
-    return fechaGeneracion;
-  }
 }

@@ -13,11 +13,12 @@ public class RegistroEntregaBuilder {
   private String descripcion;
   private List<Bien> bienes;
   private Donante donantePrueba = new PersonaHumanaBuilder()
-    .conNombre("Juan")
-    .conApellido("Pérez")
-    .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-    .conContactoPrincipal(new CorreoDeContato("juan@prueba.com"))
-    .build();
+      .conNombre("Juan")
+      .conApellido("Pérez")
+      .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
+      .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
+      .conDireccion("alguna dirección")
+      .build();
 
   public RegistroEntregaBuilder() {
     this.bienes = new ArrayList<>();

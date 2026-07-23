@@ -5,7 +5,10 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioConta
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class PersonaHumana extends Donante {
   private String nombre;
   private String apellido;
@@ -17,14 +20,25 @@ public class PersonaHumana extends Donante {
                        LocalDate fechaNacimiento, Genero genero, String direccion,
                        List<MedioContacto> contactos) {
     super(documento, contactos);
-    if (documento.getTipoDocumento() == TipoDocumento.CUIT) {
-      throw new DomainValidationException("La persona humana no puede tener un CUIT");
-    }
+    checkDatos(nombre, documento, direccion);
     this.nombre = nombre;
     this.apellido = apellido;
     this.fechaNacimiento = fechaNacimiento;
-    this.genero = genero;
+    this.genero = genero == null ? Genero.SIN_ESPECIFICAR : genero;
     this.direccion = direccion;
+  }
+
+  private void checkDatos(String nombre, Documento documento, String direccion) {
+    if (nombre == null || nombre.isBlank()) {
+      throw new DomainValidationException("El campo 'nombre' es obligatorio");
+    }
+    TipoDocumento tipo = documento.getTipoDocumento();
+    if (!(tipo == TipoDocumento.DNI || tipo == TipoDocumento.PASAPORTE)) {
+      throw new DomainValidationException("El campo 'documento' por ser Humano, solo puede ser DNI o PASAPORTE");
+    }
+    if (direccion == null || direccion.isBlank()) {
+      throw new DomainValidationException("El campo 'direccion' es obligatorio");
+    }
   }
 
   @Override
@@ -32,37 +46,33 @@ public class PersonaHumana extends Donante {
     return TipoDonante.HUMANA;
   }
 
+  @Override
+  public String getNombreCompleto() {
+    return getNombre() +  " " + getApellido();
+  }
+
   public Integer getEdad() {
     return Period.between(fechaNacimiento, LocalDate.now()).getYears();
   }
 
-  public LocalDate getFechaNacimiento() {
-    return this.fechaNacimiento;
-  }
-
-  public Genero getGenero() {
-    return this.genero;
-  }
-
-  public String getDireccion() {
-    return this.direccion;
-  }
-
-  public String getNombre() {
-    return this.nombre;
-  }
-
-  public String getApellido() {
-    return this.apellido;
+  public void actualizarDatos(String nombre, String apellido, Documento documento,
+                              LocalDate fechaNacimiento, Genero genero, String direccion,
+                              List<MedioContacto> contactos) {
+    super.actualizarDatosBase(documento, contactos);
+    checkDatos(nombre, documento, direccion);
+    this.nombre = nombre;
+    this.apellido = apellido;
+    this.fechaNacimiento = fechaNacimiento;
+    this.genero = genero == null ? Genero.SIN_ESPECIFICAR : genero;
+    this.direccion = direccion;
   }
 
   @Override
   public String toString() {
     return "PersonaHumana{"
-        + "nombre: " + nombre
-        + ", apellido: " + apellido
-        + ", documento: " + documento.getTipoDocumento().toString()
-        + documento.getDetalle()
+        + "nombre completo: " + nombre + " " + apellido + " "
+        + "documento: " + documento.getTipoDocumento().toString() + " " + documento.getDetalle()
         + '}';
   }
+
 }

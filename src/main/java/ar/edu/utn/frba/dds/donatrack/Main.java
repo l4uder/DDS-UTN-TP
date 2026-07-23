@@ -1,16 +1,10 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteCorreoRealJavaMail;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoReal;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.FabricaClienteCorreoReal;
 
 public class Main {
   public static void main(String[] args) {
-
-    ProveedorClienteCorreo.inicializar(new ClienteCorreoRealJavaMail(
-        "donatrack.sistema@gmail.com", 
-        "uawj zaab mxhy bmuo"
-    ));
-
     System.out.println("=========================================");
     System.out.println("SISTEMA DONATRACK - Tareas Programadas");
     System.out.println("=========================================");

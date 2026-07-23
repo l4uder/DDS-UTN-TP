@@ -3,7 +3,6 @@ package ar.edu.utn.frba.dds.donatrack;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.CategoriaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.RegistroEntregaBuilder;
@@ -55,11 +54,11 @@ public class SegmentadorDonacionesTest {
     builtomate = new BienBuilder()
         .conDescripcion("tomate").conCantidad(1).conSubcategoria(SubcategoriaTomate)
         .conFechaVencimiento(LocalDate.of(2027, 1, 1))
-        .conUnidad(UnidadMedida.SIN_UNIDAD);
+        .conUnidad(UnidadMedida.UNIDADES);
     buildFideo = new BienBuilder()
         .conDescripcion("Fideos").conCantidad(100).conSubcategoria(SubcategoriaFideos)
         .conFechaVencimiento(LocalDate.of(2027, 1, 1))
-        .conUnidad(UnidadMedida.SIN_UNIDAD);
+        .conUnidad(UnidadMedida.UNIDADES);
     buildSilla = new BienBuilder()
         .conDescripcion("Silla").conCantidad(6).conSubcategoria(SubcategoriaSillas)
         .conUsado(true);
@@ -69,11 +68,6 @@ public class SegmentadorDonacionesTest {
     //Registros
     buildRegistro = new RegistroEntregaBuilder();
 
-    //Mock de Motor de correos exclusivo para los tests
-    ProveedorClienteCorreo.inicializar((destino, mensaje) -> {
-        // No hace nada de red, solo simula que lo envió
-        System.out.println("TEST - Simulando envío a: " + destino);
-    });
   }
 
   @Test

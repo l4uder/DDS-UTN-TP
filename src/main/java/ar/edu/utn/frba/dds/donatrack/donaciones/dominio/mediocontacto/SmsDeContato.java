@@ -1,18 +1,32 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSmsMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteSms;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSms;
+import lombok.Getter;
+import lombok.Setter;
 
-public class SmsDeContato extends MedioContacto {
+@Getter
+public class SmsDeContato implements MedioContacto {
   private String telefono;
+  private Boolean esPrincipal;
+  @Setter
   private ClienteSms clienteSms;
 
-  public SmsDeContato(String telefono) {
+  public SmsDeContato(String telefono, Boolean esPrincipal) {
+    checkDatos(telefono, esPrincipal);
+    this.telefono = telefono;
+    this.esPrincipal = esPrincipal;
+    this.clienteSms = new ClienteSmsMock();
+  }
+
+  private void checkDatos(String telefono, Boolean estado) {
     if (!telefono.matches("^[+0-9 -]*$")) {
       throw new DomainValidationException("Telefono invalido");
     }
-    this.telefono = telefono;
-    this.esPrincipal = false;
+    if (estado == null) {
+      throw new DomainValidationException("Debe indicar si es un contacto principal o no");
+    }
   }
 
   @Override
@@ -22,14 +36,6 @@ public class SmsDeContato extends MedioContacto {
     }
 
     clienteSms.enviarSms(telefono, message);
-  }
-
-  public void setClienteSms(ClienteSms clienteSms) {
-    this.clienteSms = clienteSms;
-  }
-
-  public String getTelefono() {
-    return telefono;
   }
 
   @Override

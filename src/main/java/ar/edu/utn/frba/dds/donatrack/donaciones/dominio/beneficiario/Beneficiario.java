@@ -5,74 +5,56 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonac
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class Beneficiario {
+  @Setter
   private String id;
   private String razonSocial;
   private String direccion;
   private List<MedioContacto> contactos;
   private List<Necesidad> necesidades;
   private List<Donacion> donaciones;
-  public Beneficiario(String razon,
-                      String direccion,
-                      List<MedioContacto> contactos) {
-    this.razonSocial = razon;
+
+  public Beneficiario(String razonSocial, String direccion, List<MedioContacto> contactos) {
+    checkDatos(razonSocial, contactos);
+    this.razonSocial = razonSocial;
     this.direccion = direccion;
     this.contactos = new ArrayList<>(contactos);
     this.necesidades = new ArrayList<>();
     this.donaciones = new ArrayList<>();
   }
 
-  public String getId() {
-    return this.id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getRazonSocial() {
-    return this.razonSocial;
-  }
-
-  public String getDireccion() {
-    return this.direccion;
-  }
-
-  public List<MedioContacto> getContactos() {
-    return new ArrayList<>(this.contactos);
-  }
-
-  public void actualizarDatos(String razonSocial,
-                              String direccion,
-                              List<MedioContacto> contactos) {
-    this.razonSocial = razonSocial;
-    this.direccion = direccion;
-    this.contactos = new ArrayList<>(contactos);
-  }
-
-  public List<Necesidad> getNecesidades() {
-    return this.necesidades;
-  }
-
-  public List<Donacion> getDonaciones() {
-    return this.donaciones;
+  private void checkDatos(String razonSocial, List<MedioContacto> contactos) {
+    if (razonSocial == null || razonSocial.isBlank()) {
+      throw new DomainValidationException("El campo 'razonSocial' es obligatorio");
+    }
+    if (contactos == null || contactos.isEmpty()) {
+      throw new DomainValidationException( "Debe tener al menos un medio de contacto");
+    }
+    if (contactos.stream().noneMatch(MedioContacto::getEsPrincipal)) {
+      throw new DomainValidationException("Debe tener al menos un contacto principal");
+    }
   }
 
   public void agregarNecesidad(Necesidad necesidad) {
     this.necesidades.add(necesidad);
   }
 
-  public Optional<Necesidad> buscarNecesidad(String necesidadId) {
+  public Necesidad buscarNecesidadPorId(String necesidadId) {
     return this.necesidades.stream()
         .filter(necesidad -> necesidadId.equals(necesidad.getId()))
-        .findFirst();
+        .findFirst()
+        .orElseThrow(() -> new RecursoNoEncontradoException("El beneficiario no tiene una necesidad con ese id " + necesidadId));
   }
 
-  public void eliminarNecesidad(Necesidad necesidad) {
+  public void eliminarNecesidadPorId(String necesidadId) {
+    Necesidad necesidad = buscarNecesidadPorId(necesidadId);
     this.necesidades.remove(necesidad);
   }
 
@@ -97,5 +79,13 @@ public class Beneficiario {
         return this.contactos.get(0);
     }
     throw new DomainValidationException("El beneficiario no posee contactos");
-}
+  }
+
+  public void actualizarDatos(String razonSocial, String direccion, List<MedioContacto> contactos) {
+    checkDatos(razonSocial, contactos);
+    this.razonSocial = razonSocial;
+    this.direccion = direccion;
+    this.contactos = new ArrayList<>(contactos);
+  }
+
 }

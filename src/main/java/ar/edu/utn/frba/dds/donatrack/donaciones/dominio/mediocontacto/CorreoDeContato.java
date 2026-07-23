@@ -1,21 +1,32 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ClienteCorreo;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.ProveedorClienteCorreo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreo;
+import lombok.Getter;
+import lombok.Setter;
 
-public class CorreoDeContato extends MedioContacto {
+@Getter
+public class CorreoDeContato implements MedioContacto {
   private String correo;
+  private Boolean esPrincipal;
+  @Setter
   private ClienteCorreo clienteCorreo;
 
-  public CorreoDeContato(String correo) {
-    if (!correo.matches("^.*@.*$")) {
-      throw new DomainValidationException("Correo invalido");
-    }
+  public CorreoDeContato(String correo, Boolean esPrincipal) {
+    checkDatos(correo, esPrincipal);
     this.correo = correo;
-    this.esPrincipal = false;
+    this.esPrincipal = esPrincipal;
+    this.clienteCorreo = new ClienteCorreoMock();
+  }
 
-    this.clienteCorreo = ProveedorClienteCorreo.getInstancia();
+  private void checkDatos(String correo, Boolean estado) {
+    if (!correo.matches("^.*@.*$")) {
+      throw new DomainValidationException("Correo invalido, verifique por favor");
+    }
+    if (estado == null) {
+      throw new DomainValidationException("Debe indicar si es un contacto principal o no");
+    }
   }
 
   @Override
@@ -25,14 +36,6 @@ public class CorreoDeContato extends MedioContacto {
     }
 
     clienteCorreo.enviarCorreo(correo, message);
-  }
-
-  public void setClienteCorreo(ClienteCorreo clienteCorreo) {
-    this.clienteCorreo = clienteCorreo;
-  }
-
-  public String getCorreo() {
-    return correo;
   }
 
   @Override

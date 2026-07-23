@@ -1,10 +1,14 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion;
 
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class EstadoDonacion {
   private String detalle;
   private TipoEstadoDonacion tipoEstado;
+  @Setter
   private LocalDateTime fecha;
 
   public EstadoDonacion(TipoEstadoDonacion estado, String observacion) {
@@ -17,19 +21,4 @@ public class EstadoDonacion {
     this(estado, null);
   }
 
-  public TipoEstadoDonacion getTipoEstado() {
-    return tipoEstado;
-  }
-
-  public LocalDateTime getFecha() {
-    return this.fecha;
-  }
-
-  public  String getDetalle() {
-    return this.detalle;
-  }
-
-  public void setFecha(LocalDateTime fecha) {
-    this.fecha = fecha;
-  }
 }

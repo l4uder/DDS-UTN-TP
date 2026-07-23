@@ -4,75 +4,42 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaExitosa;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaFallida;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoAsignacionDeDonacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoInicioDeRuta;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
-import com.google.common.eventbus.EventBus;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Setter;
 
+@Getter
 public class Donacion {
-
+  @Setter
   private String id;
   private String descripcion;
   private List<Bien> bienes;
   private List<EstadoDonacion> historialEstados;
+  private Beneficiario beneficiario;//Doble asociación bidireccional
+  private List<Donante> donantes;
 
-  //Doble asociacion bidericcional
-  private Beneficiario beneficiario;
-  @Getter
-  private List<Donante> donanteIds;
-
-  public Donacion(List<Bien> bienes, List<Donante> donanteIds) {
-    if (bienes == null || bienes.isEmpty()) {
-      throw new DomainValidationException("Una donación debe tener al menos un bien");
-    }
-    if (donanteIds == null || donanteIds.isEmpty()) {
-      throw new DomainValidationException("Una donación debe tener al menos un donante");
-    }
-    this.donanteIds = donanteIds;
+  public Donacion(List<Bien> bienes, List<Donante> donantes) {
+    checkDatos(bienes, donantes);
+    this.donantes = donantes;
     this.descripcion = this.descripcionGeneral(bienes);
     this.bienes = new ArrayList<>(bienes);
     this.historialEstados = new ArrayList<>();
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
   }
 
-  public List<Donante> getDonantes(){
-    return this.donanteIds;
-  }
-
-  public String getId() {
-    return this.id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getDescripcion() {
-    return this.descripcion;
-  }
-
-  public void reemplazarBienes(List<Bien> nuevosBienes) {
-    if (nuevosBienes == null || nuevosBienes.isEmpty()) {
+  private void checkDatos(List<Bien> bienes, List<Donante> donantes) {
+    if (bienes == null || bienes.isEmpty()) {
       throw new DomainValidationException("Una donación debe tener al menos un bien");
     }
-    if (getEstadoActual() != TipoEstadoDonacion.EN_DEPOSITO) {
-      throw new CambioDeEstadoNoPermitidoException(
-          "Solo se puede modificar una donacion que esta en deposito"
-      );
+    if (donantes == null || donantes.isEmpty()) {
+      throw new DomainValidationException("Una donación debe tener al menos un donante");
     }
-    this.bienes = new ArrayList<>(nuevosBienes);
-    this.descripcion = this.descripcionGeneral(nuevosBienes);
   }
 
   public TipoEstadoDonacion getEstadoActual() {
@@ -123,8 +90,8 @@ public class Donacion {
     // Notificación de falla delegada al dominio de Donaciones
     String mensaje = "La entrega no pudo concretarse. Motivo: " + observacion;
     this.beneficiario.getContactoPrincipal().notificar(mensaje);
-    this.donanteIds.forEach(donanteIndividual -> 
-      donanteIndividual.getContactoPrincipal().notificar(mensaje)
+    this.donantes.forEach(donanteIndividual ->
+      donanteIndividual.getPrimerContactoPrincipal().notificar(mensaje)
     );
   }
 
@@ -134,7 +101,7 @@ public class Donacion {
     }
     if (getEstadoActual() != TipoEstadoDonacion.EN_TRASLADO) {
       throw new CambioDeEstadoNoPermitidoException(
-          "La donacion debe estar en traslado para confirmar entrega"
+          "La donación debe estar en traslado para confirmar entrega"
       );
     }
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.ENTREGADA));
@@ -142,8 +109,8 @@ public class Donacion {
     // Notificación de éxito delegada al dominio de Donaciones
     String mensaje = "¡Entrega finalizada con éxito!";
     this.beneficiario.getContactoPrincipal().notificar(mensaje);
-    this.donanteIds.forEach(donanteIndividual -> 
-      donanteIndividual.getContactoPrincipal().notificar(mensaje)
+    this.donantes.forEach(donanteIndividual ->
+      donanteIndividual.getPrimerContactoPrincipal().notificar(mensaje)
     );
   }
 
@@ -161,8 +128,8 @@ public class Donacion {
     // Notificación de inicio de traslado delegada al dominio de Donaciones
     String mensaje = "La entrega está en camino. ¡Atentos al recorrido!";
     this.beneficiario.getContactoPrincipal().notificar(mensaje);
-    this.donanteIds.forEach(donanteIndividual -> 
-        donanteIndividual.getContactoPrincipal().notificar(mensaje)
+    this.donantes.forEach(donanteIndividual ->
+        donanteIndividual.getPrimerContactoPrincipal().notificar(mensaje)
     );
   }
 
@@ -194,12 +161,12 @@ public class Donacion {
     this.beneficiario = beneficiario;
     beneficiario.asignarDonacion(this);
 
-    String mensajeBeneficiario = "Se le ha asignado una nueva donación: " + this.descripcion;
+    String mensajeBeneficiario = "Se le ha asignado una nueva donacion: " + this.descripcion;
     beneficiario.getContactoPrincipal().notificar(mensajeBeneficiario);
 
     String mensajeDonante = "Tu donación ha sido asignada a la entidad: " + beneficiario.getRazonSocial();
-    this.donanteIds.forEach(donanteIndividual -> 
-      donanteIndividual.getContactoPrincipal().notificar(mensajeDonante)
+    this.donantes.forEach(donanteIndividual ->
+      donanteIndividual.getPrimerContactoPrincipal().notificar(mensajeDonante)
     );
   }
 
@@ -227,19 +194,21 @@ public class Donacion {
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
   }
 
-  public List<EstadoDonacion> getHistorialEstados() {
-    return new ArrayList<>(historialEstados);
-  }
-
   public Subcategoria getSubcategoria() {
     return this.bienes.get(0).getSubcategoria(); // todos tienen la misma
   }
 
-  public List<Bien> getBienes() {
-    return new ArrayList<>(bienes);
+  public void reemplazarBienes(List<Bien> nuevosBienes) {
+    if (nuevosBienes == null || nuevosBienes.isEmpty()) {
+      throw new DomainValidationException("Una donación debe tener al menos un bien");
+    }
+    if (getEstadoActual() != TipoEstadoDonacion.EN_DEPOSITO) {
+      throw new CambioDeEstadoNoPermitidoException(
+          "Solo se puede modificar una donacion que esta en deposito"
+      );
+    }
+    this.bienes = new ArrayList<>(nuevosBienes);
+    this.descripcion = this.descripcionGeneral(nuevosBienes);
   }
 
-  public Beneficiario getBeneficiario() {
-    return this.beneficiario;
-  }
 }

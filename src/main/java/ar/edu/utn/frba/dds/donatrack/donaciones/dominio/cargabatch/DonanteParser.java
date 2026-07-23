@@ -75,8 +75,8 @@ public class DonanteParser {
               doc,
               finalTipoPersonaPos != -1 ? row[finalTipoPersonaPos] : null,
               finalNombrePos != -1 ? row[finalNombrePos] : null,
-              finalEmailPos != -1 ? new CorreoDeContato(row[finalEmailPos]) : null,
-              finalTelPos != -1 ? new SmsDeContato(row[finalTelPos]) : null
+              finalEmailPos != -1 ? new CorreoDeContato(row[finalEmailPos], true) : null,
+              finalTelPos != -1 ? new SmsDeContato(row[finalTelPos], true) : null
           );
           return new Resultado(datos, false, filaNro);
         } catch (IllegalArgumentException | DomainValidationException e) {

@@ -1,57 +1,47 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public final class BeneficiarioRepository {
   private static final BeneficiarioRepository INSTANCE = new BeneficiarioRepository();
-  private Map<String, Beneficiario> beneficiariosStore;
+  private final Map<String, Beneficiario> storeBeneficiarios;
 
   private BeneficiarioRepository() {
-    beneficiariosStore = new HashMap<>();
+    storeBeneficiarios = new HashMap<>();
   }
 
   public static BeneficiarioRepository getInstancia() {
     return INSTANCE;
   }
 
-  public void guardarBeneficiario(Beneficiario beneficiario) {
-    if (beneficiario.getId() == null) {
-      beneficiario.setId(UUID.randomUUID().toString());
-    }
-    beneficiariosStore.put(beneficiario.getId(), beneficiario);
+  public void guardar(Beneficiario beneficiario) {
+    if (beneficiario.getId() != null) throw new IllegalArgumentException("Constraint Violations: " + "El beneficiario ya tiene un ID asignado: " + beneficiario.getId());
+    beneficiario.setId(UUID.randomUUID().toString());
+
+    this.storeBeneficiarios.put(beneficiario.getId(), beneficiario);
   }
 
   public Beneficiario buscarPorId(String id) {
-    return beneficiariosStore.get(id);
-  }
-
-  public Beneficiario obtenerPorId(String id) {
-    Beneficiario beneficiario = beneficiariosStore.get(id);
-    if (beneficiario == null) {
-      throw new RecursoNoEncontradoException("No existe beneficiario con id " + id);
-    }
-    return beneficiario;
-  }
-
-  public void actualizar(Beneficiario beneficiario) {
-    if (beneficiario.getId() == null || !this.beneficiariosStore.containsKey(beneficiario.getId())) {
-      throw new IllegalArgumentException("El beneficiario No existe en la base de dato");
-    }
-    this.beneficiariosStore.put(beneficiario.getId(), beneficiario);
-  }
-
-  public void eliminar(String id) {
-    beneficiariosStore.remove(id);
+    return storeBeneficiarios.get(id);
   }
 
   public List<Beneficiario> buscarTodos() {
-    return beneficiariosStore.values().stream().toList();
+    return storeBeneficiarios.values().stream().toList();
+  }
+
+  public void actualizar(Beneficiario beneficiario) {
+    if (beneficiario.getId() == null || !this.storeBeneficiarios.containsKey(beneficiario.getId())) {
+      throw new IllegalArgumentException("El beneficiario No existe en la base de dato");
+    }
+    this.storeBeneficiarios.put(beneficiario.getId(), beneficiario);
+  }
+
+  public void eliminar(Beneficiario beneficiario) {
+    storeBeneficiarios.remove(beneficiario.getId());
   }
 }
