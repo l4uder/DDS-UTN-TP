@@ -6,6 +6,8 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationExceptio
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.FabricaClienteCorreoReal;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.FabricaClienteSmsReal;
 import java.text.Normalizer;
 import java.util.Iterator;
 import java.util.regex.Pattern;
@@ -75,8 +77,8 @@ public class DonanteParser {
               doc,
               finalTipoPersonaPos != -1 ? row[finalTipoPersonaPos] : null,
               finalNombrePos != -1 ? row[finalNombrePos] : null,
-              finalEmailPos != -1 ? new CorreoDeContato(row[finalEmailPos], true) : null,
-              finalTelPos != -1 ? new SmsDeContato(row[finalTelPos], true) : null
+              finalEmailPos != -1 ? new CorreoDeContato(row[finalEmailPos], true, FabricaClienteCorreoReal.start()) : null,
+              finalTelPos != -1 ? new SmsDeContato(row[finalTelPos], true, FabricaClienteSmsReal.start()) : null
           );
           return new Resultado(datos, false, filaNro);
         } catch (IllegalArgumentException | DomainValidationException e) {

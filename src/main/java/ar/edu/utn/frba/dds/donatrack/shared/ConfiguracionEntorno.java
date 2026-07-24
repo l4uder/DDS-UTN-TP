@@ -31,6 +31,22 @@ public class ConfiguracionEntorno {
     return elegirPuerto("PUERTO_LOGISTICA", puertoPorDefecto);
   }
 
+  public String getTwilioAccountSid() {
+    return obtenerObligatorio("TWILIO_ACCOUNT_SID");
+  }
+
+  public String getTwilioAuthToken() {
+    return obtenerObligatorio("TWILIO_AUTH_TOKEN");
+  }
+
+  public String getTwilioSmsNumber() {
+    return obtenerObligatorio("TWILIO_SMS_NUMBER");
+  }
+
+  public String getTwilioWhatsappNumber() {
+    return obtenerObligatorio("TWILIO_WHATSAPP_NUMBER");
+  }
+
   //=================== FUNCIONES AUXILIARES =====================
   private String obtenerObligatorio(String nombre) {
     String clave = dotenv.get(nombre);

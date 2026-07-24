@@ -20,6 +20,13 @@ public class WhatsappDeContato implements MedioContacto {
     this.clienteWhatsapp = new ClienteWhatsappMock();
   }
 
+  public WhatsappDeContato(String telefono, Boolean esPrincipal, ClienteWhatsapp clienteWhatsapp) {
+    checkDatos(telefono, esPrincipal);
+    this.telefono = telefono;
+    this.esPrincipal = esPrincipal;
+    this.clienteWhatsapp = clienteWhatsapp;
+  }
+
   private void checkDatos(String telefono, Boolean estado) {
     if (!telefono.matches("^[+0-9 -]*$")) {
       throw new DomainValidationException("Telefono invalido");

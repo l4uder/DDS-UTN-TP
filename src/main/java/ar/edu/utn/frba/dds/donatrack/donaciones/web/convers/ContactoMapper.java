@@ -6,6 +6,9 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeConta
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.contacto.ContactoDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.FabricaClienteCorreoReal;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.FabricaClienteSmsReal;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.FabricaClienteWhatsappReal;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -18,9 +21,21 @@ public class ContactoMapper {
       throw new DomainValidationException("Cada contacto necesita 'medio' y 'valor'");
     }
     MedioContacto contacto = switch (contactoDto.medio().toUpperCase()) {
-      case "EMAIL" -> new CorreoDeContato(contactoDto.valor(), Boolean.TRUE.equals(contactoDto.principal()));
-      case "SMS" -> new SmsDeContato(contactoDto.valor(), Boolean.TRUE.equals(contactoDto.principal()));
-      case "WHATSAPP" -> new WhatsappDeContato(contactoDto.valor(), Boolean.TRUE.equals(contactoDto.principal()));
+      case "EMAIL" -> new CorreoDeContato(
+          contactoDto.valor(), 
+          Boolean.TRUE.equals(contactoDto.principal()), 
+          FabricaClienteCorreoReal.start()
+      );
+      case "SMS" -> new SmsDeContato(
+          contactoDto.valor(), 
+          Boolean.TRUE.equals(contactoDto.principal()), 
+          FabricaClienteSmsReal.start()
+      );
+      case "WHATSAPP" -> new WhatsappDeContato(
+          contactoDto.valor(), 
+          Boolean.TRUE.equals(contactoDto.principal()), 
+          FabricaClienteWhatsappReal.start() 
+      );
       default -> throw new DomainValidationException(
           "EL medio de contacto: " + contactoDto.medio() + " no existe debe ser: [EMAIL, SMS o WHATSAPP] ");
     };

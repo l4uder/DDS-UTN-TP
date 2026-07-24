@@ -20,6 +20,13 @@ public class SmsDeContato implements MedioContacto {
     this.clienteSms = new ClienteSmsMock();
   }
 
+  public SmsDeContato(String telefono, Boolean esPrincipal, ClienteSms clienteSms) {
+    checkDatos(telefono, esPrincipal);
+    this.telefono = telefono;
+    this.esPrincipal = esPrincipal;
+    this.clienteSms = clienteSms;
+  }
+
   private void checkDatos(String telefono, Boolean estado) {
     if (!telefono.matches("^[+0-9 -]*$")) {
       throw new DomainValidationException("Telefono invalido");

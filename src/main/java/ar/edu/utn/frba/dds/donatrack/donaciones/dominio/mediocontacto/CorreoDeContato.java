@@ -20,6 +20,13 @@ public class CorreoDeContato implements MedioContacto {
     this.clienteCorreo = new ClienteCorreoMock();
   }
 
+  public CorreoDeContato(String correo, Boolean esPrincipal, ClienteCorreo clienteCorreo) {
+    checkDatos(correo, esPrincipal);
+    this.correo = correo;
+    this.esPrincipal = esPrincipal;
+    this.clienteCorreo = clienteCorreo;
+  }
+
   private void checkDatos(String correo, Boolean estado) {
     if (!correo.matches("^.*@.*$")) {
       throw new DomainValidationException("Correo invalido, verifique por favor");

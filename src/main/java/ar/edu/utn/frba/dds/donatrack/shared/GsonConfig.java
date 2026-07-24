@@ -48,7 +48,7 @@ public class GsonConfig {
       }
 
       @Override
-      public <T> @NotNull T fromJsonString(@NotNull String json, @NotNull Type targetType) {
+      public <T> T fromJsonString(@NotNull String json, @NotNull Type targetType) {
         return gson.fromJson(json, targetType);
       }
     };
