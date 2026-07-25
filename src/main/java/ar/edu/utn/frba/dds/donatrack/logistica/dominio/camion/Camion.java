@@ -3,9 +3,11 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class Camion {
-  private String patente;
+  private final String patente;
   private float capacidadVolumen;
   private float altura;
   private float capacidadCarga;
@@ -23,14 +25,6 @@ public class Camion {
     this.capacidadCarga = capacidadCarga;
     this.coordenadas = new ArrayList<>();
     this.gps = null;
-  }
-
-  public void actualizarDatos(Float capacidadVolumen, Float altura, Float capacidadCarga) {
-    validarCapacidades(capacidadVolumen, altura, capacidadCarga);
-
-    this.capacidadVolumen = capacidadVolumen;
-    this.altura = altura;
-    this.capacidadCarga = capacidadCarga;
   }
 
   private void validarPatente(String patente) {
@@ -82,19 +76,13 @@ public class Camion {
     return "https://maps.google.com/?q=" + ubicacion.getLatitud() + "," + ubicacion.getLongitud();
   }
 
-  public String getPatente() {
-    return patente;
+  public void actualizarDatos(Float capacidadVolumen, Float altura, Float capacidadCarga, Gps gps) {
+    validarCapacidades(capacidadVolumen, altura, capacidadCarga);
+
+    this.capacidadVolumen = capacidadVolumen;
+    this.altura = altura;
+    this.capacidadCarga = capacidadCarga;
+    this.gps = gps;
   }
 
-  public float getCapacidadVolumen() {
-    return capacidadVolumen;
-  }
-
-  public float getAltura() {
-    return altura;
-  }
-
-  public float getCapacidadCarga() {
-    return capacidadCarga;
-  }
 }

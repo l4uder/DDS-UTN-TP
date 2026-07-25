@@ -1,101 +1,88 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.controller;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Gps;
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.GpsRepository;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.convers.CamionMapper;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.camion.ActualizarCamionRequest;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.camion.CamionResponse;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.camion.CrearCamionRequest;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.camion.CamionRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
-import com.google.gson.JsonSyntaxException;
 import io.javalin.http.Context;
 import java.util.List;
 
 public class CamionController {
+  private final CamionRepository repoCamiones;
+  private final GpsRepository repoGps;
 
-  private final CamionRepository repository = CamionRepository.getInstancia();
-
-  public void listar(Context ctx) {
-    List<CamionResponse> camiones = repository.buscarTodos().stream()
-        .map(CamionResponse::desde)
-        .toList();
-
-    ctx.json(camiones);
-  }
-
-  public void obtener(Context ctx) {
-    try {
-      Camion camion = repository.obtenerPorPatente(ctx.pathParam("patente"));
-      ctx.json(CamionResponse.desde(camion));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    }
+  public CamionController(CamionRepository repoCamiones, GpsRepository repoGps) {
+    this.repoCamiones = repoCamiones;
+    this.repoGps = repoGps;
   }
 
   public void crear(Context ctx) {
-    try {
-      CrearCamionRequest request =
-          ctx.bodyAsClass(CrearCamionRequest.class);
+    CamionRequest camionDto = ctx.bodyAsClass(CamionRequest.class);
 
-      Camion camion = new Camion(
-          request.patente(),
-          request.capacidadVolumen(),
-          request.altura(),
-          request.capacidadCarga()
-      );
+    Camion camion = CamionMapper.aDominio(camionDto);
 
-      repository.insertar(camion);
-
-      ctx.status(201).json(CamionResponse.desde(camion));
-
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(
-          new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    }
+    repoCamiones.guardar(camion);
+    ctx.status(201).json(CamionMapper.aDto(camion));
   }
 
+  public void obtenerTodos(Context ctx) {
+    List<Camion> camiones = repoCamiones.buscarTodos();
+
+    ctx.status(200).json(CamionMapper.aDto(camiones));
+  }
+
+  public void obtener(Context ctx) {
+    String patente = ctx.pathParam("patente");
+
+    Camion camion = buscarCamionPorPatente(patente);
+
+    ctx.status(200).json(CamionMapper.aDto(camion));
+  }
+
+  //pasamos de un put a patch
   public void actualizar(Context ctx) {
-    try {
-      Camion camion =
-          repository.obtenerPorPatente(ctx.pathParam("patente"));
+    String patente = ctx.pathParam("patente");
+    ActualizarCamionRequest request = ctx.bodyAsClass(ActualizarCamionRequest.class);
 
-      ActualizarCamionRequest request =
-          ctx.bodyAsClass(ActualizarCamionRequest.class);
+    Camion camion = buscarCamionPorPatente(patente);
+    Gps gps = buscarGpsPorImei(request.gpsImei());
+    CamionMapper.actualizarDesdeRequest(camion, gps, request);
 
-      camion.actualizarDatos(
-          request.capacidadVolumen(),
-          request.altura(),
-          request.capacidadCarga()
-      );
-
-      repository.guardar(camion);
-
-      ctx.json(CamionResponse.desde(camion));
-
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(
-          new ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    }
+    repoCamiones.actualizar(camion);
+    ctx.status(200).json(CamionMapper.aDto(camion));
   }
 
   public void eliminar(Context ctx) {
-    try {
-      String patente = ctx.pathParam("patente");
+    String patente = ctx.pathParam("patente");
 
-      repository.obtenerPorPatente(patente);
-      repository.eliminar(patente);
-
-      ctx.status(204);
-
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ErrorResponse(404, e.getMessage()));
-    }
+    Camion camion = buscarCamionPorPatente(patente);
+    repoCamiones.eliminar(camion);
+    ctx.status(204);
   }
+
+  //================ FUNCIONES AUXILIARES ======================
+  private Camion buscarCamionPorPatente(String patente) {
+    Camion camion = repoCamiones.buscarPorPatente(patente);
+    if (camion == null) {
+      throw new RecursoNoEncontradoException("No existe el camión, con patente: " + patente);
+    }
+    return camion;
+  }
+
+  private Gps buscarGpsPorImei(String imei) {
+    if (imei == null) {
+      return null;
+    }
+    Gps gps = repoGps.buscarPorId(imei);
+    if (gps == null) {
+      throw new RecursoNoEncontradoException("No existe el gps, con imei: " + imei);
+    }
+    return gps;
+  }
+
 }

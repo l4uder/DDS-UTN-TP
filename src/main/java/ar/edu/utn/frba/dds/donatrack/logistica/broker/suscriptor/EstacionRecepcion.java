@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Gps;
 import ar.edu.utn.frba.dds.donatrack.logistica.broker.dto.GpsMensaje;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.GpsRepository;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -53,9 +54,10 @@ public class EstacionRecepcion {
                 + " | bateria: " + datos.getNivelBateria()
                 + " | Latitud: " + datos.getLatitud()
                 + " | Longitud: " + datos.getLongitud());
-            Camion camion = repoCamiones.buscarCamionPorGps(datos.getId());
+            Camion camion = repoCamiones.buscarPorGps(datos.getId());
+            if (camion == null) throw new RecursoNoEncontradoException("No existe camión con el GPS " + datos.getId());
             camion.agregarCoordenada(new Coordenada(datos.getLatitud(), datos.getLongitud()));
-            repoCamiones.guardar(camion);
+            repoCamiones.actualizar(camion);
             Gps gps = repoGps.buscarPorId(datos.getId());
             gps.actualizarEstado(datos.getNivelBateria());
           } catch (Exception e) {

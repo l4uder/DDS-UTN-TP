@@ -64,8 +64,8 @@ public class CoordinadorRuta {
 
     Map<Camion, List<Entrega>> entregasPorCamion = new HashMap<>();
     request.entregasPorPatente().forEach((patente, idsEntregas) -> {
-      Camion camion = camionRepository.buscarPorPatente(patente)
-          .orElseThrow(() -> new RecursoNoEncontradoException("Camión no encontrado: " + patente));
+      Camion camion = camionRepository.buscarPorPatente(patente);
+      if (camion == null) throw new RecursoNoEncontradoException("Camión no encontrado: " + patente);
       List<Entrega> entregas = idsEntregas.stream()
           .map(entregaRepository::buscarPorId)
           .toList();

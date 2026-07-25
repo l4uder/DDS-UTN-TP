@@ -4,16 +4,14 @@ import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.CamionController;
 import io.javalin.Javalin;
 
 public class CamionRoutes {
-  private CamionRoutes() {
+  private CamionRoutes() { }
+
+  public static void registrar(Javalin app, CamionController camionController) {
+    app.post("/camiones", camionController::crear);
+    app.get("/camiones", camionController::obtenerTodos);
+    app.get("/camiones/{patente}", camionController::obtener);
+    app.put("/camiones/{patente}", camionController::actualizar);
+    app.delete("/camiones/{patente}", camionController::eliminar);
   }
 
-  public static void registrar(Javalin app) {
-    CamionController controller = new CamionController();
-
-    app.get("/camiones", controller::listar);
-    app.post("/camiones", controller::crear);
-    app.get("/camiones/{patente}", controller::obtener);
-    app.put("/camiones/{patente}", controller::actualizar);
-    app.delete("/camiones/{patente}", controller::eliminar);
-  }
 }

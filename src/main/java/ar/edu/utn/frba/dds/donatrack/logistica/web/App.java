@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web;
 
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.GpsRepository;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.CamionController;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.PlanificacionController;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorEntrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorRuta;
@@ -65,16 +67,13 @@ public class App {
 
     ExceptionHandlers.registrar(app);
 
-    app.get("/health",
-        ctx -> ctx.json(new Health("logistica-service", "OK"))
-    );
-
     DonacionesClient donacionesClient = new DonacionesClient();
     ClientePlanificadorExterno clienteExterno = new ClientePlanificadorExternoMock();
 
     EntregaRepository entregaRepository = EntregaRepository.getInstancia();
     CamionRepository camionRepository = CamionRepository.getInstancia();
     RutaRepository rutaRepository = RutaRepository.getInstancia();
+    GpsRepository gpsRepository = GpsRepository.getInstancia();
 
     CoordinadorEntrega coordinadorEntrega = new CoordinadorEntrega(
         entregaRepository,
@@ -103,7 +102,13 @@ public class App {
         procesoLogistica
     );
 
-    CamionRoutes.registrar(app);
+    CamionController camionController = new CamionController(
+        camionRepository,
+        gpsRepository
+    );
+
+    app.get("/health",ctx -> ctx.json("Micro servicio de logística funcionando"));
+    CamionRoutes.registrar(app, camionController);
     RutaRoutes.registrar(app, rutaController);
     EntregaRoutes.registrar(app, entregaController);
     PlanificacionRoutes.registrar(app, planificacionController);
@@ -112,7 +117,5 @@ public class App {
   }
 
   public record AppLogistica(Javalin app, ProcesoLogistica procesoLogistica) {}
-
-  public record Health(String servicio, String estado) {}
 
 }
