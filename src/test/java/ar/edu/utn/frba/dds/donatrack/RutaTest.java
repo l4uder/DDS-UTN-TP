@@ -22,7 +22,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RutaTest {
-
   private Camion camion;
   private Chofer chofer;
   private Entrega entrega;
@@ -48,13 +47,14 @@ public class RutaTest {
         .conDireccion("alguna dirección")
         .build();
 
-    DonacionEnTransito donacion = new DonacionEnTransito("don-1", "Fideos", beneficiario);
-
     //donacion.confirmarAsignacion(beneficiario);
     beneficiario = new Beneficiario("ben-1", "Comedor San José", "Av. Siempre Viva 123");
 
+    DonacionEnTransito donacion = new DonacionEnTransito("don-1", "Fideos", beneficiario);
 
     entrega = new Entrega(beneficiario, List.of(donacion), camion);
+    entrega.confirmarListaParaEntregar();
+
     ruta = new Ruta(camion, LocalDate.now(), List.of(entrega));
   }
 
