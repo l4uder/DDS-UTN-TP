@@ -19,13 +19,16 @@
     </properties>
 
     <dependencies>
-        <!-- Source: https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <!-- Source: https://mvnrepository.com/artifact/com.google.guava/guava
+            Motivo: Proporciona utilidades adicionales en Java como: caché, Optional, etc. -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>33.6.0-jre</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
+            Motivo: Para escribir y ejecutar pruebas unitarias. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -33,7 +36,7 @@
             <scope>test</scope>
         </dependency>
         <!-- Source: https://mvnrepository.com/artifact/org.mockito/mockito-core
-             Motivo: Para Test te permite crear clases fake-->
+             Motivo: Permite crear mocks (objetos simulados) para pruebas unitarias. -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -41,7 +44,7 @@
             <scope>test</scope>
         </dependency>
         <!-- Source: https://mvnrepository.com/artifact/com.opencsv/opencsv
-             Motivo: Para el lectorCsv  -->
+             Motivo:  Permite leer archivos CSV. -->
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
@@ -49,7 +52,7 @@
             <scope>compile</scope>
         </dependency>
         <!-- Source: https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
-             Motivo: Para enviar mensajes por mqtt  -->
+            Motivo: permite enviar y recibir mensajes mediante MQTT. -->
         <dependency>
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
@@ -57,7 +60,7 @@
             <scope>compile</scope>
         </dependency>
         <!-- Source: https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-             Motivo para convertir/desconvertir json  -->
+             Motivo: Para convertir/desconvertir JSON. -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -65,44 +68,53 @@
             <scope>compile</scope>
         </dependency>
         <!-- Source: https://mvnrepository.com/artifact/org.projectlombok/lombok
-            Motivo: para crear constructores vacios y generar getters y setters por default -->
+            Motivo: Genera automáticamente getters, setters, constructores y otros métodos repetitivos. -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.42</version>
             <scope>provided</scope>
         </dependency>
-
+        <!-- Source: https://mvnrepository.com/artifact/io.javalin/javalin
+             Motivo: Para crear APIs REST y aplicaciones web. -->
         <dependency>
             <groupId>io.javalin</groupId>
             <artifactId>javalin</artifactId>
             <version>6.3.0</version>
             <scope>compile</scope>
         </dependency>
-
+        <!-- Source: https://mvnrepository.com/artifact/com.google.code.gson/gson
+             Motivo: Para convertir/desconvertir JSON. //Todo HAY DOS QUE HACEN LO MISMO -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
             <scope>compile</scope>
         </dependency>
-
+        <!-- Source: https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+             Motivo: Para registrar mensajes de log en consola. //Todo sera necesario ??-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.16</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/com.sun.mail/javax.mail
+            Motivo: Permite enviar correos electrónicos mediante SMTP. -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/io.github.cdimascio/dotenv-java
+            Motivo: Para obtener variables de entorno desde un archivo .env -->
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>dotenv-java</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/com.twilio.sdk/twilio
+        Motivo: Permite enviar SMS y mensajes de WhatsApp utilizando la API de Twilio. -->
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
@@ -117,7 +129,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
-            <!-- despues quitar este comentario para
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
@@ -132,17 +143,23 @@
                     </execution>
                 </executions>
             </plugin>
-            -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.8</version>
                 <configuration>
                     <excludes>
-                        <exclude>ar/edu/utn/frba/dds/donatrack/cron/**/*</exclude>
-                        <exclude>ar/edu/utn/frba/dds/donatrack/dominio/mqtt/**/*</exclude>
-                        <exclude>ar/edu/utn/frba/dds/donatrack/persistencia/**/*</exclude>
                         <exclude>ar/edu/utn/frba/dds/donatrack/Main.class</exclude>
+                        <exclude>ar/edu/utn/frba/dds/donatrack/shared/**/*</exclude>
+                        <!-- microservicios de donaciones -->
+                        <exclude>ar/edu/utn/frba/dds/donatrack/donaciones/cron/**/*</exclude>
+                        <exclude>ar/edu/utn/frba/dds/donatrack/donaciones/persistencia/**/*</exclude>
+                        <exclude>ar/edu/utn/frba/dds/donatrack/donaciones/web/**/*</exclude>
+                        <!-- microservicios de logística -->
+                        <exclude>ar/edu/utn/frba/dds/donatrack/logistica/cron/**/*</exclude>
+                        <exclude>ar/edu/utn/frba/dds/donatrack/logistica/persistencia/**/*</exclude>
+                        <exclude>ar/edu/utn/frba/dds/donatrack/logistica/web/**/*</exclude>
+                        <exclude>ar/edu/utn/frba/dds/donatrack/logistica/broker/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
