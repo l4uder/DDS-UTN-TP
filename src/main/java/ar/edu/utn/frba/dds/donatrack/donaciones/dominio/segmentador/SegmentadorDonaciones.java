@@ -3,7 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.segmentador;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.RegistroEntrega;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.entrega.RegistroEntrega;
 
 import java.util.ArrayList;
 import java.util.List;

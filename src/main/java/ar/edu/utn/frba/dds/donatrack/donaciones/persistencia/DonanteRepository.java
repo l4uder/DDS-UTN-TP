@@ -1,12 +1,10 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDonante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public final class DonanteRepository {
@@ -32,22 +30,22 @@ public final class DonanteRepository {
     return storeDonantes.get(id);
   }
 
-  public List<Donante> buscarPorTipo(TipoDonante tipo) {
+  public List<Donante> buscarPorTipo(TipoPersona tipo) {
     return storeDonantes.values().stream()
-        .filter(d -> d.getTipo() == tipo)
+        .filter(d -> d.getTipoPersona() == tipo)
         .toList();
   }
 
   public List<Donante> buscarTodos() {
     return storeDonantes.values().stream().toList();
   }
-
+/*
   public Optional<Donante> buscarPorEmail(String email) {
     return storeDonantes.values().stream()
         .filter(d -> d.buscarEmail().map(e -> e.equalsIgnoreCase(email)).orElse(false))
         .findFirst();
   }
-
+*/
   public List<Donante> buscarAusentesPorMas(Integer dias) {
     return storeDonantes.values().stream().filter(d -> d.estaAusentePorMasDe(dias)).toList();
   }

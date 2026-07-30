@@ -1,38 +1,40 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.entrega.RegistroEntrega;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Genero;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.TipoDonante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.TipoOrganizacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Juridica;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public abstract class Donante {
+public class Donante {
   @Setter
-  protected String id;
-  protected Documento documento;
-  protected List<MedioContacto> contactos;
-  protected List<RegistroEntrega> entregas = new ArrayList<>();
+  private String id;
+  private Documento documento;
+  private List<RegistroEntrega> entregas;
+  private final TipoDonante tipoDonante;
 
-  public Donante(Documento documento, List<MedioContacto> contactos) {
-    checkDatosBase(documento, contactos);
+  private Donante(Documento documento, TipoDonante tipoDonante) {
+    checkDatos(documento);
     this.documento = documento;
-    this.contactos = new ArrayList<>(contactos);
+    this.entregas = new ArrayList<>();
+    this.tipoDonante = tipoDonante;
   }
 
-  private void checkDatosBase(Documento documento, List<MedioContacto> contactos) {
+  private void checkDatos(Documento documento) {
     if (documento == null) {
-      throw new DomainValidationException("El documento es obligatorio");
-    }
-    if (contactos == null || contactos.isEmpty()) {
-      throw new DomainValidationException("Debe proporcionar al menos un contacto");
-    }
-    if (contactos.stream().noneMatch(MedioContacto::getEsPrincipal)) {
-      throw new DomainValidationException("Debe tener al menos un contacto principal");
+      throw new DomainValidationException("El documento no puede ser null");
     }
   }
 
@@ -42,14 +44,7 @@ public abstract class Donante {
         .orElseThrow(() -> new DomainValidationException( "El donante no posee ningún contacto configurado como principal"));
   }
 
-  public List<MedioContacto> getContactosPrincipales() {
-    return this.contactos.stream().filter(c -> c.getEsPrincipal()).toList();
-  }
-
-  public List<MedioContacto> getContactosSecundarios() {
-    return this.contactos.stream().filter(c -> !c.getEsPrincipal()).toList();
-  }
-
+/*
   public String getEmail() {
     return buscarEmail()
         .orElseThrow(() -> new DomainValidationException(
@@ -62,9 +57,9 @@ public abstract class Donante {
         .map(correo -> ((CorreoDeContato) correo).getCorreo())
         .findFirst();
   }
-
+*/
   public void recibirNotificacion(String mensaje) {
-    List<MedioContacto> contactos = getContactos();
+    List<MedioContacto> contactos = getContactosPrincipales();
     contactos.forEach(c -> c.notificar(mensaje));
   }
 
@@ -83,14 +78,55 @@ public abstract class Donante {
     return ultima.getFecha().isBefore(fechaLimite);
   }
 
-  abstract public String getNombreCompleto();
+  public static Donante personaHumana(String nombre, String apellido, Documento documento,
+                                      LocalDate fechaNacimiento, Genero genero, String direccion,
+                                      List<MedioContacto> contactos) {
+    TipoDonante tipoPersona = new Humana(nombre, apellido, documento, fechaNacimiento, genero, direccion, contactos);
+    return new Donante(documento, tipoPersona);
+  }
 
-  public abstract TipoDonante getTipo();
+  public static Donante personaJuridica(String razonSocial, Documento documento, TipoOrganizacion tipo,
+                                        String rubro, List<Representante> representantes) {
+    TipoDonante tipoPersona = new Juridica(razonSocial, tipo, rubro, documento, representantes);
+    return new Donante(documento, tipoPersona);
+  }
 
-  protected void actualizarDatosBase(Documento documento, List<MedioContacto> contactos) {
-    checkDatosBase(documento, contactos);
+  public List<MedioContacto> getContactosPrincipales() {
+    return this.tipoDonante.getContactosPrincipales();
+  }
+
+  public List<MedioContacto> getContactosSecundarios() {
+    return this.tipoDonante.getContactosSecundarios();
+  }
+
+  public String getNombreCompleto() {
+    return tipoDonante.getNombreCompleto();
+  }
+
+  public TipoPersona getTipoPersona() {
+    return tipoDonante.getTipo();
+  }
+
+  private void actualizarDatosBase(Documento documento) {
+    checkDatos(documento);
     this.documento = documento;
-    this.contactos = new ArrayList<>(contactos);
+  }
+
+  public void actualizarDatosHumana(String nombre, String apellido, Documento documento,
+                                    LocalDate fechaNacimiento, Genero genero, String direccion,
+                                    List<MedioContacto> contactos) {
+    if (!(this.tipoDonante instanceof Humana)) throw new DomainValidationException("No se pueden actualizar los datos de una persona humana con datos de una persona jurídica");
+
+    this.actualizarDatosBase(documento);
+    ((Humana) this.tipoDonante).actualizarDatos(nombre, apellido, documento, fechaNacimiento, genero, direccion, contactos);
+  }
+
+  public void actualizarDatosJuridica(String razonSocial, Documento documento, TipoOrganizacion tipo,
+                                      String rubro, List<Representante> representantes) {
+    if (!(this.tipoDonante instanceof Juridica)) throw new DomainValidationException("No se pueden actualizar los datos de una persona jurídica con datos de una persona humana");
+
+    this.actualizarDatosBase(documento);
+    ((Juridica) this.tipoDonante).actualizarDatos(razonSocial, tipo, rubro, documento, representantes);
   }
 
 }

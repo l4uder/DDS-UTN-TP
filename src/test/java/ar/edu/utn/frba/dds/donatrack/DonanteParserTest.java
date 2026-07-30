@@ -1,11 +1,9 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.FabricaClienteCorreoReal;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.cargabatch.DonanteParser;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
-import org.junit.jupiter.api.BeforeEach;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

@@ -1,10 +1,9 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaJuridica;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Representante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoOrganizacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.TipoOrganizacion;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +13,9 @@ public class PersonaJuridicaBuilder {
   private TipoOrganizacion tipoOrganizacion;
   private String rubro;
   private List<Representante> representantes;
-  private List<MedioContacto> contactos;
 
   public PersonaJuridicaBuilder() {
     this.representantes = new ArrayList<>();
-    this.contactos = new ArrayList<>();
   }
 
   public PersonaJuridicaBuilder conRazonSocial(String razonSocial) {
@@ -46,13 +43,12 @@ public class PersonaJuridicaBuilder {
     return this;
   }
 
-  public PersonaJuridicaBuilder conAgregarContacto(MedioContacto contacto) {
-    this.contactos.add(contacto);
+  public PersonaJuridicaBuilder conAgregarRepresetante(Representante representante) {
+    this.representantes.add(representante);
     return this;
   }
 
-  public PersonaJuridica build() {
-    return new PersonaJuridica(razonSocial, tipoOrganizacion, rubro,
-                              documento, representantes, contactos);
+  public Donante build() {
+    return Donante.personaJuridica(razonSocial, documento, tipoOrganizacion, rubro, representantes);
   }
 }

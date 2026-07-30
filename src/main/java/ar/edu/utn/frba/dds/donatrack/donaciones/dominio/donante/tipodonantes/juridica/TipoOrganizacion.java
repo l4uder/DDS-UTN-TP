@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica;
 
 public enum TipoOrganizacion {
   GUBERNAMENTAL,

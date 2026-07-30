@@ -1,15 +1,12 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.controller;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDonante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonanteMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
-import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
-import com.google.gson.JsonSyntaxException;
 import io.javalin.http.Context;
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +32,7 @@ public class DonanteController {
     //Cosas que recibo por URL --> Query param
     String tipo = ctx.queryParam("tipo");
 
-    TipoDonante tipoDonante = aTipoDonante(tipo);
+    TipoPersona tipoDonante = aTipoDonante(tipo);
 
     List<Donante> donantes = (tipoDonante == null) ? repoDonantes.buscarTodos() : repoDonantes.buscarPorTipo(tipoDonante);
     ctx.status(200).json(donantes.stream().map(DonanteMapper::aDtoResumen).toList());
@@ -57,7 +54,7 @@ public class DonanteController {
     DonanteRequest donanteDto = ctx.bodyAsClass(DonanteRequest.class);
 
     Donante donante = buscarDonantePorId(idDonante);
-    DonanteMapper.actualizarDominio(donante, donanteDto);
+    DonanteMapper.actualizarDesdeRequest(donante, donanteDto);
 
     repoDonantes.actualizar(donante);
     ctx.status(200).json(DonanteMapper.aDto(donante));
@@ -73,12 +70,12 @@ public class DonanteController {
     ctx.status(204);
   }
 
-  private TipoDonante aTipoDonante(String tipo) {
+  private TipoPersona aTipoDonante(String tipo) {
     if (tipo == null || tipo.isBlank()) return null;
     try {
-      return TipoDonante.valueOf(tipo.toUpperCase());
+      return TipoPersona.valueOf(tipo.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DomainValidationException("El tipo de donante: " + tipo + " no existe debe ser: " + Arrays.toString(TipoDonante.values()));
+      throw new DomainValidationException("El tipo de donante: " + tipo + " no existe debe ser: " + Arrays.toString(TipoPersona.values()));
     }
   }
 

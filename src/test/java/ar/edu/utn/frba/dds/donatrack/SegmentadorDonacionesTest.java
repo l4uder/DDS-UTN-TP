@@ -13,7 +13,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.segmentador.SegmentadorD
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.RegistroEntrega;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.entrega.RegistroEntrega;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

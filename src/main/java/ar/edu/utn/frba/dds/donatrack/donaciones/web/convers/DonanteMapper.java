@@ -1,21 +1,21 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Genero;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaHumana;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.PersonaJuridica;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Representante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDonante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoOrganizacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Genero;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.TipoDonante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Juridica;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.TipoOrganizacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.contacto.ContactoDto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.documento.DocumentoDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteResponse;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteResumenResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.AccessLevel;
@@ -25,106 +25,105 @@ import lombok.NoArgsConstructor;
 public class DonanteMapper {
 
   public static Donante aDominio(DonanteRequest request) {
-    Documento documento = DocumentoMapper.aDominio(request.documento());
-    List<MedioContacto> contactos = ContactoMapper.aDominio(request.contactos());
-    TipoDonante tipo = aTipoDonante(request.tipo());
+    TipoPersona tipo = aTipoPersona(request.tipo());
 
     return switch (tipo) {
-      case HUMANA -> new PersonaHumana(
+      case HUMANA -> Donante.personaHumana(
           request.nombre(),
           request.apellido(),
-          documento,
-          request.fechaNacimiento(),
-          request.genero() == null ? null : aGenero(request.genero()),
+          DocumentoMapper.aDominio(request.documento(), TipoPersona.HUMANA),
+          aFecha(request.fechaNacimiento()),
+          aGenero(request.genero()),
           request.direccion(),
-          contactos);
-      case JURIDICA -> new PersonaJuridica(
+          ContactoMapper.aDominio(request.contactos()));
+      case JURIDICA -> Donante.personaJuridica(
           request.razonSocial(),
-          request.tipoOrganizacion() == null ? TipoOrganizacion.SIN_ESPECIFICAR : aTipoOrganizacion(request.tipoOrganizacion()),
+          DocumentoMapper.aDominio(request.documento(), TipoPersona.JURIDICA),
+          aTipoOrganizacion(request.tipoOrganizacion()),
           request.rubro(),
-          documento,
-          null,
-          contactos);
+          RepresentanteMapper.aDominio(request.representantes()));
     };
   }
 
   public static DonanteResponse aDto(Donante donante) {
-    DocumentoDto documentoDto = DocumentoMapper.aDto(donante.getDocumento());
-    List<ContactoDto> contactosDto = ContactoMapper.aDto(donante.getContactos());
+    DonanteResponse.DonanteResponseBuilder dtoBuild = DonanteResponse.builder();
+    TipoPersona tipo = donante.getTipoPersona();
 
-    if (donante instanceof PersonaHumana humana) {
-      return new DonanteResponse(
-          humana.getId(),
-          "HUMANA",
-          documentoDto,
-          contactosDto,
-          humana.getNombre(),
-          humana.getApellido(),
-          humana.getFechaNacimiento(),
-          humana.getGenero() == null ? null : humana.getGenero().name(),
-          humana.getDireccion(),
-          null, null, null);
+    dtoBuild.id(donante.getId());
+    dtoBuild.tipo(tipo.name());
+    dtoBuild.documento(DocumentoMapper.aDto(donante.getDocumento()));
+    switch (tipo) {
+      case HUMANA -> {
+        Humana humana = (Humana) donante.getTipoDonante();
+        dtoBuild.nombre(humana.getNombre());
+        dtoBuild.apellido(humana.getApellido());
+        dtoBuild.años(humana.getEdad() + " años");
+        dtoBuild.genero(humana.getGenero().name());
+        dtoBuild.direccion(humana.getDireccion());
+        dtoBuild.contactos(ContactoMapper.aDto(humana.getContactos()));
+      }
+      case JURIDICA -> {
+        Juridica juridica = (Juridica) donante.getTipoDonante();
+        dtoBuild.razonSocial(juridica.getRazonSocial());
+        dtoBuild.tipoOrganizacion(juridica.getTipoOrganizacion().name());
+        dtoBuild.rubro(juridica.getRubro());
+        dtoBuild.representantes(RepresentanteMapper.aDto(juridica.getRepresentantes()));
+      }
+      default -> throw new DomainValidationException("Tipo de donante no soportado, o nuevo");
     }
 
-    if (donante instanceof PersonaJuridica juridica) {
-      return new DonanteResponse(
-          juridica.getId(),
-          "JURIDICA",
-          documentoDto,
-          contactosDto,
-          null, null, null, null, null,
-          juridica.getRazonSocial(),
-          juridica.getTipoOrganizacion() == null ? null : juridica.getTipoOrganizacion().name(),
-          juridica.getRubro());
-    }
-
-    throw new DomainValidationException("Tipo de donante no soportado: " + donante.getClass().getName());
+    return dtoBuild.build();
   }
 
   public static DonanteResumenResponse aDtoResumen(Donante donante) {
     return new DonanteResumenResponse(
         donante.getId(),
-        donante.getTipo().name(),
+        donante.getTipoPersona().name(),
         donante.getNombreCompleto());
   }
 
-  public static void actualizarDominio(Donante donante, DonanteRequest request) {
+  public static void actualizarDesdeRequest(Donante donante, DonanteRequest request) {
     if (request.tipo() != null) {
       //TipoDonante nuevoTipo = parseEnum(TipoDonante.class, request.tipo(), "tipo de donante");
       //if (donante.getTipo() != nuevoTipo) throw new DomainValidationException("No se puede modificar el tipo de un donante existente.");
       throw new DomainValidationException("No puede modificar el tipo de un donante");
     }
 
-    Documento documentoMerge = request.documento() != null ? DocumentoMapper.aDominio(request.documento()) : donante.getDocumento();
-    List<MedioContacto> contactosMerge = request.contactos() != null ? ContactoMapper.aDominio(request.contactos()) : donante.getContactos();
+    Documento documentoMerge = request.documento() != null ? DocumentoMapper.aDominio(request.documento(), donante.getTipoPersona()) : donante.getDocumento();
 
-    if (donante instanceof PersonaHumana humana) {
-      String nombreMerge = request.nombre() != null ? request.nombre() : humana.getNombre();
-      String apellidoMerge = request.apellido() != null ? request.apellido() : humana.getApellido();
-      LocalDate nacimientoMerge = request.fechaNacimiento() != null ? request.fechaNacimiento() : humana.getFechaNacimiento();
-      String direccionMerge = request.direccion() != null ? request.direccion() : humana.getDireccion();
-      Genero generoMerge = request.genero() != null ? aGenero(request.genero()) : humana.getGenero();
+    switch (donante.getTipoPersona()) {
+      case HUMANA -> {
+        Humana humana = (Humana) donante.getTipoDonante();
+        String nombreMerge = request.nombre() != null ? request.nombre() : humana.getNombre();
+        String apellidoMerge = request.apellido() != null ? request.apellido() : humana.getApellido();
+        LocalDate nacimientoMerge = request.fechaNacimiento() != null ? aFecha(request.fechaNacimiento()) : humana.getFechaNacimiento();
+        String direccionMerge = request.direccion() != null ? request.direccion() : humana.getDireccion();
+        Genero generoMerge = request.genero() != null ? aGenero(request.genero()) : humana.getGenero();
+        List<MedioContacto> contactosMerge = request.contactos() != null ? ContactoMapper.aDominio(request.contactos()) : humana.getContactos();
 
-      humana.actualizarDatos(nombreMerge, apellidoMerge, documentoMerge, nacimientoMerge, generoMerge, direccionMerge, contactosMerge);
-    } else if (donante instanceof PersonaJuridica juridica) {
-      String razonSocialMerge = request.razonSocial() != null ? request.razonSocial() : juridica.getRazonSocial();
-      String rubroMerge = request.rubro() != null ? request.rubro() : juridica.getRubro();
-      TipoOrganizacion tipoOrgMerge = request.tipoOrganizacion() != null ? aTipoOrganizacion(request.tipoOrganizacion()) : juridica.getTipoOrganizacion();
-      List<Representante> representantesMerge = juridica.getRepresentantes();
+        donante.actualizarDatosHumana(nombreMerge, apellidoMerge, documentoMerge, nacimientoMerge, generoMerge, direccionMerge, contactosMerge);
+      }
+      case JURIDICA -> {
+        Juridica juridica = (Juridica) donante.getTipoDonante();
+        String razonSocialMerge = request.razonSocial() != null ? request.razonSocial() : juridica.getRazonSocial();
+        String rubroMerge = request.rubro() != null ? request.rubro() : juridica.getRubro();
+        TipoOrganizacion tipoOrgMerge = request.tipoOrganizacion() != null ? aTipoOrganizacion(request.tipoOrganizacion()) : juridica.getTipoOrganizacion();
+        List<Representante> representantesMerge = request.representantes() != null ? RepresentanteMapper.aDominio(request.representantes()) : juridica.getRepresentantes();
 
-      juridica.actualizarDatos(razonSocialMerge, tipoOrgMerge, rubroMerge, documentoMerge, representantesMerge, contactosMerge);
-    } else {
-      throw new DomainValidationException("Tipo de donante desconocido");
+        donante.actualizarDatosJuridica(razonSocialMerge, documentoMerge, tipoOrgMerge, rubroMerge, representantesMerge);
+      }
+      default -> throw new DomainValidationException("Tipo de donante no soportado, o nuevo");
     }
   }
 
   //================== FUNCIONES AUXILIARES ================
-  private static TipoDonante aTipoDonante(String valor) {
-    if (valor == null || valor.isBlank()) return null;
+  private static TipoPersona aTipoPersona(String valor) {
+    if (valor == null || valor.isBlank()) {
+      throw new DomainValidationException("El campo 'tipo' es obligatorio. Debe indicar el tipo de donante: " + Arrays.toString(TipoPersona.values()));    }
     try {
-      return TipoDonante.valueOf(valor.toUpperCase());
+      return TipoPersona.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DomainValidationException("El tipo de donante: " + valor + " no existe debe ser: " + Arrays.toString(TipoDonante.values()));
+      throw new DomainValidationException("El tipo de donante: " + valor + " no existe debe ser: " + Arrays.toString(TipoPersona.values()));
     }
   }
 
@@ -143,6 +142,15 @@ public class DonanteMapper {
       return TipoOrganizacion.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
       throw new DomainValidationException("El tipo de Organización: " + valor + " no existe debe ser: " + Arrays.toString(TipoOrganizacion.values()));
+    }
+  }
+
+  private static LocalDate aFecha(String valor) {
+    if (valor == null || valor.isBlank()) return null;
+    try {
+      return LocalDate.parse(valor); // Espera el formato YYYY-MM-DD
+    } catch (DateTimeParseException e) {
+      throw new DomainValidationException("El formato de la fecha de nacimiento es inválido. Debe ser AAAA-MM-DD.");
     }
   }
 

@@ -1,23 +1,23 @@
 package ar.edu.utn.frba.dds.donatrack.builder;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Documento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Genero;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Representante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Genero;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RepresentanteBuilder {
   private String nombre;
   private String apellido;
-  private LocalDate fechaNacimiento;
   private Documento documento;
   private Genero genero;
   private String direccion;
-  private MedioContacto medioContPred;
+  private List<MedioContacto> contactos;
+
+  public RepresentanteBuilder() {
+    this.contactos = new ArrayList<>();
+  }
 
   public RepresentanteBuilder conNombre(String nombre) {
     this.nombre = nombre;
@@ -26,11 +26,6 @@ public class RepresentanteBuilder {
 
   public RepresentanteBuilder conApellido(String apellido) {
     this.apellido = apellido;
-    return this;
-  }
-
-  public RepresentanteBuilder conFechaNacimiento(LocalDate fechaNacimiento) {
-    this.fechaNacimiento = fechaNacimiento;
     return this;
   }
 
@@ -49,12 +44,12 @@ public class RepresentanteBuilder {
     return this;
   }
 
-  public RepresentanteBuilder conMedioContactoPredeterminado(MedioContacto medioContacto) {
-    this.medioContPred = medioContacto;
+  public RepresentanteBuilder conAgregarContacto(MedioContacto contacto) {
+    this.contactos.add(contacto);
     return this;
   }
 
   public Representante build() {
-    return new Representante(nombre, apellido, fechaNacimiento, documento, genero, direccion, medioContPred);
+    return new Representante(nombre, apellido, documento, genero, direccion, contactos);
   }
 }

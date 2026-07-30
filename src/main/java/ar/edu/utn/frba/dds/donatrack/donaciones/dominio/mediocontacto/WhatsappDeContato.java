@@ -28,11 +28,14 @@ public class WhatsappDeContato implements MedioContacto {
   }
 
   private void checkDatos(String telefono, Boolean estado) {
+    if (telefono == null) {
+      throw new DomainValidationException("Cada contacto necesita un 'valor' ");
+    }
     if (!telefono.matches("^[+0-9 -]*$")) {
-      throw new DomainValidationException("Telefono invalido");
+      throw new DomainValidationException("Teléfono invalido");
     }
     if (estado == null) {
-      throw new DomainValidationException("Debe indicar si es un contacto principal o no");
+      throw new DomainValidationException("Cada contacto necesita 'principal' para saber si es un contacto principal o no");
     }
   }
 

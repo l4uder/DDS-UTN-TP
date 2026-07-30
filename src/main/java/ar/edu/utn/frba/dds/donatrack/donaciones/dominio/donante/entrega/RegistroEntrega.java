@@ -1,6 +1,7 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.entrega;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

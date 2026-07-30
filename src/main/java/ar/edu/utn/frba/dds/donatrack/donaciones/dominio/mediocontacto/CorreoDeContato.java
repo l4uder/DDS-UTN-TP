@@ -28,11 +28,14 @@ public class CorreoDeContato implements MedioContacto {
   }
 
   private void checkDatos(String correo, Boolean estado) {
+    if (correo == null) {
+      throw new DomainValidationException("Cada contacto necesita un 'valor' ");
+    }
     if (!correo.matches("^.*@.*$")) {
       throw new DomainValidationException("Correo invalido, verifique por favor");
     }
     if (estado == null) {
-      throw new DomainValidationException("Debe indicar si es un contacto principal o no");
+      throw new DomainValidationException("Cada contacto necesita 'principal' para saber si es un contacto principal o no");
     }
   }
 
