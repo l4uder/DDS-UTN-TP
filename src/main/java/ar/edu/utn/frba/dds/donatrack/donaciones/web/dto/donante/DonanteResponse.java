@@ -12,13 +12,13 @@ public record DonanteResponse(
     String id,
     String tipo,
     DocumentoDto documento,
-    List<ContactoDto> contactos,
     // Campos persona Humana
     String nombre,
     String apellido,
     String años,
     String genero,
     String direccion,
+    List<ContactoDto> contactos,
     // Campos persona Jurídica
     String razonSocial,
     String tipoOrganizacion,

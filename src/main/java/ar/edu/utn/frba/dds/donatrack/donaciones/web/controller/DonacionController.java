@@ -16,9 +16,13 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.EstadoDonacionMapper
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.bien.BienDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.AppEventBus;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.EnTrasladoDonacionDto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.EntregadaDonacionDto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.ErrorEntregaDonacionDto;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BodyException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
@@ -117,7 +121,8 @@ public class DonacionController {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
     //Cosas que recibo por Body
-    CambioEstadoInicioRutaRequest request = ctx.bodyAsClass(CambioEstadoInicioRutaRequest.class);
+    EnTrasladoDonacionDto request = ctx.bodyAsClass(EnTrasladoDonacionDto.class);
+    if (request == null || request.linkMapa() == null || request.linkMapa().isBlank()) throw new BodyException("El body no tiene el link del mapa");
     String mapa = request.linkMapa();
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
@@ -154,7 +159,8 @@ public class DonacionController {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
     //Cosas que recibo por Body
-    CambioEstadoEntregadaRequest request = ctx.bodyAsClass(CambioEstadoEntregadaRequest.class);
+    EntregadaDonacionDto request = ctx.bodyAsClass(EntregadaDonacionDto.class);
+    if (request == null || request.camionId() == null || request.camionId().isBlank()) throw new BodyException("El body no tiene el id del camion");
     String idCamion = request.camionId();
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
@@ -169,7 +175,8 @@ public class DonacionController {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
     //Cosas que recibo por Body
-    CambioEstadoErrorEntregaRequest request = ctx.bodyAsClass(CambioEstadoErrorEntregaRequest.class);
+    ErrorEntregaDonacionDto request = ctx.bodyAsClass(ErrorEntregaDonacionDto.class);
+    if (request == null || request.observacion() == null || request.observacion().isBlank()) throw new BodyException("El body no tiene la observacion del error");
     String observacion = request.observacion();
 
     Donacion donacion = buscarDonacionPorId(idDonacion);

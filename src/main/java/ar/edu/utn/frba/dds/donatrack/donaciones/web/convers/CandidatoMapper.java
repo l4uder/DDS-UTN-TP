@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion.CandidatoDto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.candidato.CandidatoDto;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;

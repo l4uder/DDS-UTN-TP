@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion;
+package ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.candidato;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioResumenResponse;
 

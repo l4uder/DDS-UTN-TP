@@ -12,7 +12,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.RankingMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonacionMapper;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.asignacion.ConfirmacionBody;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.AsignadaDonacionDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
 import java.util.List;
@@ -39,13 +39,13 @@ public class AsignacionController {
     List<Beneficiario> beneficiarios = repoBeneficiarios.buscarTodos();
     List<Donacion> donaciones = repoDonaciones.buscarTodoPorEstado(TipoEstadoDonacion.EN_DEPOSITO);
 
-    generadorRankings.asignar(donaciones, beneficiarios);
-    ctx.status(200).json(Map.of( "mensaje", "Matchmaking ejecutado correctamente"));
+    List<Ranking> rankings = generadorRankings.asignar(donaciones, beneficiarios);
+    ctx.status(200).json(RankingMapper.aDtoResumen(rankings));
   }
 
   public void obtenerTodos(Context ctx) {
     List<Ranking> rankings = repoRankings.buscarTodos();
-    ctx.status(200).json(rankings.stream().map(RankingMapper::aDto).toList());
+    ctx.status(200).json(RankingMapper.aDtoResumen(rankings));
   }
 
   public void obtener(Context ctx) {
@@ -61,7 +61,7 @@ public class AsignacionController {
     //Cosas que recibo por URL --> Path param
     String idRanking = ctx.pathParam("id");
     //Cosas que recibo por Body
-    ConfirmacionBody body = ctx.bodyAsClass(ConfirmacionBody.class);
+    AsignadaDonacionDto body = ctx.bodyAsClass(AsignadaDonacionDto.class);
     String idBeneficiario = body.beneficiarioId();
 
     Ranking ranking = buscarRankingPorId(idRanking);
