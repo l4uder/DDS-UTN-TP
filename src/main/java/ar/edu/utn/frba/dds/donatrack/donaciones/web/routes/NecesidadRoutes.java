@@ -5,11 +5,10 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.NecesidadControll
 import io.javalin.Javalin;
 
 public class NecesidadRoutes {
-  private static final NecesidadController controller = new NecesidadController(BeneficiarioRepository.getInstancia());
 
   private NecesidadRoutes() {}
 
-  public static void registrar(Javalin app) {
+  public static void registrar(Javalin app, NecesidadController controller) {
     app.post("/beneficiarios/{id}/necesidades", controller::crear);
     app.get("/beneficiarios/{id}/necesidades", controller::obtenerTodos);
     app.get("/beneficiarios/{id}/necesidades/{nid}", controller::obtener);

@@ -6,11 +6,10 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.DonacionControlle
 import io.javalin.Javalin;
 
 public class DonacionRoutes {
-  private static final DonacionController controller = new DonacionController(DonacionRepository.getInstancia(), DonanteRepository.getInstancia());
 
   private DonacionRoutes() {}
 
-  public static void registrar(Javalin app) {
+  public static void registrar(Javalin app, DonacionController controller) {
     app.post("/donaciones", controller::crear);//paso 1 En Depósito
     app.get("/donaciones", controller::obtenerTodos);
     app.get("/donaciones/{id}", controller::obtener);

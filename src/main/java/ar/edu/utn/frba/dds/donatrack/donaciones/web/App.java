@@ -1,6 +1,15 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.Notificador;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.AsignacionController;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.BeneficiarioController;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.DonacionController;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.DonanteController;
+import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.NecesidadController;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.AsignacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.BeneficiarioRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.DonacionRoutes;
@@ -28,14 +37,29 @@ public class App {
       config.http.defaultContentType = "application/json";
     });
 
-    ExceptionHandlers.registrar(app);
+    //Repositorios
+    DonanteRepository donanteRepository = DonanteRepository.getInstancia();
+    DonacionRepository donacionRepository = DonacionRepository.getInstancia();
+    BeneficiarioRepository benificiarioRepository = BeneficiarioRepository.getInstancia();
+    RankingRepository rankingRepository = RankingRepository.getInstancia();
 
+    //Controllers
+    DonanteController donanteController = new DonanteController(donanteRepository);
+    DonacionController donacionController = new DonacionController(donacionRepository, donanteRepository);
+    BeneficiarioController beneficiarioController = new BeneficiarioController(benificiarioRepository);
+    NecesidadController necesidadController = new NecesidadController(benificiarioRepository);
+    AsignacionController asignacionController = new AsignacionController(donacionRepository, benificiarioRepository, rankingRepository);
+
+    //Registramos las Rutas
     app.get("/health", ctx -> ctx.json("Micro servicio de donaciones funcionando"));
-    DonanteRoutes.registrar(app);
-    DonacionRoutes.registrar(app);
-    BeneficiarioRoutes.registrar(app);
-    NecesidadRoutes.registrar(app);
-    AsignacionRoutes.registrar(app);
+    DonanteRoutes.registrar(app, donanteController);
+    DonacionRoutes.registrar(app, donacionController);
+    BeneficiarioRoutes.registrar(app, beneficiarioController);
+    NecesidadRoutes.registrar(app, necesidadController);
+    AsignacionRoutes.registrar(app, asignacionController);
+
+    //Registramos las excepciones
+    ExceptionHandlers.registrar(app);
 
     return app;
   }

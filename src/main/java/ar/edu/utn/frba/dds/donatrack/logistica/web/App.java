@@ -64,48 +64,38 @@ public class App {
       config.http.defaultContentType = "application/json";
     });
 
-    ExceptionHandlers.registrar(app);
-
+    //Servicios Externos
     ConectorDonacionesApi donacionesClient = new ConectorDonacionesApi();
     ClientePlanificadorExterno clienteExterno = new ClientePlanificadorExternoMock();
 
+    //Repositorios
     EntregaRepository entregaRepository = EntregaRepository.getInstancia();
     CamionRepository camionRepository = CamionRepository.getInstancia();
     RutaRepository rutaRepository = RutaRepository.getInstancia();
     GpsRepository gpsRepository = GpsRepository.getInstancia();
 
+    //Coordinadores y procesos
     CoordinadorRuta coordinadorRuta = new CoordinadorRuta(
         rutaRepository, camionRepository, entregaRepository,
         donacionesClient, clienteExterno
     );
-
     ProcesoLogistica procesoLogistica = new ProcesoLogistica(coordinadorRuta);
 
-    RutaController rutaController = new RutaController(
-        rutaRepository,
-        coordinadorRuta
-    );
+    //Controllers
+    RutaController rutaController = new RutaController(rutaRepository, coordinadorRuta);
+    PlanificacionController planificacionController = new PlanificacionController(coordinadorRuta, procesoLogistica);
+    EntregaController entregaController = new EntregaController(entregaRepository, donacionesClient);
+    CamionController camionController = new CamionController(camionRepository, gpsRepository);
 
-    PlanificacionController planificacionController = new PlanificacionController(
-        coordinadorRuta,
-        procesoLogistica
-    );
-
-    EntregaController entregaController = new EntregaController(
-        entregaRepository,
-        donacionesClient
-    );
-
-    CamionController camionController = new CamionController(
-        camionRepository,
-        gpsRepository
-    );
-
+    //Registramos las Rutas
     app.get("/health",ctx -> ctx.json("Micro servicio de logística funcionando"));
     CamionRoutes.registrar(app, camionController);
     RutaRoutes.registrar(app, rutaController);
     EntregaRoutes.registrar(app, entregaController);
     PlanificacionRoutes.registrar(app, planificacionController);
+
+    //Registramos las excepciones
+    ExceptionHandlers.registrar(app);
 
     return new AppLogistica(app, procesoLogistica);
   }

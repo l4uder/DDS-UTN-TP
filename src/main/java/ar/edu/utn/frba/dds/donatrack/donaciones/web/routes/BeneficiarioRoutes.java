@@ -5,11 +5,10 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.BeneficiarioContr
 import io.javalin.Javalin;
 
 public class BeneficiarioRoutes {
-  private static final BeneficiarioController controller = new BeneficiarioController(BeneficiarioRepository.getInstancia());
 
   private BeneficiarioRoutes() {}
 
-  public static void registrar(Javalin app) {
+  public static void registrar(Javalin app, BeneficiarioController controller) {
     app.post("/beneficiarios", controller::crear);
     app.get("/beneficiarios", controller::obtenerTodos);
     app.get("/beneficiarios/{id}", controller::obtener);
