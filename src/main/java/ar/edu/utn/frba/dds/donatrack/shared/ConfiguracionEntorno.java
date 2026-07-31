@@ -47,6 +47,10 @@ public class ConfiguracionEntorno {
     return obtenerObligatorio("TWILIO_WHATSAPP_NUMBER");
   }
 
+  public String elegirUrlDonaciones(String urlPorDefecto) {
+    return elegirUrl("URL_API_DONACIONES", urlPorDefecto);
+  }
+
   //=================== FUNCIONES AUXILIARES =====================
   private String obtenerObligatorio(String nombre) {
     String clave = dotenv.get(nombre);
@@ -68,6 +72,17 @@ public class ConfiguracionEntorno {
       System.out.println("Variable de entorno: '" + nombre + "' debe ser un numero, se usará el puerto default: " + valorPorDefecto);
       return valorPorDefecto;
     }
+  }
+
+  private String elegirUrl(String nombre, String valorPorDefecto) {
+    String valor = dotenv.get(nombre);
+    if (valor == null || valor.isBlank()) {
+      System.out.println("Falta la variable de entorno: '" + nombre + "' Se va a usar la URL por default");
+      valor = valorPorDefecto;
+    }
+    String url = valor.endsWith("/") ? valor.substring(0, valor.length() - 1) : valor;
+    System.out.println("URL: " + url);
+    return url;
   }
 
 }

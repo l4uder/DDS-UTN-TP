@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.web.controller;
+package ar.edu.utn.frba.dds.donatrack.logistica.web.controllers;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
@@ -7,18 +7,18 @@ import ar.edu.utn.frba.dds.donatrack.logistica.web.convers.EntregaMapper;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega.EntregaFotoRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega.EntregaNoRecibidaRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.DonacionesClient;
-import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
-import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ConectorDonacionesApi;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.CambioEstadoEntregadaRequest;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.CambioEstadoErrorEntregaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
 import java.util.List;
 
 public class EntregaController {
   private final EntregaRepository repoEntregas;
-  private final DonacionesClient donacionesBridge;
+  private final ConectorDonacionesApi donacionesBridge;
 
-  public EntregaController(EntregaRepository repository, DonacionesClient donacionesClient) {
+  public EntregaController(EntregaRepository repository, ConectorDonacionesApi donacionesClient) {
     this.repoEntregas = repository;
     this.donacionesBridge = donacionesClient;
   }
@@ -93,19 +93,19 @@ public class EntregaController {
 
   private void comunicarAlasDonacionesSuRecepcion(List<DonacionEnTransito> donaciones, Camion camion) {
     donaciones.forEach(d ->
-        donacionesBridge.cambiarEstadoDonacion(d.getId(), new CambioEstadoEntregadaRequest(camion.getPatente()))
+        donacionesBridge.marcarDonacionEntregaExitosa(d.getId(), camion.getPatente())
     );
   }
 
   private void comunicarAlasDonacionesErrorRecepcion(List<DonacionEnTransito> donaciones, String motivo) {
     donaciones.forEach(d ->
-        donacionesBridge.cambiarEstadoDonacion(d.getId(),new CambioEstadoErrorEntregaRequest(motivo))
+        donacionesBridge.marcarDonacionErrorEntrega(d.getId(), motivo)
     );
   }
 
   private void comunicarAlasDonacionesReingresoAdeposito(List<DonacionEnTransito> donaciones) {
     donaciones.forEach(d ->
-        donacionesBridge.cambiarEstadoDonacionVueltaDeposito(d.getId())
+        donacionesBridge.marcarDonacionVueltaDeposito(d.getId())
     );
   }
 

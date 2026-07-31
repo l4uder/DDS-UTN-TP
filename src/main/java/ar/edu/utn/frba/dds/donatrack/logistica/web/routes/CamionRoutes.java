@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.routes;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.CamionController;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.controllers.CamionController;
 import io.javalin.Javalin;
 
 public class CamionRoutes {

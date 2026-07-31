@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores;
+package ar.edu.utn.frba.dds.donatrack.logistica.web.coordinadores;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
@@ -10,11 +10,11 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.ResultadoPlanificacion;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.planificacion.CallbackPlanificacionRequest;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.DonacionesClient;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ConectorDonacionesApi;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
-import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.CambioEstadoInicioRutaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,11 +30,11 @@ public class CoordinadorRuta {
   private final RutaRepository rutaRepository;
   private final CamionRepository camionRepository;
   private final EntregaRepository entregaRepository;
-  private final DonacionesClient donacionesClient;
+  private final ConectorDonacionesApi donacionesClient;
   private final ClientePlanificadorExterno clienteExterno;
 
   public CoordinadorRuta(RutaRepository rutaRepository, CamionRepository camionRepository,
-                         EntregaRepository entregaRepository, DonacionesClient donacionesClient,
+                         EntregaRepository entregaRepository, ConectorDonacionesApi donacionesClient,
                          ClientePlanificadorExterno clienteExterno){
     this.rutaRepository = rutaRepository;
     this.camionRepository = camionRepository;
@@ -87,7 +87,8 @@ public class CoordinadorRuta {
 
     rutas.forEach(rutaRepository::guardar);
     rutas.forEach(ruta -> ruta.getEntregasOrdenadas().forEach(e ->
-        propagarEstadoDonaciones(e, donacionesClient::cambiarEstadoDonacionLista)));
+        propagarEstadoDonaciones(e, donacionesClient::marcarDonacionListaParaEntregar))
+    );
 
     return rutas;
   }
@@ -101,8 +102,8 @@ public class CoordinadorRuta {
    String linkMapa = ruta.getCamion().getLinkSeguimiento();
    ruta.getEntregasOrdenadas().forEach(e ->
        propagarEstadoDonaciones(e, donacionId ->
-           donacionesClient.cambiarEstadoDonacion(
-               donacionId, new CambioEstadoInicioRutaRequest(linkMapa))));
+           donacionesClient.marcarDonacionEnCamino(donacionId, linkMapa))
+   );
  }
 
   public void asignarChofer(String id, Chofer chofer) {

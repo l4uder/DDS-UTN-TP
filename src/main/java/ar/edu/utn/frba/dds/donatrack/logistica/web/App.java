@@ -1,15 +1,15 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.GpsRepository;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.CamionController;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.PlanificacionController;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorRuta;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.controllers.CamionController;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.controllers.PlanificacionController;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.coordinadores.CoordinadorRuta;
 import ar.edu.utn.frba.dds.donatrack.logistica.cron.ProcesoLogistica;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ClientePlanificadorExterno;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ClientePlanificadorExternoMock;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.DonacionesClient;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.RutaController;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.EntregaController;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ConectorDonacionesApi;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.controllers.RutaController;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.controllers.EntregaController;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.routes.EntregaRoutes;
@@ -66,7 +66,7 @@ public class App {
 
     ExceptionHandlers.registrar(app);
 
-    DonacionesClient donacionesClient = new DonacionesClient();
+    ConectorDonacionesApi donacionesClient = new ConectorDonacionesApi();
     ClientePlanificadorExterno clienteExterno = new ClientePlanificadorExternoMock();
 
     EntregaRepository entregaRepository = EntregaRepository.getInstancia();

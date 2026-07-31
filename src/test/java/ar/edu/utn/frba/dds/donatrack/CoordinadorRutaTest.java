@@ -6,11 +6,11 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.Lote;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ClientePlanificadorExterno;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorRuta;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.coordinadores.CoordinadorRuta;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.DonacionesClient;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ConectorDonacionesApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +31,7 @@ public class CoordinadorRutaTest {
   private CamionRepository camionRepository;
   private EntregaRepository entregaRepository;
   private RutaRepository rutaRepository;
-  private DonacionesClient donacionesClient;
+  private ConectorDonacionesApi donacionesClient;
   private ClientePlanificadorExterno clienteExterno;
   private CoordinadorRuta coordinador;
 
@@ -44,7 +44,7 @@ public class CoordinadorRutaTest {
     camionRepository = mock(CamionRepository.class);
     entregaRepository = mock(EntregaRepository.class);
     rutaRepository = mock(RutaRepository.class);
-    donacionesClient = mock(DonacionesClient.class);
+    donacionesClient = mock(ConectorDonacionesApi.class);
     clienteExterno = mock(ClientePlanificadorExterno.class);
 
     when(camionRepository.buscarTodos()).thenReturn(camiones);

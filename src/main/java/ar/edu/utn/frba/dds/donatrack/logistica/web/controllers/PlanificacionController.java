@@ -1,6 +1,6 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.web.controller;
+package ar.edu.utn.frba.dds.donatrack.logistica.web.controllers;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorRuta;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.coordinadores.CoordinadorRuta;
 import ar.edu.utn.frba.dds.donatrack.logistica.cron.ProcesoLogistica;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;

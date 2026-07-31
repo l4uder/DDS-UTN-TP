@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.web.controller;
+package ar.edu.utn.frba.dds.donatrack.logistica.web.controllers;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Gps;
@@ -7,7 +7,6 @@ import ar.edu.utn.frba.dds.donatrack.logistica.web.convers.CamionMapper;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.camion.ActualizarCamionRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.camion.CamionRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
-import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
 import java.util.List;

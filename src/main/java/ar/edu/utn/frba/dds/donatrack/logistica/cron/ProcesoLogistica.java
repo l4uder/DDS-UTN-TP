@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.cron;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorRuta;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.coordinadores.CoordinadorRuta;
 
 public class ProcesoLogistica {
 

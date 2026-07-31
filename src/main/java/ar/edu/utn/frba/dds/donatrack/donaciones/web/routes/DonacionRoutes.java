@@ -22,7 +22,7 @@ public class DonacionRoutes {
     app.patch("/donaciones/{id}/en-camino", controller::donacionEnTraslado); //paso 4 En Traslado
     app.patch("/donaciones/{id}/entregada", controller::donacionEntregada); //paso 5 Entregada (Fin)
     app.patch("/donaciones/{id}/error-entrega", controller::donacionEntregaFallida); //paso 5B
-    app.patch("/donaciones/{id}/vuelta-deposito", controller::donacionDevueltaADeposito); //paso 6 que viene de 5B
+    app.patch("/donaciones/{id}/vuelta-deposito", controller::donacionDevueltaADeposito); //paso 6B que viene de 5B
   }
 
 }

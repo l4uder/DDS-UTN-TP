@@ -23,17 +23,16 @@ public class DonacionMapper {
         donacion.getId(),
         donacion.getDescripcion(),
         donacion.getEstadoActual().name(),
-        donacion.getBeneficiario() == null ? null
-            : BeneficiarioMapper.aDtoResumen(donacion.getBeneficiario()),
-        donacion.getBienes() == null ? null
-            : BienMapper.aDto(donacion.getBienes()));
+        donacion.getBeneficiario() == null ? null : BeneficiarioMapper.aDtoResumen(donacion.getBeneficiario()),
+        BienMapper.aDto(donacion.getBienes()));
   }
 
   public static DonacionResumenResponse aDtoResumen(Donacion donacion) {
     return new DonacionResumenResponse(
         donacion.getId(),
         donacion.getDescripcion(),
-        donacion.getEstadoActual().name()
+        donacion.getEstadoActual().name(),
+        donacion.getBeneficiario() == null ? null : BeneficiarioMapper.aDtoResumen(donacion.getBeneficiario())
     );
   }
 

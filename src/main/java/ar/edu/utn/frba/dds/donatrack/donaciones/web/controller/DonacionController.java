@@ -19,9 +19,6 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.AppEventBus
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.EnTrasladoDonacionDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.EntregadaDonacionDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.ErrorEntregaDonacionDto;
-import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoEntregadaRequest;
-import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoErrorEntregaRequest;
-import ar.edu.utn.frba.dds.donatrack.shared.dto.CambioEstadoInicioRutaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BodyException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
