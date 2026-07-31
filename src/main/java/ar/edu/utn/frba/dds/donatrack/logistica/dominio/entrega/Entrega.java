@@ -7,9 +7,10 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationExceptio
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import lombok.Setter;
 
 public class Entrega {
-
+  @Setter
   private String id;
   private Beneficiario destino;
   private List<DonacionEnTransito> donaciones;
@@ -23,7 +24,7 @@ public class Entrega {
       List<DonacionEnTransito> donaciones,
       Camion camion
   ) {
-    this.id = UUID.randomUUID().toString();
+    this.id = null; //cambiamos para que el repo sea quien le asigna un uuid.
     this.destino = destino;
     this.donaciones = donaciones;
     this.camionAsignado = camion;

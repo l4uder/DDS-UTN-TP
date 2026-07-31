@@ -80,7 +80,7 @@ public class CoordinadorRuta {
     // ASIGNACION_REALIZADA del lado de donaciones, nunca les aviso ningun cambio de estado, asu que
     // cuando se vuelva a consultar las donaciones asignadas la volveran a encuar para que entren
     // en el próximo ciclo de planificación.
-    sinAsignar.forEach(e -> entregaRepository.eliminar(e.getId()));
+    sinAsignar.forEach(e -> entregaRepository.eliminar(e));
 
     ResultadoPlanificacion resultado = new ResultadoPlanificacion(entregasPorCamion, sinAsignar);
     List<Ruta> rutas = procesarResultadoPlanificacion(resultado, fecha);

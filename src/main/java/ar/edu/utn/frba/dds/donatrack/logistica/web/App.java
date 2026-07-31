@@ -3,7 +3,6 @@ package ar.edu.utn.frba.dds.donatrack.logistica.web;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.GpsRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.CamionController;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.controller.PlanificacionController;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorEntrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.coordinadores.CoordinadorRuta;
 import ar.edu.utn.frba.dds.donatrack.logistica.cron.ProcesoLogistica;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ClientePlanificadorExterno;
@@ -75,22 +74,12 @@ public class App {
     RutaRepository rutaRepository = RutaRepository.getInstancia();
     GpsRepository gpsRepository = GpsRepository.getInstancia();
 
-    CoordinadorEntrega coordinadorEntrega = new CoordinadorEntrega(
-        entregaRepository,
-        donacionesClient
-    );
-
     CoordinadorRuta coordinadorRuta = new CoordinadorRuta(
         rutaRepository, camionRepository, entregaRepository,
         donacionesClient, clienteExterno
     );
 
     ProcesoLogistica procesoLogistica = new ProcesoLogistica(coordinadorRuta);
-
-    EntregaController entregaController = new EntregaController(
-        entregaRepository,
-        coordinadorEntrega
-    );
 
     RutaController rutaController = new RutaController(
         rutaRepository,
@@ -100,6 +89,11 @@ public class App {
     PlanificacionController planificacionController = new PlanificacionController(
         coordinadorRuta,
         procesoLogistica
+    );
+
+    EntregaController entregaController = new EntregaController(
+        entregaRepository,
+        donacionesClient
     );
 
     CamionController camionController = new CamionController(
