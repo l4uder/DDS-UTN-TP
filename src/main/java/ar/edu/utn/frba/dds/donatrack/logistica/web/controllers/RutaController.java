@@ -1,57 +1,80 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.controllers;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.web.coordinadores.CoordinadorRuta;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.chofer.ChoferRequest;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Chofer;
+import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.convers.ChoferMapper;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.convers.RutaMapper;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.chofer.ChoferDto;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ConectorDonacionesApi;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import io.javalin.http.Context;
 
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import com.google.gson.JsonSyntaxException;
+import java.util.List;
 
 public class RutaController {
+  private final RutaRepository repoRutas;
+  private final ConectorDonacionesApi donacionesBridge;
 
-  private final RutaRepository repository;
-  private final CoordinadorRuta coordinador;
-
-  public RutaController(RutaRepository repository, CoordinadorRuta coordinador) {
-    this.repository = repository;
-    this.coordinador = coordinador;
+  public RutaController(RutaRepository repository, ConectorDonacionesApi donacionesClient) {
+    this.repoRutas = repository;
+    this.donacionesBridge = donacionesClient;
   }
 
-  public void listar(Context ctx) {
-    ctx.json(repository.buscarTodas());
+  public void obtenerTodas(Context ctx) {
+    List<Ruta> rutas = repoRutas.buscarTodas();
+
+    ctx.status(200).json(RutaMapper.aDto(rutas));
   }
 
   public void obtener(Context ctx) {
-    ctx.json(repository.buscarPorId(ctx.pathParam("id")));
+    String idRuta = ctx.pathParam("id");
+
+    Ruta ruta = buscarRutaPorId(idRuta);
+    ctx.status(200).json(RutaMapper.aDto(ruta));
   }
 
   public void asignarChofer(Context ctx) {
-    try {
-      ChoferRequest request = ctx.bodyAsClass(ChoferRequest.class);
-      coordinador.asignarChofer(ctx.pathParam("id"), request.aDominio());
-      ctx.status(200);
-    } catch (JsonSyntaxException e) {
-      ctx.status(400).json(new ExceptionHandlers.ErrorResponse(400, "El body no es un JSON valido"));
-    } catch (DomainValidationException e) {
-      ctx.status(400).json(new ExceptionHandlers.ErrorResponse(400, e.getMessage()));
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ExceptionHandlers.ErrorResponse(404, e.getMessage()));
-    } catch (IllegalStateException e) {
-      ctx.status(409).json(new ExceptionHandlers.ErrorResponse(409, e.getMessage()));
-    }
+    //Cosas que recibo por URL
+    String idRuta = ctx.pathParam("id");
+    //Cosas que recibo por Body
+    ChoferDto choferDto = ctx.bodyAsClass(ChoferDto.class);
+
+    Chofer chofer = ChoferMapper.aDominio(choferDto);
+    Ruta ruta = buscarRutaPorId(idRuta);
+
+    ruta.asignarChofer(chofer);
+    repoRutas.actualizar(ruta);
+    ctx.status(200).json(RutaMapper.aDto(ruta));
   }
 
   public void iniciar(Context ctx) {
-    try {
-      coordinador.iniciarRecorrido(ctx.pathParam("id"));
-      ctx.status(200);
-    } catch (RecursoNoEncontradoException e) {
-      ctx.status(404).json(new ExceptionHandlers.ErrorResponse(404, e.getMessage()));
-    } catch (IllegalStateException e) {
-      ctx.status(409).json(new ExceptionHandlers.ErrorResponse(409, e.getMessage()));
-    }
+    String idRuta = ctx.pathParam("id");
+
+    Ruta ruta = buscarRutaPorId(idRuta);
+    ruta.iniciarRecorrido();
+    String linkMapa = ruta.getCamion().getLinkSeguimiento();
+    List<DonacionEnTransito> donaciones = ruta.getEntregasOrdenadas().stream().flatMap(e -> e.getDonaciones().stream()).toList();
+    comunicarAlasDonacionesQueEstanEnCamino(donaciones, linkMapa);
+    repoRutas.actualizar(ruta);
+    ctx.status(200).json(RutaMapper.aDto(ruta));
   }
+
+  //================= FUNCIONES AUXILIARES ======================
+  public Ruta buscarRutaPorId(String id) {
+    Ruta ruta = repoRutas.buscarPorId(id);
+    if (ruta == null) throw new RecursoNoEncontradoException("Ruta no encontrada: " + id);
+    return ruta;
+  }
+
+  public void comunicarAlasDonacionesQueEstanEnCamino(List<DonacionEnTransito> donaciones, String linkMapa) {
+    donaciones.forEach(d ->
+        donacionesBridge.marcarDonacionEnCamino(d.getId(), linkMapa)
+    );
+  }
+
 }

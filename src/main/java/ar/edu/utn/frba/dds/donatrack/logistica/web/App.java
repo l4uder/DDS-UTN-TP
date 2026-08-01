@@ -82,8 +82,8 @@ public class App {
     ProcesoLogistica procesoLogistica = new ProcesoLogistica(coordinadorRuta);
 
     //Controllers
-    RutaController rutaController = new RutaController(rutaRepository, coordinadorRuta);
     PlanificacionController planificacionController = new PlanificacionController(coordinadorRuta, procesoLogistica);
+    RutaController rutaController = new RutaController(rutaRepository, donacionesClient);
     EntregaController entregaController = new EntregaController(entregaRepository, donacionesClient);
     CamionController camionController = new CamionController(camionRepository, gpsRepository);
 

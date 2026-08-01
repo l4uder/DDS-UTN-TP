@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.dto.ruta;
 
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega.EntregaResumenResponse;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,25 +10,5 @@ public record RutaResponse(
     String nombreChofer,
     LocalDate fecha,
     boolean iniciada,
-    List<String> idsEntregas
-) {
-
-  public static RutaResponse desde(Ruta ruta) {
-
-    return new RutaResponse(
-        ruta.getId(),
-        ruta.getCamion().getPatente(),
-        ruta.getChofer() != null
-            ? ruta.getChofer().getNombre()
-              + " "
-              + ruta.getChofer().getApellido()
-            : null,
-        ruta.getFecha(),
-        ruta.isIniciada(),
-        ruta.getEntregasOrdenadas()
-            .stream()
-            .map(Entrega::getId)
-            .toList()
-    );
-  }
-}
+    List<EntregaResumenResponse> entregas
+) { }

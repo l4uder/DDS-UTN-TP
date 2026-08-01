@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.Setter;
 
 public class Ruta {
-
+  @Setter
   private String id;
   private Camion camion;
   private Chofer chofer;
@@ -43,7 +44,7 @@ public class Ruta {
       );
     }
 
-    this.id = UUID.randomUUID().toString();
+    this.id = null; //dejamos que el repo le asigne su id
     this.camion = camion;
     this.fecha = fecha;
     this.entregasOrdenadas = new ArrayList<>(entregasOrdenadas);

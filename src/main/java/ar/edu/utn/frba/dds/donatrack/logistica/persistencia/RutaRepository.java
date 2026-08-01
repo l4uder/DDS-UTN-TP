@@ -7,34 +7,41 @@ import java.util.*;
 
 public class RutaRepository {
   private static final RutaRepository INSTANCE = new RutaRepository();
-  private final Map<String, Ruta> store = new HashMap<>();
+  private final Map<String, Ruta> storeRuta;
 
-  private RutaRepository() {}
+  private RutaRepository() {
+    this.storeRuta = new HashMap<>();
+  }
 
   public static RutaRepository getInstancia() {
     return INSTANCE;
   }
 
   public void guardar(Ruta ruta) {
-    store.put(ruta.getId(), ruta);
+    if (ruta.getId() != null) {
+      throw new IllegalArgumentException("Constraint Violations: " + "No se puede crear la ruta porque ya tiene un ID asignado: " + ruta.getId());
+    }
+    ruta.setId(UUID.randomUUID().toString());
+    this.storeRuta.put(ruta.getId(), ruta);
   }
 
   public Ruta buscarPorId(String id) {
-    Ruta ruta = store.get(id);
-    if (ruta == null) {
-      throw new RecursoNoEncontradoException("Ruta no encontrada: " + id);
-    }
-    return ruta;
+    return storeRuta.get(id);
   }
 
   public List<Ruta> buscarTodas() {
-    return new ArrayList<>(store.values());
+    return new ArrayList<>(storeRuta.values());
   }
 
-  public void eliminar(String id) {
-    if (!store.containsKey(id)) {
-      throw new RecursoNoEncontradoException("Ruta no encontrada: " + id);
+  public void actualizar(Ruta ruta) {
+    if (ruta.getId() == null || !this.storeRuta.containsKey(ruta.getId())) {
+      throw new IllegalArgumentException("La ruta No existe en la base de dato");
     }
-    store.remove(id);
+    this.storeRuta.put(ruta.getId(), ruta);
   }
+
+  public void eliminar(Ruta ruta) {
+    storeRuta.remove(ruta.getId());
+  }
+
 }

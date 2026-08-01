@@ -18,11 +18,12 @@ public class EntregaRepository {
 
   public void guardar(Entrega entrega) {
     if (entrega.getId() != null) {
-      throw new IllegalArgumentException("Constraint Violations: " + "No se puede crear la donación porque ya tiene un ID asignado: " + entrega.getId());
+      throw new IllegalArgumentException("Constraint Violations: " + "No se puede crear la entrega porque ya tiene un ID asignado: " + entrega.getId());
     }
     entrega.setId(UUID.randomUUID().toString());
     this.storeEntrega.put(entrega.getId(), entrega);
   }
+
 
   public Entrega buscarPorId(String id) {
     return storeEntrega.get(id);

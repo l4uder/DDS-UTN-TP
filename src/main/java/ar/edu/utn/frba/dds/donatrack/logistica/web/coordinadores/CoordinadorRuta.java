@@ -3,7 +3,6 @@ package ar.edu.utn.frba.dds.donatrack.logistica.web.coordinadores;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.Lote;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Chofer;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ClientePlanificadorExterno;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
@@ -14,7 +13,6 @@ import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ConectorDonacione
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.CambioEstadoInicioRutaRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -93,24 +91,7 @@ public class CoordinadorRuta {
     return rutas;
   }
 
- // -- Rutas --
- public void iniciarRecorrido(String id) {
-   Ruta ruta = rutaRepository.buscarPorId(id);
-   ruta.iniciarRecorrido();
-   rutaRepository.guardar(ruta);
-
-   String linkMapa = ruta.getCamion().getLinkSeguimiento();
-   ruta.getEntregasOrdenadas().forEach(e ->
-       propagarEstadoDonaciones(e, donacionId ->
-           donacionesClient.marcarDonacionEnCamino(donacionId, linkMapa))
-   );
- }
-
-  public void asignarChofer(String id, Chofer chofer) {
-    Ruta ruta = rutaRepository.buscarPorId(id);
-    ruta.asignarChofer(chofer);
-    rutaRepository.guardar(ruta);
-  }
+  //======================= FUNCIONES AUXILIARES =======================
   //-- Entregas --
   private List<Entrega> armarEntregasPendientes(List<DonacionEnTransito> donacionesAsignadas) {
     Map<Beneficiario, List<DonacionEnTransito>> agrupadas = donacionesAsignadas.stream()
