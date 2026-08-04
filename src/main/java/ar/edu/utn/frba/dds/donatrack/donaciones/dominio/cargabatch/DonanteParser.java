@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.cargabatch;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
@@ -21,7 +21,7 @@ public class DonanteParser {
   public Iterable<Resultado> parseCsv(Iterable<String[]> csvContent) {
     Iterator<String[]> iterator = csvContent.iterator();
     if (!iterator.hasNext()) {
-      throw new DomainValidationException("Archivo csv sin header");
+      throw new ValidacionDominioException("Archivo csv sin header");
     }
     String[] csvHeader = iterator.next();
     int tipoPersonaPos = -1;
@@ -79,7 +79,7 @@ public class DonanteParser {
               finalTelPos != -1 ? new SmsDeContato(row[finalTelPos], true) : null
           );
           return new Resultado(datos, false, filaNro);
-        } catch (IllegalArgumentException | DomainValidationException e) {
+        } catch (IllegalArgumentException | ValidacionDominioException e) {
           return new Resultado(null, true, filaNro);
         }
       }

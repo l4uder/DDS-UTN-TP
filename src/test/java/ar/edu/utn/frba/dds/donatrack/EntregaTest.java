@@ -12,7 +12,7 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTr
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.TipoEstadoEntrega;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -107,8 +107,8 @@ public class EntregaTest {
     entrega.iniciarTraslado();
     entrega.confirmarRecepcion();
 
-    assertThrows(DomainValidationException.class, () -> entrega.agregarFotoRecepcion(""));
-    assertThrows(DomainValidationException.class, () -> entrega.agregarFotoRecepcion(null));
+    assertThrows(ValidacionDominioException.class, () -> entrega.agregarFotoRecepcion(""));
+    assertThrows(ValidacionDominioException.class, () -> entrega.agregarFotoRecepcion(null));
     assertTrue(entrega.getFotosRecepcion().isEmpty());
 
     entrega.agregarFotoRecepcion("https://storage.donatrack.com/foto1.jpg");

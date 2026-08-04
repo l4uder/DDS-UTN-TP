@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
@@ -32,13 +32,13 @@ public class Beneficiario {
 
   private void checkDatos(String razonSocial, List<MedioContacto> contactos) {
     if (razonSocial == null || razonSocial.isBlank()) {
-      throw new DomainValidationException("El campo 'razonSocial' es obligatorio");
+      throw new ValidacionDominioException("El campo 'razonSocial' es obligatorio");
     }
     if (contactos == null || contactos.isEmpty()) {
-      throw new DomainValidationException( "Debe tener al menos un medio de contacto");
+      throw new ValidacionDominioException( "Debe tener al menos un medio de contacto");
     }
     if (contactos.stream().noneMatch(MedioContacto::getEsPrincipal)) {
-      throw new DomainValidationException("Debe tener al menos un contacto principal");
+      throw new ValidacionDominioException("Debe tener al menos un contacto principal");
     }
   }
 
@@ -60,7 +60,7 @@ public class Beneficiario {
 
   public void asignarDonacion(Donacion donacion) {
     if (donacion.getEstadoActual() != TipoEstadoDonacion.ASIGNACION_REALIZADA) {
-      throw new DomainValidationException("Al beneficiario le debe llegar donaciones asignadas");
+      throw new ValidacionDominioException("Al beneficiario le debe llegar donaciones asignadas");
     }
     this.donaciones.add(donacion);
   }
@@ -78,7 +78,7 @@ public class Beneficiario {
     if (this.contactos != null && !this.contactos.isEmpty()) {
         return this.contactos.get(0);
     }
-    throw new DomainValidationException("El beneficiario no posee contactos");
+    throw new ValidacionDominioException("El beneficiario no posee contactos");
   }
 
   public void actualizarDatos(String razonSocial, String direccion, List<MedioContacto> contactos) {

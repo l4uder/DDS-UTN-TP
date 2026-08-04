@@ -1,7 +1,9 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BaseDatoException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RegistroNoEncontradoException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,7 @@ public final class CamionRepository {
 
   public void guardar(Camion camion) {
     if (camionesStore.containsKey(camion.getPatente())) {
-      throw new DomainValidationException("Ya existe un camion con patente " + camion.getPatente());
+      throw new BaseDatoException("Constraint Violations: Ya existe un camion con patente " + camion.getPatente());
     }
     camionesStore.put(camion.getPatente(), camion);
   }
@@ -42,7 +44,7 @@ public final class CamionRepository {
 
   public void actualizar(Camion camion) {
     if (camion.getPatente() != null && !camionesStore.containsKey(camion.getPatente())) {
-      throw new DomainValidationException("No se puede actualizar: no existe en la base de datos la patente " + camion.getPatente());
+      throw new RegistroNoEncontradoException("No se puede actualizar: no existe en la base de datos la patente " + camion.getPatente());
     }
     camionesStore.put(camion.getPatente(), camion);
   }

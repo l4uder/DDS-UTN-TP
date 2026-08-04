@@ -2,6 +2,8 @@ package ar.edu.utn.frba.dds.donatrack.logistica.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BaseDatoException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RegistroNoEncontradoException;
 import java.util.*;
 
 public class EntregaRepository {
@@ -18,7 +20,7 @@ public class EntregaRepository {
 
   public void guardar(Entrega entrega) {
     if (entrega.getId() != null) {
-      throw new IllegalArgumentException("Constraint Violations: " + "No se puede crear la entrega porque ya tiene un ID asignado: " + entrega.getId());
+      throw new BaseDatoException("Constraint Violations: La entrega ya tiene un ID asignado: " + entrega.getId());
     }
     entrega.setId(UUID.randomUUID().toString());
     this.storeEntrega.put(entrega.getId(), entrega);
@@ -35,7 +37,7 @@ public class EntregaRepository {
 
   public void actualizar(Entrega entrega) {
     if (entrega.getId() == null || !this.storeEntrega.containsKey(entrega.getId())) {
-      throw new IllegalArgumentException("La entrega No existe en la base de dato");
+      throw new RegistroNoEncontradoException("No se puede actualizar: no existe en la base de datos la entrega: " + entrega.getId());
     }
     this.storeEntrega.put(entrega.getId(), entrega);
   }

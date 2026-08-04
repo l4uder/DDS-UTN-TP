@@ -5,7 +5,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonanteMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
 import java.util.Arrays;
@@ -75,7 +75,7 @@ public class DonanteController {
     try {
       return TipoPersona.valueOf(tipo.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DomainValidationException("El tipo de donante: " + tipo + " no existe debe ser: " + Arrays.toString(TipoPersona.values()));
+      throw new ValidacionDominioException("El tipo de donante: " + tipo + " no existe debe ser: " + Arrays.toString(TipoPersona.values()));
     }
   }
 

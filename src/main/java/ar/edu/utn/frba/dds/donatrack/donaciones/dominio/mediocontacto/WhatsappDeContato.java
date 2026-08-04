@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsappMock;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsapp;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,20 +29,20 @@ public class WhatsappDeContato implements MedioContacto {
 
   private void checkDatos(String telefono, Boolean estado) {
     if (telefono == null) {
-      throw new DomainValidationException("Cada contacto necesita un 'valor' ");
+      throw new ValidacionDominioException("Cada contacto necesita un 'valor' ");
     }
     if (!telefono.matches("^[+0-9 -]*$")) {
-      throw new DomainValidationException("Teléfono invalido");
+      throw new ValidacionDominioException("Teléfono invalido");
     }
     if (estado == null) {
-      throw new DomainValidationException("Cada contacto necesita 'principal' para saber si es un contacto principal o no");
+      throw new ValidacionDominioException("Cada contacto necesita 'principal' para saber si es un contacto principal o no");
     }
   }
 
   @Override
   public void notificar(String message) {
     if (clienteWhatsapp == null) {
-      throw new DomainValidationException("clienteWhatsapp no asignado para enviar notificaciones");
+      throw new ValidacionDominioException("clienteWhatsapp no asignado para enviar notificaciones");
     }
     clienteWhatsapp.enviarMensaje(telefono, message);
   }

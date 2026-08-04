@@ -3,12 +3,8 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.web.controller;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.BeneficiarioMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioRequest;
-import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.ContactoMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
-import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers.ErrorResponse;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
-import com.google.gson.JsonSyntaxException;
 import io.javalin.http.Context;
 import java.util.List;
 

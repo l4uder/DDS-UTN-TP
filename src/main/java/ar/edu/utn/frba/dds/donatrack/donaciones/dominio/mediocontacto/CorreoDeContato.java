@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoMock;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreo;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,20 +29,20 @@ public class CorreoDeContato implements MedioContacto {
 
   private void checkDatos(String correo, Boolean estado) {
     if (correo == null) {
-      throw new DomainValidationException("Cada contacto necesita un 'valor' ");
+      throw new ValidacionDominioException("Cada contacto necesita un 'valor' ");
     }
     if (!correo.matches("^.*@.*$")) {
-      throw new DomainValidationException("Correo invalido, verifique por favor");
+      throw new ValidacionDominioException("Correo invalido, verifique por favor");
     }
     if (estado == null) {
-      throw new DomainValidationException("Cada contacto necesita 'principal' para saber si es un contacto principal o no");
+      throw new ValidacionDominioException("Cada contacto necesita 'principal' para saber si es un contacto principal o no");
     }
   }
 
   @Override
   public void notificar(String message) {
     if (clienteCorreo == null) {
-      throw new DomainValidationException("clienteCorreo no asignado para enviar notificaciones");
+      throw new ValidacionDominioException("clienteCorreo no asignado para enviar notificaciones");
     }
 
     clienteCorreo.enviarCorreo(correo, message);

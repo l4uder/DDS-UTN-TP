@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.shared;
 
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ConfigurationEnvException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ConfigurationEntornoException;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class ConfiguracionEntorno {
@@ -55,7 +55,7 @@ public class ConfiguracionEntorno {
   private String obtenerObligatorio(String nombre) {
     String clave = dotenv.get(nombre);
     if (clave == null || clave.isBlank()) {
-      throw new ConfigurationEnvException("Falta la variable de entorno: '" + nombre + "'");
+      throw new ConfigurationEntornoException("Falta la variable de entorno: '" + nombre + "'");
     }
     return clave;
   }

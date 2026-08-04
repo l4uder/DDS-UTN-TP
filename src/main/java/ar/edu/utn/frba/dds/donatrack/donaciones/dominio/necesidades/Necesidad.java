@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,13 +25,13 @@ public abstract class Necesidad {
 
   private void checkDatosBase(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion) {
     if (subcategoria == null || subcategoria.getNombre().isBlank()) {
-      throw new DomainValidationException("El campo 'subcategoria' es obligatorio");
+      throw new ValidacionDominioException("El campo 'subcategoria' es obligatorio");
     }
     if (unidadMedida == null) {
-      throw new DomainValidationException("El campo 'unidadMedida' es obligatorio");
+      throw new ValidacionDominioException("El campo 'unidadMedida' es obligatorio");
     }
     if (descripcion == null || descripcion.isBlank()) {
-      throw new DomainValidationException("El campo 'descripcion' es obligatorio");
+      throw new ValidacionDominioException("El campo 'descripcion' es obligatorio");
     }
   }
 

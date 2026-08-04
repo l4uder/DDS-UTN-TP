@@ -4,7 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Gen
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.representante.RepresentanteDto;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class RepresentanteMapper {
     try {
       return Genero.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DomainValidationException("El genero: " + valor + " no existe debe ser: " + Arrays.toString(Genero.values()));
+      throw new ValidacionDominioException("El genero: " + valor + " no existe debe ser: " + Arrays.toString(Genero.values()));
     }
   }
 

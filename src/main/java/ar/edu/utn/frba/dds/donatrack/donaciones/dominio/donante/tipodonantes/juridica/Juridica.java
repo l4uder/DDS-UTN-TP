@@ -5,7 +5,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDo
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.TipoDonante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -28,16 +28,16 @@ public class Juridica implements TipoDonante {
 
   private void checkDatos(String razonSocial, Documento documento, List<Representante> representantes) {
     if (razonSocial == null || razonSocial.isBlank()) {
-      throw new DomainValidationException("El campo 'razonSocial' es obligatorio, en la persona jurídica");
+      throw new ValidacionDominioException("El campo 'razonSocial' es obligatorio, en la persona jurídica");
     }
     if (documento == null) {
-      throw new DomainValidationException("El campo 'documento' es obligatorio, en la persona jurídica, opciones posibles: " + TipoDocumento.values(TipoPersona.JURIDICA));
+      throw new ValidacionDominioException("El campo 'documento' es obligatorio, en la persona jurídica, opciones posibles: " + TipoDocumento.values(TipoPersona.JURIDICA));
     }
     if (!TipoDocumento.values(TipoPersona.JURIDICA).contains(documento.getTipoDocumento())) {
-      throw new DomainValidationException("El campo 'documento' por ser Jurídica, solo puede ser: " + TipoDocumento.values(TipoPersona.JURIDICA));
+      throw new ValidacionDominioException("El campo 'documento' por ser Jurídica, solo puede ser: " + TipoDocumento.values(TipoPersona.JURIDICA));
     }
     if (representantes == null || representantes.isEmpty()) {
-      throw new DomainValidationException("El campo 'representantes' es obligatorio, en la persona jurídica");
+      throw new ValidacionDominioException("El campo 'representantes' es obligatorio, en la persona jurídica");
     }
   }
 

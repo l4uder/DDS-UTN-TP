@@ -3,7 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.cargabatch;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.DonanteFactory;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BatchJobException;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import com.opencsv.CSVReader;
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class OrquestadorCargaDonantes {
               resultado.datosDonante().contactoPrincipal(),
               resultado.datosDonante().contactoSecundario()
           );
-        } catch (DomainValidationException e) {
+        } catch (ValidacionDominioException e) {
           registroErrores.add(new Error(resultado.filaNro()));
           continue;
         }

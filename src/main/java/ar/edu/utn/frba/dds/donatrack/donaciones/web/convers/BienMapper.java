@@ -7,7 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.NoPerecedero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.Perecedero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.bien.BienDto;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.AccessLevel;
@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 public class BienMapper {
 
   private static Bien aDominio(BienDto bienDto) {
-    if (bienDto.tipo() == null) throw new DomainValidationException( "Cada bien necesita 'tipo' (PERECEDERO o NO_PERECEDERO)");
-    if (bienDto.descripcion() == null || bienDto.cantidad() == null) throw new DomainValidationException("Cada bien necesita 'descripcion' y 'cantidad'");
-    if (bienDto.categoria() == null || bienDto.subcategoria() == null) throw new DomainValidationException("Cada bien necesita 'categoria' y 'subcategoria'");
+    if (bienDto.tipo() == null) throw new ValidacionDominioException( "Cada bien necesita 'tipo' (PERECEDERO o NO_PERECEDERO)");
+    if (bienDto.descripcion() == null || bienDto.cantidad() == null) throw new ValidacionDominioException("Cada bien necesita 'descripcion' y 'cantidad'");
+    if (bienDto.categoria() == null || bienDto.subcategoria() == null) throw new ValidacionDominioException("Cada bien necesita 'categoria' y 'subcategoria'");
 
     UnidadMedida unidad = aUnidadMedida(bienDto.unidadMedida());
     Subcategoria subcategoria = new Subcategoria(bienDto.subcategoria(), new Categoria(bienDto.categoria()));
@@ -27,7 +27,7 @@ public class BienMapper {
     return switch (bienDto.tipo().toUpperCase()) {
       case "PERECEDERO" -> {
         if (bienDto.fechaVencimiento() == null) {
-          throw new DomainValidationException(
+          throw new ValidacionDominioException(
               "Un bien perecedero necesita 'fechaVencimiento'");
         }
         yield Bien.crearPerecedero(bienDto.descripcion(), bienDto.cantidad(), unidad,
@@ -35,7 +35,7 @@ public class BienMapper {
       }
       case "NO_PERECEDERO" -> Bien.crearNoPerecedero(bienDto.descripcion(), bienDto.cantidad(), unidad,
           bienDto.foto(), subcategoria, Boolean.TRUE.equals(bienDto.usado()));
-      default -> throw new DomainValidationException(
+      default -> throw new ValidacionDominioException(
           "El tipo de bien: " + bienDto.tipo() + " no existe, debe ser: PERECEDERO o NO_PERECEDERO ");
     };
   }
@@ -55,13 +55,13 @@ public class BienMapper {
   }
 
   public static List<Bien> aDominio(List<BienDto> bienes) {
-    if (bienes == null || bienes.isEmpty()) throw new DomainValidationException("Una donación debe tener al menos un bien");
+    if (bienes == null || bienes.isEmpty()) throw new ValidacionDominioException("Una donación debe tener al menos un bien");
 
     return bienes.stream().map(BienMapper::aDominio).toList();
   }
 
   public static List<BienDto> aDto(List<Bien> bienes) {
-    if (bienes == null || bienes.isEmpty()) throw new DomainValidationException("Una donación debe tener al menos un bien");
+    if (bienes == null || bienes.isEmpty()) throw new ValidacionDominioException("Una donación debe tener al menos un bien");
 
     return bienes.stream().map(BienMapper::aDto).toList();
   }
@@ -73,7 +73,7 @@ public class BienMapper {
     try {
       return UnidadMedida.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DomainValidationException("La unidad de medida: " + valor + " no existe, debe ser: " + Arrays.toString(UnidadMedida.values()));
+      throw new ValidacionDominioException("La unidad de medida: " + valor + " no existe, debe ser: " + Arrays.toString(UnidadMedida.values()));
     }
   }
 

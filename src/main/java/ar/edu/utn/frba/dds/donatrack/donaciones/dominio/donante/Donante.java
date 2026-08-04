@@ -8,7 +8,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.jur
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.TipoOrganizacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Juridica;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,14 +34,14 @@ public class Donante {
 
   private void checkDatos(Documento documento) {
     if (documento == null) {
-      throw new DomainValidationException("El documento no puede ser null");
+      throw new ValidacionDominioException("El documento no puede ser null");
     }
   }
 
   public MedioContacto getPrimerContactoPrincipal() {
     return getContactosPrincipales().stream()
         .findFirst()
-        .orElseThrow(() -> new DomainValidationException( "El donante no posee ningún contacto configurado como principal"));
+        .orElseThrow(() -> new ValidacionDominioException( "El donante no posee ningún contacto configurado como principal"));
   }
 
 /*
@@ -115,7 +115,7 @@ public class Donante {
   public void actualizarDatosHumana(String nombre, String apellido, Documento documento,
                                     LocalDate fechaNacimiento, Genero genero, String direccion,
                                     List<MedioContacto> contactos) {
-    if (!(this.tipoDonante instanceof Humana)) throw new DomainValidationException("No se pueden actualizar los datos de una persona humana con datos de una persona jurídica");
+    if (!(this.tipoDonante instanceof Humana)) throw new ValidacionDominioException("No se pueden actualizar los datos de una persona humana con datos de una persona jurídica");
 
     this.actualizarDatosBase(documento);
     ((Humana) this.tipoDonante).actualizarDatos(nombre, apellido, documento, fechaNacimiento, genero, direccion, contactos);
@@ -123,7 +123,7 @@ public class Donante {
 
   public void actualizarDatosJuridica(String razonSocial, Documento documento, TipoOrganizacion tipo,
                                       String rubro, List<Representante> representantes) {
-    if (!(this.tipoDonante instanceof Juridica)) throw new DomainValidationException("No se pueden actualizar los datos de una persona jurídica con datos de una persona humana");
+    if (!(this.tipoDonante instanceof Juridica)) throw new ValidacionDominioException("No se pueden actualizar los datos de una persona jurídica con datos de una persona humana");
 
     this.actualizarDatosBase(documento);
     ((Juridica) this.tipoDonante).actualizarDatos(razonSocial, tipo, rubro, documento, representantes);

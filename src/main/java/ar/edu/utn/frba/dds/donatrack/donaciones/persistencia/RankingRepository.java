@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BaseDatoException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RegistroNoEncontradoException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +21,7 @@ public final class RankingRepository {
   }
 
   public void guardar(Ranking ranking) {
-    if (ranking.getId() != null) throw new IllegalArgumentException("Constraint Violations: " + "El ranking ya tiene un ID asignado: " + ranking.getId());
+    if (ranking.getId() != null) throw new BaseDatoException("Constraint Violations: El ranking ya tiene un ID asignado: " + ranking.getId());
     ranking.setId(UUID.randomUUID().toString());
 
     this.storeRankings.put(ranking.getId(), ranking);
@@ -35,7 +37,7 @@ public final class RankingRepository {
 
   public void actualizar(Ranking ranking) {
     if (ranking.getId() == null || !this.storeRankings.containsKey(ranking.getId())) {
-      throw new IllegalArgumentException("La donación No existe en la base de dato");
+      throw new RegistroNoEncontradoException("No se puede actualizar: no existe en la base de datos el registro: " + ranking.getId());
     }
     this.storeRankings.put(ranking.getId(), ranking);
   }

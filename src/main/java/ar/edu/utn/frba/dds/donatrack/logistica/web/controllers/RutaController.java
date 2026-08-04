@@ -8,12 +8,9 @@ import ar.edu.utn.frba.dds.donatrack.logistica.web.convers.RutaMapper;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.chofer.ChoferDto;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ConectorDonacionesApi;
-import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
 import io.javalin.http.Context;
 
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
-import com.google.gson.JsonSyntaxException;
 import java.util.List;
 
 public class RutaController {

@@ -7,7 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Docume
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +30,7 @@ public class PersonaHumanaTest {
 
   @Test
   public void lanzarExcepcionSiPersonaHumanaNoTieneCorreoElectronico() {
-    assertThrows(DomainValidationException.class, () -> {
+    assertThrows(ValidacionDominioException.class, () -> {
       Donante persona = new PersonaHumanaBuilder().conNombre("Esteban").build();
     });
   }

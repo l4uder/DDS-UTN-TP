@@ -5,10 +5,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioConta
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.contacto.ContactoDto;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.FabricaClienteCorreoReal;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.FabricaClienteSmsReal;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.FabricaClienteWhatsappReal;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -18,7 +15,7 @@ public class ContactoMapper {
 
   public static MedioContacto aDominio(ContactoDto contactoDto) {
     if (contactoDto.medio() == null) {
-      throw new DomainValidationException("Cada contacto necesita un 'medio', valores posibles: [EMAIL, SMS, WHATSAPP] ");
+      throw new ValidacionDominioException("Cada contacto necesita un 'medio', valores posibles: [EMAIL, SMS, WHATSAPP] ");
     }
     return switch (contactoDto.medio().toUpperCase()) {
       case "EMAIL" -> new CorreoDeContato(
@@ -33,7 +30,7 @@ public class ContactoMapper {
           contactoDto.valor(),
           Boolean.TRUE.equals(contactoDto.principal())
       );
-      default -> throw new DomainValidationException(
+      default -> throw new ValidacionDominioException(
           "EL medio de contacto: " + contactoDto.medio() + " no existe debe ser: [EMAIL, SMS o WHATSAPP] ");
     };
   }
@@ -52,7 +49,7 @@ public class ContactoMapper {
   //====================  FUNCIONES AUXILIARES =====================
   public static List<MedioContacto> aDominio(List<ContactoDto> contactosDto) {
     if (contactosDto == null || contactosDto.isEmpty()) {
-      throw new DomainValidationException("La lista de 'contactos' no puede estar vacía ni ser null");
+      throw new ValidacionDominioException("La lista de 'contactos' no puede estar vacía ni ser null");
     }
     return contactosDto.stream().map(ContactoMapper::aDominio).toList();
   }

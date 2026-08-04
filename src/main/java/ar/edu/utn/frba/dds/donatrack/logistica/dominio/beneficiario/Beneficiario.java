@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario;
 
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 
 public class Beneficiario {
   private final String id;
@@ -9,7 +9,7 @@ public class Beneficiario {
 
   public Beneficiario(String id, String razonSocial, String direccion) {
     if (id == null || id.isBlank()) {
-      throw new DomainValidationException("El beneficiario debe tener id");
+      throw new ValidacionDominioException("El beneficiario debe tener id");
     }
     this.id = id;
     this.razonSocial = razonSocial;

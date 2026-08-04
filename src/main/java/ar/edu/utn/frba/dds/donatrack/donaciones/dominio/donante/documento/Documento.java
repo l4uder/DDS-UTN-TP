@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento;
 
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import java.util.Arrays;
 import lombok.Getter;
 
@@ -16,8 +16,8 @@ public class Documento {
   }
 
   private void checkDatos(TipoDocumento tipoDocumento, String detalle) {
-    if (tipoDocumento == null) throw new DomainValidationException("El campo 'tipo' de un documento es obligatorio, puede ser: " + Arrays.toString(TipoDocumento.values()));
-    if (detalle == null || detalle.isBlank()) throw new DomainValidationException("El campo 'numero' de un documento es obligatorio");
+    if (tipoDocumento == null) throw new ValidacionDominioException("El campo 'tipo' de un documento es obligatorio, puede ser: " + Arrays.toString(TipoDocumento.values()));
+    if (detalle == null || detalle.isBlank()) throw new ValidacionDominioException("El campo 'numero' de un documento es obligatorio");
   }
 
   public Boolean esIgualA(Documento otrodocumento) {

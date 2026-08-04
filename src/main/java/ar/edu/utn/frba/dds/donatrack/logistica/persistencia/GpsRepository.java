@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.persistencia;
 
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Gps;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class GpsRepository {
     return this.gpsList.stream()
         .filter(g -> g.getImei().equalsIgnoreCase(id))
         .findFirst()
-        .orElseThrow(() -> new DomainValidationException("No existe gps con ese id "));
+        .orElseThrow(() -> new ValidacionDominioException("No existe gps con ese id "));
   }
 
   public List<Gps> buscarTodos() {

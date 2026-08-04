@@ -2,6 +2,8 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BaseDatoException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RegistroNoEncontradoException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,7 @@ public final class DonanteRepository {
   }
 
   public void guardar(Donante donante) {
-    if (donante.getId() != null) throw new IllegalArgumentException("Constraint Violations: " + "El donante ya tiene un ID asignado: " + donante.getId());
+    if (donante.getId() != null) throw new BaseDatoException("Constraint Violations: El donante ya tiene un ID asignado: " + donante.getId());
 
     donante.setId(UUID.randomUUID().toString());
     this.storeDonantes.put(donante.getId(), donante);
@@ -52,7 +54,7 @@ public final class DonanteRepository {
 
   public void actualizar(Donante donante) {
     if (donante.getId() == null || !this.storeDonantes.containsKey(donante.getId())) {
-      throw new IllegalArgumentException("El beneficiario No existe en la base de dato");
+      throw new RegistroNoEncontradoException("No se puede actualizar: no existe en la base de datos el donante: " + donante.getId());
     }
     this.storeDonantes.put(donante.getId(), donante);
   }

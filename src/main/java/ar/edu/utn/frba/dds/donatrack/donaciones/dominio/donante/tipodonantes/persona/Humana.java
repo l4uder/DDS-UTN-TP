@@ -6,7 +6,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDo
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.TipoDonante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DomainValidationException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -36,22 +36,22 @@ public class Humana implements TipoDonante {
 
   private void checkDatos(String nombre, Documento documento, String direccion, List<MedioContacto> contactos) {
     if (nombre == null || nombre.isBlank()) {
-      throw new DomainValidationException("El campo 'nombre' es obligatorio, en la persona humana");
+      throw new ValidacionDominioException("El campo 'nombre' es obligatorio, en la persona humana");
     }
     if (documento == null) {
-      throw new DomainValidationException("El documento es obligatorio, en la persona humana");
+      throw new ValidacionDominioException("El documento es obligatorio, en la persona humana");
     }
     if (!TipoDocumento.values(TipoPersona.HUMANA).contains(documento.getTipoDocumento())) {
-      throw new DomainValidationException("El campo 'documento' por ser Humano, solo puede ser " + TipoDocumento.values(TipoPersona.HUMANA));
+      throw new ValidacionDominioException("El campo 'documento' por ser Humano, solo puede ser " + TipoDocumento.values(TipoPersona.HUMANA));
     }
     if (direccion == null || direccion.isBlank()) {
-      throw new DomainValidationException("El campo 'direccion' es obligatorio, en la persona humana");
+      throw new ValidacionDominioException("El campo 'direccion' es obligatorio, en la persona humana");
     }
     if (contactos == null || contactos.isEmpty()) {
-      throw new DomainValidationException("El campo 'contactos' es obligatorio, en la persona humana");
+      throw new ValidacionDominioException("El campo 'contactos' es obligatorio, en la persona humana");
     }
     if (contactos.stream().noneMatch(MedioContacto::getEsPrincipal)) {
-      throw new DomainValidationException("Debe tener al menos un contacto principal");
+      throw new ValidacionDominioException("Debe tener al menos un contacto principal");
     }
   }
 
