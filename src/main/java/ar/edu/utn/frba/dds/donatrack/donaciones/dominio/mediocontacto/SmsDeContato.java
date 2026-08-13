@@ -28,8 +28,8 @@ public class SmsDeContato implements MedioContacto {
   }
 
   private void checkDatos(String telefono, Boolean estado) {
-    if (telefono == null) {
-      throw new ValidacionDominioException("Cada contacto necesita un 'valor' ");
+    if (telefono == null || telefono.isBlank()) {
+      throw new ValidacionDominioException("Cada sms necesita un 'valor' valido");
     }
     if (!telefono.matches("^[+0-9 -]*$")) {
       throw new ValidacionDominioException("Teléfono invalido, verifique por favor");

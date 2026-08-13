@@ -1,0 +1,24 @@
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv;
+
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.importador.ImportadorCsv;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.importador.ResultadoImportacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
+import java.util.List;
+
+public class GeneradorDonantesCsv {
+  private DonanteRepository repoDonantes;
+  private ImportadorCsv importador;
+
+  public GeneradorDonantesCsv(DonanteRepository repoDonantes, ImportadorCsv importador) {
+    this.repoDonantes = repoDonantes;
+    this.importador = importador;
+  }
+
+  public List<FilaError> generar(String rutaArchivo) {
+    ResultadoImportacion resultado = importador.importarDesdeArchivo(rutaArchivo);
+    resultado.getDonantes().forEach(d -> repoDonantes.guardar(d));
+
+    return resultado.getRegistroFallas();
+  }
+
+}
