@@ -4,7 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiari
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.algoritmos.AlgoritmoMatchmaking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class GeneradorRankings {
   }
 
   public List<Ranking> asignar(List<Donacion> donaciones, List<Beneficiario> beneficiarios) {
-    if (beneficiarios == null || beneficiarios.isEmpty()) throw new ValidacionDominioException("No se puede generar rankings sino hay beneficiarios");
+    if (beneficiarios == null || beneficiarios.isEmpty()) throw new DominioException("No se puede generar rankings sino hay beneficiarios");
 
     List<Ranking> rankings = donaciones.stream()
         .map(d -> new Ranking(d, asignar(d, beneficiarios)))

@@ -10,7 +10,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeCo
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ImportadorCsvException;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import com.opencsv.CSVParser;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -116,7 +116,7 @@ public class ImportadorCsv {
           MedioContacto telefono = new SmsDeContato(contenido[5].trim(), false);
           Donante donante = DonanteFactory.crear(persona, documento, nombreCompleto, correo, telefono);
           fila = new FilaTransformada(donante, filaParseada.numFila(), null);
-        } catch (ValidacionDominioException exV){
+        } catch (DominioException exV){
           fila = new FilaTransformada(null, filaParseada.numFila(), exV.getMessage());
         }
       } else {
@@ -137,22 +137,22 @@ public class ImportadorCsv {
 
   private static TipoPersona aTipoPersona(String valor) {
     if (valor == null || valor.isBlank()) {
-      throw new ValidacionDominioException("El csv No especifica el tipo de persona, valores validos: " + Arrays.toString(TipoPersona.values()));    }
+      throw new DominioException("El csv No especifica el tipo de persona, valores validos: " + Arrays.toString(TipoPersona.values()));    }
     try {
       return TipoPersona.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new ValidacionDominioException("El tipo de persona: " + valor + " del csv no existe, valores validos: " + Arrays.toString(TipoPersona.values()));
+      throw new DominioException("El tipo de persona: " + valor + " del csv no existe, valores validos: " + Arrays.toString(TipoPersona.values()));
     }
   }
 
   private static TipoDocumento aTipoDocumento(String tipoDocumento, TipoPersona tipoPersona) {
     if (tipoDocumento == null || tipoDocumento.isBlank()) {
-      throw new ValidacionDominioException("El tipo de documento del csv, valores validos: " + TipoDocumento.values(tipoPersona));
+      throw new DominioException("El tipo de documento del csv, valores validos: " + TipoDocumento.values(tipoPersona));
     }
     try {
       return TipoDocumento.valueOf(tipoDocumento.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new ValidacionDominioException("El tipo de documento: " + tipoDocumento + " del csv no existe, valores validos: " + TipoDocumento.values(tipoPersona));
+      throw new DominioException("El tipo de documento: " + tipoDocumento + " del csv no existe, valores validos: " + TipoDocumento.values(tipoPersona));
     }
   }
 

@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 
 import java.time.LocalDate;
@@ -26,19 +26,19 @@ public class Ruta {
   ) {
 
     if (camion == null) {
-      throw new ValidacionDominioException(
+      throw new DominioException(
           "La ruta debe tener un camión asignado"
       );
     }
 
     if (fecha == null) {
-      throw new ValidacionDominioException(
+      throw new DominioException(
           "La ruta debe tener fecha"
       );
     }
 
     if (entregasOrdenadas == null) {
-      throw new ValidacionDominioException(
+      throw new DominioException(
           "La ruta debe tener entregas"
       );
     }
@@ -76,7 +76,7 @@ public class Ruta {
   public void asignarChofer(Chofer chofer) {
 
     if (chofer == null) {
-      throw new ValidacionDominioException(
+      throw new DominioException(
           "El chofer no puede ser nulo"
       );
     }

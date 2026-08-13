@@ -12,7 +12,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioConta
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteResponse;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteResumenResponse;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
@@ -68,7 +68,7 @@ public class DonanteMapper {
         dtoBuild.rubro(juridica.getRubro());
         dtoBuild.representantes(RepresentanteMapper.aDto(juridica.getRepresentantes()));
       }
-      default -> throw new ValidacionDominioException("Tipo de donante no soportado, o nuevo");
+      default -> throw new DominioException("Tipo de donante no soportado, o nuevo");
     }
 
     return dtoBuild.build();
@@ -85,7 +85,7 @@ public class DonanteMapper {
     if (request.tipo() != null) {
       //TipoDonante nuevoTipo = parseEnum(TipoDonante.class, request.tipo(), "tipo de donante");
       //if (donante.getTipo() != nuevoTipo) throw new DomainValidationException("No se puede modificar el tipo de un donante existente.");
-      throw new ValidacionDominioException("No puede modificar el tipo de un donante");
+      throw new DominioException("No puede modificar el tipo de un donante");
     }
 
     Documento documentoMerge = request.documento() != null ? DocumentoMapper.aDominio(request.documento(), donante.getTipoPersona()) : donante.getDocumento();
@@ -111,18 +111,18 @@ public class DonanteMapper {
 
         donante.actualizarDatosJuridica(razonSocialMerge, documentoMerge, tipoOrgMerge, rubroMerge, representantesMerge);
       }
-      default -> throw new ValidacionDominioException("Tipo de donante no soportado, o nuevo");
+      default -> throw new DominioException("Tipo de donante no soportado, o nuevo");
     }
   }
 
   //================== FUNCIONES AUXILIARES ================
   private static TipoPersona aTipoPersona(String valor) {
     if (valor == null || valor.isBlank()) {
-      throw new ValidacionDominioException("El campo 'tipo' es obligatorio. Debe indicar el tipo de donante: " + Arrays.toString(TipoPersona.values()));    }
+      throw new DominioException("El campo 'tipo' es obligatorio. Debe indicar el tipo de donante: " + Arrays.toString(TipoPersona.values()));    }
     try {
       return TipoPersona.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new ValidacionDominioException("El tipo de donante: " + valor + " no existe debe ser: " + Arrays.toString(TipoPersona.values()));
+      throw new DominioException("El tipo de donante: " + valor + " no existe debe ser: " + Arrays.toString(TipoPersona.values()));
     }
   }
 
@@ -131,7 +131,7 @@ public class DonanteMapper {
     try {
       return Genero.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new ValidacionDominioException("El genero: " + valor + " no existe debe ser: " + Arrays.toString(Genero.values()));
+      throw new DominioException("El genero: " + valor + " no existe debe ser: " + Arrays.toString(Genero.values()));
     }
   }
 
@@ -140,7 +140,7 @@ public class DonanteMapper {
     try {
       return TipoOrganizacion.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new ValidacionDominioException("El tipo de Organización: " + valor + " no existe debe ser: " + Arrays.toString(TipoOrganizacion.values()));
+      throw new DominioException("El tipo de Organización: " + valor + " no existe debe ser: " + Arrays.toString(TipoOrganizacion.values()));
     }
   }
 
@@ -149,7 +149,7 @@ public class DonanteMapper {
     try {
       return LocalDate.parse(valor); // Espera el formato YYYY-MM-DD
     } catch (DateTimeParseException e) {
-      throw new ValidacionDominioException("El formato de la fecha de nacimiento es inválido. Debe ser AAAA-MM-DD.");
+      throw new DominioException("El formato de la fecha de nacimiento es inválido. Debe ser AAAA-MM-DD.");
     }
   }
 

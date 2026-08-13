@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.ju
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Genero;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +30,12 @@ public class Representante {
   }
 
   private void chekDatos(String nombre, List<MedioContacto> contactos) {
-    if (nombre == null || nombre.isBlank()) throw new ValidacionDominioException("El campo nombre es obligatorio, en representante");
+    if (nombre == null || nombre.isBlank()) throw new DominioException("El campo nombre es obligatorio, en representante");
     if (contactos == null || contactos.isEmpty()) {
-      throw new ValidacionDominioException("Debe proporcionar al menos un contacto, en representante");
+      throw new DominioException("Debe proporcionar al menos un contacto, en representante");
     }
     if (contactos.stream().noneMatch(MedioContacto::getEsPrincipal)) {
-      throw new ValidacionDominioException("Debe tener al menos un contacto principal, el representante");
+      throw new DominioException("Debe tener al menos un contacto principal, el representante");
     }
   }
 

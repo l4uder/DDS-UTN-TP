@@ -3,7 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Setter;
@@ -51,7 +51,7 @@ public class Entrega {
 
   public void marcarNoRecibida(String motivo) {
     if (motivo == null || motivo.isBlank()) {
-      throw new ValidacionDominioException("Debe indicar un motivo");
+      throw new DominioException("Debe indicar un motivo");
     }
     validarTransicionDesde(TipoEstadoEntrega.EN_TRASLADO, "marcar como no recibida");
     cambiarEstado(TipoEstadoEntrega.NO_RECIBIDA, motivo);
@@ -67,14 +67,14 @@ public class Entrega {
           "Solo se pueden cargar fotos de una entrega ya confirmada como entregada");
     }
     if (url == null || url.isBlank()) {
-      throw new ValidacionDominioException("La URL de la foto es obligatoria");
+      throw new DominioException("La URL de la foto es obligatoria");
     }
     fotosRecepcion.add(url);
   }
 
   public void reasignarCamion(Camion camion) {
     if (camion == null) {
-      throw new ValidacionDominioException("El camión no puede ser nulo");
+      throw new DominioException("El camión no puede ser nulo");
     }
     validarTransicionDesde(TipoEstadoEntrega.PENDIENTE, "reasignar camión");
     this.camionAsignado = camion;

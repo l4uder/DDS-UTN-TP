@@ -3,7 +3,6 @@ package ar.edu.utn.frba.dds.donatrack.logistica.persistencia;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BaseDatoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RegistroNoEncontradoException;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

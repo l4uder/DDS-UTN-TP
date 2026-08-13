@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion;
 
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -29,7 +29,7 @@ public class Camion {
 
   private void validarPatente(String patente) {
     if (patente == null || patente.isBlank()) {
-      throw new ValidacionDominioException("El campo 'patente' es obligatorio");
+      throw new DominioException("El campo 'patente' es obligatorio");
     }
   }
 
@@ -41,10 +41,10 @@ public class Camion {
 
   private void validarPositivo(Float valor, String campo) {
     if (valor == null) {
-      throw new ValidacionDominioException("El campo '" + campo + "' es obligatorio");
+      throw new DominioException("El campo '" + campo + "' es obligatorio");
     }
     if (valor <= 0) {
-      throw new ValidacionDominioException(
+      throw new DominioException(
           "El campo '" + campo + "' debe ser mayor a 0");
     }
   }

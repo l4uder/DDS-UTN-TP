@@ -5,7 +5,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiari
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -35,10 +35,10 @@ public class Donacion {
 
   private void checkDatos(List<Bien> bienes, List<Donante> donantes) {
     if (bienes == null || bienes.isEmpty()) {
-      throw new ValidacionDominioException("Una donación debe tener al menos un bien");
+      throw new DominioException("Una donación debe tener al menos un bien");
     }
     if (donantes == null || donantes.isEmpty()) {
-      throw new ValidacionDominioException("Una donación debe tener al menos un donante");
+      throw new DominioException("Una donación debe tener al menos un donante");
     }
   }
 
@@ -51,7 +51,7 @@ public class Donacion {
         .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
         .findFirst()
         .map(EstadoDonacion::getFecha)
-        .orElseThrow(() -> new ValidacionDominioException("Donación no posee fecha de asignación"));
+        .orElseThrow(() -> new DominioException("Donación no posee fecha de asignación"));
   }
 
   /*Solo para poder probar un test despues ver como mejorar quitando esto*/
@@ -59,7 +59,7 @@ public class Donacion {
     EstadoDonacion estadoAsignacion = this.historialEstados.stream()
         .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
         .findFirst()
-        .orElseThrow(() -> new ValidacionDominioException("Donación no posee fecha de asignación"));
+        .orElseThrow(() -> new DominioException("Donación no posee fecha de asignación"));
     estadoAsignacion.setFecha(fechaAsignacion);
   }
 
@@ -71,7 +71,7 @@ public class Donacion {
 
   public void notificarEntregaFallida(String observacion) {
     if (observacion == null || observacion.isBlank()) {
-      throw new ValidacionDominioException(
+      throw new DominioException(
           "Se requiere justificación para notificar entrega fallida"
       );
     }
@@ -200,7 +200,7 @@ public class Donacion {
 
   public void reemplazarBienes(List<Bien> nuevosBienes) {
     if (nuevosBienes == null || nuevosBienes.isEmpty()) {
-      throw new ValidacionDominioException("Una donación debe tener al menos un bien");
+      throw new DominioException("Una donación debe tener al menos un bien");
     }
     if (getEstadoActual() != TipoEstadoDonacion.EN_DEPOSITO) {
       throw new CambioDeEstadoNoPermitidoException(

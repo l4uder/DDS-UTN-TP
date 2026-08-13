@@ -3,7 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.TipoOrganizacion;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import java.util.List;
 
@@ -63,7 +63,7 @@ public class DonanteFactory {
                                      );
     }
 
-    throw new ValidacionDominioException("Tipo de persona invalido debe revisar: " + tipoPersona);
+    throw new DominioException("Tipo de persona invalido debe revisar: " + tipoPersona);
   }
 
 }

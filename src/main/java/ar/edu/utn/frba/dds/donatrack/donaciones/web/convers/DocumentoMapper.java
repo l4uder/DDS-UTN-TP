@@ -4,7 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Docume
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.documento.DocumentoDto;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -31,12 +31,12 @@ public class DocumentoMapper {
   //=========== FUNCIONES AUXILIARES =============
   private static TipoDocumento aTipoDocumento(String tipoDocumento, TipoPersona tipoPersona) {
     if (tipoDocumento == null || tipoDocumento.isBlank()) {
-      throw new ValidacionDominioException("El 'tipo' de un documento es obligatorio, debe ser alguno de: " + TipoDocumento.values(tipoPersona));
+      throw new DominioException("El 'tipo' de un documento es obligatorio, debe ser alguno de: " + TipoDocumento.values(tipoPersona));
     }
     try {
       return TipoDocumento.valueOf(tipoDocumento.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new ValidacionDominioException("El tipo de documento: " + tipoDocumento + " no existe, debe ser alguno de: " + TipoDocumento.values(tipoPersona));
+      throw new DominioException("El tipo de documento: " + tipoDocumento + " no existe, debe ser alguno de: " + TipoDocumento.values(tipoPersona));
     }
   }
 

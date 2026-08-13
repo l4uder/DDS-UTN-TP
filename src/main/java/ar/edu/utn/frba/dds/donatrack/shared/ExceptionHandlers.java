@@ -2,9 +2,9 @@ package ar.edu.utn.frba.dds.donatrack.shared;
 
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BaseDatoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RegistroNoEncontradoException;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionBodyException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BodyException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import com.google.gson.JsonSyntaxException;
 import io.javalin.Javalin;
@@ -20,10 +20,10 @@ public class ExceptionHandlers {
     app.exception(JsonSyntaxException.class, (e, ctx) ->
       ctx.status(400).json(new ErrorResponse(400, "El body no es un JSON válido")));
     // Error en el Body
-    app.exception(ValidacionBodyException.class, (e, ctx) ->
+    app.exception(BodyException.class, (e, ctx) ->
       ctx.status(400).json(new ErrorResponse(400, e.getMessage())));
     // Validación de Dominio
-    app.exception(ValidacionDominioException.class, (e, ctx) ->
+    app.exception(DominioException.class, (e, ctx) ->
         ctx.status(400).json(new ErrorResponse(400, e.getMessage())));
     // Recurso no encontrado
     app.exception(RecursoNoEncontradoException.class, (e, ctx) ->

@@ -9,7 +9,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadRec
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Periodo;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.necesidad.NecesidadRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.necesidad.NecesidadResponse;
-import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ValidacionDominioException;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.AccessLevel;
@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class NecesidadMapper {
 
   public static Necesidad aDominio(NecesidadRequest request) {
-    if (request.tipo() == null) throw new ValidacionDominioException("El campo 'tipo' es obligatorio (RECURRENTE o EXTRAORDINARIA)");
+    if (request.tipo() == null) throw new DominioException("El campo 'tipo' es obligatorio (RECURRENTE o EXTRAORDINARIA)");
 
     Subcategoria subcategoria = aSubcategoria(request);
     UnidadMedida unidadMedida = aUnidadMedida(request.unidadMedida());
@@ -35,7 +35,7 @@ public class NecesidadMapper {
           unidadMedida,
           request.descripcion(),
           request.cantidadRequerida());
-      default -> throw new ValidacionDominioException("Necesidad incorrecta, debe ser (RECURRENTE o EXTRAORDINARIA)");
+      default -> throw new DominioException("Necesidad incorrecta, debe ser (RECURRENTE o EXTRAORDINARIA)");
     };
   }
 
@@ -91,20 +91,20 @@ public class NecesidadMapper {
   }
 
   private static Periodo aPeriodo(String valor) {
-    if (valor == null) throw new ValidacionDominioException("Una necesidad recurrente necesita 'periodo' puede ser: " + Arrays.toString(Periodo.values()));
+    if (valor == null) throw new DominioException("Una necesidad recurrente necesita 'periodo' puede ser: " + Arrays.toString(Periodo.values()));
     try {
       return Periodo.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new ValidacionDominioException("El periodo: " + valor + " no existe, debe ser: " + Arrays.toString(Periodo.values()));
+      throw new DominioException("El periodo: " + valor + " no existe, debe ser: " + Arrays.toString(Periodo.values()));
     }
   }
 
   private static UnidadMedida aUnidadMedida(String valor) {
-    if (valor == null) throw new ValidacionDominioException("Necesita 'unidadMedida' valores posibles: " + Arrays.toString(UnidadMedida.values()));
+    if (valor == null) throw new DominioException("Necesita 'unidadMedida' valores posibles: " + Arrays.toString(UnidadMedida.values()));
     try {
       return UnidadMedida.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new ValidacionDominioException("La unidad de medida: " + valor + " no existe, debe ser: " + Arrays.toString(UnidadMedida.values()));
+      throw new DominioException("La unidad de medida: " + valor + " no existe, debe ser: " + Arrays.toString(UnidadMedida.values()));
     }
   }
 
