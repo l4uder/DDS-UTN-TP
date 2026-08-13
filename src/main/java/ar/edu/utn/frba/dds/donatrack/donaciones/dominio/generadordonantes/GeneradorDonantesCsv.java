@@ -1,7 +1,7 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.importador.ImportadorCsv;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.importador.ResultadoImportacion;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.importadorcsv.ImportadorCsv;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.importadorcsv.ResultadoImportacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import java.util.List;
 

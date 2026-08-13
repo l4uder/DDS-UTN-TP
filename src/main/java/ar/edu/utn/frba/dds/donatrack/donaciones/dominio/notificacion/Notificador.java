@@ -29,7 +29,7 @@ public class Notificador {
 
   @Subscribe
   public void onEntregaFallida(EventoEntregaFallida evento) {
-    evento.donacion().getBeneficiario().recibirNotificacion(
+    evento.donacion().getBeneficiario().recibirNotificacionImportante(
         "Su donacion asignada %s no pudo ser enviada por el siguiente problema %s.".formatted(evento.donacion().getId(), evento.observacion())
     );
 
@@ -50,7 +50,7 @@ public class Notificador {
 
   @Subscribe
   public void onEntregaExitosa(EventoEntregaExitosa evento) {
-    evento.donacion().getBeneficiario().recibirNotificacion(
+    evento.donacion().getBeneficiario().recibirNotificacionImportante(
         "Su donacion asignada %s fue entregada con exito con fecha %s.".formatted(
             evento.donacion().getId(), evento.date().format(DateTimeFormatter.BASIC_ISO_DATE)
         )
@@ -67,7 +67,7 @@ public class Notificador {
 
   @Subscribe
   public void onInicioDeRuta(EventoInicioDeRuta evento) {
-    evento.donacion().getBeneficiario().recibirNotificacion(
+    evento.donacion().getBeneficiario().recibirNotificacionImportante(
         "Su donacion asignada %s ha iniciado el viaje, link al mapa %s.".formatted(
             evento.donacion().getId(), evento.linkMapa()
         )

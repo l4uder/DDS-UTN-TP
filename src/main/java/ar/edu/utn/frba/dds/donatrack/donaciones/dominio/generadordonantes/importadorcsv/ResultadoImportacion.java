@@ -1,7 +1,7 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.importador;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.importadorcsv;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.FilaError;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.FilaError;
 import java.util.List;
 import lombok.Getter;
 

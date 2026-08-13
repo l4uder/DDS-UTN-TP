@@ -36,6 +36,7 @@ public class DonacionController {
     this.repoDonantes = repoDonantes;
   }
 
+  // [----] -> [En deposito]
   public void crear(Context ctx) {
     //Cosas que recibo por Body
     DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
@@ -78,7 +79,7 @@ public class DonacionController {
     Donacion donacion = buscarDonacionPorId(idDonacion);
     List<Bien> bienes = BienMapper.aDominio(bienesDto);
 
-    donacion.reemplazarBienes(bienes);
+    donacion.actualizarBienes(bienes);
     repoDonaciones.actualizar(donacion);
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
@@ -103,17 +104,19 @@ public class DonacionController {
     ctx.status(200).json(EstadoDonacionMapper.aDto(historialEstados));
   }
 
-  public void donacionDevueltaADeposito(Context ctx) {
+  // [Asignación Realizada] -> [Lista Para Entregar]
+  public void donacionListaParaEntregar(Context ctx) {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
 
-    donacion.confirmarRecepcionDeposito();
+    donacion.confirmarListaParaEntregar();
     repoDonaciones.actualizar(donacion);
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
+  // [Lista Para Entregar] -> [En Traslado]
   public void donacionEnTraslado(Context ctx) {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
@@ -124,34 +127,13 @@ public class DonacionController {
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
 
-    donacion.confirmarTrasladoEnCurso();
+    donacion.confirmarEnTraslado();
     AppEventBus.getInstance().post(new EventoInicioDeRuta(donacion, LocalDate.now(), mapa));
     repoDonaciones.actualizar(donacion);
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
-  public void donacionVencida(Context ctx) {
-    //Cosas que recibo por URL --> Path param
-    String idDonacion = ctx.pathParam("id");
-
-    Donacion donacion = buscarDonacionPorId(idDonacion);
-
-    donacion.marcarVencida();
-    repoDonaciones.actualizar(donacion);
-    ctx.status(200).json(DonacionMapper.aDto(donacion));
-  }
-
-  public void donacionListaParaEntregar(Context ctx) {
-    //Cosas que recibo por URL --> Path param
-    String idDonacion = ctx.pathParam("id");
-
-    Donacion donacion = buscarDonacionPorId(idDonacion);
-
-    donacion.confirmarRuta();
-    repoDonaciones.actualizar(donacion);
-    ctx.status(200).json(DonacionMapper.aDto(donacion));
-  }
-
+  // [En Traslado] -> [Entregada] FIN
   public void donacionEntregada(Context ctx) {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
@@ -168,6 +150,7 @@ public class DonacionController {
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
+  // [En Traslado] -> [Entregada Fallida]
   public void donacionEntregaFallida(Context ctx) {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
@@ -178,8 +161,32 @@ public class DonacionController {
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
 
-    donacion.notificarEntregaFallida(observacion);
+    donacion.errorAlEntregar(observacion);
     AppEventBus.getInstance().post(new EventoEntregaFallida(observacion, donacion, LocalDate.now()));
+    repoDonaciones.actualizar(donacion);
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
+  }
+
+  // [Entrega Fallida] -> [En Deposito]
+  public void donacionDevueltaADeposito(Context ctx) {
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
+
+    Donacion donacion = buscarDonacionPorId(idDonacion);
+
+    donacion.RetornarADeposito();
+    repoDonaciones.actualizar(donacion);
+    ctx.status(200).json(DonacionMapper.aDto(donacion));
+  }
+
+  // [En Deposito] -> [Vencida] FIN
+  public void donacionVencida(Context ctx) {
+    //Cosas que recibo por URL --> Path param
+    String idDonacion = ctx.pathParam("id");
+
+    Donacion donacion = buscarDonacionPorId(idDonacion);
+
+    donacion.marcarVencida();
     repoDonaciones.actualizar(donacion);
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }

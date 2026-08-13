@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.FilaError;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.GeneradorDonantesCsv;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.importador.ImportadorCsv;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.FilaError;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.GeneradorDonantesCsv;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.importadorcsv.ImportadorCsv;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ImportadorCsvException;
 import java.util.List;
@@ -49,4 +49,5 @@ public class GeneradorDonantesCsvTest {
 
     assertThrows(ImportadorCsvException.class, () -> generadorDonantes.generar(archivoInexistente));
   }
+
 }

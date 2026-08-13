@@ -66,19 +66,17 @@ public class Beneficiario {
   }
 
   public void recibirNotificacion(String mensaje) {
+    List<MedioContacto> contactosPrincipales = getContactos().stream().filter(c -> c.getEsPrincipal()).toList();
+    contactosPrincipales.forEach(c -> c.notificar(mensaje));
+  }
+
+  public void recibirNotificacionImportante(String mensaje) {
     List<MedioContacto> contactos = getContactos();
     contactos.forEach(c -> c.notificar(mensaje));
   }
 
   public Boolean esIgual(Beneficiario otroBeneficiario) {
     return razonSocial.equalsIgnoreCase(otroBeneficiario.getRazonSocial());
-  }
-
-  public MedioContacto getContactoPrincipal() {
-    if (this.contactos != null && !this.contactos.isEmpty()) {
-        return this.contactos.get(0);
-    }
-    throw new DominioException("El beneficiario no posee contactos");
   }
 
   public void actualizarDatos(String razonSocial, String direccion, List<MedioContacto> contactos) {

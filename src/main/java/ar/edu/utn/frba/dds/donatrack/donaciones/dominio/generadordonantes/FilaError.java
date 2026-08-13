@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes;
 
 import lombok.Getter;
 

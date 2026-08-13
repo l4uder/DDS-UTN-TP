@@ -1,11 +1,11 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.importador;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.importadorcsv;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.DonanteFactory;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantescsv.FilaError;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.FilaError;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
