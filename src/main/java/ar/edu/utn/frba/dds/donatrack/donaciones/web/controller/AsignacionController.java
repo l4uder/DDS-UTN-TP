@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.controller;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.DispatcherEventos;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.EventoAsignacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.GeneradorRankings;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
@@ -16,7 +18,6 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.AsignadaDonacio
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
 import java.util.List;
-import java.util.Map;
 
 public class AsignacionController {
   private final DonacionRepository repoDonaciones;
@@ -69,10 +70,11 @@ public class AsignacionController {
 
     ranking.vencida();
     Donacion donacion = ranking.getDonacion();
-    donacion.confirmarAsignacion(beneficiario);
+    donacion.asignarA(beneficiario);
     repoDonaciones.actualizar(donacion);
     repoBeneficiarios.actualizar(beneficiario);
     repoRankings.actualizar(ranking);
+    DispatcherEventos.getInstancia().post(new EventoAsignacion(beneficiario, donacion.getDonantes(), donacion.getDescripcion()));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 

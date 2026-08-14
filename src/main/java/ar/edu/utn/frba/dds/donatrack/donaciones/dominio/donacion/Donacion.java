@@ -56,7 +56,7 @@ public class Donacion {
         .orElseThrow(() -> new DominioException("Donación no posee fecha de asignación"));
   }
 
-  /*Solo para poder probar un test despues ver como mejorar quitando esto*/
+  /*Solo para poder probar un test después ver como mejorar quitando esto*/
   public void setFechaAsignacion(LocalDateTime fechaAsignacion) {
     EstadoDonacion estadoAsignacion = this.historialEstados.stream()
         .filter(e -> e.getTipoEstado() == TipoEstadoDonacion.ASIGNACION_REALIZADA)
@@ -72,50 +72,41 @@ public class Donacion {
   }
 
   // [En deposito] -> [Asignacion Realizada]
-  public void confirmarAsignacion(Beneficiario beneficiario) {
+  public void asignarA(Beneficiario beneficiario) {
     if (getEstadoActual() != TipoEstadoDonacion.EN_DEPOSITO)
-      throw new CambioDeEstadoNoPermitidoException("No se puede asignar donacion a menos que este en deposito");
+      throw new CambioDeEstadoNoPermitidoException("No se puede asignar donación a menos que este en deposito");
 
     setEstadoActual(TipoEstadoDonacion.ASIGNACION_REALIZADA, "Se realizó la asignación a " + beneficiario.getRazonSocial());
 
     this.beneficiario = beneficiario; //Doble asignación
     this.beneficiario.asignarDonacion(this); //Doble asignación
-
-    this.beneficiario.recibirNotificacion("Se le ha asignado una nueva donación: " + this.descripcion);
-    this.donantes.forEach(d -> d.recibirNotificacion("Tu donación ha sido asignada a: " + this.beneficiario.getRazonSocial()));
   }
+
   // [Asignación Realizada] -> [Lista Para Entregar]
-  public void confirmarListaParaEntregar() {
+  public void listaParaEntregar() {
     if (getEstadoActual() != TipoEstadoDonacion.ASIGNACION_REALIZADA)
-      throw new CambioDeEstadoNoPermitidoException("La donacion debe estar asignada para confirmar ruta");
+      throw new CambioDeEstadoNoPermitidoException("La donación debe estar asignada para confirmar ruta");
 
     setEstadoActual(TipoEstadoDonacion.LISTA_PARA_ENTREGAR, null);
   }
+
   // [Lista Para Entregar] -> [En Traslado]
-  public void confirmarEnTraslado() {
+  public void enCamino() {
     if (getEstadoActual() != TipoEstadoDonacion.LISTA_PARA_ENTREGAR)
       throw new CambioDeEstadoNoPermitidoException("La donación debe estar en lista para entregar, para iniciar el traslado");
 
     setEstadoActual(TipoEstadoDonacion.EN_TRASLADO, null);
-
-    String mensaje = "La entrega está en camino. ¡Atentos al recorrido!";
-    this.beneficiario.recibirNotificacion(mensaje);
-    this.donantes.forEach(d -> d.recibirNotificacion(mensaje));
-    //La entrega del enlace al mapa y el chofer se lo dejamos al Notificador
   }
+
   // [En Traslado] -> [Entregada] FIN
-  public void confirmarEntrega() {
+  public void entregada() {
     if (getEstadoActual() != TipoEstadoDonacion.EN_TRASLADO)
       throw new CambioDeEstadoNoPermitidoException("La donación debe estar en traslado para confirmar entrega");
 
     setEstadoActual(TipoEstadoDonacion.ENTREGADA, null);
     this.estadoModificable = false;
-
-    String mensaje = "¡Entrega finalizada con éxito!";
-    this.beneficiario.recibirNotificacion(mensaje);
-    this.donantes.forEach(d -> d.recibirNotificacion(mensaje));
-    //La entregar del comprobante se lo dejamos al Notificador
   }
+
   // [En Traslado] -> [Entregada Fallida]
   public void errorAlEntregar(String observacion) {
     if (getEstadoActual() != TipoEstadoDonacion.EN_TRASLADO)
@@ -125,28 +116,23 @@ public class Donacion {
       throw new DominioException("Es necesario una observación en la entrega fallida");
 
     setEstadoActual(TipoEstadoDonacion.ENTREGA_FALLIDA, observacion);
-
-    String mensaje = "La entrega no pudo concretarse. Motivo: " + observacion;
-    this.beneficiario.recibirNotificacion(mensaje);
-    this.donantes.forEach(d -> d.recibirNotificacion(mensaje));
-    //La notificación a los admins se lo dejamos al Notificador
   }
+
   // [Entrega Fallida] -> [En Deposito]
-  public void RetornarADeposito() {
+  public void retornaADeposito() {
     if (getEstadoActual() != TipoEstadoDonacion.ENTREGA_FALLIDA)
       throw new CambioDeEstadoNoPermitidoException("No se puede recibir en deposito a menos que la entrega falle");
 
     setEstadoActual(TipoEstadoDonacion.EN_DEPOSITO, null);
   }
+
   // [En Deposito] -> [Vencida] FIN
-  public void marcarVencida() {
+  public void vencida() {
     if (getEstadoActual() != TipoEstadoDonacion.EN_DEPOSITO)
       throw new CambioDeEstadoNoPermitidoException("No se puede marcar como vencida si no esta en deposito");
 
     setEstadoActual(TipoEstadoDonacion.VENCIDA, null);
     this.estadoModificable = false;
-
-    this.donantes.forEach(d -> d.recibirNotificacion("La donación se venció, lo sentimos mucho"));
   }
 
   public Subcategoria getSubcategoria() {

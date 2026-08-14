@@ -43,8 +43,4 @@ public class Representante {
     return this.contactos.stream().filter(MedioContacto::getEsPrincipal).toList();
   }
 
-  public List<MedioContacto> getContactosSecundarios() {
-    return this.contactos.stream().filter(c -> !c.getEsPrincipal()).toList();
-  }
-
 }

@@ -1,12 +1,13 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.controller;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.EventoVencida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.TipoEstadoDonacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaExitosa;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoEntregaFallida;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.eventos.EventoInicioDeRuta;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.EventoEntregaExitosa;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.EventoEntregaFallida;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.EventoInicioDeRuta;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
@@ -15,7 +16,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.EstadoDonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.bien.BienDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.DonacionRequest;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.AppEventBus;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.DispatcherEventos;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.EnTrasladoDonacionDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.EntregadaDonacionDto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.ErrorEntregaDonacionDto;
@@ -23,7 +24,6 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BodyException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -111,13 +111,13 @@ public class DonacionController {
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
 
-    donacion.confirmarListaParaEntregar();
+    donacion.listaParaEntregar();
     repoDonaciones.actualizar(donacion);
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
   // [Lista Para Entregar] -> [En Traslado]
-  public void donacionEnTraslado(Context ctx) {
+  public void donacionEnCamino(Context ctx) {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
     //Cosas que recibo por Body
@@ -127,9 +127,9 @@ public class DonacionController {
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
 
-    donacion.confirmarEnTraslado();
-    AppEventBus.getInstance().post(new EventoInicioDeRuta(donacion, LocalDate.now(), mapa));
+    donacion.enCamino();
     repoDonaciones.actualizar(donacion);
+    DispatcherEventos.getInstancia().post(new EventoInicioDeRuta(donacion.getBeneficiario(), donacion.getDonantes(), donacion.getDescripcion(), mapa));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
@@ -139,14 +139,14 @@ public class DonacionController {
     String idDonacion = ctx.pathParam("id");
     //Cosas que recibo por Body
     EntregadaDonacionDto request = ctx.bodyAsClass(EntregadaDonacionDto.class);
-    if (request == null || request.camionId() == null || request.camionId().isBlank()) throw new BodyException("El body no tiene el id del camion");
-    String idCamion = request.camionId();
+    if (request == null || request.linkComprobanteEntrega() == null || request.linkComprobanteEntrega().isBlank()) throw new BodyException("El body no tiene el comprobante de entrega, la cual debe poseer: fechaHora de entrega y camion que hizo la entrega");
+    String comprobante = request.linkComprobanteEntrega();
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
 
-    donacion.confirmarEntrega();
-    AppEventBus.getInstance().post(new EventoEntregaExitosa(donacion, LocalDate.now(), idCamion));
+    donacion.entregada();
     repoDonaciones.actualizar(donacion);
+    DispatcherEventos.getInstancia().post(new EventoEntregaExitosa(donacion.getBeneficiario(), donacion.getDonantes(), donacion.getDescripcion(), comprobante));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
@@ -162,8 +162,8 @@ public class DonacionController {
     Donacion donacion = buscarDonacionPorId(idDonacion);
 
     donacion.errorAlEntregar(observacion);
-    AppEventBus.getInstance().post(new EventoEntregaFallida(observacion, donacion, LocalDate.now()));
     repoDonaciones.actualizar(donacion);
+    DispatcherEventos.getInstancia().post(new EventoEntregaFallida(donacion, observacion));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
@@ -174,7 +174,7 @@ public class DonacionController {
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
 
-    donacion.RetornarADeposito();
+    donacion.retornaADeposito();
     repoDonaciones.actualizar(donacion);
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
@@ -186,8 +186,9 @@ public class DonacionController {
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
 
-    donacion.marcarVencida();
+    donacion.vencida();
     repoDonaciones.actualizar(donacion);
+    DispatcherEventos.getInstancia().post(new EventoVencida(donacion.getDonantes()));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 

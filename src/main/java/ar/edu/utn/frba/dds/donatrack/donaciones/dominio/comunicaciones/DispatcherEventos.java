@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicacionescambioestado;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones;
 
 import com.google.common.eventbus.EventBus;
 
@@ -7,7 +7,7 @@ public final class DispatcherEventos extends EventBus {
 
   private DispatcherEventos() { }
 
-  public static DispatcherEventos getInstance(){
+  public static DispatcherEventos getInstancia(){
     return INSTANCE;
   }
 

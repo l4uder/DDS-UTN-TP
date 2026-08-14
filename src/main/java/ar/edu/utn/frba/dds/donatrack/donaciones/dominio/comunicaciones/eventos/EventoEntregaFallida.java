@@ -1,6 +1,8 @@
-package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicacionescambioestado.eventos;
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos;
+
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 
 public record EventoEntregaFallida(
-    String donacionId,
+    Donacion donacion,
     String observacion
 ) { }

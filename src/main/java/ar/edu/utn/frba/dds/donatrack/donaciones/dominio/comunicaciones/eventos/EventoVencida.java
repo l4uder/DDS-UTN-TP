@@ -1,4 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos;
 
-public class EventoVencida {
-}
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import java.util.List;
+
+public record EventoVencida(
+    List<Donante> donantes
+) { }

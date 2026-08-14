@@ -1,23 +1,27 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 
 import java.util.*;
 
-public final class AdministratorRepository {
-  private static final AdministratorRepository INSTANCE = new AdministratorRepository();
-  private final List<MedioContacto> administradores;
+public final class ContactosAdminRepository {
+  private static final ContactosAdminRepository INSTANCE = new ContactosAdminRepository();
+  private final List<MedioContacto> storeContactosAdmins;
 
-  private AdministratorRepository() {
-    administradores = new ArrayList<>();
+  private ContactosAdminRepository() {
+    storeContactosAdmins = new ArrayList<>();
   }
 
-  public static AdministratorRepository getInstancia() {
+  public static ContactosAdminRepository getInstancia() {
     return INSTANCE;
   }
 
-  public List<MedioContacto> buscarTodos() {
-    return administradores;
+  public void agregar(MedioContacto medioContacto) {
+    this.storeContactosAdmins.add(medioContacto);
   }
+
+  public List<MedioContacto> buscarTodos() {
+    return storeContactosAdmins;
+  }
+
 }

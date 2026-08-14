@@ -4,7 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiari
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import java.util.List;
 
-public record EventoAsignacionDeDonacion(
+public record EventoAsignacion(
     Beneficiario beneficiario,
     List<Donante> donantes,
     String detalleDonacion

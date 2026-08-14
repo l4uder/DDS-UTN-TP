@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.Notificador;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.SuscriptorEventos;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
@@ -15,7 +15,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.BeneficiarioRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.DonacionRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.DonanteRoutes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.routes.NecesidadRoutes;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.notificacion.AppEventBus;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.DispatcherEventos;
 import ar.edu.utn.frba.dds.donatrack.shared.ConfiguracionEntorno;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
@@ -27,7 +27,7 @@ public class App {
 
   public static void main(String[] args) {
     ConfiguracionEntorno config = ConfiguracionEntorno.getInstance();
-    Notificador.init(AppEventBus.getInstance());
+    SuscriptorEventos.init(DispatcherEventos.getInstancia());
     crearApp().start(config.puertoDonaciones(PUERTO));
   }
 

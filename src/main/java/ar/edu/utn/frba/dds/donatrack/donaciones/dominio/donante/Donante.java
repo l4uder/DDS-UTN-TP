@@ -44,22 +44,13 @@ public class Donante {
         .orElseThrow(() -> new DominioException( "El donante no posee ningún contacto configurado como principal"));
   }
 
-/*
-  public String getEmail() {
-    return buscarEmail()
-        .orElseThrow(() -> new DomainValidationException(
-            "El Donante no tiene correo electrónico"));
-  }
-
-  public Optional<String> buscarEmail() {
-    return this.contactos.stream()
-        .filter(contacto -> contacto instanceof CorreoDeContato)
-        .map(correo -> ((CorreoDeContato) correo).getCorreo())
-        .findFirst();
-  }
-*/
   public void recibirNotificacion(String mensaje) {
     List<MedioContacto> contactos = getContactosPrincipales();
+    contactos.forEach(c -> c.notificar(mensaje));
+  }
+
+  public void recibirNotificacionImportante(String mensaje) {
+    List<MedioContacto> contactos = getContactos();
     contactos.forEach(c -> c.notificar(mensaje));
   }
 
@@ -95,8 +86,8 @@ public class Donante {
     return this.tipoDonante.getContactosPrincipales();
   }
 
-  public List<MedioContacto> getContactosSecundarios() {
-    return this.tipoDonante.getContactosSecundarios();
+  public List<MedioContacto> getContactos() {
+    return this.tipoDonante.getContactos();
   }
 
   public String getNombreCompleto() {

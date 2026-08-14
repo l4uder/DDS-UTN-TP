@@ -195,12 +195,12 @@ public class AlgoritmoMatchmakingTest {
   void debePriorizarAlBeneficiarioConMenosDonaciones() {
     //benefeciario1 recibe una donacion
     donacionAsignada1 = new Donacion(List.of(sillaMadera), List.of(donantePrueba));
-    donacionAsignada1.confirmarAsignacion(beneficiario1);
+    donacionAsignada1.asignarA(beneficiario1);
     //beneficiario2 recibe dos donaciones
     donacionAsignada2 = new Donacion(List.of(yogurDream), List.of(donantePrueba));
     donacionAsignada3 = new Donacion(List.of(remeraMangaCorta), List.of(donantePrueba));
-    donacionAsignada2.confirmarAsignacion(beneficiario2);
-    donacionAsignada3.confirmarAsignacion(beneficiario2);
+    donacionAsignada2.asignarA(beneficiario2);
+    donacionAsignada3.asignarA(beneficiario2);
 
     donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
 
@@ -215,12 +215,12 @@ public class AlgoritmoMatchmakingTest {
   void debeIgnorarLasDonacionesAnterioresATresMeses() {
     //benefeciario1 recibe una donacion
     donacionAsignada1 = new Donacion(List.of(sillaMadera), List.of(donantePrueba));
-    donacionAsignada1.confirmarAsignacion(beneficiario1);
+    donacionAsignada1.asignarA(beneficiario1);
     //beneficiario2 recibe dos donaciones pero el año pasado
     donacionAsignada2 = new Donacion(List.of(yogurDream), List.of(donantePrueba));
     donacionAsignada3 = new Donacion(List.of(remeraMangaCorta), List.of(donantePrueba));
-    donacionAsignada2.confirmarAsignacion(beneficiario2);
-    donacionAsignada3.confirmarAsignacion(beneficiario2);
+    donacionAsignada2.asignarA(beneficiario2);
+    donacionAsignada3.asignarA(beneficiario2);
     donacionAsignada2.setFechaAsignacion(LocalDateTime.now().minusYears(1));
     donacionAsignada3.setFechaAsignacion(LocalDateTime.now().minusYears(1));
 

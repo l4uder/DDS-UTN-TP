@@ -71,8 +71,8 @@ public class Humana implements TipoDonante {
   }
 
   @Override
-  public List<MedioContacto> getContactosSecundarios() {
-    return this.contactos.stream().filter(c -> !c.getEsPrincipal()).toList();
+  public List<MedioContacto> getContactos() {
+    return this.contactos;
   }
 
   @Override

@@ -8,5 +8,5 @@ public interface TipoDonante {
   String getNombreCompleto();
   TipoPersona getTipo();
   List<MedioContacto> getContactosPrincipales();
-  List<MedioContacto> getContactosSecundarios();
+  List<MedioContacto> getContactos();
 }

@@ -56,8 +56,8 @@ public class Juridica implements TipoDonante {
   }
 
   @Override
-  public List<MedioContacto> getContactosSecundarios() {
-    return this.representantes.stream().flatMap(r -> r.getContactosSecundarios().stream()).toList();
+  public List<MedioContacto> getContactos() {
+    return this.representantes.stream().flatMap(r -> r.getContactos().stream()).toList();
   }
 
   @Override
