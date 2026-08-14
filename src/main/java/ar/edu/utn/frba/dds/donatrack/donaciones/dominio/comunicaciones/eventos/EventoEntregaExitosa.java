@@ -1,0 +1,13 @@
+package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicacionescambioestado.eventos;
+
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
+
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import java.util.List;
+
+public record EventoEntregaExitosa(
+    Beneficiario beneficiario,
+    List<Donante> donantes,
+    String detalleDonacion,
+    String linkComprobanteEntrega
+) { }
