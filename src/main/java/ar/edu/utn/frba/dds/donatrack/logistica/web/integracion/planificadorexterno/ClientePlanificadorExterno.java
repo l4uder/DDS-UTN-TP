@@ -1,7 +1,6 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.web.integracion;
+package ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.planificadorexterno;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.Lote;
 import java.util.List;
 

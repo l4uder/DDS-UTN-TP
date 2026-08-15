@@ -7,7 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.logistica.web.convers.EntregaMapper;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega.EntregaFotoRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega.EntregaNoRecibidaRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ConectorDonacionesApi;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.microserviciosdonaciones.ConectorDonacionesApi;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
 import java.util.List;

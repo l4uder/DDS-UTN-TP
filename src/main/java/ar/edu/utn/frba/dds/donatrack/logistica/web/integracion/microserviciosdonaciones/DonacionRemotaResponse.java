@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.web.integracion;
+package ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.microserviciosdonaciones;
 
 record DonacionRemotaResponse(
     String id,

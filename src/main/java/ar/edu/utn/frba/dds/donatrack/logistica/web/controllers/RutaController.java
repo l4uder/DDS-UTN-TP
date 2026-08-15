@@ -7,7 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.logistica.web.convers.ChoferMapper;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.convers.RutaMapper;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.chofer.ChoferDto;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.RutaRepository;
-import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.ConectorDonacionesApi;
+import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.microserviciosdonaciones.ConectorDonacionesApi;
 import io.javalin.http.Context;
 
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;

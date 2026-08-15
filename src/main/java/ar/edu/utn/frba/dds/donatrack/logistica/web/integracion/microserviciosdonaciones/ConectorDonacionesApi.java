@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.donatrack.logistica.web.integracion;
+package ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.microserviciosdonaciones;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
