@@ -10,18 +10,15 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 public class SuscriptorEventos {
-  private static SuscriptorEventos INSTANCE;
-  private static ContactosAdminRepository repoContactosAdmin;
+  private static final SuscriptorEventos INSTANCE = new SuscriptorEventos();
+  private final ContactosAdminRepository repoContactosAdmin;
 
-  public static void init(EventBus eventBus) {
-    if (INSTANCE == null) {
-      INSTANCE = new SuscriptorEventos(eventBus);
-      repoContactosAdmin = ContactosAdminRepository.getInstancia();
-    }
+  private SuscriptorEventos() {
+    this.repoContactosAdmin = ContactosAdminRepository.getInstancia();
   }
 
-  private SuscriptorEventos(EventBus eventBus) {
-    eventBus.register(this);
+  public static void init(DispatcherEventos dispatcher) {
+    dispatcher.register(INSTANCE);
   }
 
   @Subscribe

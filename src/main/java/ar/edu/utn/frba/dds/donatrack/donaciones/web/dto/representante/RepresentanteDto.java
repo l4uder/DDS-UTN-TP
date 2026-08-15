@@ -8,7 +8,6 @@ public record RepresentanteDto(
     String nombre,
     String apellido,
     DocumentoDto documentoDto,
-    String genero,
     String direccion,
     List<ContactoDto> contactos
 ) { }

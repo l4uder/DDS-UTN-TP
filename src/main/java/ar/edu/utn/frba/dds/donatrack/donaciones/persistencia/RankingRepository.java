@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public final class RankingRepository {
+public class RankingRepository {
   private static final RankingRepository INSTANCE = new RankingRepository();
   private final Map<String, Ranking> storeRankings;
 

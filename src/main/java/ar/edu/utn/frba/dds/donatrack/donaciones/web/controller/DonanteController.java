@@ -32,9 +32,9 @@ public class DonanteController {
     //Cosas que recibo por URL --> Query param
     String tipo = ctx.queryParam("tipo");
 
-    TipoPersona tipoDonante = aTipoDonante(tipo);
+    TipoPersona tipoPersona = aTipoPersona(tipo);
 
-    List<Donante> donantes = (tipoDonante == null) ? repoDonantes.buscarTodos() : repoDonantes.buscarPorTipo(tipoDonante);
+    List<Donante> donantes = (tipoPersona==null) ? repoDonantes.buscarTodos() : repoDonantes.buscarPorTipoPersona(tipoPersona);
     ctx.status(200).json(donantes.stream().map(DonanteMapper::aDtoResumen).toList());
   }
 
@@ -70,7 +70,7 @@ public class DonanteController {
     ctx.status(204);
   }
 
-  private TipoPersona aTipoDonante(String tipo) {
+  private TipoPersona aTipoPersona(String tipo) {
     if (tipo == null || tipo.isBlank()) return null;
     try {
       return TipoPersona.valueOf(tipo.toUpperCase());

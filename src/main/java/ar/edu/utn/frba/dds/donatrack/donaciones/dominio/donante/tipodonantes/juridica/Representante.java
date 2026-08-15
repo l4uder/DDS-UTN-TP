@@ -13,18 +13,16 @@ public class Representante {
   private String nombre;
   private String apellido;
   private Documento documento;
-  private Genero genero;
   private String direccion;
   private List<MedioContacto> contactos;
 
   public Representante(String nombre, String apellido,
-                       Documento documento, Genero genero, String direccion,
+                       Documento documento, String direccion,
                        List<MedioContacto> contactos) {
     chekDatos(nombre, contactos);
     this.nombre = nombre;
     this.apellido = apellido;
     this.documento = documento;
-    this.genero = genero==null? null : Genero.SIN_ESPECIFICAR;
     this.direccion = direccion;
     this.contactos = new ArrayList<>(contactos);
   }

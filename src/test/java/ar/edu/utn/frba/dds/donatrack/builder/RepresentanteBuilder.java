@@ -11,7 +11,6 @@ public class RepresentanteBuilder {
   private String nombre;
   private String apellido;
   private Documento documento;
-  private Genero genero;
   private String direccion;
   private List<MedioContacto> contactos;
 
@@ -34,11 +33,6 @@ public class RepresentanteBuilder {
     return this;
   }
 
-  public RepresentanteBuilder conGenero(Genero genero) {
-    this.genero = genero;
-    return this;
-  }
-
   public RepresentanteBuilder conDireccion(String direccion) {
     this.direccion = direccion;
     return this;
@@ -50,6 +44,6 @@ public class RepresentanteBuilder {
   }
 
   public Representante build() {
-    return new Representante(nombre, apellido, documento, genero, direccion, contactos);
+    return new Representante(nombre, apellido, documento, direccion, contactos);
   }
 }

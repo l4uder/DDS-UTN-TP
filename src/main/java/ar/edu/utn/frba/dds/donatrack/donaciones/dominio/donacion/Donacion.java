@@ -77,7 +77,7 @@ public class Donacion {
     setEstadoActual(TipoEstadoDonacion.ASIGNACION_REALIZADA, "Se realizó la asignación a " + beneficiario.getRazonSocial());
 
     this.beneficiario = beneficiario; //Doble asignación
-    this.beneficiario.asignarDonacion(this); //Doble asignación
+    beneficiario.recibirDonacion(this); //Doble asignación
   }
 
   // [Asignación Realizada] -> [Lista Para Entregar]

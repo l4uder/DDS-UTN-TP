@@ -4,7 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioConta
 
 import java.util.*;
 
-public final class ContactosAdminRepository {
+public class ContactosAdminRepository {
   private static final ContactosAdminRepository INSTANCE = new ContactosAdminRepository();
   private final List<MedioContacto> storeContactosAdmins;
 
@@ -16,7 +16,7 @@ public final class ContactosAdminRepository {
     return INSTANCE;
   }
 
-  public void agregar(MedioContacto medioContacto) {
+  public void guardar(MedioContacto medioContacto) {
     this.storeContactosAdmins.add(medioContacto);
   }
 

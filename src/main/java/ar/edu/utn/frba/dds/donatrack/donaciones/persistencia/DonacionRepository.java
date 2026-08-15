@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class DonacionRepository {
-  private static DonacionRepository INSTANCE = new DonacionRepository();
+  private static final DonacionRepository INSTANCE = new DonacionRepository();
   private final Map<String, Donacion> storeDonaciones;
 
   private DonacionRepository() {

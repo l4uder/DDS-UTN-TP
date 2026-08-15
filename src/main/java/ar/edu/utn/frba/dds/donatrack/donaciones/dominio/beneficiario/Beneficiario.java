@@ -58,7 +58,7 @@ public class Beneficiario {
     this.necesidades.remove(necesidad);
   }
 
-  public void asignarDonacion(Donacion donacion) {
+  public void recibirDonacion(Donacion donacion) {
     if (donacion.getEstadoActual() != TipoEstadoDonacion.ASIGNACION_REALIZADA) {
       throw new DominioException("Al beneficiario le debe llegar donaciones asignadas");
     }

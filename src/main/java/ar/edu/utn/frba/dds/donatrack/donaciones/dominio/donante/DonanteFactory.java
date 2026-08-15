@@ -38,7 +38,6 @@ public class DonanteFactory {
               null,
               null,
               null,
-              null,
               List.of(contactoPrincipal, contactoSecundario)
           ))
       );

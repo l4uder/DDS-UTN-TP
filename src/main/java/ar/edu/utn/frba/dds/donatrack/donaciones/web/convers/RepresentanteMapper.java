@@ -15,7 +15,6 @@ public class RepresentanteMapper {
         representanteDto.nombre(),
         representanteDto.apellido(),
         DocumentoMapper.aDominio(representanteDto.documentoDto(), TipoPersona.HUMANA),
-        aGenero(representanteDto.genero()),
         representanteDto.direccion(),
         ContactoMapper.aDominio(representanteDto.contactos())
     );
@@ -26,7 +25,6 @@ public class RepresentanteMapper {
         representante.getNombre(),
         representante.getApellido(),
         DocumentoMapper.aDto(representante.getDocumento()),
-        representante.getGenero().name(),
         representante.getDireccion(),
         ContactoMapper.aDto(representante.getContactos())
     );
@@ -38,16 +36,6 @@ public class RepresentanteMapper {
 
   public static List<RepresentanteDto> aDto(List<Representante> representantes) {
     return representantes.stream().map(RepresentanteMapper::aDto).toList();
-  }
-
-  //===================== FUNCIONES AUXILIARES =====================
-  private static Genero aGenero(String valor) {
-    if (valor == null || valor.isBlank()) return null;
-    try {
-      return Genero.valueOf(valor.toUpperCase());
-    } catch (IllegalArgumentException e) {
-      throw new DominioException("El genero: " + valor + " no existe debe ser: " + Arrays.toString(Genero.values()));
-    }
   }
 
 }
