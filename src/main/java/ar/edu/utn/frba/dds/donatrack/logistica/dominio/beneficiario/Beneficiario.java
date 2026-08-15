@@ -1,24 +1,25 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario;
 
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
+import lombok.Getter;
 
+@Getter
 public class Beneficiario {
   private final String id;
   private final String razonSocial;
   private final String direccion;
 
   public Beneficiario(String id, String razonSocial, String direccion) {
-    if (id == null || id.isBlank()) {
-      throw new DominioException("El beneficiario debe tener id");
-    }
+    validar(id);
     this.id = id;
     this.razonSocial = razonSocial;
     this.direccion = direccion;
   }
 
-  public String getId() { return id; }
-  public String getRazonSocial() { return razonSocial; }
-  public String getDireccion() { return direccion; }
+  private void validar(String id) {
+    if (id == null || id.isBlank())
+      throw new DominioException("El beneficiario debe tener id");
+  }
 
   @Override
   public boolean equals(Object o) {

@@ -14,11 +14,8 @@ public class Camion {
   private List<Coordenada> coordenadas;
   private Gps gps;
 
-  public Camion(String patente, Float capacidadVolumen,
-                Float altura, Float capacidadCarga) {
-    validarPatente(patente);
-    validarCapacidades(capacidadVolumen, altura, capacidadCarga);
-
+  public Camion(String patente, Float capacidadVolumen, Float altura, Float capacidadCarga) {
+    validar(patente, capacidadVolumen, altura, capacidadCarga);
     this.patente = patente.trim();
     this.capacidadVolumen = capacidadVolumen;
     this.altura = altura;
@@ -27,6 +24,44 @@ public class Camion {
     this.gps = null;
   }
 
+  private void validar(String patente, Float capacidadVolumen, Float altura, Float capacidadCarga) {
+    validarPatente(patente);
+    validarCapacidades(capacidadVolumen, altura, capacidadCarga);
+  }
+
+  public void agregarGps(Gps gps) {
+    this.gps = gps;
+  }
+
+  public boolean posee(String idGps) {
+    return this.gps != null && this.gps.getImei().equalsIgnoreCase(idGps);
+  }
+
+  public void agregarCoordenada(Coordenada coordenada) {
+    this.coordenadas.add(coordenada);
+  }
+
+  public Coordenada getUbicacionActual() {
+    return this.coordenadas.isEmpty() ? null : this.coordenadas.get(this.coordenadas.size() - 1);
+  }
+
+  public String getLinkSeguimiento() {
+    Coordenada ubicacion = getUbicacionActual();
+    if (ubicacion == null) {
+      return null;
+    }
+    return "https://maps.google.com/?q=" + ubicacion.getLatitud() + "," + ubicacion.getLongitud();
+  }
+
+  public void actualizarDatos(Float capacidadVolumen, Float altura, Float capacidadCarga, Gps gps) {
+    validarCapacidades(capacidadVolumen, altura, capacidadCarga);
+    this.capacidadVolumen = capacidadVolumen;
+    this.altura = altura;
+    this.capacidadCarga = capacidadCarga;
+    this.gps = gps;
+  }
+
+  //======================= FUNCIONES AUXILIARES =======================
   private void validarPatente(String patente) {
     if (patente == null || patente.isBlank()) {
       throw new DominioException("El campo 'patente' es obligatorio");
@@ -47,42 +82,6 @@ public class Camion {
       throw new DominioException(
           "El campo '" + campo + "' debe ser mayor a 0");
     }
-  }
-
-  public void agregarGps(Gps gps) {
-    this.gps = gps;
-  }
-
-  public boolean posee(String idGps) {
-    return this.gps != null && this.gps.getImei().equalsIgnoreCase(idGps);
-  }
-
-  public void agregarCoordenada(Coordenada coordenada) {
-    this.coordenadas.add(coordenada);
-  }
-
-  public Coordenada getUbicacionActual() {
-    if (this.coordenadas.isEmpty()) {
-      return null;
-    }
-    return this.coordenadas.get(this.coordenadas.size() - 1);
-  }
-
-  public String getLinkSeguimiento() {
-    Coordenada ubicacion = getUbicacionActual();
-    if (ubicacion == null) {
-      return null;
-    }
-    return "https://maps.google.com/?q=" + ubicacion.getLatitud() + "," + ubicacion.getLongitud();
-  }
-
-  public void actualizarDatos(Float capacidadVolumen, Float altura, Float capacidadCarga, Gps gps) {
-    validarCapacidades(capacidadVolumen, altura, capacidadCarga);
-
-    this.capacidadVolumen = capacidadVolumen;
-    this.altura = altura;
-    this.capacidadCarga = capacidadCarga;
-    this.gps = gps;
   }
 
 }

@@ -3,11 +3,11 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class Lote {
-
-  public static final int MAX_DONACIONES_POR_LOTE = 100;
-
+  private static final int MAX_DONACIONES_POR_LOTE = 100;
   private final List<Entrega> entregas;
 
   private Lote(List<Entrega> entregas) {
@@ -37,8 +37,6 @@ public class Lote {
 
   public boolean estaVacio() { return entregas.isEmpty(); }
 
-  public List<Entrega> getEntregas() { return List.copyOf(entregas); }
-
   /**
    * Arma la lista de lotes a partir de las entregas, respetando el límite de
    * MAX_DONACIONES_POR_LOTE donaciones por lote. Una Entrega cuya cantidad de
@@ -61,4 +59,5 @@ public class Lote {
     }
     return lotes;
   }
+
 }

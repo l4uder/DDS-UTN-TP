@@ -2,7 +2,9 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega;
 
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import java.time.LocalDateTime;
+import lombok.Getter;
 
+@Getter
 public class EstadoEntrega {
   private LocalDateTime fecha;
   private String detalle;
@@ -20,16 +22,4 @@ public class EstadoEntrega {
     this(estado, null, camion);
   }
 
-  public Camion getCamion() { return camion; }
-  public TipoEstadoEntrega getTipoEstado() {
-    return this.tipoEstado;
-  }
-
-  public LocalDateTime getFecha() {
-    return this.fecha;
-  }
-
-  public String getDetalle() {
-    return this.detalle;
-  }
 }

@@ -13,6 +13,7 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTr
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.TipoEstadoEntrega;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -60,12 +61,12 @@ public class RutaTest {
 
   @Test
   void unaRutaNuevaNoEstaIniciada() {
-    assertFalse(ruta.isIniciada());
+    assertFalse(ruta.isEstaIniciada());
   }
 
   @Test
   void noSePuedeIniciarSinChofer() {
-    assertThrows(IllegalStateException.class, () -> ruta.iniciarRecorrido());
+    assertThrows(DominioException.class, () -> ruta.iniciarRecorrido());
   }
 
   @Test
@@ -74,7 +75,7 @@ public class RutaTest {
 
     ruta.iniciarRecorrido();
 
-    assertTrue(ruta.isIniciada());
+    assertTrue(ruta.isEstaIniciada());
     assertEquals(TipoEstadoEntrega.EN_TRASLADO, entrega.getEstadoActual());
   }
 
@@ -83,7 +84,7 @@ public class RutaTest {
     ruta.asignarChofer(chofer);
     Chofer otroChofer = new Chofer("Pedro", "Díaz", "87654321");
 
-    assertThrows(IllegalStateException.class, () -> ruta.asignarChofer(otroChofer));
+    assertThrows(DominioException.class, () -> ruta.asignarChofer(otroChofer));
   }
 
   @Test
@@ -91,6 +92,6 @@ public class RutaTest {
     ruta.asignarChofer(chofer);
     ruta.iniciarRecorrido();
 
-    assertThrows(IllegalStateException.class, () -> ruta.iniciarRecorrido());
+    assertThrows(DominioException.class, () -> ruta.iniciarRecorrido());
   }
 }

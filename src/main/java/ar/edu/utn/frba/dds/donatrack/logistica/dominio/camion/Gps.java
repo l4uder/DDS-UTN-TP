@@ -24,4 +24,5 @@ public class Gps {
     this.fecha = LocalDateTime.now();
     this.nivelBateria = nivelBateria;
   }
+
 }

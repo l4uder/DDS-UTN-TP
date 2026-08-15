@@ -7,8 +7,10 @@ import java.util.ArrayList;
 
 import java.time.LocalDate;
 import java.util.List;
+import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public class Ruta {
   @Setter
   private String id;
@@ -16,102 +18,45 @@ public class Ruta {
   private Chofer chofer;
   private LocalDate fecha;
   private List<Entrega> entregasOrdenadas;
-  private boolean iniciada;
+  private boolean estaIniciada;
 
-
-  public Ruta(
-      Camion camion,
-      LocalDate fecha,
-      List<Entrega> entregasOrdenadas
-  ) {
-
-    if (camion == null) {
-      throw new DominioException(
-          "La ruta debe tener un camión asignado"
-      );
-    }
-
-    if (fecha == null) {
-      throw new DominioException(
-          "La ruta debe tener fecha"
-      );
-    }
-
-    if (entregasOrdenadas == null) {
-      throw new DominioException(
-          "La ruta debe tener entregas"
-      );
-    }
-
-    this.id = null; //dejamos que el repo le asigne su id
+  public Ruta(Camion camion, LocalDate fecha, List<Entrega> entregasOrdenadas) {
+    validar(camion, fecha, entregasOrdenadas);
+    this.id = null;
     this.camion = camion;
     this.fecha = fecha;
     this.entregasOrdenadas = new ArrayList<>(entregasOrdenadas);
-    this.iniciada = false;
+    this.estaIniciada = false;
   }
 
+  private void validar(Camion camion, LocalDate fecha, List<Entrega> entregasOrdenadas) {
+    if (camion == null)
+      throw new DominioException("La ruta debe tener un camión asignado");
 
-  public void iniciarRecorrido() {
+    if (fecha == null)
+      throw new DominioException("La ruta debe tener fecha");
 
-    if (iniciada) {
-      throw new IllegalStateException(
-          "La ruta ya fue iniciada"
-      );
-    }
-
-    if (chofer == null) {
-      throw new IllegalStateException(
-          "La ruta debe tener chofer"
-      );
-    }
-
-    iniciada = true;
-
-    entregasOrdenadas.forEach(
-        Entrega::iniciarTraslado
-    );
+    if (entregasOrdenadas == null)
+      throw new DominioException("La ruta debe tener entregas");
   }
-
 
   public void asignarChofer(Chofer chofer) {
-
-    if (chofer == null) {
-      throw new DominioException(
-          "El chofer no puede ser nulo"
-      );
-    }
-
     if (this.chofer != null) {
-      throw new IllegalStateException(
-          "La ruta ya tiene chofer asignado"
-      );
+      throw new DominioException("La ruta ya tiene chofer asignado");
     }
 
     this.chofer = chofer;
   }
 
+  public void iniciarRecorrido() {
+    if (estaIniciada)
+      throw new DominioException("La ruta ya fue iniciada");
 
-  public String getId() {
-    return id;
+    if (chofer == null)
+      throw new DominioException("La ruta debe tener chofer");
+
+    estaIniciada = true;
+    entregasOrdenadas.forEach(Entrega::iniciarTraslado);
   }
 
-  public Camion getCamion() {
-    return camion;
-  }
-
-  public Chofer getChofer() {
-    return chofer;
-  }
-
-  public LocalDate getFecha() {
-    return fecha;
-  }
-
-  public List<Entrega> getEntregasOrdenadas() {
-    return List.copyOf(entregasOrdenadas);
-  }
-
-  public boolean isIniciada() {
-    return iniciada;
-  }
 }

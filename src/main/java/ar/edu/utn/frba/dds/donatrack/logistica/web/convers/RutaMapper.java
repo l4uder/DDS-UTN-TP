@@ -12,7 +12,7 @@ public class RutaMapper {
         ruta.getCamion().getPatente(),
         ruta.getChofer()==null ? null : ruta.getChofer().getNombre(),
         ruta.getFecha(),
-        ruta.isIniciada(),
+        ruta.isEstaIniciada(),
         EntregaMapper.aDtoResumen(ruta.getEntregasOrdenadas())
     );
   }

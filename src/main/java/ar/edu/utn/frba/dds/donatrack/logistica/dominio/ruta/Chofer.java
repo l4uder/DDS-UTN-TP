@@ -1,5 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta;
 
+import lombok.Getter;
+
+@Getter
 public class Chofer {
   private String nombre;
   private String apellido;
@@ -11,15 +14,4 @@ public class Chofer {
     this.licenciaConducir = licenciaConducir;
   }
 
-  public String getNombre() {
-    return nombre;
-  }
-
-  public String getApellido() {
-    return apellido;
-  }
-
-  public String getLicenciaConducir() {
-    return licenciaConducir;
-  }
 }

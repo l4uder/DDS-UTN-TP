@@ -106,7 +106,7 @@ public class CoordinadorRuta {
   private List<Ruta> procesarResultadoPlanificacion(ResultadoPlanificacion resultado, LocalDate fecha) {
     List<Ruta> rutasCreadas = new ArrayList<>();
 
-    resultado.entregasPorCamion().forEach((camion, entregasOrdenadas) -> {
+    resultado.getEntregasPorCamion().forEach((camion, entregasOrdenadas) -> {
       entregasOrdenadas.forEach(entrega -> {
         entrega.reasignarCamion(camion);
         entrega.confirmarListaParaEntregar();
