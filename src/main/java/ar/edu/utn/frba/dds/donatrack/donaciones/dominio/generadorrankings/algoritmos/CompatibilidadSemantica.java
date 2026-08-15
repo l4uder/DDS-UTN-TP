@@ -11,8 +11,7 @@ import java.util.stream.Collectors;
 public class CompatibilidadSemantica extends AlgoritmoMatchmaking {
 
   @Override
-  public Map<Beneficiario, Integer> mapearPuntaje(Donacion donacion,
-                                                  List<Beneficiario> beneficiarios) {
+  protected Map<Beneficiario, Integer> calcularPuntaje(Donacion donacion, List<Beneficiario> beneficiarios) {
     return beneficiarios.stream()
         .map(b -> Map.entry(b, calcularnecesidadesCubiertas(b, donacion)))
         .filter(entry -> entry.getValue() >= 1)
@@ -20,6 +19,13 @@ public class CompatibilidadSemantica extends AlgoritmoMatchmaking {
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
+  @Override
+  protected Comparator<Map.Entry<Beneficiario, Integer>> modoOrdenamiento() {
+    // ordena de mayor a menor
+    return Map.Entry.<Beneficiario, Integer>comparingByValue().reversed();
+  }
+
+  //====================  FUNCIONES AUXILIARES =====================
   private Integer calcularnecesidadesCubiertas(Beneficiario beneficiario, Donacion donacion) {
     List<Necesidad> necesidadesBeneficiario = beneficiario.getNecesidades();
 
@@ -40,9 +46,4 @@ public class CompatibilidadSemantica extends AlgoritmoMatchmaking {
         .sum();
   }
 
-  @Override
-  protected Comparator<Map.Entry<Beneficiario, Integer>> modoOrdenamiento() {
-    // ordena de mayor a menor
-    return Map.Entry.<Beneficiario, Integer>comparingByValue().reversed();
-  }
 }

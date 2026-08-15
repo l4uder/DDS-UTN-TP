@@ -129,7 +129,7 @@ public class DonacionController {
 
     donacion.enCamino();
     repoDonaciones.actualizar(donacion);
-    DispatcherEventos.getInstancia().post(new EventoInicioDeRuta(donacion.getBeneficiario(), donacion.getDonantes(), donacion.getDescripcion(), mapa));
+    DispatcherEventos.getInstancia().publicar(new EventoInicioDeRuta(donacion.getBeneficiario(), donacion.getDonantes(), donacion.getDescripcion(), mapa));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
@@ -146,7 +146,7 @@ public class DonacionController {
 
     donacion.entregada();
     repoDonaciones.actualizar(donacion);
-    DispatcherEventos.getInstancia().post(new EventoEntregaExitosa(donacion.getBeneficiario(), donacion.getDonantes(), donacion.getDescripcion(), comprobante));
+    DispatcherEventos.getInstancia().publicar(new EventoEntregaExitosa(donacion.getBeneficiario(), donacion.getDonantes(), donacion.getDescripcion(), comprobante));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
@@ -163,7 +163,7 @@ public class DonacionController {
 
     donacion.errorAlEntregar(observacion);
     repoDonaciones.actualizar(donacion);
-    DispatcherEventos.getInstancia().post(new EventoEntregaFallida(donacion, observacion));
+    DispatcherEventos.getInstancia().publicar(new EventoEntregaFallida(donacion, observacion));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 
@@ -188,7 +188,7 @@ public class DonacionController {
 
     donacion.vencida();
     repoDonaciones.actualizar(donacion);
-    DispatcherEventos.getInstancia().post(new EventoVencida(donacion.getDonantes()));
+    DispatcherEventos.getInstancia().publicar(new EventoVencida(donacion.getDonantes()));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 

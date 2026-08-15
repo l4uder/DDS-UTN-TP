@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.SuscriptorEventos;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.SuscriptorNotificacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
@@ -26,9 +26,8 @@ public class App {
   public static final int PUERTO = 7070;
 
   public static void main(String[] args) {
-    ConfiguracionEntorno config = ConfiguracionEntorno.getInstance();
-    SuscriptorEventos.init(DispatcherEventos.getInstancia());
-    crearApp().start(config.puertoDonaciones(PUERTO));
+    SuscriptorNotificacion.init(DispatcherEventos.getInstancia());
+    crearApp().start(ConfiguracionEntorno.getInstance().puertoDonaciones(PUERTO));
   }
 
   public static Javalin crearApp() {

@@ -146,7 +146,7 @@ public class AlgoritmoMatchmakingTest {
 
     donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
 
-    List<Beneficiario> beneficiarios = compatibilidadSemantica.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
+    List<Beneficiario> beneficiarios = compatibilidadSemantica.elegirCandidatos(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 
     assertEquals(1, beneficiarios.size());
     assertEquals(beneficiario3, beneficiarios.get(0), "es al único beneficiario que le sirve la donación");
@@ -163,7 +163,7 @@ public class AlgoritmoMatchmakingTest {
 
     donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
 
-    List<Beneficiario> beneficiarios = compatibilidadSemantica.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
+    List<Beneficiario> beneficiarios = compatibilidadSemantica.elegirCandidatos(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 
     assertEquals(2, beneficiarios.size());
     assertEquals(beneficiario1, beneficiarios.get(0), "debe ser el primero ya que le sirve tanto el yogur como las manzanas");
@@ -204,7 +204,7 @@ public class AlgoritmoMatchmakingTest {
 
     donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
 
-    List<Beneficiario> beneficiarios = prioridadASubAtendidos.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
+    List<Beneficiario> beneficiarios = prioridadASubAtendidos.elegirCandidatos(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 
     assertEquals(beneficiario3, beneficiarios.get(0), "porque no tiene donaciones");
     assertEquals(beneficiario1, beneficiarios.get(1), "porque tiene 1 donación");
@@ -226,7 +226,7 @@ public class AlgoritmoMatchmakingTest {
 
     donacion1 = new Donacion(List.of(yogurDream, manzanasRojas), List.of(donantePrueba));
 
-    List<Beneficiario> beneficiarios = prioridadASubAtendidos.generarRanking(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
+    List<Beneficiario> beneficiarios = prioridadASubAtendidos.elegirCandidatos(donacion1, List.of(beneficiario1, beneficiario2, beneficiario3));
 
     assertEquals(beneficiario3, beneficiarios.get(0), "porque no tiene donaciones");
     assertEquals(beneficiario2, beneficiarios.get(1), "porque tiene 0 donaciones en el ultimo trimestre");

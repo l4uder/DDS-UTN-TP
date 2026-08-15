@@ -22,7 +22,7 @@ public class Donacion {
   private List<Bien> bienes;
   private List<EstadoDonacion> historialEstados;
   private Beneficiario beneficiario;//Doble asociación bidireccional
-  private List<Donante> donantes;//Todo después ver: el bien debería tener al donante ?
+  private List<Donante> donantes;
   private Boolean estadoModificable;
 
   public Donacion(List<Bien> bienes, List<Donante> donantes) {

@@ -6,19 +6,18 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.E
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.EventoInicioDeRuta;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.EventoVencida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.ContactosAdminRepository;
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
-public class SuscriptorEventos {
-  private static final SuscriptorEventos INSTANCE = new SuscriptorEventos();
+public class SuscriptorNotificacion {
+  private static final SuscriptorNotificacion INSTANCE = new SuscriptorNotificacion();
   private final ContactosAdminRepository repoContactosAdmin;
 
-  private SuscriptorEventos() {
+  private SuscriptorNotificacion() {
     this.repoContactosAdmin = ContactosAdminRepository.getInstancia();
   }
 
   public static void init(DispatcherEventos dispatcher) {
-    dispatcher.register(INSTANCE);
+    dispatcher.suscribir(INSTANCE);
   }
 
   @Subscribe

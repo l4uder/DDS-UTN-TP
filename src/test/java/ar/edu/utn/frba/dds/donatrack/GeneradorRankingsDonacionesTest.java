@@ -53,10 +53,10 @@ public class GeneradorRankingsDonacionesTest {
 
     List<Beneficiario> beneficiarios = List.of(beneficiario1, beneficiario2, beneficiario3);
 
-    when(algoritmoMock1.generarRanking(donacion, beneficiarios)).thenReturn(List.of(beneficiario1, beneficiario2));
-    when(algoritmoMock2.generarRanking(donacion, beneficiarios)).thenReturn(List.of(beneficiario2, beneficiario3));
+    when(algoritmoMock1.elegirCandidatos(donacion, beneficiarios)).thenReturn(List.of(beneficiario1, beneficiario2));
+    when(algoritmoMock2.elegirCandidatos(donacion, beneficiarios)).thenReturn(List.of(beneficiario2, beneficiario3));
 
-    List<Ranking> resultado = generadorRankings.asignar(List.of(donacion), beneficiarios);
+    List<Ranking> resultado = generadorRankings.generar(List.of(donacion), beneficiarios);
     List<Beneficiario> posiblesBeneficiarios = resultado.get(0).getCandidatos();
 
     assertEquals(1, resultado.size(), "por que solo hay una donación");
@@ -70,10 +70,10 @@ public class GeneradorRankingsDonacionesTest {
 
     List<Beneficiario> beneficiarios = List.of(beneficiario1, beneficiario2, beneficiario3, beneficiario4);
 
-    when(algoritmoMock1.generarRanking(donacion, beneficiarios)).thenReturn(List.of(beneficiario1, beneficiario2));
-    when(algoritmoMock2.generarRanking(donacion, beneficiarios)).thenReturn(List.of(beneficiario3, beneficiario4));
+    when(algoritmoMock1.elegirCandidatos(donacion, beneficiarios)).thenReturn(List.of(beneficiario1, beneficiario2));
+    when(algoritmoMock2.elegirCandidatos(donacion, beneficiarios)).thenReturn(List.of(beneficiario3, beneficiario4));
 
-    List<Ranking> resultado = generadorRankings.asignar(List.of(donacion), beneficiarios);
+    List<Ranking> resultado = generadorRankings.generar(List.of(donacion), beneficiarios);
     List<Beneficiario> posiblesBeneficiarios = resultado.get(0).getCandidatos();
 
     assertEquals(1, resultado.size(), "por que solo hay una donación");
@@ -85,7 +85,7 @@ public class GeneradorRankingsDonacionesTest {
   void siNoTieneAlgoritmosDebeDevolverUnaListaVacia() {
     List<Beneficiario> beneficiarios = List.of(beneficiario1, beneficiario2, beneficiario3);
 
-    List<Ranking> resultado = generadorRankings.asignar(List.of(donacion), beneficiarios);
+    List<Ranking> resultado = generadorRankings.generar(List.of(donacion), beneficiarios);
     List<Beneficiario> posiblesBeneficiarios = resultado.get(0).getCandidatos();
 
     assertTrue(posiblesBeneficiarios.isEmpty());

@@ -40,7 +40,7 @@ public class AsignacionController {
     List<Beneficiario> beneficiarios = repoBeneficiarios.buscarTodos();
     List<Donacion> donaciones = repoDonaciones.buscarTodoPorEstado(TipoEstadoDonacion.EN_DEPOSITO);
 
-    List<Ranking> rankings = generadorRankings.asignar(donaciones, beneficiarios);
+    List<Ranking> rankings = generadorRankings.generar(donaciones, beneficiarios);
     ctx.status(200).json(RankingMapper.aDtoResumen(rankings));
   }
 
@@ -68,13 +68,13 @@ public class AsignacionController {
     Ranking ranking = buscarRankingPorId(idRanking);
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
-    ranking.vencida();
+    ranking.invalidar();
     Donacion donacion = ranking.getDonacion();
     donacion.asignarA(beneficiario);
     repoDonaciones.actualizar(donacion);
     repoBeneficiarios.actualizar(beneficiario);
     repoRankings.actualizar(ranking);
-    DispatcherEventos.getInstancia().post(new EventoAsignacion(beneficiario, donacion.getDonantes(), donacion.getDescripcion()));
+    DispatcherEventos.getInstancia().publicar(new EventoAsignacion(beneficiario, donacion.getDonantes(), donacion.getDescripcion()));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }
 

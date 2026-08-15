@@ -19,7 +19,7 @@ public class ProcesoMatchmaking {
     List<Donacion> donaciones = repoDonaciones.buscarTodoPorEstado(TipoEstadoDonacion.EN_DEPOSITO);
 
     GeneradorRankings generadorRankings = new GeneradorRankings(repoRankings);
-    generadorRankings.asignar(donaciones, beneficiarios);
+    generadorRankings.generar(donaciones, beneficiarios);
 
     System.out.println("acabamossss");
   }

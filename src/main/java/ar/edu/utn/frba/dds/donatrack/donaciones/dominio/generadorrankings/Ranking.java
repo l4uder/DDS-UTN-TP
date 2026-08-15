@@ -24,7 +24,7 @@ public class Ranking {
     this.fechaGeneracion = LocalDateTime.now();
   }
 
-  public void vencida() {
+  public void invalidar() {
     this.estaVigente = false;
   }
 

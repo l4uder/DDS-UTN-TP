@@ -23,8 +23,4 @@ public class RegistroEntrega {
     this.bienes = new ArrayList<>(bienes);
   }
 
-  public void agregarBien(Bien bien) {
-    this.bienes.add(bien);
-  }
-
 }

@@ -8,8 +8,8 @@ import java.util.Map;
 
 public abstract class AlgoritmoMatchmaking {
 
-  public List<Beneficiario> generarRanking(Donacion donacion, List<Beneficiario> beneficiarios) {
-    Map<Beneficiario, Integer> puntajes = mapearPuntaje(donacion, beneficiarios);
+  public List<Beneficiario> elegirCandidatos(Donacion donacion, List<Beneficiario> beneficiarios) {
+    Map<Beneficiario, Integer> puntajes = calcularPuntaje(donacion, beneficiarios);
 
     List<Beneficiario> top10 = puntajes.entrySet().stream()
         .sorted(modoOrdenamiento())
@@ -20,8 +20,7 @@ public abstract class AlgoritmoMatchmaking {
     return top10;
   }
 
-  protected abstract Map<Beneficiario, Integer> mapearPuntaje(Donacion donacion,
-                                                              List<Beneficiario> beneficiarios);
+  protected abstract Map<Beneficiario, Integer> calcularPuntaje(Donacion donacion, List<Beneficiario> beneficiarios);
 
   protected abstract Comparator<Map.Entry<Beneficiario, Integer>> modoOrdenamiento();
 

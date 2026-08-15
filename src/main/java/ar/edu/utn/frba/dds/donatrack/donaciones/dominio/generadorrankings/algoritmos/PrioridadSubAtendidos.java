@@ -11,20 +11,10 @@ import java.util.Map;
 public class PrioridadSubAtendidos extends AlgoritmoMatchmaking {
 
   @Override
-  public Map<Beneficiario, Integer> mapearPuntaje(Donacion donacion,
-                                                  List<Beneficiario> beneficiarios) {
+  protected Map<Beneficiario, Integer> calcularPuntaje(Donacion donacion, List<Beneficiario> beneficiarios) {
     Map<Beneficiario, Integer> puntajes = new HashMap<>();
     beneficiarios.forEach(b -> puntajes.put(b, calcularDonacionesUltimoTrimestre(b)));
     return puntajes;
-  }
-
-  private Integer calcularDonacionesUltimoTrimestre(Beneficiario beneficiario) {
-    LocalDateTime haceTresMeses = LocalDateTime.now().minusMonths(3);
-
-    List<Donacion> donacionesUltimos3Meces = beneficiario.getDonaciones().stream()
-        .filter(d -> d.getFechaAsignacion().isAfter(haceTresMeses)).toList();
-
-    return donacionesUltimos3Meces.size();
   }
 
   @Override
@@ -34,4 +24,15 @@ public class PrioridadSubAtendidos extends AlgoritmoMatchmaking {
         .thenComparing(entry -> entry.getKey().getDonaciones().size());
     //para el desempate, beneficiando a los que no recibieron donaciones
   }
+
+  //===================== FUNCIONES AUXILIARES ========================
+  private Integer calcularDonacionesUltimoTrimestre(Beneficiario beneficiario) {
+    LocalDateTime haceTresMeses = LocalDateTime.now().minusMonths(3);
+
+    List<Donacion> donacionesUltimos3Meces = beneficiario.getDonaciones().stream()
+        .filter(d -> d.getFechaAsignacion().isAfter(haceTresMeses)).toList();
+
+    return donacionesUltimos3Meces.size();
+  }
+
 }

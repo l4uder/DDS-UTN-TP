@@ -43,7 +43,7 @@ public class RankingRepository {
   }
 
   public void vaciarSoft() {
-    buscarTodos().forEach(Ranking::vencida);
+    buscarTodos().forEach(Ranking::invalidar);
   }
 
 }
