@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface TipoDonante {
   String getNombreCompleto();
-  TipoPersona getTipo();
-  List<MedioContacto> getContactosPrincipales();
   List<MedioContacto> getContactos();
+  List<MedioContacto> getContactosPrincipales();
 }

@@ -30,6 +30,10 @@ public class Bien {
     return this.tipoBien.getNombreClave(this.subcategoria);
   }
 
+  public float getCantidadMenorMedida() {
+    return this.unidadMedida.convertirAMenorMedida(cantidad);
+  }
+
   public static Bien crearPerecedero(String descripcion, float cantidad, UnidadMedida unidad,
                                      String foto, Subcategoria subcategoria, LocalDate fechaVencimiento) {
 
@@ -42,10 +46,6 @@ public class Bien {
 
     TipoBien tipoBien = new NoPerecedero(usado);
     return new Bien(descripcion, cantidad, unidad, foto, subcategoria, tipoBien);
-  }
-
-  public double getCantidadMenorMedida() {
-    return this.unidadMedida.convertirAMenorMedida(cantidad);
   }
 
 }

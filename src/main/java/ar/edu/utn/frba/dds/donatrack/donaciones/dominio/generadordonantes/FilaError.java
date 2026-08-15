@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class FilaError {
-  Integer numeroFila;
-  String motivoError;
+  private Integer numeroFila;
+  private String motivoError;
 
   public FilaError(Integer numeroFila, String motivoError) {
     this.numeroFila = numeroFila;

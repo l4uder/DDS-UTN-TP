@@ -14,7 +14,7 @@ public class GeneradorDonantesCsv {
     this.importador = importador;
   }
 
-  public List<FilaError> generar(String rutaArchivo) {
+  public List<FilaError> iniciarCarga(String rutaArchivo) {
     ResultadoImportacion resultado = importador.importarDesdeArchivo(rutaArchivo);
     resultado.getDonantes().forEach(d -> repoDonantes.guardar(d));
 

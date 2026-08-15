@@ -55,7 +55,7 @@ public class SuscriptorEventos {
     String mensajeAdmins = "La donación: %s no pudo ser enviada por el motivo: %s ".formatted(evento.donacion().getId(), evento.observacion());
     evento.donacion().getBeneficiario().recibirNotificacion(mensajeBeneficiario);
     evento.donacion().getDonantes().forEach(d -> d.recibirNotificacion(mensajeDonante));
-    repoContactosAdmin.buscarTodos().forEach(ca -> ca.notificar(mensajeAdmins));
+    repoContactosAdmin.buscarTodos().forEach(ca -> ca.enviarMensaje(mensajeAdmins));
   }
 
   @Subscribe

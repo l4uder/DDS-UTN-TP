@@ -10,7 +10,6 @@ import lombok.Setter;
 public class SmsDeContato implements MedioContacto {
   private String telefono;
   private Boolean esPrincipal;
-  @Setter
   private ClienteSms clienteSms;
 
   public SmsDeContato(String telefono, Boolean esPrincipal) {
@@ -40,11 +39,7 @@ public class SmsDeContato implements MedioContacto {
   }
 
   @Override
-  public void notificar(String message) {
-    if (clienteSms == null) {
-      throw new DominioException("clienteSms no asignado para enviar notificaciones");
-    }
-
+  public void enviarMensaje(String message) {
     clienteSms.enviarSms(telefono, message);
   }
 

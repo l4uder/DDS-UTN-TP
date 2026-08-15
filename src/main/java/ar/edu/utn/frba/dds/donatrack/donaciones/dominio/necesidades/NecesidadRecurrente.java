@@ -8,45 +8,30 @@ import lombok.Getter;
 
 @Getter
 public class NecesidadRecurrente extends Necesidad {
-  private Integer cantidadPorPeriodo;
-  private Periodo periodo;
+  private Frecuencia frecuencia;
 
-  public NecesidadRecurrente(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, int cantidadPorPeriodo, Periodo periodo) {
-    super(subcategoria, unidadMedida, descripcion);
-    checkDatos(cantidadPorPeriodo, periodo);
-    this.cantidadPorPeriodo = cantidadPorPeriodo;
-    this.periodo = periodo;
+  public NecesidadRecurrente(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, Integer cantidadRequerida, Frecuencia frecuencia) {
+    super(subcategoria, unidadMedida, descripcion, cantidadRequerida);
+    checkDatos(frecuencia);
+    this.frecuencia = frecuencia;
   }
 
-  private void checkDatos(Integer cantidadPorPeriodo, Periodo periodo) {
-    if (cantidadPorPeriodo == null || cantidadPorPeriodo <= 0) {
-      throw new DominioException( "Una necesidad recurrente necesita 'cantidadPorPeriodo' mayor a cero");
+  private void checkDatos(Frecuencia frecuencia) {
+    if (frecuencia == null) {
+      throw new DominioException( "Una necesidad recurrente necesita 'periodo' puede ser: " + Arrays.toString(Frecuencia.values()));
     }
-    if (periodo == null) {
-      throw new DominioException( "Una necesidad recurrente necesita 'periodo' puede ser: " + Arrays.toString(Periodo.values()));
-    }
-  }
-
-  public void actualizarDatos(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, int cantidadPorPeriodo, Periodo periodo) {
-    super.actualizarDatosBase(subcategoria, unidadMedida, descripcion);
-    checkDatos(cantidadPorPeriodo, periodo);
-    this.cantidadPorPeriodo = cantidadPorPeriodo;
-    this.periodo = periodo;
-  }
-
-  @Override
-  public Boolean estaSatisfecha() {
-    return getCantidadRecibida() >= cantidadPorPeriodo;
-  }
-
-  @Override
-  protected Integer getCantidadQueNecesita() {
-    return this.cantidadPorPeriodo;
   }
 
   @Override
   public String getTipo() {
     return "RECURRENTE";
   }
+
+  public void actualizarDatos(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, Integer cantidadRequerida, Frecuencia frecuencia) {
+    super.actualizarDatosBase(subcategoria, unidadMedida, descripcion, cantidadRequerida);
+    checkDatos(frecuencia);
+    this.frecuencia = frecuencia;
+  }
+  
 }
 

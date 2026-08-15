@@ -27,7 +27,7 @@ public class Donacion {
 
   public Donacion(List<Bien> bienes, List<Donante> donantes) {
     checkDatos(bienes, donantes);
-    this.descripcion = this.descripcionGeneral(bienes);
+    this.descripcion = this.setDescripcionGeneral(bienes);
     this.bienes = new ArrayList<>(bienes);
     this.historialEstados = new ArrayList<>();
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
@@ -56,6 +56,10 @@ public class Donacion {
         .orElseThrow(() -> new DominioException("Donación no posee fecha de asignación"));
   }
 
+  public Subcategoria getSubcategoria() {
+    return this.bienes.get(0).getSubcategoria(); // todos tienen la misma
+  }
+
   /*Solo para poder probar un test después ver como mejorar quitando esto*/
   public void setFechaAsignacion(LocalDateTime fechaAsignacion) {
     EstadoDonacion estadoAsignacion = this.historialEstados.stream()
@@ -63,12 +67,6 @@ public class Donacion {
         .findFirst()
         .orElseThrow(() -> new DominioException("Donación no posee fecha de asignación"));
     estadoAsignacion.setFecha(fechaAsignacion);
-  }
-
-  public String descripcionGeneral(List<Bien> bienes) {
-    return bienes.stream()
-        .map(b -> b.getCantidad() + " " + b.getUnidadMedida() + " de " + b.getDescripcion())
-        .collect(Collectors.joining(", "));
   }
 
   // [En deposito] -> [Asignacion Realizada]
@@ -119,7 +117,7 @@ public class Donacion {
   }
 
   // [Entrega Fallida] -> [En Deposito]
-  public void retornaADeposito() {
+  public void retornarADeposito() {
     if (getEstadoActual() != TipoEstadoDonacion.ENTREGA_FALLIDA)
       throw new CambioDeEstadoNoPermitidoException("No se puede recibir en deposito a menos que la entrega falle");
 
@@ -135,10 +133,6 @@ public class Donacion {
     this.estadoModificable = false;
   }
 
-  public Subcategoria getSubcategoria() {
-    return this.bienes.get(0).getSubcategoria(); // todos tienen la misma
-  }
-
   public void actualizarBienes(List<Bien> nuevosBienes) {
     if (nuevosBienes == null || nuevosBienes.isEmpty())
       throw new DominioException("Una donación debe tener al menos un bien");
@@ -147,10 +141,16 @@ public class Donacion {
       throw new CambioDeEstadoNoPermitidoException("Solo se puede modificar una donación que esta en deposito");
 
     this.bienes = new ArrayList<>(nuevosBienes);
-    this.descripcion = this.descripcionGeneral(nuevosBienes);
+    this.descripcion = this.setDescripcionGeneral(nuevosBienes);
   }
 
   //====================== FUNCIONES AUXILIARES ==========================
+  private String setDescripcionGeneral(List<Bien> bienes) {
+    return bienes.stream()
+        .map(b -> b.getCantidad() + " " + b.getUnidadMedida() + " de " + b.getDescripcion())
+        .collect(Collectors.joining(", "));
+  }
+
   private void setEstadoActual(TipoEstadoDonacion estado, String observacion) {
     if (!this.estadoModificable)
       throw new CambioDeEstadoNoPermitidoException("No se puede modificar su estado por que esta en: " + this.getEstadoActual());

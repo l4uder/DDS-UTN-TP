@@ -174,7 +174,7 @@ public class DonacionController {
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
 
-    donacion.retornaADeposito();
+    donacion.retornarADeposito();
     repoDonaciones.actualizar(donacion);
     ctx.status(200).json(DonacionMapper.aDto(donacion));
   }

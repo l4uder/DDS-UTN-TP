@@ -81,13 +81,12 @@ public class NotificadorTest {
 
   @Test
   void notificarAUnaPersonaHumanaPorWhashapp() {
-    WhatsappDeContato numeroWhatsapp = new WhatsappDeContato("235254543", true);
-    numeroWhatsapp.setClienteWhatsapp(clienteMockWhatsapp);
+    WhatsappDeContato numeroWhatsapp = new WhatsappDeContato("235254543", true, clienteMockWhatsapp);
     Donante juan = buildPersona.conAgregarContacto(numeroWhatsapp).build();
 
     juan.recibirNotificacion(message);
 
-    verify(clienteMockWhatsapp).enviarMensaje(numeroWhatsapp.getTelefono(), message);
+    verify(clienteMockWhatsapp).enviarWhatsapp(numeroWhatsapp.getTelefono(), message);
   }
 
   @Test

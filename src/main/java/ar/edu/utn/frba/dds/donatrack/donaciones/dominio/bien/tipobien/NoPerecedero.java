@@ -1,7 +1,9 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
+import lombok.Getter;
 
+@Getter
 public class NoPerecedero implements TipoBien {
   private Boolean estaUsado;
 
@@ -9,17 +11,9 @@ public class NoPerecedero implements TipoBien {
     this.estaUsado = usado;
   }
 
-  public Boolean getEstaUsado() {
-    return this.estaUsado;
-  }
-
-  @Override
-  public String toString() {
-    return "NO_PERECEDERO";
-  }
-
   @Override
   public String getNombreClave(Subcategoria subcategoria) {
     return subcategoria.getNombre() + "_" + (estaUsado ? "usado" : "nuevo");
   }
+
 }

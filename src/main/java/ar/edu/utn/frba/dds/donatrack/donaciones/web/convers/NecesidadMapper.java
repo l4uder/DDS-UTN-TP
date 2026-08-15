@@ -6,7 +6,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadExtraordinaria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadRecurrente;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Periodo;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Frecuencia;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.necesidad.NecesidadRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.necesidad.NecesidadResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
@@ -51,8 +51,8 @@ public class NecesidadMapper {
         .estaSatisfecha(necesidad.estaSatisfecha());
 
     if (necesidad instanceof NecesidadRecurrente nr) {
-      responseBuilder.cantidadPorPeriodo(nr.getCantidadPorPeriodo());
-      responseBuilder.periodo(nr.getPeriodo().name());
+      responseBuilder.cantidadPorPeriodo(nr.getCantidadRequerida());
+      responseBuilder.periodo(nr.getFrecuencia().name());
     } else if (necesidad instanceof NecesidadExtraordinaria ne) {
       responseBuilder.cantidadRequerida(ne.getCantidadRequerida());
     } else {
@@ -73,8 +73,8 @@ public class NecesidadMapper {
     String descripcionMerge = request.descripcion() != null ? request.descripcion() : necesidad.getDescripcion();
     UnidadMedida unidadMedida = request.unidadMedida() != null ? aUnidadMedida(request.unidadMedida()) : necesidad.getUnidadMedida();
     if (necesidad instanceof NecesidadRecurrente necesidadR) {
-      Integer cantidadPorPeriodoMerge = request.cantidadPorPeriodo() != null ? request.cantidadPorPeriodo() : necesidadR.getCantidadPorPeriodo();
-      Periodo periodoMerge = request.periodo() != null ? aPeriodo(request.periodo()) : necesidadR.getPeriodo();
+      Integer cantidadPorPeriodoMerge = request.cantidadPorPeriodo() != null ? request.cantidadPorPeriodo() : necesidadR.getCantidadRequerida();
+      Frecuencia periodoMerge = request.periodo() != null ? aPeriodo(request.periodo()) : necesidadR.getFrecuencia();
       necesidadR.actualizarDatos(subcategoriaMerge, unidadMedida, descripcionMerge, cantidadPorPeriodoMerge, periodoMerge);
     } else if (necesidad instanceof NecesidadExtraordinaria necesidadE) {
       Integer cantidadRequeridaMerge = request.cantidadRequerida() != null ? request.cantidadRequerida() : necesidadE.getCantidadRequerida();
@@ -90,12 +90,12 @@ public class NecesidadMapper {
     return new Subcategoria(request.subcategoria(), new Categoria(request.categoria()));
   }
 
-  private static Periodo aPeriodo(String valor) {
-    if (valor == null) throw new DominioException("Una necesidad recurrente necesita 'periodo' puede ser: " + Arrays.toString(Periodo.values()));
+  private static Frecuencia aPeriodo(String valor) {
+    if (valor == null) throw new DominioException("Una necesidad recurrente necesita 'periodo' puede ser: " + Arrays.toString(Frecuencia.values()));
     try {
-      return Periodo.valueOf(valor.toUpperCase());
+      return Frecuencia.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DominioException("El periodo: " + valor + " no existe, debe ser: " + Arrays.toString(Periodo.values()));
+      throw new DominioException("El periodo: " + valor + " no existe, debe ser: " + Arrays.toString(Frecuencia.values()));
     }
   }
 

@@ -67,12 +67,12 @@ public class Beneficiario {
 
   public void recibirNotificacion(String mensaje) {
     List<MedioContacto> contactosPrincipales = getContactos().stream().filter(c -> c.getEsPrincipal()).toList();
-    contactosPrincipales.forEach(c -> c.notificar(mensaje));
+    contactosPrincipales.forEach(c -> c.enviarMensaje(mensaje));
   }
 
   public void recibirNotificacionImportante(String mensaje) {
     List<MedioContacto> contactos = getContactos();
-    contactos.forEach(c -> c.notificar(mensaje));
+    contactos.forEach(c -> c.enviarMensaje(mensaje));
   }
 
   public Boolean esIgual(Beneficiario otroBeneficiario) {

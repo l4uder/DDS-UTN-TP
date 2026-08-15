@@ -41,18 +41,9 @@ public class Juridica implements TipoDonante {
     }
   }
 
-  public void agregarRepresentante(Representante representante) {
-    this.representantes.add(representante);
-  }
-
   @Override
-  public TipoPersona getTipo() {
-    return TipoPersona.JURIDICA;
-  }
-
-  @Override
-  public List<MedioContacto> getContactosPrincipales() {
-    return this.representantes.stream().flatMap(r -> r.getContactosPrincipales().stream()).toList();
+  public String getNombreCompleto() {
+    return getRazonSocial();
   }
 
   @Override
@@ -61,8 +52,8 @@ public class Juridica implements TipoDonante {
   }
 
   @Override
-  public String getNombreCompleto() {
-    return getRazonSocial();
+  public List<MedioContacto> getContactosPrincipales() {
+    return this.representantes.stream().flatMap(r -> r.getContactosPrincipales().stream()).toList();
   }
 
   public void actualizarDatos(String razonSocial, TipoOrganizacion tipo, String rubro,

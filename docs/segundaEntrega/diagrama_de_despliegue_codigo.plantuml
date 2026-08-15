@@ -1,0 +1,42 @@
+@startuml
+skinparam rectangle {
+    roundCorner<<>> 30
+}
+skinparam titleFontSize 24
+skinparam titleFontStyle bold
+
+title Diagrama de Despliegue
+
+actor Donante
+actor admin
+actor Beneficiario
+node Cliente
+rectangle DonaTrack {
+  node "Microservicio Donaciones" as MS_d
+  node "Microservicio Logistica" as MS_l
+}
+node Gps
+cloud Whatsapp
+cloud Correo
+cloud Sms
+cloud Broker
+
+admin -d-> Cliente
+Donante -r-> Cliente :""               ""
+Beneficiario -u-> Cliente
+admin -[#white]-> Donante
+Donante -[#white]-> Beneficiario
+
+Cliente --> MS_l :""     https        ""
+DonaTrack <-[#white]- Cliente
+Cliente --> MS_d :""  https        ""
+
+MS_l --> MS_d :"" https ""
+
+MS_d --> Correo :"" smtp ""
+MS_d --> Whatsapp :"" https ""
+MS_d --> Sms :"" https ""
+Broker <-- MS_l :"" mqtt ""
+Broker <-r- Gps :""   mqtt   ""
+
+@enduml

@@ -10,7 +10,6 @@ import lombok.Setter;
 public class WhatsappDeContato implements MedioContacto {
   private String telefono;
   private Boolean esPrincipal;
-  @Setter
   private ClienteWhatsapp clienteWhatsapp;
 
   public WhatsappDeContato(String telefono, Boolean esPrincipal) {
@@ -40,11 +39,8 @@ public class WhatsappDeContato implements MedioContacto {
   }
 
   @Override
-  public void notificar(String message) {
-    if (clienteWhatsapp == null) {
-      throw new DominioException("clienteWhatsapp no asignado para enviar notificaciones");
-    }
-    clienteWhatsapp.enviarMensaje(telefono, message);
+  public void enviarMensaje(String message) {
+    clienteWhatsapp.enviarWhatsapp(telefono, message);
   }
 
   @Override

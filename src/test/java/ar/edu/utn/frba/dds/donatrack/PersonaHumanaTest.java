@@ -24,7 +24,6 @@ public class PersonaHumanaTest {
 
     Humana tipoHumana = (Humana) persona.getTipoDonante();
 
-    assertNotNull(persona.getPrimerContactoPrincipal());
     assertEquals("Esteban", tipoHumana.getNombre());
   }
 

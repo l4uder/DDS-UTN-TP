@@ -61,13 +61,8 @@ public class Humana implements TipoDonante {
   }
 
   @Override
-  public TipoPersona getTipo() {
-    return TipoPersona.HUMANA;
-  }
-
-  @Override
-  public List<MedioContacto> getContactosPrincipales() {
-    return this.contactos.stream().filter(MedioContacto::getEsPrincipal).toList();
+  public String getNombreCompleto() {
+    return getNombre() +  " " + getApellido();
   }
 
   @Override
@@ -76,8 +71,8 @@ public class Humana implements TipoDonante {
   }
 
   @Override
-  public String getNombreCompleto() {
-    return getNombre() +  " " + getApellido();
+  public List<MedioContacto> getContactosPrincipales() {
+    return this.contactos.stream().filter(MedioContacto::getEsPrincipal).toList();
   }
 
   public void actualizarDatos(String nombre, String apellido, Documento documento,

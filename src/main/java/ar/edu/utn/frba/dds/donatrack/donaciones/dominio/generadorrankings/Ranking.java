@@ -14,18 +14,18 @@ public class Ranking {
   private String id;
   private Donacion donacion;
   private List<Beneficiario> candidatos;
-  private Boolean esVigente;
+  private Boolean estaVigente;
   private LocalDateTime fechaGeneracion;
 
   public Ranking(Donacion donacion, List<Beneficiario> candidatos) {
     this.donacion = donacion;
     this.candidatos = new ArrayList<>(candidatos);
-    this.esVigente = true;
+    this.estaVigente = true;
     this.fechaGeneracion = LocalDateTime.now();
   }
 
   public void vencida() {
-    this.esVigente = false;
+    this.estaVigente = false;
   }
 
 }

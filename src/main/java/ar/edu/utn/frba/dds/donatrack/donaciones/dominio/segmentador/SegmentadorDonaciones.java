@@ -19,12 +19,12 @@ public class SegmentadorDonaciones {
         .values().stream()
         .map(el-> {
           List<Bien> bienes = new ArrayList<>();
-          List<Donante> donanteIds = new ArrayList<>();
+          List<Donante> donantes = new ArrayList<>();
           el.forEach(byd -> {
             bienes.add(byd.b);
-            donanteIds.add(byd.d);
+            donantes.add(byd.d);
           });
-          return new Donacion(bienes, donanteIds);
+          return new Donacion(bienes, donantes);
         })
         .toList();
   }

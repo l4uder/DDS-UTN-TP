@@ -10,7 +10,6 @@ import lombok.Setter;
 public class CorreoDeContato implements MedioContacto {
   private String correo;
   private Boolean esPrincipal;
-  @Setter
   private ClienteCorreo clienteCorreo;
 
   public CorreoDeContato(String correo, Boolean esPrincipal) {
@@ -40,11 +39,7 @@ public class CorreoDeContato implements MedioContacto {
   }
 
   @Override
-  public void notificar(String message) {
-    if (clienteCorreo == null) {
-      throw new DominioException("clienteCorreo no asignado para enviar notificaciones");
-    }
-
+  public void enviarMensaje(String message) {
     clienteCorreo.enviarCorreo(correo, message);
   }
 

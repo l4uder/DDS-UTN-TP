@@ -32,7 +32,7 @@ public final class RankingRepository {
   }
 
   public List<Ranking> buscarTodos() {
-    return storeRankings.values().stream().filter(Ranking::getEsVigente).toList();
+    return storeRankings.values().stream().filter(Ranking::getEstaVigente).toList();
   }
 
   public void actualizar(Ranking ranking) {

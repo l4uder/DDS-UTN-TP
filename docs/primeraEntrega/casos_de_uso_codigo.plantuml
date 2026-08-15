@@ -1,5 +1,9 @@
 @startuml
+skinparam titleFontSize 24
+skinparam titleFontStyle bold
 left to right direction
+
+title Diagrama de Casos de Uso
 
 actor "Donante" as Donante
 actor "Representante Persona Jurídica" as RepJuridica

@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo;
 
+import ar.edu.utn.frba.dds.donatrack.shared.ConfiguracionEntorno;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -14,9 +15,9 @@ public class ClienteCorreoReal implements ClienteCorreo {
   private final String correoRemitente;
   private final String password;
 
-  public ClienteCorreoReal(String correoRemitente, String password) {
-    this.correoRemitente = correoRemitente;
-    this.password = password;
+  public ClienteCorreoReal() {
+    this.correoRemitente = ConfiguracionEntorno.getInstance().getEmailUsuario();
+    this.password = ConfiguracionEntorno.getInstance().getPasswordUsuario();
   }
 
   @Override

@@ -1,0 +1,41 @@
+@startuml
+skinparam storage {
+    BorderColor transparent
+    BackgroundColor transparent
+}
+skinparam rectangle {
+    roundCorner<<>> 30
+}
+skinparam titleFontSize 24
+skinparam titleFontStyle bold
+
+title Diagrama de Despliegue
+
+actor Donante
+actor admin
+actor Beneficiario
+node Cliente
+rectangle DonaTrack {
+  storage {
+    node "Servidor Monolitico" as SM
+  }
+}
+cloud Whatsapp
+cloud Correo
+cloud Sms
+
+admin --> Cliente
+Donante -r-> Cliente : ""               ""
+Beneficiario -u-> Cliente
+admin -[#white]-> Donante
+Donante -[#white]-> Beneficiario
+
+Cliente -r-> SM: ""  https      ""
+
+Whatsapp <-- SM: "" https ""
+SM -r-> Correo : ""      smtp     ""
+SM --> Sms : "" https ""
+Whatsapp -[#white]-> Correo
+Correo -[#white]-> Sms
+
+@enduml

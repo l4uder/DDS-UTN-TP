@@ -24,12 +24,14 @@ public class Donante {
   private Documento documento;
   private List<RegistroEntrega> entregas;
   private final TipoDonante tipoDonante;
+  private TipoPersona tipoPersona;
 
-  private Donante(Documento documento, TipoDonante tipoDonante) {
+  private Donante(Documento documento, TipoDonante tipoDonante, TipoPersona tipoPersona) {
     checkDatos(documento);
     this.documento = documento;
     this.entregas = new ArrayList<>();
     this.tipoDonante = tipoDonante;
+    this.tipoPersona = tipoPersona;
   }
 
   private void checkDatos(Documento documento) {
@@ -38,20 +40,8 @@ public class Donante {
     }
   }
 
-  public MedioContacto getPrimerContactoPrincipal() {
-    return getContactosPrincipales().stream()
-        .findFirst()
-        .orElseThrow(() -> new DominioException( "El donante no posee ningún contacto configurado como principal"));
-  }
-
-  public void recibirNotificacion(String mensaje) {
-    List<MedioContacto> contactos = getContactosPrincipales();
-    contactos.forEach(c -> c.notificar(mensaje));
-  }
-
-  public void recibirNotificacionImportante(String mensaje) {
-    List<MedioContacto> contactos = getContactos();
-    contactos.forEach(c -> c.notificar(mensaje));
+  public String getNombreCompleto() {
+    return tipoDonante.getNombreCompleto();
   }
 
   public RegistroEntrega getUltimaEntrega() {
@@ -59,6 +49,16 @@ public class Donante {
     if (this.entregas.isEmpty()) return null;
 
     return this.entregas.get(this.entregas.size() - 1);
+  }
+
+  public void recibirNotificacion(String mensaje) {
+    List<MedioContacto> contactos = getContactosPrincipales();
+    contactos.forEach(c -> c.enviarMensaje(mensaje));
+  }
+
+  public void recibirNotificacionImportante(String mensaje) {
+    List<MedioContacto> contactos = getContactos();
+    contactos.forEach(c -> c.enviarMensaje(mensaje));
   }
 
   public boolean estaAusentePorMasDe(Integer dias) {
@@ -73,29 +73,13 @@ public class Donante {
                                       LocalDate fechaNacimiento, Genero genero, String direccion,
                                       List<MedioContacto> contactos) {
     TipoDonante tipoPersona = new Humana(nombre, apellido, documento, fechaNacimiento, genero, direccion, contactos);
-    return new Donante(documento, tipoPersona);
+    return new Donante(documento, tipoPersona, TipoPersona.HUMANA);
   }
 
   public static Donante personaJuridica(String razonSocial, Documento documento, TipoOrganizacion tipo,
                                         String rubro, List<Representante> representantes) {
     TipoDonante tipoPersona = new Juridica(razonSocial, tipo, rubro, documento, representantes);
-    return new Donante(documento, tipoPersona);
-  }
-
-  public List<MedioContacto> getContactosPrincipales() {
-    return this.tipoDonante.getContactosPrincipales();
-  }
-
-  public List<MedioContacto> getContactos() {
-    return this.tipoDonante.getContactos();
-  }
-
-  public String getNombreCompleto() {
-    return tipoDonante.getNombreCompleto();
-  }
-
-  public TipoPersona getTipoPersona() {
-    return tipoDonante.getTipo();
+    return new Donante(documento, tipoPersona, TipoPersona.JURIDICA);
   }
 
   private void actualizarDatosBase(Documento documento) {
@@ -118,6 +102,15 @@ public class Donante {
 
     this.actualizarDatosBase(documento);
     ((Juridica) this.tipoDonante).actualizarDatos(razonSocial, tipo, rubro, documento, representantes);
+  }
+
+  //================== FUNCIONES AUXILIARES =======================
+  private List<MedioContacto> getContactosPrincipales() {
+    return this.tipoDonante.getContactosPrincipales();
+  }
+
+  private List<MedioContacto> getContactos() {
+    return this.tipoDonante.getContactos();
   }
 
 }

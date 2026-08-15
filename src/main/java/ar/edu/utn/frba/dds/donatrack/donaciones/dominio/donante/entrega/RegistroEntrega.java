@@ -14,7 +14,7 @@ public class RegistroEntrega {
   private LocalDateTime fecha;
   private String descripcionGeneral;
   private List<Bien> bienes;
-  private Donante donante;
+  private Donante donante; //Doble Referencia
 
   public RegistroEntrega(String descripcionGeneral, List<Bien> bienes, Donante donante) {
     this.fecha = LocalDateTime.now();

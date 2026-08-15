@@ -80,7 +80,7 @@ public class EstadosDonacionTest {
     donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true))));
 
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::enCamino);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornaADeposito);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornarADeposito);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::entregada);
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.errorAlEntregar("razon"));
     assertEquals(TipoEstadoDonacion.ASIGNACION_REALIZADA, donacion.getEstadoActual());
@@ -94,7 +94,7 @@ public class EstadosDonacionTest {
     donacion.listaParaEntregar();
 
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::entregada);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornaADeposito);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornarADeposito);
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true)))));
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.errorAlEntregar("razon"));
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::vencida);
@@ -112,7 +112,7 @@ public class EstadosDonacionTest {
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::listaParaEntregar);
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com", true)))));
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::vencida);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornaADeposito);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornarADeposito);
 
     assertEquals(TipoEstadoDonacion.EN_TRASLADO, donacion.getEstadoActual());
   }
@@ -147,7 +147,7 @@ public class EstadosDonacionTest {
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::enCamino);
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true)))));
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::vencida);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornaADeposito);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornarADeposito);
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.errorAlEntregar("razon"));
 
     assertEquals(TipoEstadoDonacion.ENTREGADA, donacion.getEstadoActual());
@@ -163,7 +163,7 @@ public class EstadosDonacionTest {
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::enCamino);
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true)))));
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::entregada);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornaADeposito);
+    assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornarADeposito);
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.errorAlEntregar("razon"));
 
     assertEquals(TipoEstadoDonacion.VENCIDA, donacion.getEstadoActual());

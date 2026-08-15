@@ -88,7 +88,7 @@ public class AsignacionController {
   private Ranking buscarRankingPorId(String id) {
     Ranking ranking = repoRankings.buscarPorId(id);
     if (ranking == null) throw new RecursoNoEncontradoException("El ranking: " + id + " no existe");
-    if(!ranking.getEsVigente()) throw new RecursoNoEncontradoException("El ranking esta vencido: " + id);
+    if(!ranking.getEstaVigente()) throw new RecursoNoEncontradoException("El ranking esta vencido: " + id);
     return ranking;
   }
 

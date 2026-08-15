@@ -34,7 +34,7 @@ public class GeneradorDonantesCsvTest {
     assertEquals(0, repoDonantes.buscarTodos().size());
     //primera prueba verificamos que la lista este vacía
 
-    List<FilaError> errores = generadorDonantes.generar(archivoExistente);
+    List<FilaError> errores = generadorDonantes.iniciarCarga(archivoExistente);
     //errores.forEach(e -> System.out.println(" fila " + e.getNumeroFila() + " motivo: " + e.getMotivoError()));
 
     assertEquals(2, repoDonantes.buscarTodos().size());
@@ -47,7 +47,7 @@ public class GeneradorDonantesCsvTest {
     ImportadorCsv importador = new ImportadorCsv();
     GeneradorDonantesCsv generadorDonantes = new GeneradorDonantesCsv(repoDonantes, importador);
 
-    assertThrows(ImportadorCsvException.class, () -> generadorDonantes.generar(archivoInexistente));
+    assertThrows(ImportadorCsvException.class, () -> generadorDonantes.iniciarCarga(archivoInexistente));
   }
 
 }
