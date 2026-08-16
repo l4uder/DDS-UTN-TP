@@ -36,6 +36,21 @@ public class Entrega {
         .getTipoEstado();
   }
 
+  public void reasignarCamion(Camion camion) {
+    validarTransicionDesde(TipoEstadoEntrega.PENDIENTE, "reasignar camión");
+    this.camionAsignado = camion;
+  }
+
+  public void agregarFotoRecepcion(String url) {
+    if (getEstadoActual() != TipoEstadoEntrega.ENTREGADA)
+      throw new IllegalStateException("Solo se pueden cargar fotos de una entrega ya confirmada como entregada");
+
+    if (url == null || url.isBlank())
+      throw new DominioException("La URL de la foto es obligatoria");
+
+    fotosRecepcion.add(url);
+  }
+
   public void confirmarListaParaEntregar() {
     validarTransicionDesde(TipoEstadoEntrega.PENDIENTE, "confirmar como lista para entregar");
     cambiarEstado(TipoEstadoEntrega.LISTA_PARA_ENTREGAR, "Asignada a camión " + camionAsignado.getPatente());
@@ -62,21 +77,6 @@ public class Entrega {
   public void reingresarDeposito() {
     validarTransicionDesde(TipoEstadoEntrega.NO_RECIBIDA, "reingresar a depósito");
     cambiarEstado(TipoEstadoEntrega.PENDIENTE, "Entrega devuelta al depósito");
-  }
-
-  public void agregarFotoRecepcion(String url) {
-    if (getEstadoActual() != TipoEstadoEntrega.ENTREGADA)
-      throw new IllegalStateException("Solo se pueden cargar fotos de una entrega ya confirmada como entregada");
-
-    if (url == null || url.isBlank())
-      throw new DominioException("La URL de la foto es obligatoria");
-
-    fotosRecepcion.add(url);
-  }
-
-  public void reasignarCamion(Camion camion) {
-    validarTransicionDesde(TipoEstadoEntrega.PENDIENTE, "reasignar camión");
-    this.camionAsignado = camion;
   }
 
   //==================== FUNCIONES AUXILIARES =====================

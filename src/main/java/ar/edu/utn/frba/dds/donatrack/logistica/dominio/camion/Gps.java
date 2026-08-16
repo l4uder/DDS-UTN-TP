@@ -16,7 +16,7 @@ public class Gps {
     this.funciona = true;
   }
 
-  public void dejoFuncionar() {
+  public void desactivar() {
     this.funciona = false;
   }
 

@@ -14,28 +14,12 @@ public class Lote {
     this.entregas = new ArrayList<>(entregas);
   }
 
-  public static Lote vacio() {
-    return new Lote(new ArrayList<>());
-  }
+  public boolean estaVacio() { return entregas.isEmpty(); }
 
   /** Cantidad total de donaciones que arrastran las entregas de este lote. */
   public int cantidadDonaciones() {
     return entregas.stream().mapToInt(e -> e.getDonaciones().size()).sum();
   }
-
-  /** Indica si agregar esta entrega mantendría el lote dentro del límite. */
-  public boolean puedeAgregar(Entrega entrega) {
-    return estaVacio()
-        || cantidadDonaciones() + entrega.getDonaciones().size() <= MAX_DONACIONES_POR_LOTE;
-  }
-
-  public Lote agregando(Entrega entrega) {
-    List<Entrega> nuevas = new ArrayList<>(entregas);
-    nuevas.add(entrega);
-    return new Lote(nuevas);
-  }
-
-  public boolean estaVacio() { return entregas.isEmpty(); }
 
   /**
    * Arma la lista de lotes a partir de las entregas, respetando el límite de
@@ -45,12 +29,12 @@ public class Lote {
    */
   public static List<Lote> armarLotes(List<Entrega> entregas) {
     List<Lote> lotes = new ArrayList<>();
-    Lote actual = Lote.vacio();
+    Lote actual = new Lote(new ArrayList<>());
 
     for (Entrega entrega : entregas) {
       if (!actual.puedeAgregar(entrega) && !actual.estaVacio()) {
         lotes.add(actual);
-        actual = Lote.vacio();
+        actual = new Lote(new ArrayList<>());
       }
       actual = actual.agregando(entrega);
     }
@@ -58,6 +42,19 @@ public class Lote {
       lotes.add(actual);
     }
     return lotes;
+  }
+
+  //================== FUNCIONES AUXILIARES ===================
+  /** Indica si agregar esta entrega mantendría el lote dentro del límite. */
+  private boolean puedeAgregar(Entrega entrega) {
+    return estaVacio()
+        || cantidadDonaciones() + entrega.getDonaciones().size() <= MAX_DONACIONES_POR_LOTE;
+  }
+
+  private Lote agregando(Entrega entrega) {
+    List<Entrega> nuevas = new ArrayList<>(entregas);
+    nuevas.add(entrega);
+    return new Lote(nuevas);
   }
 
 }
