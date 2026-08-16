@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.shared;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
@@ -22,6 +23,7 @@ public class GsonConfig {
 
   public static Gson crear() {
     return new GsonBuilder()
+        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
         .registerTypeAdapter(LocalDateTime.class,
             (JsonSerializer<LocalDateTime>) (fecha, tipo, ctx) ->
                 new JsonPrimitive(fecha.format(FORMATO_FECHA_HORA)))

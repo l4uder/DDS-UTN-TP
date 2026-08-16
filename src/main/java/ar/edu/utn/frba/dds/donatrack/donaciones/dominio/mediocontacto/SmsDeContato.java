@@ -51,4 +51,5 @@ public class SmsDeContato implements MedioContacto {
 
     return this.telefono.equals(numeroSms.getTelefono());
   }
+
 }

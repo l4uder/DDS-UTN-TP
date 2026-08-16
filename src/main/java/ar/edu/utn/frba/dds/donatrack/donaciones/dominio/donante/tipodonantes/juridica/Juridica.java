@@ -28,7 +28,7 @@ public class Juridica implements TipoDonante {
 
   private void checkDatos(String razonSocial, Documento documento, List<Representante> representantes) {
     if (razonSocial == null || razonSocial.isBlank()) {
-      throw new DominioException("El campo 'razonSocial' es obligatorio, en la persona jurídica");
+      throw new DominioException("El campo 'razon_social' es obligatorio, en la persona jurídica");
     }
     if (documento == null) {
       throw new DominioException("El campo 'documento' es obligatorio, en la persona jurídica, opciones posibles: " + TipoDocumento.values(TipoPersona.JURIDICA));

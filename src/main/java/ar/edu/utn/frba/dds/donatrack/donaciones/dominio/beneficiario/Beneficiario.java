@@ -32,7 +32,7 @@ public class Beneficiario {
 
   private void checkDatos(String razonSocial, List<MedioContacto> contactos) {
     if (razonSocial == null || razonSocial.isBlank()) {
-      throw new DominioException("El campo 'razonSocial' es obligatorio");
+      throw new DominioException("El campo 'razon_social' es obligatorio");
     }
     if (contactos == null || contactos.isEmpty()) {
       throw new DominioException( "Debe tener al menos un medio de contacto");

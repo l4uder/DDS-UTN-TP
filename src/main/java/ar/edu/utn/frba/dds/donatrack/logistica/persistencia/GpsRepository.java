@@ -32,4 +32,8 @@ public class GpsRepository {
     return this.gpsList;
   }
 
+  public void actualizar(Gps gps) {
+    //this.gpsList.add(gps);
+  }
+
 }

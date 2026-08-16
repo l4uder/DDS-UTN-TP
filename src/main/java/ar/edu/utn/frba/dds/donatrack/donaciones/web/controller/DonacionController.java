@@ -40,7 +40,8 @@ public class DonacionController {
   public void crear(Context ctx) {
     //Cosas que recibo por Body
     DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
-    List<String> idDonantes = request.donanteIds();
+    if (request.donantesId() == null || request.bienes() == null) throw new BodyException("Bad Request, necesita: 'donantes_id' y 'bienes' ");
+    List<String> idDonantes = request.donantesId();
     List<BienDto> bienesDto = request.bienes();
 
     List<Donante> donantes = idDonantes.stream().map(this::buscarDonantePorId).toList();

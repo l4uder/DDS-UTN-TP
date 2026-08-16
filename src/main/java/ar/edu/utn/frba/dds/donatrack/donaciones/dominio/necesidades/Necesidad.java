@@ -30,13 +30,13 @@ public abstract class Necesidad {
       throw new DominioException("El campo 'subcategoria' es obligatorio");
     }
     if (unidadMedida == null) {
-      throw new DominioException("El campo 'unidadMedida' es obligatorio");
+      throw new DominioException("El campo 'unidad_Medida' es obligatorio");
     }
     if (descripcion == null || descripcion.isBlank()) {
       throw new DominioException("El campo 'descripcion' es obligatorio");
     }
     if (cantidadRequerida == null || cantidadRequerida <= 0) {
-      throw new DominioException("Una necesidad extraordinaria necesita 'cantidadRequerida' mayor a cero");
+      throw new DominioException("Una necesidad extraordinaria necesita 'cantidad_requerida' mayor a cero");
     }
   }
 
