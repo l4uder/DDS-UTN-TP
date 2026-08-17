@@ -18,25 +18,16 @@ public class BienMapper {
 
   private static Bien aDominio(BienDto bienDto) {
     if (bienDto.tipo() == null) throw new DominioException( "Cada bien necesita 'tipo' (PERECEDERO o NO_PERECEDERO)");
-    if (bienDto.descripcion() == null || bienDto.cantidad() == null) throw new DominioException("Cada bien necesita 'descripcion' y 'cantidad'");
-    if (bienDto.categoria() == null || bienDto.subcategoria() == null) throw new DominioException("Cada bien necesita 'categoria' y 'subcategoria'");
 
     UnidadMedida unidad = aUnidadMedida(bienDto.unidadMedida());
     Subcategoria subcategoria = new Subcategoria(bienDto.subcategoria(), new Categoria(bienDto.categoria()));
 
     return switch (bienDto.tipo().toUpperCase()) {
-      case "PERECEDERO" -> {
-        if (bienDto.fechaVencimiento() == null) {
-          throw new DominioException(
-              "Un bien perecedero necesita 'fechaVencimiento'");
-        }
-        yield Bien.crearPerecedero(bienDto.descripcion(), bienDto.cantidad(), unidad,
+      case "PERECEDERO" -> Bien.crearPerecedero(bienDto.descripcion(), bienDto.cantidad(), unidad,
             bienDto.foto(), subcategoria, bienDto.fechaVencimiento());
-      }
       case "NO_PERECEDERO" -> Bien.crearNoPerecedero(bienDto.descripcion(), bienDto.cantidad(), unidad,
-          bienDto.foto(), subcategoria, Boolean.TRUE.equals(bienDto.usado()));
-      default -> throw new DominioException(
-          "El tipo de bien: " + bienDto.tipo() + " no existe, debe ser: PERECEDERO o NO_PERECEDERO ");
+            bienDto.foto(), subcategoria, Boolean.TRUE.equals(bienDto.usado()));
+      default -> throw new DominioException( "El tipo de bien: " + bienDto.tipo() + " no existe, debe ser: PERECEDERO o NO_PERECEDERO ");
     };
   }
 
@@ -69,7 +60,7 @@ public class BienMapper {
 
   //========= FUNCIONES AUXILIARES ==============
   private static UnidadMedida aUnidadMedida(String valor) {
-    if (valor == null) return UnidadMedida.UNIDADES;
+    if (valor == null) throw new DominioException("Necesita 'unidad_medida' valores posibles: " + Arrays.toString(UnidadMedida.values()));
     try {
       return UnidadMedida.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {

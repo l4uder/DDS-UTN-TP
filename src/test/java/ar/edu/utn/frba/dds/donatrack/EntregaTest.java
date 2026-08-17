@@ -12,6 +12,7 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTr
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.TipoEstadoEntrega;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -98,7 +99,7 @@ public class EntregaTest {
 
   @Test
   void noSePuedeReingresarSiNoEstaNoRecibida() {
-    assertThrows(IllegalStateException.class, () -> entrega.reingresarDeposito());
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> entrega.reingresarDeposito());
   }
 
   @Test

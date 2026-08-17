@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega.EntregaFotoReques
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.entrega.EntregaNoRecibidaRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.EntregaRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.microserviciosdonaciones.ConectorDonacionesApi;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BodyException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
 import java.util.List;
@@ -52,7 +53,7 @@ public class EntregaController {
 
     Entrega entrega = buscarEntregaPorId(idEntrega);
     entrega.confirmarRecepcion();
-    comunicarAlasDonacionesSuRecepcion(entrega.getDonaciones(), entrega.getCamionAsignado());
+    comunicarAlasDonacionesSuRecepcion(entrega.getDonaciones(), "https://..../comprobantes/...");
     repoEntregas.actualizar(entrega);
     ctx.status(200);
   }
@@ -62,6 +63,7 @@ public class EntregaController {
     String idEntrega = ctx.pathParam("id");
     //Cosas que recibo por Body
     EntregaNoRecibidaRequest request = ctx.bodyAsClass(EntregaNoRecibidaRequest.class);
+    if (request.motivo()==null) throw new BodyException("Bad Request, necesita: 'motivo' ");
     String motivo = request.motivo();
 
     Entrega entrega = buscarEntregaPorId(idEntrega);
@@ -89,9 +91,9 @@ public class EntregaController {
     return entrega;
   }
 
-  private void comunicarAlasDonacionesSuRecepcion(List<DonacionEnTransito> donaciones, Camion camion) {
+  private void comunicarAlasDonacionesSuRecepcion(List<DonacionEnTransito> donaciones, String linkComprobante) {
     donaciones.forEach(d ->
-        donacionesBridge.marcarDonacionEntregaExitosa(d.getId(), camion.getPatente())
+        donacionesBridge.marcarDonacionEntregaExitosa(d.getId(), linkComprobante)
     );
   }
 

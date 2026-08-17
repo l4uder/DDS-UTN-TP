@@ -59,8 +59,8 @@ public class ConectorDonacionesApi {
     cambiarEstadoDonacion(donacionId, gson.toJson(body), buildUrl(donacionId, "en-camino"));
   }
   //activa el paso 5 de la donacion (Entregada)
-  public void marcarDonacionEntregaExitosa(String donacionId, String patente) {
-    CambioEstadoEntregadaRequest body = new CambioEstadoEntregadaRequest(patente);
+  public void marcarDonacionEntregaExitosa(String donacionId, String linkComprobante) {
+    CambioEstadoEntregadaRequest body = new CambioEstadoEntregadaRequest(linkComprobante);
     cambiarEstadoDonacion(donacionId, gson.toJson(body), buildUrl(donacionId, "entregada"));
   }
   //activa el paso 5B de la donacion (Error Al Entregar)

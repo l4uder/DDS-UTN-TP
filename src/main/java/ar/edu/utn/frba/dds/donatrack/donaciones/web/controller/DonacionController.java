@@ -40,7 +40,8 @@ public class DonacionController {
   public void crear(Context ctx) {
     //Cosas que recibo por Body
     DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
-    if (request.donantesId() == null || request.bienes() == null) throw new BodyException("Bad Request, necesita: 'donantes_id' y 'bienes' ");
+    if (request.donantesId() == null) throw new BodyException("Bad Request, necesita: 'donantes_id'");
+    if (request.bienes() == null) throw new BodyException("Bad Request, necesita: 'bienes' ");
     List<String> idDonantes = request.donantesId();
     List<BienDto> bienesDto = request.bienes();
 
@@ -123,7 +124,7 @@ public class DonacionController {
     String idDonacion = ctx.pathParam("id");
     //Cosas que recibo por Body
     EnTrasladoDonacionDto request = ctx.bodyAsClass(EnTrasladoDonacionDto.class);
-    if (request == null || request.linkMapa() == null || request.linkMapa().isBlank()) throw new BodyException("El body no tiene el link del mapa");
+    if (request.linkMapa() == null) throw new BodyException("Bad Request, necesita: 'link_mapa' ");
     String mapa = request.linkMapa();
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
@@ -140,7 +141,7 @@ public class DonacionController {
     String idDonacion = ctx.pathParam("id");
     //Cosas que recibo por Body
     EntregadaDonacionDto request = ctx.bodyAsClass(EntregadaDonacionDto.class);
-    if (request == null || request.linkComprobanteEntrega() == null || request.linkComprobanteEntrega().isBlank()) throw new BodyException("El body no tiene el comprobante de entrega, la cual debe poseer: fechaHora de entrega y camion que hizo la entrega");
+    if (request.linkComprobanteEntrega() == null) throw new BodyException("Bad Request, necesita: 'link_comprobante_entrega' ");
     String comprobante = request.linkComprobanteEntrega();
 
     Donacion donacion = buscarDonacionPorId(idDonacion);
@@ -157,7 +158,7 @@ public class DonacionController {
     String idDonacion = ctx.pathParam("id");
     //Cosas que recibo por Body
     ErrorEntregaDonacionDto request = ctx.bodyAsClass(ErrorEntregaDonacionDto.class);
-    if (request == null || request.observacion() == null || request.observacion().isBlank()) throw new BodyException("El body no tiene la observacion del error");
+    if (request.observacion() == null) throw new BodyException("Bad Request, necesita: 'observacion' del error");
     String observacion = request.observacion();
 
     Donacion donacion = buscarDonacionPorId(idDonacion);

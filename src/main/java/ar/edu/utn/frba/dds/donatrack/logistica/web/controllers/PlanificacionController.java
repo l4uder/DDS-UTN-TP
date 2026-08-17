@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.planificacion.CallbackPlanificacionRequest;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BodyException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ServicioExternoException;
 import com.google.gson.JsonSyntaxException;
@@ -30,6 +31,7 @@ public class PlanificacionController {
   public void callback(Context ctx) {
     try {
       CallbackPlanificacionRequest request = ctx.bodyAsClass(CallbackPlanificacionRequest.class);
+      if (request.entregasPorPatente() == null) throw new BodyException("Bad Request, necesita: 'entregas_por_patente' ");
       List<Ruta> rutas = coordinadorRuta.procesarCallback(request);
       ctx.status(201).json(rutas);
     } catch (JsonSyntaxException e) {

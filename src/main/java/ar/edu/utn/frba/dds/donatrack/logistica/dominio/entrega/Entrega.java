@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +87,7 @@ public class Entrega {
 
   private void validarTransicionDesde(TipoEstadoEntrega esperado, String accion) {
     if (getEstadoActual() != esperado)
-      throw new IllegalStateException("No se puede " + accion + " desde el estado " + getEstadoActual());
+      throw new CambioDeEstadoNoPermitidoException("No se puede " + accion + " desde el estado " + getEstadoActual());
   }
 
 }

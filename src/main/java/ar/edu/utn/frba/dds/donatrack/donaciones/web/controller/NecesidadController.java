@@ -8,7 +8,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.necesidad.NecesidadReque
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 
 public class NecesidadController {
   private final BeneficiarioRepository repoBeneficiarios;
@@ -26,7 +26,7 @@ public class NecesidadController {
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
     Necesidad necesidad = NecesidadMapper.aDominio(necesidadDto);
 
-    necesidad.setId(UUID.randomUUID().toString());
+    necesidad.setId(codigoSimplificado());
     beneficiario.agregarNecesidad(necesidad);
     repoBeneficiarios.actualizar(beneficiario);
     ctx.status(201).json(NecesidadMapper.aDto(necesidad));
@@ -85,6 +85,17 @@ public class NecesidadController {
     Beneficiario beneficiario = repoBeneficiarios.buscarPorId(id);
     if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + id);
     return beneficiario;
+  }
+
+  private String codigoSimplificado() {
+    String CARACTERES = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    StringBuilder sb = new StringBuilder();
+    Random random = new Random();
+    for (int i = 0; i < 6; i++) {
+      int indiceAleatorio = random.nextInt(CARACTERES.length());
+      sb.append(CARACTERES.charAt(indiceAleatorio));
+    }
+    return sb.toString();
   }
 
 }

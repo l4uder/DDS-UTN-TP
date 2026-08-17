@@ -100,7 +100,7 @@ public class NecesidadMapper {
   }
 
   private static UnidadMedida aUnidadMedida(String valor) {
-    if (valor == null) throw new DominioException("Necesita 'unidadMedida' valores posibles: " + Arrays.toString(UnidadMedida.values()));
+    if (valor == null) throw new DominioException("Necesita 'unidad_medida' valores posibles: " + Arrays.toString(UnidadMedida.values()));
     try {
       return UnidadMedida.valueOf(valor.toUpperCase());
     } catch (IllegalArgumentException e) {

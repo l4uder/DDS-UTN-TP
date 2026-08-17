@@ -56,32 +56,17 @@ public class CoordinadorRuta {
     lotes.forEach(lote -> clienteExterno.enviarLote(lote, camiones, CALLBACK_URL));
   }
 
-
   public List<Ruta> procesarCallback(CallbackPlanificacionRequest request) {
     LocalDate fecha = LocalDate.parse(request.fecha());
+    Map<Camion, List<Entrega>> entregasPorCamion = obtenerEntregasPorCamion(request.entregasPorPatente());
+    List<Entrega> entregasSinAsignar = request.entregasSinAsignar()==null? List.of() : request.entregasSinAsignar().stream().map(this::buscarEntregaPorId).toList();
 
-    Map<Camion, List<Entrega>> entregasPorCamion = new HashMap<>();
-    request.entregasPorPatente().forEach((patente, idsEntregas) -> {
-      Camion camion = camionRepository.buscarPorPatente(patente);
-      if (camion == null) throw new RecursoNoEncontradoException("Camión no encontrado: " + patente);
-      List<Entrega> entregas = idsEntregas.stream()
-          .map(entregaRepository::buscarPorId)
-          .toList();
-      entregasPorCamion.put(camion, entregas);
-    });
-
-    List<Entrega> sinAsignar = request.entregasSinAsignar().stream()
-        .map(entregaRepository::buscarPorId)
-        .toList();
-
+    List<Ruta> rutas = crearRutas(fecha, entregasPorCamion);
     // Elimino las entregas que no fueron asignadas ya que las donaciones asociadas permanecen en
     // ASIGNACION_REALIZADA del lado de donaciones, nunca les aviso ningun cambio de estado, asu que
     // cuando se vuelva a consultar las donaciones asignadas la volveran a encuar para que entren
     // en el próximo ciclo de planificación.
-    sinAsignar.forEach(e -> entregaRepository.eliminar(e));
-
-    ResultadoPlanificacion resultado = new ResultadoPlanificacion(entregasPorCamion, sinAsignar);
-    List<Ruta> rutas = procesarResultadoPlanificacion(resultado, fecha);
+    entregasSinAsignar.forEach(entregaRepository::eliminar);
 
     rutas.forEach(rutaRepository::guardar);
     rutas.forEach(ruta -> ruta.getEntregasOrdenadas().forEach(e ->
@@ -100,13 +85,33 @@ public class CoordinadorRuta {
     List<Entrega> entregas = new ArrayList<>();
     agrupadas.forEach((beneficiario, donaciones) ->
         entregas.add(new Entrega(beneficiario, donaciones, null)));
+
     return entregas;
   }
 
-  private List<Ruta> procesarResultadoPlanificacion(ResultadoPlanificacion resultado, LocalDate fecha) {
+  //--Helper--
+  private void propagarEstadoDonaciones(Entrega entrega, Consumer<String> command) {
+    entrega.getDonaciones().forEach(d -> command.accept(d.getId()));
+  }
+
+  private Map<Camion, List<Entrega>> obtenerEntregasPorCamion(Map<String, List<String>> entregasPorPatente) {
+    Map<Camion, List<Entrega>> entregasPorCamion = new HashMap<>();
+
+    entregasPorPatente.forEach((patente, idsEntregas) -> {
+      Camion camion = buscarCamionPorPatente(patente);
+      List<Entrega> entregas = idsEntregas.stream()
+          .map(this::buscarEntregaPorId)
+          .toList();
+      entregasPorCamion.put(camion, entregas);
+    });
+
+    return entregasPorCamion;
+  }
+
+  private List<Ruta> crearRutas(LocalDate fecha, Map<Camion, List<Entrega>> entregasPorCamion) {
     List<Ruta> rutasCreadas = new ArrayList<>();
 
-    resultado.getEntregasPorCamion().forEach((camion, entregasOrdenadas) -> {
+    entregasPorCamion.forEach((camion, entregasOrdenadas) -> {
       entregasOrdenadas.forEach(entrega -> {
         entrega.reasignarCamion(camion);
         entrega.confirmarListaParaEntregar();
@@ -117,8 +122,16 @@ public class CoordinadorRuta {
     return rutasCreadas;
   }
 
-  //--Helper--
-  private void propagarEstadoDonaciones(Entrega entrega, Consumer<String> command) {
-    entrega.getDonaciones().forEach(d -> command.accept(d.getId()));
+  private Camion buscarCamionPorPatente(String patente) {
+    Camion camion = camionRepository.buscarPorPatente(patente);
+    if (camion == null) throw new RecursoNoEncontradoException("Camión no encontrado: " + patente);
+    return camion;
   }
+
+  private Entrega buscarEntregaPorId(String id) {
+    Entrega entrega = entregaRepository.buscarPorId(id);
+    if (entrega == null) throw new RecursoNoEncontradoException("Entrega no encontrado: " + id);
+    return entrega;
+  }
+
 }

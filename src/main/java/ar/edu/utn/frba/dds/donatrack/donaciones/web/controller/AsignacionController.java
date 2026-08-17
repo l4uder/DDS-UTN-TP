@@ -15,6 +15,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.RankingMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.AsignadaDonacionDto;
+import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BodyException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import io.javalin.http.Context;
 import java.util.List;
@@ -63,6 +64,7 @@ public class AsignacionController {
     String idRanking = ctx.pathParam("id");
     //Cosas que recibo por Body
     AsignadaDonacionDto body = ctx.bodyAsClass(AsignadaDonacionDto.class);
+    if (body.beneficiarioId() == null) throw new BodyException("Bad Request, necesita: 'beneficiario_id' ");
     String idBeneficiario = body.beneficiarioId();
 
     Ranking ranking = buscarRankingPorId(idRanking);

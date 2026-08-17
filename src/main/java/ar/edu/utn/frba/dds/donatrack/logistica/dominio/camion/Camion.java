@@ -48,7 +48,7 @@ public class Camion {
   public String getLinkSeguimiento() {
     Coordenada ubicacion = getUbicacionActual();
     if (ubicacion == null) {
-      return null;
+      return "https://404/Sin-direccion";
     }
     return "https://maps.google.com/?q=" + ubicacion.getLatitud() + "," + ubicacion.getLongitud();
   }
@@ -69,9 +69,9 @@ public class Camion {
   }
 
   private void validarCapacidades(Float capacidadVolumen, Float altura, Float capacidadCarga) {
-    validarPositivo(capacidadVolumen, "capacidadVolumen");
+    validarPositivo(capacidadVolumen, "capacidad_volumen");
     validarPositivo(altura, "altura");
-    validarPositivo(capacidadCarga, "capacidadCarga");
+    validarPositivo(capacidadCarga, "capacidad_carga");
   }
 
   private void validarPositivo(Float valor, String campo) {
@@ -79,8 +79,7 @@ public class Camion {
       throw new DominioException("El campo '" + campo + "' es obligatorio");
     }
     if (valor <= 0) {
-      throw new DominioException(
-          "El campo '" + campo + "' debe ser mayor a 0");
+      throw new DominioException("El campo '" + campo + "' debe ser mayor a 0");
     }
   }
 
