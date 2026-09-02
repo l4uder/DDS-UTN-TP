@@ -29,30 +29,13 @@ public class RutaTest {
   private Ruta ruta;
   private Beneficiario beneficiario;
 
-  private Donante donantePrueba;
-
   @BeforeEach
   void setUp() {
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
     chofer = new Chofer("Juan", "Gómez", "12345678");
 
-    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212", true);
-    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com", true);
-    List<MedioContacto> listaContactos = List.of(contactoCorreo);
-
-    donantePrueba = new PersonaHumanaBuilder()
-        .conNombre("Juan")
-        .conApellido("Pérez")
-        .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
-        .conDireccion("alguna dirección")
-        .build();
-
-    DonacionEnTransito donacion = new DonacionEnTransito("don-1", "Fideos", beneficiario);
-
-    //donacion.confirmarAsignacion(beneficiario);
     beneficiario = new Beneficiario("ben-1", "Comedor San José", "Av. Siempre Viva 123");
-
+    DonacionEnTransito donacion = new DonacionEnTransito("don-1", "Fideos", beneficiario);
 
     entrega = new Entrega(beneficiario, List.of(donacion), camion);
     ruta = new Ruta(camion, LocalDate.now(), List.of(entrega));
@@ -70,6 +53,7 @@ public class RutaTest {
 
   @Test
   void asignarChoferPermiteIniciarRuta() {
+    entrega.confirmarListaParaEntregar();
     ruta.asignarChofer(chofer);
 
     ruta.iniciarRecorrido();
@@ -88,6 +72,7 @@ public class RutaTest {
 
   @Test
   void noSePuedeIniciarUnaRutaDosVeces() {
+    entrega.confirmarListaParaEntregar();
     ruta.asignarChofer(chofer);
     ruta.iniciarRecorrido();
 
