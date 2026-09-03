@@ -32,7 +32,7 @@ public class BeneficiarioController {
 
   public void obtener(Context ctx) {
     //Cosas que recibo por URL --> Path param
-    String idBeneficiario = ctx.pathParam("id");
+    Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
 
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
@@ -41,7 +41,7 @@ public class BeneficiarioController {
 
   public void actualizar(Context ctx) {
     //Cosas que recibo por URL --> Path param
-    String idBeneficiario = ctx.pathParam("id");
+    Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
     //Cosas que recibo por Body
     BeneficiarioRequest beneficiarioDto = ctx.bodyAsClass(BeneficiarioRequest.class);
 
@@ -54,7 +54,7 @@ public class BeneficiarioController {
 
   public void eliminar(Context ctx) {
     //Cosas que recibo por URL --> Path param
-    String idBeneficiario = ctx.pathParam("id");
+    Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
 
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
@@ -63,7 +63,7 @@ public class BeneficiarioController {
   }
 
   //================= FUNCIONES AUXILIARES ===================
-  private Beneficiario buscarBeneficiarioPorId(String id) {
+  private Beneficiario buscarBeneficiarioPorId(Long id) {
     Beneficiario beneficiario = repoBeneficiarios.buscarPorId(id);
     if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + id);
     return beneficiario;

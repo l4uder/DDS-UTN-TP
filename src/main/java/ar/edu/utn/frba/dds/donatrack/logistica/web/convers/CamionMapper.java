@@ -23,7 +23,8 @@ public class CamionMapper {
         camion.getPatente(),
         camion.getCapacidadVolumen(),
         camion.getAltura(),
-        camion.getCapacidadCarga()
+        camion.getCapacidadCarga(),
+        camion.getGps()==null ? null : camion.getGps().getImei()
     );
   }
 

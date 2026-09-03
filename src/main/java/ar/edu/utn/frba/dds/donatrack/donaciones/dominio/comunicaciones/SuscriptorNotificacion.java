@@ -16,7 +16,8 @@ public class SuscriptorNotificacion {
     this.repoContactosAdmin = ContactosAdminRepository.getInstancia();
   }
 
-  public static void init(DispatcherEventos dispatcher) {
+  public static void init() {
+    DispatcherEventos dispatcher = DispatcherEventos.getInstancia();
     dispatcher.suscribir(INSTANCE);
   }
 

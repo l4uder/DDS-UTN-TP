@@ -65,7 +65,7 @@ public class AsignacionController {
     //Cosas que recibo por Body
     AsignadaDonacionDto body = ctx.bodyAsClass(AsignadaDonacionDto.class);
     if (body.beneficiarioId() == null) throw new BodyException("Bad Request, necesita: 'beneficiario_id' ");
-    String idBeneficiario = body.beneficiarioId();
+    Long idBeneficiario = Long.valueOf(body.beneficiarioId());
 
     Ranking ranking = buscarRankingPorId(idRanking);
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
@@ -81,7 +81,7 @@ public class AsignacionController {
   }
 
   //=================== FUNCIONES AUXILIARES ========================
-  private Beneficiario buscarBeneficiarioPorId(String id) {
+  private Beneficiario buscarBeneficiarioPorId(Long id) {
     Beneficiario beneficiario = repoBeneficiarios.buscarPorId(id);
     if (beneficiario == null) throw new RecursoNoEncontradoException("No existe el beneficiario: " + id);
     return beneficiario;

@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.web;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.SuscriptorNotificacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DatosIniciales;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
@@ -26,7 +27,8 @@ public class App {
   public static final int PUERTO = 7070;
 
   public static void main(String[] args) {
-    SuscriptorNotificacion.init(DispatcherEventos.getInstancia());
+    DatosIniciales.init(); // Importante si es que se quiere tener valores por default
+    SuscriptorNotificacion.init();
     crearApp().start(ConfiguracionEntorno.getInstance().puertoDonaciones(PUERTO));
   }
 

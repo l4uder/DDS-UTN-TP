@@ -8,17 +8,33 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@Table(name = "Beneficiarios")
 public class Beneficiario {
   @Setter
-  private String id;
+  @Id @GeneratedValue()
+  private Long id;
+  @Column(name = "razon_social")
   private String razonSocial;
+  @Column(name = "direccion")
   private String direccion;
+  @Transient
   private List<MedioContacto> contactos;
+  @Transient
   private List<Necesidad> necesidades;
+  @Transient
   private List<Donacion> donaciones;
 
   public Beneficiario(String razonSocial, String direccion, List<MedioContacto> contactos) {

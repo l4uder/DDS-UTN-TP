@@ -4,5 +4,6 @@ public record CamionResponse(
     String patente,
     float capacidadVolumen,
     float altura,
-    float capacidadCarga
+    float capacidadCarga,
+    String imeiGps
 ) { }

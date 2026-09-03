@@ -3,53 +3,52 @@ package ar.edu.utn.frba.dds.donatrack.logistica.persistencia;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BaseDatoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RegistroNoEncontradoException;
+import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CamionRepository {
+public class CamionRepository implements WithSimplePersistenceUnit {
   private static final CamionRepository INSTANCE = new CamionRepository();
-  private final Map<String, Camion> camionesStore;
 
-  private CamionRepository() {
-    camionesStore = new HashMap<>();
-  }
+  private CamionRepository() { }
 
   public static CamionRepository getInstancia() {
     return INSTANCE;
   }
 
   public void guardar(Camion camion) {
-    if (camionesStore.containsKey(camion.getPatente())) {
-      throw new BaseDatoException("Constraint Violations: Ya existe un camion con patente " + camion.getPatente());
-    }
-    camionesStore.put(camion.getPatente(), camion);
+    entityManager().persist(camion);
   }
 
   public Camion buscarPorPatente(String patente) {
-    return camionesStore.get(patente);
+    return entityManager().find(Camion.class, patente);
+    /* es equivalente a:
+    return entityManager().createQuery("SELECT c FROM Camion c WHERE c.patente = :patente", Camion.class)
+        .setParameter("patente", patente)
+        .getResultList().stream().findFirst().orElse(null); */
   }
 
   public Camion buscarPorGps(String idGps) {
-    return camionesStore.values().stream()
-        .filter(c -> c.posee(idGps))
-        .findFirst()
-        .orElse(null);
+    return entityManager().createQuery("SELECT c FROM Camion c WHERE UPPER(c.gps.imei) = UPPER(:imei)", Camion.class)
+        .setParameter("imei", idGps)
+        .getResultList().stream().findFirst().orElse(null);
   }
 
   public List<Camion> buscarTodos() {
-    return camionesStore.values().stream().toList();
+    return entityManager().createQuery("SELECT c FROM Camion c", Camion.class)
+        .getResultList();
   }
 
   public void actualizar(Camion camion) {
-    if (camion.getPatente() != null && !camionesStore.containsKey(camion.getPatente())) {
+    if (camion.getPatente() == null || buscarPorPatente(camion.getPatente()) == null) {
       throw new RegistroNoEncontradoException("No se puede actualizar: no existe en la base de datos la patente " + camion.getPatente());
     }
-    camionesStore.put(camion.getPatente(), camion);
+    entityManager().merge(camion);
   }
 
   public void eliminar(Camion camion) {
-    camionesStore.remove(camion.getPatente());
+    entityManager().remove(camion);
   }
 
 }

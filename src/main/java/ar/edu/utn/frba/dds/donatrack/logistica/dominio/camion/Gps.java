@@ -1,13 +1,23 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion;
 
 import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@Embeddable
 public class Gps {
+  @Column(name = "imei")
   private String imei;
+  @Column(name = "fecha")
   private LocalDateTime fecha;
+  @Column(name = "nivel_bateria")
   private String nivelBateria;
+  @Column(name = "sigue_funcionando")
   private Boolean funciona;
 
   public Gps(String id) {

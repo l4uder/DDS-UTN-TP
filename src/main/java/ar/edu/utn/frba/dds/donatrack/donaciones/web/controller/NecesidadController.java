@@ -19,7 +19,7 @@ public class NecesidadController {
 
   public void crear(Context ctx) {
     //Cosas que recibo por URL --> Path param
-    String idBeneficiario = ctx.pathParam("id");
+    Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
     //Cosas que recibo por Body
     NecesidadRequest necesidadDto = ctx.bodyAsClass(NecesidadRequest.class);
 
@@ -34,7 +34,7 @@ public class NecesidadController {
 
   public void obtenerTodos(Context ctx) {
     //Cosas que recibo por URL --> Path param
-    String idBeneficiario = ctx.pathParam("id");
+    Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
 
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
@@ -44,7 +44,7 @@ public class NecesidadController {
 
   public void obtener(Context ctx) {
     //Cosas que recibo por URL --> Path param
-    String idBeneficiario = ctx.pathParam("id");
+    Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
     String idNecesidad = ctx.pathParam("nid");
 
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
@@ -55,7 +55,7 @@ public class NecesidadController {
 
   public void actualizar(Context ctx) {
     //Cosas que recibo por URL --> Path param
-    String idBeneficiario = ctx.pathParam("id");
+    Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
     String idNecesidad = ctx.pathParam("nid");
     //Cosas que recibo por Body
     NecesidadRequest necesidadDto = ctx.bodyAsClass(NecesidadRequest.class);
@@ -70,7 +70,7 @@ public class NecesidadController {
 
   public void eliminar(Context ctx) {
     //Cosas que recibo por URL --> Path param
-    String idBeneficiario = ctx.pathParam("id");
+    Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
     String idNecesidad = ctx.pathParam("nid");
 
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
@@ -81,7 +81,7 @@ public class NecesidadController {
   }
 
   //====================== FUNCIONES AUXILIARES ========================
-  private Beneficiario buscarBeneficiarioPorId(String id) {
+  private Beneficiario buscarBeneficiarioPorId(Long id) {
     Beneficiario beneficiario = repoBeneficiarios.buscarPorId(id);
     if (beneficiario == null) throw new RecursoNoEncontradoException("No existe beneficiario: " + id);
     return beneficiario;

@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web;
 
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.DatosIniciales;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.GpsRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.controllers.CamionController;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.controllers.PlanificacionController;
@@ -50,6 +51,7 @@ public class App {
     );
 
     System.out.println("[Cron] Planificación programada en " + minutosHasta + " minutos");
+    DatosIniciales.init();
     resultado.app().start(PUERTO);
   }
 

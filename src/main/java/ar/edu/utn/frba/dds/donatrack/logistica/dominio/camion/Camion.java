@@ -3,15 +3,32 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@Table(name = "Camiones")
 public class Camion {
-  private final String patente;
+  @Id
+  private String patente;
+  @Column(name = "capacidad_volumen")
   private float capacidadVolumen;
+  @Column(name = "altura")
   private float altura;
+  @Column(name = "capacidad_carga")
   private float capacidadCarga;
+  @Transient //solo por ahora
   private List<Coordenada> coordenadas;
+  @Embedded
   private Gps gps;
 
   public Camion(String patente, Float capacidadVolumen, Float altura, Float capacidadCarga) {
