@@ -14,7 +14,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConectorDonacionesApi {
   private static final String TIPO_ESTADO_REALIZADA = "ASIGNACION_REALIZADA";
@@ -45,8 +47,10 @@ public class ConectorDonacionesApi {
     }
 
     List<DonacionRemotaResponse> remotas = gson.fromJson(response.body(), LISTA_DONACIONES_REMOTAS);
+    if (remotas == null) return List.of();
 
-    return aDominio(remotas);
+    Map<String, Beneficiario> beneficiariosCache = new HashMap<>();
+    return remotas.stream().map(r -> aDominio(r, beneficiariosCache)).toList();
   }
 
   //activa el paso 3 de la donacion (Lista Para Entregar)
@@ -108,22 +112,23 @@ public class ConectorDonacionesApi {
     return status >= 200 && status < 300;
   }
 
-  private DonacionEnTransito aDominio(DonacionRemotaResponse remota) {
-    DonacionRemotaResponse.BeneficiarioRemotoResponse beneficiarioRemoto = remota.beneficiario();
-    if (beneficiarioRemoto == null) {
-      throw new ServicioExternoException( "Donación asignada sin beneficiario: id=" + remota.id());
-    }
-    Beneficiario beneficiario = new Beneficiario(
-        beneficiarioRemoto.id(),
-        beneficiarioRemoto.razonSocial(),
-        beneficiarioRemoto.direccion()
-    );
-    return new DonacionEnTransito(remota.id(), remota.descripcion(), beneficiario);
-  }
-
   private List<DonacionEnTransito> aDominio(List<DonacionRemotaResponse> remotas) {
     if (remotas == null) return List.of();
-    return remotas.stream().map(this::aDominio).toList();
+
+    Map<String, Beneficiario> beneficiariosCache = new HashMap<>();
+    return remotas.stream()
+        .map(remota -> aDominio(remota, beneficiariosCache))
+        .toList();
+  }
+
+  private DonacionEnTransito aDominio(DonacionRemotaResponse remota, Map<String, Beneficiario> cache) {
+    var beneficiarioRemoto = remota.beneficiario();
+    if (beneficiarioRemoto == null) {
+      throw new ServicioExternoException("Donación asignada sin beneficiario: id=" + remota.id());
+    }
+    Beneficiario beneficiario = cache.computeIfAbsent(beneficiarioRemoto.id(), id ->
+        new Beneficiario(id, beneficiarioRemoto.razonSocial(), beneficiarioRemoto.direccion()));
+    return new DonacionEnTransito(remota.id(), remota.descripcion(), beneficiario);
   }
 
 }

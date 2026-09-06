@@ -7,22 +7,51 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitid
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@Table(name = "entregas")
 public class Entrega {
-  @Setter
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String id;
-  private Beneficiario destino;
+
+  @ElementCollection
+  @CollectionTable(name = "entrega_donaciones", joinColumns = @JoinColumn(name = "entrega_id"))
   private List<DonacionEnTransito> donaciones;
+
+  @ManyToOne
+  @JoinColumn(name = "camion_patente")
   private Camion camionAsignado;
+
+  @ElementCollection
+  @CollectionTable(name = "entrega_historial_estados", joinColumns = @JoinColumn(name = "entrega_id"))
+  @OrderColumn(name = "orden")
   private List<EstadoEntrega> historialEstados;
+
+  @ElementCollection
+  @CollectionTable(name = "entrega_fotos_recepcion", joinColumns = @JoinColumn(name = "entrega_id"))
+  @Column(name = "url_foto")
   private List<String> fotosRecepcion;
 
-  public Entrega(Beneficiario destino, List<DonacionEnTransito> donaciones, Camion camion) {
-    this.id = null; //cambiamos para que el repo sea quien le asigna un uuid.
-    this.destino = destino;
+  public Entrega(List<DonacionEnTransito> donaciones, Camion camion) {
     this.donaciones = donaciones;
     this.camionAsignado = camion;
     this.historialEstados = new ArrayList<>();
@@ -88,6 +117,10 @@ public class Entrega {
   private void validarTransicionDesde(TipoEstadoEntrega esperado, String accion) {
     if (getEstadoActual() != esperado)
       throw new CambioDeEstadoNoPermitidoException("No se puede " + accion + " desde el estado " + getEstadoActual());
+  }
+
+  public Beneficiario getDestino() {
+    return donaciones.get(0).getBeneficiario();
   }
 
 }

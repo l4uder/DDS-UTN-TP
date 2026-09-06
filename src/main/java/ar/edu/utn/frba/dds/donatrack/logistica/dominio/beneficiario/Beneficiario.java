@@ -1,13 +1,25 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario;
 
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@Table(name = "beneficiarios")
 public class Beneficiario {
-  private final String id;
-  private final String razonSocial;
-  private final String direccion;
+  @Id
+  private String id;
+  @Column(name = "razon_social")
+  private String razonSocial;
+  @Column(name = "direccion")
+  private String direccion;
 
   public Beneficiario(String id, String razonSocial, String direccion) {
     validar(id);

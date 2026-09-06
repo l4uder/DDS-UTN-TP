@@ -7,17 +7,44 @@ import java.util.ArrayList;
 
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@Table(name = "rutas")
 public class Ruta {
+  @Id
   @Setter
   private String id;
+
+  @ManyToOne
+  @JoinColumn(name = "camion_patente")
   private Camion camion;
+
+  @ManyToOne
+  @JoinColumn(name = "chofer_licencia")
   private Chofer chofer;
+
+  @Column(name = "fecha")
   private LocalDate fecha;
+
+  @OneToMany
+  @JoinColumn(name = "ruta_id")
+  @OrderColumn(name = "orden_entrega")
   private List<Entrega> entregasOrdenadas;
+
+  @Column(name = "esta_iniciada")
   private boolean estaIniciada;
 
   public Ruta(Camion camion, LocalDate fecha, List<Entrega> entregasOrdenadas) {

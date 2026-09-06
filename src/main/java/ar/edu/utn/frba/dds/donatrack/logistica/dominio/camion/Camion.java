@@ -3,10 +3,13 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -26,9 +29,11 @@ public class Camion {
   private float altura;
   @Column(name = "capacidad_carga")
   private float capacidadCarga;
-  @Transient //solo por ahora
+  @ElementCollection
+  @CollectionTable(name = "camion_coordenadas", joinColumns = @JoinColumn(name = "camion_patente"))
   private List<Coordenada> coordenadas;
-  @Embedded
+  @OneToOne
+  @JoinColumn(name = "gps_imei")
   private Gps gps;
 
   public Camion(String patente, Float capacidadVolumen, Float altura, Float capacidadCarga) {

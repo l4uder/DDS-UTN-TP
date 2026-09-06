@@ -1,0 +1,37 @@
+Camión - GPS: @Embedded
+El GPS no tiene identidad ni ciclo de vida propio en el sistema,
+es un atributo del camión, no una entidad aparte.
+
+Camión - Coordinadas: @ElementCollection
+Se persiste el historial completro porque el sistema recibe posiciones
+de formo continua.
+
+Coordenada: @Embedded
+No tiene entidad propia, es un valor que solo tiene sentido
+dentro del historial de un camión.
+
+Ruta
+Entidad con id asignado por el repositorio antes de persistir.
+
+Ruta - Camion:Ruta referencia a camión
+Muchas rutas pueden tener el mismo camion a lo largo del tiempo
+
+Ruta - chofer: Ruta referencia a chofer, un chofer conduce multiples rutas
+a lo largo del tiempo.
+Muchas rutas pueden tener el mismo chofer a lo largo del tiempo
+
+Ruta - entregasOrdenadas: se preserva el orden.
+Una ruta puede tener muchas entregas
+
+Beneficiario (LOGISTICA)
+@Embeddable, sin entidad propia. El id es una referencia al beneficiario
+real que viene del microservicio de donaciones.
+Se persiste embebido dentro de Entrega yaq ue cada entrega tiene
+un unico beneficiario de destino.
+
+EstadoEntrega
+@Embeddable, sin identidad propia, solo tiene sentido como parte del historial
+Referencia a Camion como @ManyToOne
+@Enumerated(EnumType.STRING) solo para representación en bd
+
+DonacionEnTrandito es @Embeddable y contiene otro @Embedable Beneficiario

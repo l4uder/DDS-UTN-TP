@@ -7,7 +7,6 @@ import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.planificadorexter
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.ResultadoPlanificacion;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.planificacion.CallbackPlanificacionRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.microserviciosdonaciones.ConectorDonacionesApi;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
