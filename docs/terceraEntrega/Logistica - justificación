@@ -1,6 +1,8 @@
-Camión - GPS: @Embedded
-El GPS no tiene identidad ni ciclo de vida propio en el sistema,
-es un atributo del camión, no una entidad aparte.
+Camión - GPS: @Entity relación OneToOne
+Un GPS es un dispositivo físico con identidad propia (imei):
+puede desinstalarse de un camión y reinstalarse en otro.
+Si fuera embebido, se duplicarían sus datos cada vez que cambia de camión.
+Se relaciona vía @OneToOne.
 
 Camión - Coordinadas: @ElementCollection
 Se persiste el historial completro porque el sistema recibe posiciones
@@ -11,7 +13,8 @@ No tiene entidad propia, es un valor que solo tiene sentido
 dentro del historial de un camión.
 
 Ruta
-Entidad con id asignado por el repositorio antes de persistir.
+Entidad con id generado por JPA (@GeneratedValue), ya que a diferencia
+de camión/chofer no tiene un dato natural que sirva de identificador.
 
 Ruta - Camion:Ruta referencia a camión
 Muchas rutas pueden tener el mismo camion a lo largo del tiempo
@@ -24,14 +27,24 @@ Ruta - entregasOrdenadas: se preserva el orden.
 Una ruta puede tener muchas entregas
 
 Beneficiario (LOGISTICA)
-@Embeddable, sin entidad propia. El id es una referencia al beneficiario
-real que viene del microservicio de donaciones.
-Se persiste embebido dentro de Entrega yaq ue cada entrega tiene
-un unico beneficiario de destino.
+@Entity, PK heredada de donaciones
+El id es una referencia al beneficiario real que viene del microservicio
+de donaciones.Se le da tabla propia (no embebido) porque el mismo
+beneficiario se referencia repetidamente desde múltiples entregas y
+donaciones a lo largo del tiempo — embeberlo generaría duplicación real
+de datos cada vez que vuelve a aparecer.
 
 EstadoEntrega
 @Embeddable, sin identidad propia, solo tiene sentido como parte del historial
 Referencia a Camion como @ManyToOne
 @Enumerated(EnumType.STRING) solo para representación en bd
 
-DonacionEnTrandito es @Embeddable y contiene otro @Embedable Beneficiario
+DonacionEnTransito
+
+@Embeddable, referencia a Beneficiario como @ManyToOne
+(no embebido, ya que Beneficiario es entidad propia).
+
+Entrega
+Entidad con id generado por JPA. No tiene campo propio de beneficiario —
+se deriva de donaciones.get(0).getBeneficiario(), ya que todas las
+donaciones de una entrega pertenecen siempre al mismo beneficiario.
