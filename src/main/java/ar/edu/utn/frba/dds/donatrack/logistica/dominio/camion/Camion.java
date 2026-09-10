@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -32,7 +33,7 @@ public class Camion {
   @ElementCollection
   @CollectionTable(name = "camion_coordenadas", joinColumns = @JoinColumn(name = "camion_patente"))
   private List<Coordenada> coordenadas;
-  @OneToOne
+  @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinColumn(name = "gps_imei")
   private Gps gps;
 

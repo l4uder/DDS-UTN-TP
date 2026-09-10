@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitid
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -29,6 +30,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "entregas")
 public class Entrega {
+  @Id
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String id;
@@ -37,7 +39,7 @@ public class Entrega {
   @CollectionTable(name = "entrega_donaciones", joinColumns = @JoinColumn(name = "entrega_id"))
   private List<DonacionEnTransito> donaciones;
 
-  @ManyToOne
+  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinColumn(name = "camion_patente")
   private Camion camionAsignado;
 
@@ -52,7 +54,7 @@ public class Entrega {
   private List<String> fotosRecepcion;
 
   public Entrega(List<DonacionEnTransito> donaciones, Camion camion) {
-    this.donaciones = donaciones;
+    this.donaciones = new ArrayList<>(donaciones);
     this.camionAsignado = camion;
     this.historialEstados = new ArrayList<>();
     this.fotosRecepcion = new ArrayList<>();

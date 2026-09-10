@@ -7,8 +7,10 @@ import java.util.ArrayList;
 
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,6 +20,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 @Getter
 @NoArgsConstructor
@@ -25,14 +28,15 @@ import lombok.Setter;
 @Table(name = "rutas")
 public class Ruta {
   @Id
-  @Setter
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String id;
 
   @ManyToOne
   @JoinColumn(name = "camion_patente")
   private Camion camion;
 
-  @ManyToOne
+  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinColumn(name = "chofer_licencia")
   private Chofer chofer;
 
@@ -49,7 +53,6 @@ public class Ruta {
 
   public Ruta(Camion camion, LocalDate fecha, List<Entrega> entregasOrdenadas) {
     validar(camion, fecha, entregasOrdenadas);
-    this.id = null;
     this.camion = camion;
     this.fecha = fecha;
     this.entregasOrdenadas = new ArrayList<>(entregasOrdenadas);
