@@ -8,7 +8,7 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RegistroNoEncontradoExce
 import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 import java.util.*;
 
-public class RutaRepository implements WithSimplePersistenceUnit {
+public class RutaRepository implements WithLogisticaPersistenceUnit {
   private static final RutaRepository INSTANCE = new RutaRepository();
 
   private RutaRepository() { }

@@ -7,7 +7,7 @@ import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RegistroNoEncontradoExce
 import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 import java.util.*;
 
-public class EntregaRepository implements WithSimplePersistenceUnit {
+public class EntregaRepository implements WithLogisticaPersistenceUnit {
   private static final EntregaRepository INSTANCE = new EntregaRepository();
 
   private EntregaRepository() { }

@@ -7,7 +7,7 @@ import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GpsRepository implements WithSimplePersistenceUnit {
+public class GpsRepository implements WithLogisticaPersistenceUnit {
   private static final GpsRepository INSTANCE = new GpsRepository();
 
   private GpsRepository() { }

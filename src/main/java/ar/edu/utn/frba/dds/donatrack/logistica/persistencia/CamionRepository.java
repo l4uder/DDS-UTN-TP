@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CamionRepository implements WithSimplePersistenceUnit {
+public class CamionRepository implements WithLogisticaPersistenceUnit {
   private static final CamionRepository INSTANCE = new CamionRepository();
 
   private CamionRepository() { }
