@@ -79,10 +79,9 @@ public class EntregaController {
     Entrega entrega = buscarEntregaPorId(idEntrega);
     entrega.reingresarDeposito();
     comunicarAlasDonacionesReingresoAdeposito(entrega.getDonaciones());
-    repoEntregas.eliminar(entrega);
+    repoEntregas.eliminar(entrega.getId());
     ctx.status(200);
   }
-
   //================== FUNCIONES AUXILIARES =====================
   private Entrega buscarEntregaPorId(String id) {
     Entrega entrega = repoEntregas.buscarPorId(id);

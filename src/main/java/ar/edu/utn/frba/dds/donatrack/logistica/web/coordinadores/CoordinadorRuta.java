@@ -58,14 +58,17 @@ public class CoordinadorRuta {
   public List<Ruta> procesarCallback(CallbackPlanificacionRequest request) {
     LocalDate fecha = LocalDate.parse(request.fecha());
     Map<Camion, List<Entrega>> entregasPorCamion = obtenerEntregasPorCamion(request.entregasPorPatente());
-    List<Entrega> entregasSinAsignar = request.entregasSinAsignar()==null? List.of() : request.entregasSinAsignar().stream().map(this::buscarEntregaPorId).toList();
+    List<Entrega> entregasSinAsignar = request.entregasSinAsignar() == null
+        ? List.of()
+        : request.entregasSinAsignar().stream().map(this::buscarEntregaPorId).toList();
 
     List<Ruta> rutas = crearRutas(fecha, entregasPorCamion);
+
     // Elimino las entregas que no fueron asignadas ya que las donaciones asociadas permanecen en
     // ASIGNACION_REALIZADA del lado de donaciones, nunca les aviso ningun cambio de estado, asu que
     // cuando se vuelva a consultar las donaciones asignadas la volveran a encuar para que entren
     // en el próximo ciclo de planificación.
-    entregasSinAsignar.forEach(entregaRepository::eliminar);
+    entregasSinAsignar.forEach(e -> entregaRepository.eliminar(e.getId()));
 
     rutas.forEach(rutaRepository::guardar);
     rutas.forEach(ruta -> ruta.getEntregasOrdenadas().forEach(e ->
@@ -83,7 +86,7 @@ public class CoordinadorRuta {
 
     List<Entrega> entregas = new ArrayList<>();
     agrupadas.forEach((beneficiario, donaciones) ->
-        entregas.add(new Entrega(beneficiario, donaciones, null)));
+        entregas.add(new Entrega(donaciones, null)));
 
     return entregas;
   }
@@ -114,6 +117,7 @@ public class CoordinadorRuta {
       entregasOrdenadas.forEach(entrega -> {
         entrega.reasignarCamion(camion);
         entrega.confirmarListaParaEntregar();
+        entregaRepository.actualizar(entrega);
       });
       rutasCreadas.add(new Ruta(camion, fecha, entregasOrdenadas));
     });
@@ -132,5 +136,4 @@ public class CoordinadorRuta {
     if (entrega == null) throw new RecursoNoEncontradoException("Entrega no encontrado: " + id);
     return entrega;
   }
-
 }
