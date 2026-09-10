@@ -50,7 +50,7 @@ public class EntregaTest {
         .conDireccion("alguna dirección")
         .build();
 
-    entrega = new Entrega(beneficiario, List.of(donacion), camion);
+    entrega = new Entrega(List.of(donacion), camion);
   }
 
   @Test

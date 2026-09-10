@@ -53,7 +53,7 @@ public class RutaTest {
 
     DonacionEnTransito donacion = new DonacionEnTransito("don-1", "Fideos", beneficiario);
 
-    entrega = new Entrega(beneficiario, List.of(donacion), camion);
+    entrega = new Entrega(List.of(donacion), camion);
     entrega.confirmarListaParaEntregar();
 
     ruta = new Ruta(camion, LocalDate.now(), List.of(entrega));
