@@ -48,3 +48,14 @@ Entrega
 Entidad con id generado por JPA. No tiene campo propio de beneficiario —
 se deriva de donaciones.get(0).getBeneficiario(), ya que todas las
 donaciones de una entrega pertenecen siempre al mismo beneficiario.
+
+
+Cascada en relaciones @ManyToOne hacia entidades que pueden preexistir
+
+Se agregó cascade = {CascadeType.PERSIST, CascadeType.MERGE} en Camion.gps, Entrega.camionAsignado,
+Ruta.camion y Ruta.chofer. Se decidió no incluir CascadeType.REMOVE en ninguno de los casos:
+borrar una Entrega o una Ruta nunca debe eliminar el Camion, Chofer o Gps que tenía asociado,
+ya que estas entidades tienen ciclo de vida propio e independiente — siguen existiendo y pueden
+reasignarse a otras entregas, rutas o camiones. La cascada de persistencia/actualización se agregó
+por practicidad, para no depender de que cada punto del código que construye una relación se acuerde
+de persistir primero la entidad referenciada.
