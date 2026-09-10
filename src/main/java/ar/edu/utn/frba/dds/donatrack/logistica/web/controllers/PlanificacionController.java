@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web.controllers;
 
+import ar.edu.utn.frba.dds.donatrack.logistica.web.convers.EntregaMapper;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.coordinadores.CoordinadorRuta;
 import ar.edu.utn.frba.dds.donatrack.logistica.cron.ProcesoLogistica;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
@@ -25,7 +26,7 @@ public class PlanificacionController {
 
   public void planificar(Context ctx) {
     List<Entrega> entregas = coordinadorRuta.planificarEntregasPendientes();
-    ctx.status(202).json(entregas);
+    ctx.status(202).json(EntregaMapper.aDtoResumen(entregas));
   }
 
   public void callback(Context ctx) {

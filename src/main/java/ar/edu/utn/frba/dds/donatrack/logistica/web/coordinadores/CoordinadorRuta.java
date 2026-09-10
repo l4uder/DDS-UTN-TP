@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.logistica.web.coordinadores;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.Lote;
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.BeneficiarioRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.planificadorexterno.ClientePlanificadorExterno;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
@@ -29,15 +30,17 @@ public class CoordinadorRuta {
   private final EntregaRepository entregaRepository;
   private final ConectorDonacionesApi donacionesClient;
   private final ClientePlanificadorExterno clienteExterno;
+  private final BeneficiarioRepository beneficiarioRepository;
 
   public CoordinadorRuta(RutaRepository rutaRepository, CamionRepository camionRepository,
-                         EntregaRepository entregaRepository, ConectorDonacionesApi donacionesClient,
+                         EntregaRepository entregaRepository, BeneficiarioRepository beneficiarioRepository, ConectorDonacionesApi donacionesClient,
                          ClientePlanificadorExterno clienteExterno){
     this.rutaRepository = rutaRepository;
     this.camionRepository = camionRepository;
     this.entregaRepository = entregaRepository;
     this.donacionesClient = donacionesClient;
     this.clienteExterno = clienteExterno;
+    this.beneficiarioRepository = beneficiarioRepository;
   }
 
   public List<Entrega> planificarEntregasPendientes() {
@@ -85,12 +88,19 @@ public class CoordinadorRuta {
         .collect(Collectors.groupingBy(DonacionEnTransito::getBeneficiario));
 
     List<Entrega> entregas = new ArrayList<>();
-    agrupadas.forEach((beneficiario, donaciones) ->
-        entregas.add(new Entrega(donaciones, null)));
+    agrupadas.forEach((beneficiario, donaciones) -> {
+      asegurarBeneficiarioPersistido(beneficiario);
+      entregas.add(new Entrega(donaciones, null));
+    });
 
     return entregas;
   }
 
+  private void asegurarBeneficiarioPersistido(Beneficiario beneficiario) {
+    if (beneficiarioRepository.buscarPorId(beneficiario.getId()) == null) {
+      beneficiarioRepository.guardar(beneficiario);
+    }
+  }
   //--Helper--
   private void propagarEstadoDonaciones(Entrega entrega, Consumer<String> command) {
     entrega.getDonaciones().forEach(d -> command.accept(d.getId()));

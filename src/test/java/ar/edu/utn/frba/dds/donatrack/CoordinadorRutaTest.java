@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.donatrack;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.Lote;
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.BeneficiarioRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.planificadorexterno.ClientePlanificadorExterno;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
@@ -31,6 +32,7 @@ public class CoordinadorRutaTest {
   private CamionRepository camionRepository;
   private EntregaRepository entregaRepository;
   private RutaRepository rutaRepository;
+  private BeneficiarioRepository beneficiarioRepository;
   private ConectorDonacionesApi donacionesClient;
   private ClientePlanificadorExterno clienteExterno;
   private CoordinadorRuta coordinador;
@@ -44,13 +46,14 @@ public class CoordinadorRutaTest {
     camionRepository = mock(CamionRepository.class);
     entregaRepository = mock(EntregaRepository.class);
     rutaRepository = mock(RutaRepository.class);
+    beneficiarioRepository = mock(BeneficiarioRepository.class);
     donacionesClient = mock(ConectorDonacionesApi.class);
     clienteExterno = mock(ClientePlanificadorExterno.class);
 
     when(camionRepository.buscarTodos()).thenReturn(camiones);
 
     coordinador = new CoordinadorRuta(
-        rutaRepository, camionRepository, entregaRepository, donacionesClient, clienteExterno);
+        rutaRepository, camionRepository, entregaRepository, beneficiarioRepository, donacionesClient, clienteExterno);
   }
 
   private DonacionEnTransito donacionPara(Beneficiario beneficiario, int nro) {

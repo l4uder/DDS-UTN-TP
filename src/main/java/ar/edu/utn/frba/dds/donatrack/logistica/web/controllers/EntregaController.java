@@ -53,8 +53,8 @@ public class EntregaController {
 
     Entrega entrega = buscarEntregaPorId(idEntrega);
     entrega.confirmarRecepcion();
-    comunicarAlasDonacionesSuRecepcion(entrega.getDonaciones(), "https://..../comprobantes/...");
     repoEntregas.actualizar(entrega);
+    comunicarAlasDonacionesSuRecepcion(entrega.getDonaciones(), "https://..../comprobantes/...");
     ctx.status(200);
   }
 
@@ -68,8 +68,8 @@ public class EntregaController {
 
     Entrega entrega = buscarEntregaPorId(idEntrega);
     entrega.marcarNoRecibida(motivo);
-    comunicarAlasDonacionesErrorRecepcion(entrega.getDonaciones(), motivo);
     repoEntregas.actualizar(entrega);
+    comunicarAlasDonacionesErrorRecepcion(entrega.getDonaciones(), motivo);
     ctx.status(200);
   }
 
@@ -78,8 +78,8 @@ public class EntregaController {
 
     Entrega entrega = buscarEntregaPorId(idEntrega);
     entrega.reingresarDeposito();
-    comunicarAlasDonacionesReingresoAdeposito(entrega.getDonaciones());
     repoEntregas.eliminar(entrega.getId());
+    comunicarAlasDonacionesReingresoAdeposito(entrega.getDonaciones());
     ctx.status(200);
   }
   //================== FUNCIONES AUXILIARES =====================

@@ -112,15 +112,6 @@ public class ConectorDonacionesApi {
     return status >= 200 && status < 300;
   }
 
-  private List<DonacionEnTransito> aDominio(List<DonacionRemotaResponse> remotas) {
-    if (remotas == null) return List.of();
-
-    Map<String, Beneficiario> beneficiariosCache = new HashMap<>();
-    return remotas.stream()
-        .map(remota -> aDominio(remota, beneficiariosCache))
-        .toList();
-  }
-
   private DonacionEnTransito aDominio(DonacionRemotaResponse remota, Map<String, Beneficiario> cache) {
     var beneficiarioRemoto = remota.beneficiario();
     if (beneficiarioRemoto == null) {
