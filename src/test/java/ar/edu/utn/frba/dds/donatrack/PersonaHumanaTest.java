@@ -15,16 +15,14 @@ public class PersonaHumanaTest {
 
   @Test
   public void sePuedeCrearUnaPersonaHumanaConDatosValidos() {
-    Donante persona = new PersonaHumanaBuilder()
+    Humana persona = new PersonaHumanaBuilder()
         .conNombre("Esteban")
         .conDocumento(new Documento(TipoDocumento.DNI, "45123456"))
         .conAgregarContacto(new CorreoDeContato("estebancarp@gmail.com", true))
         .conDireccion("alguna dirección")
         .build();
 
-    Humana tipoHumana = (Humana) persona.getTipoDonante();
-
-    assertEquals("Esteban", tipoHumana.getNombre());
+    assertEquals("Esteban", persona.getNombre());
   }
 
   @Test

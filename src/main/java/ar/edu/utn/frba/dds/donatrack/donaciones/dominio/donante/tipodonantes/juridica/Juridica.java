@@ -1,9 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.TipoDonante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
@@ -11,14 +10,15 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class Juridica implements TipoDonante {
+public class Juridica extends Donante {
   private String razonSocial;
   private TipoOrganizacion tipoOrganizacion;
   private String rubro;
   private List<Representante> representantes;
 
-  public Juridica(String razonSocial, TipoOrganizacion tipo, String rubro,
-                  Documento documento, List<Representante> representantes) {
+  public Juridica(String razonSocial, Documento documento, TipoOrganizacion tipo,
+                  String rubro, List<Representante> representantes) {
+    super(documento);
     checkDatos(razonSocial, documento, representantes);
     this.razonSocial = razonSocial;
     this.tipoOrganizacion = tipo == null ? TipoOrganizacion.SIN_ESPECIFICAR : tipo;
@@ -31,10 +31,10 @@ public class Juridica implements TipoDonante {
       throw new DominioException("El campo 'razon_social' es obligatorio, en la persona jurídica");
     }
     if (documento == null) {
-      throw new DominioException("El campo 'documento' es obligatorio, en la persona jurídica, opciones posibles: " + TipoDocumento.values(TipoPersona.JURIDICA));
+      throw new DominioException("El campo 'documento' es obligatorio, en la persona jurídica, opciones posibles: " + TipoDocumento.valoresPosiblesJuridica());
     }
-    if (!TipoDocumento.values(TipoPersona.JURIDICA).contains(documento.getTipoDocumento())) {
-      throw new DominioException("El campo 'documento' por ser Jurídica, solo puede ser: " + TipoDocumento.values(TipoPersona.JURIDICA));
+    if (!TipoDocumento.valoresPosiblesJuridica().contains(documento.getTipoDocumento())) {
+      throw new DominioException("El campo 'documento' por ser Jurídica, solo puede ser: " + TipoDocumento.valoresPosiblesJuridica());
     }
     if (representantes == null || representantes.isEmpty()) {
       throw new DominioException("El campo 'representantes' es obligatorio, en la persona jurídica");
@@ -47,6 +47,11 @@ public class Juridica implements TipoDonante {
   }
 
   @Override
+  public String getTipoPersona() {
+    return "JURIDICA";
+  }
+
+  @Override
   public List<MedioContacto> getContactos() {
     return this.representantes.stream().flatMap(r -> r.getContactos().stream()).toList();
   }
@@ -56,8 +61,9 @@ public class Juridica implements TipoDonante {
     return this.representantes.stream().flatMap(r -> r.getContactosPrincipales().stream()).toList();
   }
 
-  public void actualizarDatos(String razonSocial, TipoOrganizacion tipo, String rubro,
-                              Documento documento, List<Representante> representantes) {
+  public void actualizarDatos(String razonSocial, Documento documento, TipoOrganizacion tipo,
+                              String rubro, List<Representante> representantes) {
+    super.actualizarDatosBase(documento);
     checkDatos(razonSocial, documento, representantes);
     this.razonSocial = razonSocial;
     this.tipoOrganizacion = tipo == null ? TipoOrganizacion.SIN_ESPECIFICAR : tipo;

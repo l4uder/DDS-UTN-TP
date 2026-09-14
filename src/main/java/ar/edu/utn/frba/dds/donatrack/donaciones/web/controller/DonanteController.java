@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.controller;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonanteMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donante.DonanteRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
@@ -32,9 +31,7 @@ public class DonanteController {
     //Cosas que recibo por URL --> Query param
     String tipo = ctx.queryParam("tipo");
 
-    TipoPersona tipoPersona = aTipoPersona(tipo);
-
-    List<Donante> donantes = (tipoPersona==null) ? repoDonantes.buscarTodos() : repoDonantes.buscarPorTipoPersona(tipoPersona);
+    List<Donante> donantes = (tipo==null) ? repoDonantes.buscarTodos() : repoDonantes.buscarPorTipoPersona(tipo);
     ctx.status(200).json(donantes.stream().map(DonanteMapper::aDtoResumen).toList());
   }
 
@@ -68,15 +65,6 @@ public class DonanteController {
 
     repoDonantes.eliminar(donante);
     ctx.status(204);
-  }
-
-  private TipoPersona aTipoPersona(String tipo) {
-    if (tipo == null || tipo.isBlank()) return null;
-    try {
-      return TipoPersona.valueOf(tipo.toUpperCase());
-    } catch (IllegalArgumentException e) {
-      throw new DominioException("El tipo de donante: " + tipo + " no existe debe ser: " + Arrays.toString(TipoPersona.values()));
-    }
   }
 
   //================= FUNCIONES AUXILIARES ========================

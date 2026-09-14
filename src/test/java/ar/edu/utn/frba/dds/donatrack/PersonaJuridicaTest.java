@@ -27,16 +27,14 @@ public class PersonaJuridicaTest {
 
   @Test
   public void sePuedeCrearUnaPersonaJuridicaConUnRepresentante() {
-    Donante empresa = new PersonaJuridicaBuilder()
+    Juridica empresa = new PersonaJuridicaBuilder()
         .conDocumento(new Documento(TipoDocumento.CUIT, "30-12345678-9"))
         .conAgregarRepresetante(representante)
         .conRazonSocial("EmpresaSRL")
         .build();
 
-    Juridica tipoJuridica = (Juridica) empresa.getTipoDonante();
-
-    assertEquals(1, tipoJuridica.getRepresentantes().size());
-    assertEquals(representante, tipoJuridica.getRepresentantes().get(0));
+    assertEquals(1, empresa.getRepresentantes().size());
+    assertEquals(representante, empresa.getRepresentantes().get(0));
   }
 
 }

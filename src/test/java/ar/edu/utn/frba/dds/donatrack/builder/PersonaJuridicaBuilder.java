@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donatrack.builder;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Juridica;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.TipoOrganizacion;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class PersonaJuridicaBuilder {
     return this;
   }
 
-  public Donante build() {
-    return Donante.personaJuridica(razonSocial, documento, tipoOrganizacion, rubro, representantes);
+  public Juridica build() {
+    return new Juridica(razonSocial, documento, tipoOrganizacion, rubro, representantes);
   }
 }

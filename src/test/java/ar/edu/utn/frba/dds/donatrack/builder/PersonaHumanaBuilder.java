@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.donatrack.builder;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Genero;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -61,8 +62,8 @@ public class PersonaHumanaBuilder {
     return this;
   }
 
-  public Donante build() {
-    return Donante.personaHumana(nombre, apellido, documento, fechaNacimiento,
-        genero, direccion,  contactos);
+  public Humana build() {
+    return new Humana(nombre, apellido, documento, fechaNacimiento, genero, direccion,  contactos);
   }
+
 }
