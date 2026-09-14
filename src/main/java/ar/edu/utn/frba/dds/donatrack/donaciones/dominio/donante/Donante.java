@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 public abstract class Donante {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @Transient
+  @Embedded
   private Documento documento;
   @Column(name = "tipo_donante")
   private String tipo;
