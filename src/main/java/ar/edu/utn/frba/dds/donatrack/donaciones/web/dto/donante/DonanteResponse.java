@@ -9,7 +9,7 @@ import lombok.Builder;
 
 @Builder
 public record DonanteResponse(
-    String id,
+    Long id,
     String tipo,
     DocumentoDto documento,
     // Campos persona Humana

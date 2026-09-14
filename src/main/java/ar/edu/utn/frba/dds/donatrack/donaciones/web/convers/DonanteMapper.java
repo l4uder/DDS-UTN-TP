@@ -49,9 +49,9 @@ public class DonanteMapper {
     DonanteResponse.DonanteResponseBuilder dtoBuild = DonanteResponse.builder();
 
     dtoBuild.id(donante.getId());
-    dtoBuild.tipo(donante.getTipoPersona());
+    dtoBuild.tipo(donante.getTipo());
     dtoBuild.documento(DocumentoMapper.aDto(donante.getDocumento()));
-    switch (donante.getTipoPersona().toUpperCase()) {
+    switch (donante.getTipo().toUpperCase()) {
       case "HUMANA" -> {
         Humana humana = (Humana) donante;
         dtoBuild.nombre(humana.getNombre());
@@ -68,7 +68,7 @@ public class DonanteMapper {
         dtoBuild.rubro(juridica.getRubro());
         dtoBuild.representantes(RepresentanteMapper.aDto(juridica.getRepresentantes()));
       }
-      default -> throw new DominioException("Tipo de donante No soportado, o nuevo " + donante.getTipoPersona());
+      default -> throw new DominioException("Tipo de donante No soportado, o nuevo " + donante.getTipo());
     }
 
     return dtoBuild.build();
@@ -77,8 +77,12 @@ public class DonanteMapper {
   public static DonanteResumenResponse aDtoResumen(Donante donante) {
     return new DonanteResumenResponse(
         donante.getId(),
-        donante.getTipoPersona(),
+        donante.getTipo(),
         donante.getNombreCompleto());
+  }
+
+  public static List<DonanteResumenResponse> aDtoResumen(List<Donante> donantes) {
+    return donantes.stream().map(DonanteMapper::aDtoResumen).toList();
   }
 
   public static void actualizarDesdeRequest(Donante donante, DonanteRequest request) {
@@ -90,7 +94,7 @@ public class DonanteMapper {
 
     Documento documentoMerge = request.documento() != null ? DocumentoMapper.aDominio(request.documento()) : donante.getDocumento();
 
-    switch (donante.getTipoPersona().toUpperCase()) {
+    switch (donante.getTipo().toUpperCase()) {
       case "HUMANA" -> {
         Humana humana = (Humana) donante;
         String nombreMerge = request.nombre() != null ? request.nombre() : humana.getNombre();

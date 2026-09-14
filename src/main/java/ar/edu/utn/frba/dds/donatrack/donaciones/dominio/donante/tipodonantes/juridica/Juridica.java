@@ -7,18 +7,35 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioConta
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@Table(name = "donantes_juridicas")
+@DiscriminatorValue("juridica")
 public class Juridica extends Donante {
+  @Column(name = "razon_social")
   private String razonSocial;
+  @Column(name = "tipo_organizacion")
+  @Enumerated(EnumType.STRING)
   private TipoOrganizacion tipoOrganizacion;
+  @Column(name = "rubro")
   private String rubro;
+  @Transient
   private List<Representante> representantes;
 
   public Juridica(String razonSocial, Documento documento, TipoOrganizacion tipo,
                   String rubro, List<Representante> representantes) {
-    super(documento);
+    super(documento, "JURIDICA");
     checkDatos(razonSocial, documento, representantes);
     this.razonSocial = razonSocial;
     this.tipoOrganizacion = tipo == null ? TipoOrganizacion.SIN_ESPECIFICAR : tipo;
@@ -47,7 +64,7 @@ public class Juridica extends Donante {
   }
 
   @Override
-  public String getTipoPersona() {
+  public String getTipo() {
     return "JURIDICA";
   }
 

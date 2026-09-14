@@ -3,9 +3,10 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.importadorcsv.ImportadorCsv;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.importadorcsv.ResultadoImportacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
+import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 import java.util.List;
 
-public class GeneradorDonantesCsv {
+public class GeneradorDonantesCsv implements WithSimplePersistenceUnit {
   private DonanteRepository repoDonantes;
   private ImportadorCsv importador;
 
@@ -16,7 +17,9 @@ public class GeneradorDonantesCsv {
 
   public List<FilaError> iniciarCarga(String rutaArchivo) {
     ResultadoImportacion resultado = importador.importarDesdeArchivo(rutaArchivo);
+    beginTransaction();
     resultado.getDonantes().forEach(d -> repoDonantes.guardar(d));
+    commitTransaction();
 
     return resultado.getRegistroFallas();
   }

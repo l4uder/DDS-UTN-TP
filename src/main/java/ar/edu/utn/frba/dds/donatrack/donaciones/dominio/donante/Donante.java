@@ -2,30 +2,43 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.entrega.RegistroEntrega;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Genero;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.TipoOrganizacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Juridica;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@Table(name = "donantes")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Donante {
-  @Setter
-  private String id;
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  @Transient
   private Documento documento;
+  @Column(name = "tipo_donante")
+  private String tipo;
+  @Transient
   private List<RegistroEntrega> entregas;
 
-  protected Donante(Documento documento) {
+  protected Donante(Documento documento, String tipo) {
     checkDatos(documento);
     this.documento = documento;
+    this.tipo = tipo;
     this.entregas = new ArrayList<>();
   }
 
@@ -61,8 +74,6 @@ public abstract class Donante {
     LocalDateTime fechaLimite = LocalDateTime.now().minusDays(dias);
     return ultima.getFecha().isBefore(fechaLimite);
   }
-
-  public abstract String getTipoPersona();
 
   protected abstract List<MedioContacto> getContactosPrincipales();
 

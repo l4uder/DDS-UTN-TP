@@ -10,21 +10,39 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@Table(name = "donantes_humanas")
 public class Humana extends Donante {
+  @Column(name = "nombre")
   private String nombre;
+  @Column(name = "apellido")
   private String apellido;
+  @Column(name = "fecha_nacimiento")
   private LocalDate fechaNacimiento;
+  @Column(name = "genero")
+  @Enumerated(EnumType.STRING)
   private Genero genero;
+  @Column(name = "direccion")
   private String direccion;
+  @Transient
   private List<MedioContacto> contactos;
 
   public Humana(String nombre, String apellido, Documento documento,
                 LocalDate fechaNacimiento, Genero genero, String direccion,
                 List<MedioContacto> contactos) {
-    super(documento);
+    super(documento, "HUMANA");
     checkDatos(nombre, documento, direccion, contactos);
     this.nombre = nombre;
     this.apellido = apellido;
@@ -66,7 +84,7 @@ public class Humana extends Donante {
   }
 
   @Override
-  public String getTipoPersona() {
+  public String getTipo() {
     return "HUMANA";
   }
 

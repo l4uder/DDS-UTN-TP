@@ -27,7 +27,7 @@ public class App {
   public static final int PUERTO = 7070;
 
   public static void main(String[] args) {
-    DatosIniciales.init(); // Importante si es que se quiere tener valores por default
+    DatosIniciales.init(); 
     SuscriptorNotificacion.init();
     crearApp().start(ConfiguracionEntorno.getInstance().puertoDonaciones(PUERTO));
   }
