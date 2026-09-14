@@ -7,11 +7,14 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioConta
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -31,7 +34,8 @@ public class Juridica extends Donante {
   private TipoOrganizacion tipoOrganizacion;
   @Column(name = "rubro")
   private String rubro;
-  @Transient
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "id_persona_juridica")
   private List<Representante> representantes;
 
   public Juridica(String razonSocial, Documento documento, TipoOrganizacion tipo,
