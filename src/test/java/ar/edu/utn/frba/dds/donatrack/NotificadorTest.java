@@ -66,7 +66,7 @@ public class NotificadorTest {
 
     juan.recibirNotificacion(message);
 
-    verify(clienteMockCorreo).enviarCorreo(correoJuan.getCorreo(), message);
+    verify(clienteMockCorreo).enviarCorreo(correoJuan.getDetalle(), message);
   }
 
   @Test
@@ -76,7 +76,7 @@ public class NotificadorTest {
 
     constructoraSRL.recibirNotificacion(message);
 
-    verify(clienteMockSms).enviarSms(numeroSms.getTelefono(), message);
+    verify(clienteMockSms).enviarSms(numeroSms.getDetalle(), message);
   }
 
   @Test
@@ -86,7 +86,7 @@ public class NotificadorTest {
 
     juan.recibirNotificacion(message);
 
-    verify(clienteMockWhatsapp).enviarWhatsapp(numeroWhatsapp.getTelefono(), message);
+    verify(clienteMockWhatsapp).enviarWhatsapp(numeroWhatsapp.getDetalle(), message);
   }
 
   @Test
@@ -98,8 +98,8 @@ public class NotificadorTest {
 
     juan.recibirNotificacion(message);
 
-    verify(clienteMockCorreo).enviarCorreo(correo1.getCorreo(), message);
-    verify(clienteMockCorreo).enviarCorreo(correo2.getCorreo(), message);
+    verify(clienteMockCorreo).enviarCorreo(correo1.getDetalle(), message);
+    verify(clienteMockCorreo).enviarCorreo(correo2.getDetalle(), message);
   }
 
 }

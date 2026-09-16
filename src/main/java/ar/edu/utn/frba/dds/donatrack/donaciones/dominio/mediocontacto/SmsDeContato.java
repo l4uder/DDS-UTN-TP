@@ -3,25 +3,29 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSmsMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSms;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-@Getter
-public class SmsDeContato implements MedioContacto {
-  private String telefono;
-  private Boolean esPrincipal;
+@Entity
+@NoArgsConstructor
+@DiscriminatorValue("SMS")
+public class SmsDeContato extends MedioContacto {
+  @Transient
   private ClienteSms clienteSms;
 
   public SmsDeContato(String telefono, Boolean esPrincipal) {
     checkDatos(telefono, esPrincipal);
-    this.telefono = telefono;
+    this.detalle = telefono;
     this.esPrincipal = esPrincipal;
     this.clienteSms = new ClienteSmsMock();
   }
 
   public SmsDeContato(String telefono, Boolean esPrincipal, ClienteSms clienteSms) {
     checkDatos(telefono, esPrincipal);
-    this.telefono = telefono;
+    this.detalle = telefono;
     this.esPrincipal = esPrincipal;
     this.clienteSms = clienteSms;
   }
@@ -38,9 +42,13 @@ public class SmsDeContato implements MedioContacto {
     }
   }
 
+  public String getDetalle() {
+    return this.detalle;
+  }
+
   @Override
   public void enviarMensaje(String message) {
-    clienteSms.enviarSms(telefono, message);
+    clienteSms.enviarSms(detalle, message);
   }
 
   @Override
@@ -49,7 +57,7 @@ public class SmsDeContato implements MedioContacto {
       return false;
     }
 
-    return this.telefono.equals(numeroSms.getTelefono());
+    return this.detalle.equals(numeroSms.getDetalle());
   }
 
 }

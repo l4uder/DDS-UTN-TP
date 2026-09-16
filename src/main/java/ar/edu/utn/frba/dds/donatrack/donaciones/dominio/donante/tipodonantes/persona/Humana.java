@@ -10,11 +10,14 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -38,7 +41,8 @@ public class Humana extends Donante {
   private Genero genero;
   @Column(name = "direccion")
   private String direccion;
-  @Transient
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "id_donante")
   private List<MedioContacto> contactos;
 
   public Humana(String nombre, String apellido, Documento documento,

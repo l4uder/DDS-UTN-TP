@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,7 +33,8 @@ public class Beneficiario {
   private String razonSocial;
   @Column(name = "direccion")
   private String direccion;
-  @Transient
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "id_beneficiario")
   private List<MedioContacto> contactos;
   @OneToMany
   @JoinColumn(name = "id_beneficiario")
@@ -105,4 +107,9 @@ public class Beneficiario {
     this.contactos = new ArrayList<>(contactos);
   }
 
+  public void addContacto(MedioContacto contacto) {
+    if (contacto != null) {
+      this.contactos.add(contacto);
+    }
+  }
 }
