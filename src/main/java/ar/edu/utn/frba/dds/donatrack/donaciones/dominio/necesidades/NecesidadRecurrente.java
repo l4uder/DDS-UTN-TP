@@ -4,10 +4,21 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.Arrays;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@DiscriminatorValue("recurrente")
 public class NecesidadRecurrente extends Necesidad {
+  @Column(name = "frecuencia")
+  @Enumerated(EnumType.STRING)
   private Frecuencia frecuencia;
 
   public NecesidadRecurrente(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, Integer cantidadRequerida, Frecuencia frecuencia) {

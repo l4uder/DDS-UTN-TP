@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record NecesidadResponse(
-    String id,
+    Long id,
     String tipo,
     String descripcion,
     String unidadMedida,

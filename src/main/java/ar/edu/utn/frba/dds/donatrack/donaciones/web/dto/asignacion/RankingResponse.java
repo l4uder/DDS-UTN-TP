@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record RankingResponse(
-    String id,
+    Long id,
     LocalDateTime fechaGeneracion,
     DonacionResponse donacion,
     List<CandidatoDto> candidatos

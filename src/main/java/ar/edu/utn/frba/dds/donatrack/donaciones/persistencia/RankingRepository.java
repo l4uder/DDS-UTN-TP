@@ -1,49 +1,44 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.persistencia;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.Ranking;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BaseDatoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RegistroNoEncontradoException;
+import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class RankingRepository {
+public class RankingRepository implements WithSimplePersistenceUnit {
   private static final RankingRepository INSTANCE = new RankingRepository();
-  private final Map<String, Ranking> storeRankings;
 
-  private RankingRepository() {
-    storeRankings = new HashMap<>();
-  }
+  private RankingRepository() {}
 
   public static RankingRepository getInstancia() {
     return INSTANCE;
   }
 
   public void guardar(Ranking ranking) {
-    if (ranking.getId() != null) throw new BaseDatoException("Constraint Violations: El ranking ya tiene un ID asignado: " + ranking.getId());
-    ranking.setId(UUID.randomUUID().toString());
-
-    this.storeRankings.put(ranking.getId(), ranking);
+    entityManager().persist(ranking);
   }
 
-  public Ranking buscarPorId(String id) {
-    return storeRankings.get(id);
+  public Ranking buscarPorId(Long id) {
+    return entityManager().find(Ranking.class, id);
   }
 
   public List<Ranking> buscarTodos() {
-    return storeRankings.values().stream().filter(Ranking::getEstaVigente).toList();
+    return entityManager().createQuery("SELECT r FROM Ranking r", Ranking.class).getResultList();
   }
 
   public void actualizar(Ranking ranking) {
-    if (ranking.getId() == null || !this.storeRankings.containsKey(ranking.getId())) {
+    if (ranking.getId() == null || buscarPorId(ranking.getId()) == null) {
       throw new RegistroNoEncontradoException("No se puede actualizar: no existe en la base de datos el registro: " + ranking.getId());
     }
-    this.storeRankings.put(ranking.getId(), ranking);
+    entityManager().merge(ranking);
   }
 
   public void vaciarSoft() {
-    buscarTodos().forEach(Ranking::invalidar);
+    entityManager().createQuery("UPDATE Ranking r SET r.estaVigente = false").executeUpdate();
   }
-
 }

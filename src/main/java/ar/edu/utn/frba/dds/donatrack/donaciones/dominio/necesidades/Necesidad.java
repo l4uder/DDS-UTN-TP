@@ -3,17 +3,41 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@Table(name = "necesidad")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_necesidad")
 public abstract class Necesidad {
-  @Setter
-  private String id;
+  @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
+  private Long id;
+  @Transient
   private Subcategoria subcategoria;
+  @Column(name = "unidad_medida")
+  @Enumerated (EnumType.STRING)
   private UnidadMedida unidadMedida;
+  @Column(name = "descripcion")
   private String descripcion;
+  @Column(name = "cantidad_recibida")
   private Integer cantidadRecibida;
+  @Column(name = "cantidad_requerida")
   private Integer cantidadRequerida;
 
   public Necesidad(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, Integer cantidadRequerida) {

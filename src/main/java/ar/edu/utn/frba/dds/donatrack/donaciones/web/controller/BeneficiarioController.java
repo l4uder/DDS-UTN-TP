@@ -5,10 +5,11 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.BeneficiarioMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.beneficiario.BeneficiarioRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
+import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 import io.javalin.http.Context;
 import java.util.List;
 
-public class BeneficiarioController {
+public class BeneficiarioController implements WithSimplePersistenceUnit {
   private final BeneficiarioRepository repoBeneficiarios;
 
   public BeneficiarioController(BeneficiarioRepository repoBeneficiarios) {
@@ -20,23 +21,27 @@ public class BeneficiarioController {
     BeneficiarioRequest beneficiarioDto = ctx.bodyAsClass(BeneficiarioRequest.class);
 
     Beneficiario beneficiario = BeneficiarioMapper.aDominio(beneficiarioDto);
-
+    beginTransaction();
     repoBeneficiarios.guardar(beneficiario);
     ctx.status(201).json(BeneficiarioMapper.aDto(beneficiario));
+    commitTransaction();
   }
 
   public void obtenerTodos(Context ctx) {
+    beginTransaction();
     List<Beneficiario> beneficiarios = repoBeneficiarios.buscarTodos();
-    ctx.status(200).json(beneficiarios.stream().map(BeneficiarioMapper::aDtoResumen).toList());
+    ctx.status(200).json(BeneficiarioMapper.aDtoResumen(beneficiarios));
+    commitTransaction();
   }
 
   public void obtener(Context ctx) {
     //Cosas que recibo por URL --> Path param
     Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
-
+    beginTransaction();
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
     ctx.status(200).json(BeneficiarioMapper.aDto(beneficiario));
+    commitTransaction();
   }
 
   public void actualizar(Context ctx) {
@@ -45,20 +50,23 @@ public class BeneficiarioController {
     //Cosas que recibo por Body
     BeneficiarioRequest beneficiarioDto = ctx.bodyAsClass(BeneficiarioRequest.class);
 
+    beginTransaction();
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
     BeneficiarioMapper.actualizarDominio(beneficiario, beneficiarioDto);
 
     repoBeneficiarios.actualizar(beneficiario);
     ctx.status(200).json(BeneficiarioMapper.aDto(beneficiario));
+    commitTransaction();
   }
 
   public void eliminar(Context ctx) {
     //Cosas que recibo por URL --> Path param
     Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
-
+    beginTransaction();
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
     repoBeneficiarios.eliminar(beneficiario);
+    commitTransaction();
     ctx.status(204);
   }
 

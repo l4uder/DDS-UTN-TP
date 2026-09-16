@@ -26,7 +26,7 @@ public class NecesidadController {
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
     Necesidad necesidad = NecesidadMapper.aDominio(necesidadDto);
 
-    necesidad.setId(codigoSimplificado());
+    //necesidad.setId(codigoSimplificado());
     beneficiario.agregarNecesidad(necesidad);
     repoBeneficiarios.actualizar(beneficiario);
     ctx.status(201).json(NecesidadMapper.aDto(necesidad));

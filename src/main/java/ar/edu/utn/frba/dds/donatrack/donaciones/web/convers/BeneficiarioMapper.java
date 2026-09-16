@@ -34,6 +34,10 @@ public class BeneficiarioMapper {
         beneficiario.getDireccion());
   }
 
+  public static List<BeneficiarioResumenResponse> aDtoResumen(List<Beneficiario> beneficiarios) {
+    return beneficiarios.stream().map(BeneficiarioMapper::aDtoResumen).toList();
+  }
+
   public static void actualizarDominio(Beneficiario beneficiario, BeneficiarioRequest request) {
     String razonSocialMerge = request.razonSocial() != null ? request.razonSocial() : beneficiario.getRazonSocial();
     String direccionMerge = request.direccion() != null ? request.direccion() : beneficiario.getDireccion();

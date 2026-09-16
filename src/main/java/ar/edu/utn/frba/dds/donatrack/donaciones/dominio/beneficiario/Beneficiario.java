@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.Getter;
@@ -32,7 +34,8 @@ public class Beneficiario {
   private String direccion;
   @Transient
   private List<MedioContacto> contactos;
-  @Transient
+  @OneToMany
+  @JoinColumn(name = "id_beneficiario")
   private List<Necesidad> necesidades;
   @Transient
   private List<Donacion> donaciones;
