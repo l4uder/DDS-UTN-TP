@@ -35,7 +35,7 @@ public class Ranking {
       joinColumns = @JoinColumn (name = "id_ranking"),
       inverseJoinColumns = @JoinColumn (name = "id_beneficiario")
   )
-  @OrderColumn (name = "orden_de_prioridad") // Ver @OrderBy !!!
+  @OrderColumn (name = "orden_prioridad") // Ver @OrderBy !!!
   private List<Beneficiario> candidatos;
   @Column (name = "esta_vigente")
   private Boolean estaVigente;

@@ -5,10 +5,11 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadorrankings.algoritmos.AlgoritmoMatchmaking;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
+import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GeneradorRankings {
+public class GeneradorRankings implements WithSimplePersistenceUnit {
   private final RankingRepository repoRankings;
   private final List<AlgoritmoMatchmaking> algoritmosMatch;
 
@@ -27,7 +28,9 @@ public class GeneradorRankings {
     List<Ranking> rankings = donaciones.stream()
         .map(d -> generarRanking(d, beneficiarios)).toList();
 
+    beginTransaction();
     rankings.forEach(r -> repoRankings.guardar(r));
+    commitTransaction();
 
     return rankings;
   }

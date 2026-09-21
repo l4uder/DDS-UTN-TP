@@ -15,11 +15,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-@Table (name = "medio_contacto")
+@Table (name = "contactos")
 @Inheritance (strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn (name = "tipo_contacto", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn (name = "tipo_contacto")
 public abstract class MedioContacto {
-
   @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
   @Column (name = "es_principal")

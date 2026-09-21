@@ -22,7 +22,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "necesidad")
+@Table(name = "necesidades")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_necesidad")
 public abstract class Necesidad {
