@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-@DiscriminatorValue("SMS")
+@DiscriminatorValue("sms")
 public class SmsDeContato extends MedioContacto {
   @Transient
   private ClienteSms clienteSms;

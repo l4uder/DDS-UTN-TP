@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-@DiscriminatorValue("CORREO")
+@DiscriminatorValue("e-mail")
 public class CorreoDeContato extends MedioContacto {
   @Transient
   private ClienteCorreo clienteCorreo;

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-@DiscriminatorValue("WHATSAPP")
+@DiscriminatorValue("whatshapp")
 public class WhatsappDeContato extends MedioContacto {
   @Transient
   private ClienteWhatsapp clienteWhatsapp;
