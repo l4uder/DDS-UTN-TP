@@ -35,7 +35,7 @@ public class GeneradorDonantesCsvTest {
     //primera prueba verificamos que la lista este vacía
 
     List<FilaError> errores = generadorDonantes.iniciarCarga(archivoExistente);
-    //errores.forEach(e -> System.out.println(" fila " + e.getNumeroFila() + " motivo: " + e.getMotivoError()));
+    errores.forEach(e -> System.out.println(" fila " + e.getNumeroFila() + " motivo: " + e.getMotivoError()));
 
     assertEquals(2, repoDonantes.buscarTodos().size());
     assertEquals(2, errores.size());

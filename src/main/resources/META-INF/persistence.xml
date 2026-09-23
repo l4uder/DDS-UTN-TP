@@ -18,6 +18,8 @@
             -->
 
             <!-- si van por este camino recomiendo usar postman, para verificar si se persisten los objetos -->
+            <!--
+            -->
             <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
             <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:crons-db"/>
             <property name="hibernate.connection.username" value=""/>
@@ -28,7 +30,7 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="use_sql_comments" value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
         </properties>
     </persistence-unit>
 </persistence>

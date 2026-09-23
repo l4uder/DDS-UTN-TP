@@ -3,25 +3,29 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreo;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-@Getter
-public class CorreoDeContato implements MedioContacto {
-  private String correo;
-  private Boolean esPrincipal;
+@Entity
+@NoArgsConstructor
+@DiscriminatorValue("e-mail")
+public class CorreoDeContato extends MedioContacto {
+  @Transient
   private ClienteCorreo clienteCorreo;
 
   public CorreoDeContato(String correo, Boolean esPrincipal) {
     checkDatos(correo, esPrincipal);
-    this.correo = correo;
+    this.detalle = correo;
     this.esPrincipal = esPrincipal;
     this.clienteCorreo = new ClienteCorreoMock();
   }
 
   public CorreoDeContato(String correo, Boolean esPrincipal, ClienteCorreo clienteCorreo) {
     checkDatos(correo, esPrincipal);
-    this.correo = correo;
+    this.detalle = correo;
     this.esPrincipal = esPrincipal;
     this.clienteCorreo = clienteCorreo;
   }
@@ -38,9 +42,13 @@ public class CorreoDeContato implements MedioContacto {
     }
   }
 
+  public String getDetalle() {
+    return this.detalle;
+  }
+
   @Override
   public void enviarMensaje(String message) {
-    clienteCorreo.enviarCorreo(correo, message);
+    clienteCorreo.enviarCorreo(detalle, message);
   }
 
   @Override
@@ -49,6 +57,7 @@ public class CorreoDeContato implements MedioContacto {
       return false;
     }
 
-    return this.correo.equalsIgnoreCase(correoElectronico.getCorreo());
+    return this.detalle.equalsIgnoreCase(correoElectronico.getDetalle());
   }
+
 }

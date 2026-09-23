@@ -2,36 +2,44 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.entrega.RegistroEntrega;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Genero;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.TipoDonante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.TipoOrganizacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Juridica;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-public class Donante {
-  @Setter
-  private String id;
+@NoArgsConstructor
+@Entity
+@Table(name = "donantes")
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Donante {
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  @Embedded
   private Documento documento;
+  @Column(name = "tipo_donante")
+  private String tipo;
+  @Transient
   private List<RegistroEntrega> entregas;
-  private final TipoDonante tipoDonante;
-  private TipoPersona tipoPersona;
 
-  private Donante(Documento documento, TipoDonante tipoDonante, TipoPersona tipoPersona) {
+  protected Donante(Documento documento, String tipo) {
     checkDatos(documento);
     this.documento = documento;
+    this.tipo = tipo;
     this.entregas = new ArrayList<>();
-    this.tipoDonante = tipoDonante;
-    this.tipoPersona = tipoPersona;
   }
 
   private void checkDatos(Documento documento) {
@@ -40,9 +48,7 @@ public class Donante {
     }
   }
 
-  public String getNombreCompleto() {
-    return tipoDonante.getNombreCompleto();
-  }
+  public abstract String getNombreCompleto();
 
   public RegistroEntrega getUltimaEntrega() {
     //return this.entregas.stream().max(Comparator.comparing(r -> r.getFecha())).orElse(null);
@@ -69,48 +75,13 @@ public class Donante {
     return ultima.getFecha().isBefore(fechaLimite);
   }
 
-  public static Donante personaHumana(String nombre, String apellido, Documento documento,
-                                      LocalDate fechaNacimiento, Genero genero, String direccion,
-                                      List<MedioContacto> contactos) {
-    TipoDonante tipoPersona = new Humana(nombre, apellido, documento, fechaNacimiento, genero, direccion, contactos);
-    return new Donante(documento, tipoPersona, TipoPersona.HUMANA);
-  }
+  protected abstract List<MedioContacto> getContactosPrincipales();
 
-  public static Donante personaJuridica(String razonSocial, Documento documento, TipoOrganizacion tipo,
-                                        String rubro, List<Representante> representantes) {
-    TipoDonante tipoPersona = new Juridica(razonSocial, tipo, rubro, documento, representantes);
-    return new Donante(documento, tipoPersona, TipoPersona.JURIDICA);
-  }
+  protected abstract List<MedioContacto> getContactos();
 
-  private void actualizarDatosBase(Documento documento) {
+  protected void actualizarDatosBase(Documento documento) {
     checkDatos(documento);
     this.documento = documento;
-  }
-
-  public void actualizarDatosHumana(String nombre, String apellido, Documento documento,
-                                    LocalDate fechaNacimiento, Genero genero, String direccion,
-                                    List<MedioContacto> contactos) {
-    if (!(this.tipoDonante instanceof Humana)) throw new DominioException("No se pueden actualizar los datos de una persona humana con datos de una persona jurídica");
-
-    this.actualizarDatosBase(documento);
-    ((Humana) this.tipoDonante).actualizarDatos(nombre, apellido, documento, fechaNacimiento, genero, direccion, contactos);
-  }
-
-  public void actualizarDatosJuridica(String razonSocial, Documento documento, TipoOrganizacion tipo,
-                                      String rubro, List<Representante> representantes) {
-    if (!(this.tipoDonante instanceof Juridica)) throw new DominioException("No se pueden actualizar los datos de una persona jurídica con datos de una persona humana");
-
-    this.actualizarDatosBase(documento);
-    ((Juridica) this.tipoDonante).actualizarDatos(razonSocial, tipo, rubro, documento, representantes);
-  }
-
-  //================== FUNCIONES AUXILIARES =======================
-  private List<MedioContacto> getContactosPrincipales() {
-    return this.tipoDonante.getContactosPrincipales();
-  }
-
-  private List<MedioContacto> getContactos() {
-    return this.tipoDonante.getContactos();
   }
 
 }

@@ -1,9 +1,9 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Genero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoMock;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoReal;
@@ -15,7 +15,7 @@ public class PruebaEnvioCorreoReal {
     CorreoDeContato correoFalso = new CorreoDeContato("correoFalso@gmail.com", true, new ClienteCorreoMock());
     CorreoDeContato correoVerdadero = new CorreoDeContato("ericleohuanto@gmail.com", true, new ClienteCorreoReal());
 
-    Donante persona = Donante.personaHumana(
+    Humana persona = new Humana(
         "usuario",
         null,
         new Documento(TipoDocumento.DNI, "33333"),

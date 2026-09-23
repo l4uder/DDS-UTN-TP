@@ -3,10 +3,10 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien;
 public enum UnidadMedida {
   //medidas de masa
   KILOGRAMOS("kg", 1000),
-  GRAMOS("gr", 1),
+  GRAMOS("gr", 1), //base para masa
   //medidas de capacidad
   LITROS("lt", 1000),
-  MILILITROS("ml", 1),
+  MILILITROS("ml", 1), //base para capacidades
   //valores por unidad
   UNIDADES("unidad", 1);
 

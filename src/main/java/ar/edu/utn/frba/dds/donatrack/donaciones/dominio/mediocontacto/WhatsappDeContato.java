@@ -3,25 +3,29 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsappMock;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsapp;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-@Getter
-public class WhatsappDeContato implements MedioContacto {
-  private String telefono;
-  private Boolean esPrincipal;
+@Entity
+@NoArgsConstructor
+@DiscriminatorValue("whatsapp")
+public class WhatsappDeContato extends MedioContacto {
+  @Transient
   private ClienteWhatsapp clienteWhatsapp;
 
   public WhatsappDeContato(String telefono, Boolean esPrincipal) {
     checkDatos(telefono, esPrincipal);
-    this.telefono = telefono;
+    this.detalle = telefono;
     this.esPrincipal = esPrincipal;
     this.clienteWhatsapp = new ClienteWhatsappMock();
   }
 
   public WhatsappDeContato(String telefono, Boolean esPrincipal, ClienteWhatsapp clienteWhatsapp) {
     checkDatos(telefono, esPrincipal);
-    this.telefono = telefono;
+    this.detalle = telefono;
     this.esPrincipal = esPrincipal;
     this.clienteWhatsapp = clienteWhatsapp;
   }
@@ -38,9 +42,13 @@ public class WhatsappDeContato implements MedioContacto {
     }
   }
 
+  public String getDetalle() {
+    return this.detalle;
+  }
+
   @Override
   public void enviarMensaje(String message) {
-    clienteWhatsapp.enviarWhatsapp(telefono, message);
+    clienteWhatsapp.enviarWhatsapp(detalle, message);
   }
 
   @Override
@@ -48,6 +56,7 @@ public class WhatsappDeContato implements MedioContacto {
     if (!(otro instanceof WhatsappDeContato numeroWhatsapp)) {
       return false;
     }
-    return this.telefono.equals(numeroWhatsapp.getTelefono());
+    return this.detalle.equals(numeroWhatsapp.getDetalle());
   }
+
 }

@@ -17,10 +17,11 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.AsignadaDonacionDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BodyException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
+import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 import io.javalin.http.Context;
 import java.util.List;
 
-public class AsignacionController {
+public class AsignacionController implements WithSimplePersistenceUnit {
   private final DonacionRepository repoDonaciones;
   private final BeneficiarioRepository repoBeneficiarios;
   private final RankingRepository repoRankings;
@@ -33,6 +34,7 @@ public class AsignacionController {
   }
 
   public void crearRankings(Context ctx) {
+    beginTransaction();
     repoRankings.vaciarSoft();
     GeneradorRankings generadorRankings = new GeneradorRankings(repoRankings);
     generadorRankings.agregarAlgoritmo(new CompatibilidadSemantica());
@@ -43,20 +45,25 @@ public class AsignacionController {
 
     List<Ranking> rankings = generadorRankings.generar(donaciones, beneficiarios);
     ctx.status(200).json(RankingMapper.aDtoResumen(rankings));
+    commitTransaction();
   }
 
   public void obtenerTodos(Context ctx) {
+    beginTransaction();
     List<Ranking> rankings = repoRankings.buscarTodos();
     ctx.status(200).json(RankingMapper.aDtoResumen(rankings));
+    commitTransaction();
   }
 
   public void obtener(Context ctx) {
     //Cosas que recibo por URL --> Path param
     String idRanking = ctx.pathParam("id");
 
+    beginTransaction();
     Ranking ranking = buscarRankingPorId(idRanking);
 
     ctx.status(200).json(RankingMapper.aDto(ranking));
+    commitTransaction();
   }
 
   public void confirmar(Context ctx) {
@@ -67,6 +74,7 @@ public class AsignacionController {
     if (body.beneficiarioId() == null) throw new BodyException("Bad Request, necesita: 'beneficiario_id' ");
     Long idBeneficiario = Long.valueOf(body.beneficiarioId());
 
+    beginTransaction();
     Ranking ranking = buscarRankingPorId(idRanking);
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
 
@@ -78,6 +86,7 @@ public class AsignacionController {
     repoRankings.actualizar(ranking);
     DispatcherEventos.getInstancia().publicar(new EventoAsignacion(beneficiario, donacion.getDonantes(), donacion.getDescripcion()));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
+    commitTransaction();
   }
 
   //=================== FUNCIONES AUXILIARES ========================
@@ -88,7 +97,7 @@ public class AsignacionController {
   }
 
   private Ranking buscarRankingPorId(String id) {
-    Ranking ranking = repoRankings.buscarPorId(id);
+    Ranking ranking = repoRankings.buscarPorId(Long.valueOf(id));
     if (ranking == null) throw new RecursoNoEncontradoException("El ranking: " + id + " no existe");
     if(!ranking.getEstaVigente()) throw new RecursoNoEncontradoException("El ranking esta vencido: " + id);
     return ranking;

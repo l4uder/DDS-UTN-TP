@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.impor
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.DonanteFactory;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.FilaError;
@@ -18,7 +17,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ImportadorCsv {
@@ -109,12 +107,12 @@ public class ImportadorCsv {
       if (filaParseada.motivoError() == null) { //if (No tiene error)
         try {
           String[] contenido = filaParseada.contenidoSeparado();
-          TipoPersona persona = aTipoPersona(contenido[0].trim());
-          Documento documento = new Documento(aTipoDocumento(contenido[1].trim(), persona), contenido[2].trim());
+          String tipoPersona = contenido[0].trim();
+          Documento documento = new Documento(aTipoDocumento(contenido[1].trim()), contenido[2].trim());
           String nombreCompleto = contenido[3].trim();
           MedioContacto correo = new CorreoDeContato(contenido[4].trim(), true);
           MedioContacto telefono = new SmsDeContato(contenido[5].trim(), false);
-          Donante donante = DonanteFactory.crear(persona, documento, nombreCompleto, correo, telefono);
+          Donante donante = DonanteFactory.crear(tipoPersona, documento, nombreCompleto, correo, telefono);
           fila = new FilaTransformada(donante, filaParseada.numFila(), null);
         } catch (DominioException exV){
           fila = new FilaTransformada(null, filaParseada.numFila(), exV.getMessage());
@@ -135,24 +133,14 @@ public class ImportadorCsv {
         .anyMatch(fp -> fp.contenidoSeparado()[4].equalsIgnoreCase(correo));
   } //Nota se podría mejorar la velocidad si lo cambiamos a hashmap y ya no usaríamos .any
 
-  private static TipoPersona aTipoPersona(String valor) {
-    if (valor == null || valor.isBlank()) {
-      throw new DominioException("El csv No especifica el tipo de persona, valores validos: " + Arrays.toString(TipoPersona.values()));    }
-    try {
-      return TipoPersona.valueOf(valor.toUpperCase());
-    } catch (IllegalArgumentException e) {
-      throw new DominioException("El tipo de persona: " + valor + " del csv no existe, valores validos: " + Arrays.toString(TipoPersona.values()));
-    }
-  }
-
-  private static TipoDocumento aTipoDocumento(String tipoDocumento, TipoPersona tipoPersona) {
+  private static TipoDocumento aTipoDocumento(String tipoDocumento) {
     if (tipoDocumento == null || tipoDocumento.isBlank()) {
-      throw new DominioException("El tipo de documento del csv, valores validos: " + TipoDocumento.values(tipoPersona));
+      throw new DominioException("El tipo de documento del csv, No puede estar vacío");
     }
     try {
       return TipoDocumento.valueOf(tipoDocumento.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new DominioException("El tipo de documento: " + tipoDocumento + " del csv no existe, valores validos: " + TipoDocumento.values(tipoPersona));
+      throw new DominioException("El tipo de documento: " + tipoDocumento + " del csv no existe");
     }
   }
 

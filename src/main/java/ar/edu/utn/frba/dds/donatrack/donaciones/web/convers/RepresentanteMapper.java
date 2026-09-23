@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Genero;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.TipoPersona;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.representante.RepresentanteDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
@@ -14,7 +13,7 @@ public class RepresentanteMapper {
     return new Representante(
         representanteDto.nombre(),
         representanteDto.apellido(),
-        DocumentoMapper.aDominio(representanteDto.documentoDto(), TipoPersona.HUMANA),
+        DocumentoMapper.aDominio(representanteDto.documentoDto()),
         representanteDto.direccion(),
         ContactoMapper.aDominio(representanteDto.contactos())
     );

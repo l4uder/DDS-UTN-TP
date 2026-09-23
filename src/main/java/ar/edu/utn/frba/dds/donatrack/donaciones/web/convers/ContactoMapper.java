@@ -37,13 +37,13 @@ public class ContactoMapper {
 
   public static ContactoDto aDto(MedioContacto contacto) {
     if (contacto instanceof CorreoDeContato correo) {
-      return new ContactoDto("EMAIL", correo.getCorreo(), correo.getEsPrincipal());
+      return new ContactoDto("EMAIL", correo.getDetalle(), correo.getEsPrincipal());
     }
     if (contacto instanceof SmsDeContato sms) {
-      return new ContactoDto("SMS", sms.getTelefono(), sms.getEsPrincipal());
+      return new ContactoDto("SMS", sms.getDetalle(), sms.getEsPrincipal());
     }
     WhatsappDeContato whatsapp = (WhatsappDeContato) contacto;
-    return new ContactoDto("WHATSAPP", whatsapp.getTelefono(), whatsapp.getEsPrincipal());
+    return new ContactoDto("WHATSAPP", whatsapp.getDetalle(), whatsapp.getEsPrincipal());
   }
 
   //====================  FUNCIONES AUXILIARES =====================
