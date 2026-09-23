@@ -4,9 +4,8 @@ import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
@@ -31,8 +30,8 @@ public class EntregaTest {
 
   @BeforeEach
   void setUp() {
-    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212", true);
-    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com", true);
+    MedioContacto contactoWhatsapp = new WhatsappDeContacto("132212212", true);
+    MedioContacto contactoCorreo = new CorreoDeContacto("comedor@prueba.com", true);
     List<MedioContacto> listaContactos = List.of(contactoCorreo, contactoWhatsapp);
 
     beneficiario = new Beneficiario("ben-1", "Comedor San José", "Av. Siempre Viva 123");
@@ -46,7 +45,7 @@ public class EntregaTest {
         .conNombre("Juan")
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
+        .conAgregarContacto(new CorreoDeContacto("juan@prueba.com", true))
         .conDireccion("alguna dirección")
         .build();
 

@@ -5,9 +5,9 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.DonanteFactory;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.generadordonantes.FilaError;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContacto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.ImportadorCsvException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import com.opencsv.CSVParser;
@@ -110,8 +110,8 @@ public class ImportadorCsv {
           String tipoPersona = contenido[0].trim();
           Documento documento = new Documento(aTipoDocumento(contenido[1].trim()), contenido[2].trim());
           String nombreCompleto = contenido[3].trim();
-          MedioContacto correo = new CorreoDeContato(contenido[4].trim(), true);
-          MedioContacto telefono = new SmsDeContato(contenido[5].trim(), false);
+          MedioContacto correo = new CorreoDeContacto(contenido[4].trim(), true);
+          MedioContacto telefono = new SmsDeContacto(contenido[5].trim(), false);
           Donante donante = DonanteFactory.crear(tipoPersona, documento, nombreCompleto, correo, telefono);
           fila = new FilaTransformada(donante, filaParseada.numFila(), null);
         } catch (DominioException exV){

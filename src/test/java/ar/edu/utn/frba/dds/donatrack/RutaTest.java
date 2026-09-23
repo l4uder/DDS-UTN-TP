@@ -4,7 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContacto;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
@@ -36,15 +36,15 @@ public class RutaTest {
     camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
     chofer = new Chofer("Juan", "Gómez", "12345678");
 
-    MedioContacto contactoWhatsapp = new WhatsappDeContato("132212212", true);
-    MedioContacto contactoCorreo = new CorreoDeContato("comedor@prueba.com", true);
+    MedioContacto contactoWhatsapp = new WhatsappDeContacto("132212212", true);
+    MedioContacto contactoCorreo = new CorreoDeContacto("comedor@prueba.com", true);
     List<MedioContacto> listaContactos = List.of(contactoCorreo);
 
     donantePrueba = new PersonaHumanaBuilder()
         .conNombre("Juan")
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
+        .conAgregarContacto(new CorreoDeContacto("juan@prueba.com", true))
         .conDireccion("alguna dirección")
         .build();
 

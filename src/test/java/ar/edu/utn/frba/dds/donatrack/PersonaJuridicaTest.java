@@ -3,11 +3,10 @@ package ar.edu.utn.frba.dds.donatrack;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaJuridicaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.RepresentanteBuilder;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Juridica;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContacto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +20,7 @@ public class PersonaJuridicaTest {
   void configInicial() {
     representante = new RepresentanteBuilder()
         .conNombre("representanteA")
-        .conAgregarContacto(new CorreoDeContato("empresaTest@gmail.com", true))
+        .conAgregarContacto(new CorreoDeContacto("empresaTest@gmail.com", true))
         .build();
   }
 

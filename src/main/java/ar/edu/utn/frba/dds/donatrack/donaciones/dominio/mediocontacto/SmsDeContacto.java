@@ -6,24 +6,23 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementa
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
 @DiscriminatorValue("sms")
-public class SmsDeContato extends MedioContacto {
+public class SmsDeContacto extends MedioContacto {
   @Transient
   private ClienteSms clienteSms;
 
-  public SmsDeContato(String telefono, Boolean esPrincipal) {
+  public SmsDeContacto(String telefono, Boolean esPrincipal) {
     checkDatos(telefono, esPrincipal);
     this.detalle = telefono;
     this.esPrincipal = esPrincipal;
     this.clienteSms = new ClienteSmsMock();
   }
 
-  public SmsDeContato(String telefono, Boolean esPrincipal, ClienteSms clienteSms) {
+  public SmsDeContacto(String telefono, Boolean esPrincipal, ClienteSms clienteSms) {
     checkDatos(telefono, esPrincipal);
     this.detalle = telefono;
     this.esPrincipal = esPrincipal;
@@ -53,7 +52,7 @@ public class SmsDeContato extends MedioContacto {
 
   @Override
   public boolean esIgualA(MedioContacto otro) {
-    if (!(otro instanceof SmsDeContato numeroSms)) {
+    if (!(otro instanceof SmsDeContacto numeroSms)) {
       return false;
     }
 
