@@ -4,6 +4,8 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.NoPerecedero;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.tipobien.Perecedero;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.time.LocalDate;
 
@@ -56,7 +58,7 @@ public class BienBuilder {
       throw new DominioException("es necesario saber La fecha de vencimiento, para ser perecedero.");
     }
 
-    return Bien.crearPerecedero(descripcion, cantidad, unidad, foto, subcategoria, fechaVencimiento);
+    return new Perecedero(descripcion, cantidad, unidad, foto, subcategoria, fechaVencimiento);
   }
 
   public Bien buildNoPerecedero() {
@@ -64,6 +66,6 @@ public class BienBuilder {
       throw new DominioException("es necesario saber si es usado o no, para ser No perecedero.");
     }
 
-    return Bien.crearNoPerecedero(descripcion, cantidad, UnidadMedida.UNIDADES, foto, subcategoria, usado);
+    return new NoPerecedero(descripcion, cantidad, UnidadMedida.UNIDADES, foto, subcategoria, usado);
   }
 }

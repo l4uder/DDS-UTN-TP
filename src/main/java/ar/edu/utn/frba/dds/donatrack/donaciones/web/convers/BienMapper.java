@@ -23,9 +23,9 @@ public class BienMapper {
     Subcategoria subcategoria = new Subcategoria(bienDto.subcategoria(), new Categoria(bienDto.categoria()));
 
     return switch (bienDto.tipo().toUpperCase()) {
-      case "PERECEDERO" -> Bien.crearPerecedero(bienDto.descripcion(), bienDto.cantidad(), unidad,
+      case "PERECEDERO" -> new Perecedero(bienDto.descripcion(), bienDto.cantidad(), unidad,
             bienDto.foto(), subcategoria, bienDto.fechaVencimiento());
-      case "NO_PERECEDERO" -> Bien.crearNoPerecedero(bienDto.descripcion(), bienDto.cantidad(), unidad,
+      case "NO_PERECEDERO" -> new NoPerecedero(bienDto.descripcion(), bienDto.cantidad(), unidad,
             bienDto.foto(), subcategoria, Boolean.TRUE.equals(bienDto.usado()));
       default -> throw new DominioException( "El tipo de bien: " + bienDto.tipo() + " no existe, debe ser: PERECEDERO o NO_PERECEDERO ");
     };
@@ -33,15 +33,15 @@ public class BienMapper {
 
   public static BienDto aDto(Bien bien) {
     return new BienDto(
-        bien.getTipoBien().toString(),
+        bien.getTipo(),
         bien.getDescripcion(),
         bien.getCantidad(),
         bien.getUnidadMedida().name(),
         bien.getFoto(),
         bien.getSubcategoria().getCategoria().getNombre(),
         bien.getSubcategoria().getNombre(),
-        bien.getTipoBien() instanceof Perecedero p ? p.getFechaVencimiento() : null,
-        bien.getTipoBien() instanceof NoPerecedero np ? np.getEstaUsado() : null
+        bien instanceof Perecedero p ? p.getFechaVencimiento() : null,
+        bien instanceof NoPerecedero np ? np.getEstaUsado() : null
     );
   }
 
