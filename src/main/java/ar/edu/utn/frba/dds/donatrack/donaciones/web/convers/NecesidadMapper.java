@@ -3,10 +3,9 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Categoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadExtraordinaria;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadRecurrente;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Frecuencia;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.TipoNecesidad;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.necesidad.NecesidadRequest;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.necesidad.NecesidadResponse;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
@@ -18,22 +17,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NecesidadMapper {
 
-  public static Necesidad aDominio(NecesidadRequest request) {
-    if (request.tipo() == null) throw new DominioException("El campo 'tipo' es obligatorio (RECURRENTE o EXTRAORDINARIA)");
-
-    Subcategoria subcategoria = aSubcategoria(request);
+  public static Necesidad aDominio(NecesidadRequest request, Subcategoria subcategoria) {
+    TipoNecesidad tipo = aTiponecesidad(request.tipo());
     UnidadMedida unidadMedida = aUnidadMedida(request.unidadMedida());
-    return switch (request.tipo().toUpperCase()) {
-      case "RECURRENTE" -> new NecesidadRecurrente(
+    return switch (tipo) {
+      case RECURRENTE -> Necesidad.crearNecesidadRecurrente(
+          request.descripcion(),
           subcategoria,
           unidadMedida,
-          request.descripcion(),
           request.cantidadPorPeriodo(),
           aPeriodo(request.periodo()));
-      case "EXTRAORDINARIA" -> new NecesidadExtraordinaria(
+      case EXTRAORDINARIA -> Necesidad.crearNecesidadExtraordinaria(
+          request.descripcion(),
           subcategoria,
           unidadMedida,
-          request.descripcion(),
           request.cantidadRequerida());
       default -> throw new DominioException("Necesidad incorrecta, debe ser (RECURRENTE o EXTRAORDINARIA)");
     };
@@ -42,7 +39,7 @@ public class NecesidadMapper {
   public static NecesidadResponse aDto(Necesidad necesidad) {
     NecesidadResponse.NecesidadResponseBuilder responseBuilder = NecesidadResponse.builder()
         .id(necesidad.getId())
-        .tipo(necesidad.getTipo())
+        .tipo(necesidad.getTipo().name())
         .unidadMedida(necesidad.getUnidadMedida().name())
         .descripcion(necesidad.getDescripcion())
         .categoria(necesidad.getSubcategoria().getCategoria().getNombre())
@@ -50,13 +47,14 @@ public class NecesidadMapper {
         .cantidadRecibida(necesidad.getCantidadRecibida())
         .estaSatisfecha(necesidad.estaSatisfecha());
 
-    if (necesidad instanceof NecesidadRecurrente nr) {
-      responseBuilder.cantidadPorPeriodo(nr.getCantidadRequerida());
-      responseBuilder.periodo(nr.getFrecuencia().name());
-    } else if (necesidad instanceof NecesidadExtraordinaria ne) {
-      responseBuilder.cantidadRequerida(ne.getCantidadRequerida());
-    } else {
-      throw new IllegalStateException("Tipo de necesidad desconocido");
+    switch (necesidad.getTipo()) {
+      case RECURRENTE -> {
+        responseBuilder.cantidadPorPeriodo(necesidad.getCantidadRequerida());
+        responseBuilder.periodo(necesidad.getFrecuencia().name());
+      }
+      case EXTRAORDINARIA ->
+        responseBuilder.cantidadRequerida(necesidad.getCantidadRequerida());
+      default -> throw new DominioException("Tipo de necesidad desconocido, o no actualizado el switch");
     }
 
     return responseBuilder.build();
@@ -66,28 +64,35 @@ public class NecesidadMapper {
     return necesidades.stream().map(NecesidadMapper::aDto).toList();
   }
 
-  public static void actualizarDominio(Necesidad necesidad, NecesidadRequest request) {
-    if (request.tipo() != null && !necesidad.getTipo().equalsIgnoreCase(request.tipo())) throw new IllegalArgumentException("No se puede modificar el tipo de la necesidad");
+  public static void actualizarDominio(Necesidad necesidad, NecesidadRequest request, Subcategoria subcategoriaNueva) {
+    if (request.tipo() != null && !necesidad.getTipo().name().equalsIgnoreCase(request.tipo()))
+      throw new IllegalArgumentException("No se puede modificar el tipo de la necesidad");
 
-    Subcategoria subcategoriaMerge = request.subcategoria() != null ? aSubcategoria(request) : necesidad.getSubcategoria();
+    Subcategoria subcategoriaMerge = request.subcategoria() != null ? subcategoriaNueva : necesidad.getSubcategoria();
     String descripcionMerge = request.descripcion() != null ? request.descripcion() : necesidad.getDescripcion();
     UnidadMedida unidadMedida = request.unidadMedida() != null ? aUnidadMedida(request.unidadMedida()) : necesidad.getUnidadMedida();
-    if (necesidad instanceof NecesidadRecurrente necesidadR) {
-      Integer cantidadPorPeriodoMerge = request.cantidadPorPeriodo() != null ? request.cantidadPorPeriodo() : necesidadR.getCantidadRequerida();
-      Frecuencia periodoMerge = request.periodo() != null ? aPeriodo(request.periodo()) : necesidadR.getFrecuencia();
-      necesidadR.actualizarDatos(subcategoriaMerge, unidadMedida, descripcionMerge, cantidadPorPeriodoMerge, periodoMerge);
-    } else if (necesidad instanceof NecesidadExtraordinaria necesidadE) {
-      Integer cantidadRequeridaMerge = request.cantidadRequerida() != null ? request.cantidadRequerida() : necesidadE.getCantidadRequerida();
-      necesidadE.actualizarDatos(subcategoriaMerge, unidadMedida, descripcionMerge, cantidadRequeridaMerge);
-    } else {
-      throw new IllegalStateException("Tipo de necesidad desconocido");
+    switch (necesidad.getTipo()) {
+        case RECURRENTE -> {
+          Integer cantidadPorPeriodoMerge = request.cantidadPorPeriodo() != null ? request.cantidadPorPeriodo() : necesidad.getCantidadRequerida();
+          Frecuencia periodoMerge = request.periodo() != null ? aPeriodo(request.periodo()) : necesidad.getFrecuencia();
+          necesidad.actualizarDatosRecurrente(descripcionMerge, subcategoriaMerge, unidadMedida, cantidadPorPeriodoMerge, periodoMerge);
+        }
+        case EXTRAORDINARIA -> {
+          Integer cantidadRequeridaMerge = request.cantidadRequerida() != null ? request.cantidadRequerida() : necesidad.getCantidadRequerida();
+          necesidad.actualizarDatosExtraordinaria(descripcionMerge, subcategoriaMerge, unidadMedida, cantidadRequeridaMerge);
+        }
+        default -> throw new DominioException("Tipo de necesidad desconocido, o no actualizado el switch");
     }
   }
 
   //============== FUNCIONES AUXILIARES ==================
-  //Todo despues quitar esta función y agregar un repo de subcategorías
-  private static Subcategoria aSubcategoria(NecesidadRequest request) {
-    return new Subcategoria(request.subcategoria(), new Categoria(request.categoria()));
+  private static TipoNecesidad aTiponecesidad(String valor) {
+    if (valor ==null) throw new DominioException("Necesita 'tipo' valores posibles: " + Arrays.toString(TipoNecesidad.values()));
+    try {
+      return TipoNecesidad.valueOf(valor.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      throw new DominioException("El tipo: " + valor + " no existe, debe ser: " + Arrays.toString(Frecuencia.values()));
+    }
   }
 
   private static Frecuencia aPeriodo(String valor) {

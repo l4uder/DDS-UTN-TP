@@ -23,9 +23,8 @@ public class Subcategoria {
   @JoinColumn(name = "id_categoria")
   private Categoria categoria;
 
-  public Subcategoria(String nombre,
-                      Categoria categoria) {
-    this.nombre = nombre;
+  public Subcategoria(String nombre, Categoria categoria) {
+    this.nombre = nombre.toLowerCase();
     this.categoria = categoria;
   }
 

@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Categoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadExtraordinaria;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadRecurrente;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Necesidad;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.Frecuencia;
 import org.junit.jupiter.api.Test;
 
@@ -15,10 +14,10 @@ public class NecesidadTest {
   public void necesidadExtraordinariaEsSatisfecha(){
     Categoria alimentos = new Categoria("Alimentos");
     Subcategoria arroz = new Subcategoria("arroz", alimentos);
-    NecesidadExtraordinaria necesidad1 = new NecesidadExtraordinaria(
+    Necesidad necesidad1 = Necesidad.crearNecesidadExtraordinaria(
+        "descripcion",
         arroz,
         UnidadMedida.KILOGRAMOS,
-        "descripcion",
         30);
     necesidad1.recibirBienes(34);
     assertTrue(necesidad1.estaSatisfecha());
@@ -27,13 +26,14 @@ public class NecesidadTest {
   public void necesidadRecurrenteEsSatisfecha(){
     Categoria muebleria = new Categoria("Muebleria");
     Subcategoria sillas = new Subcategoria("sillas", muebleria);
-    NecesidadRecurrente necesidad2 = new NecesidadRecurrente(
+    Necesidad necesidad2 = Necesidad.crearNecesidadRecurrente(
+        "23 sillas",
         sillas,
         UnidadMedida.UNIDADES,
-        "23 sillas",
         10,
         Frecuencia.SEMANAL);
     necesidad2.recibirBienes(23);
     assertTrue(necesidad2.estaSatisfecha());
   }
+
 }

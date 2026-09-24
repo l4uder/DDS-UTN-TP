@@ -10,39 +10,47 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Arrays;
+
 @Getter
 @NoArgsConstructor
-@Entity
-@Table(name = "necesidades")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_necesidad")
-public abstract class Necesidad {
-  @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
+@Embeddable
+public class Necesidad {
+  @Setter
   @Column(name = "id_necesidad")
   private Long id;
+  @Column(name = "descripcion")
+  private String descripcion;
+  @Column(name = "tipo_necesidad")
+  @Enumerated(EnumType.STRING)
+  private TipoNecesidad tipo;
   @ManyToOne
   @JoinColumn(name = "id_subcategoria")
   private Subcategoria subcategoria;
   @Column(name = "unidad_medida")
   @Enumerated (EnumType.STRING)
   private UnidadMedida unidadMedida;
-  @Column(name = "descripcion")
-  private String descripcion;
-  @Column(name = "cantidad_recibida")
-  private Integer cantidadRecibida;
   @Column(name = "cantidad_requerida")
   private Integer cantidadRequerida;
+  @Column(name = "cantidad_recibida")
+  private Integer cantidadRecibida;
+  @Column(name = "frecuencia")
+  @Enumerated(EnumType.STRING)
+  private Frecuencia frecuencia;
 
-  public Necesidad(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, Integer cantidadRequerida) {
-    checkDatosBase(subcategoria, unidadMedida, descripcion, cantidadRequerida);
+  private Necesidad(String descripcion, TipoNecesidad tipo, Subcategoria subcategoria, UnidadMedida unidadMedida,
+                   Integer cantidadRequerida, Frecuencia frecuencia) {
+    checkDatosBase(descripcion, subcategoria, unidadMedida, cantidadRequerida);
+    this.descripcion = descripcion;
+    this.tipo = tipo;
     this.subcategoria = subcategoria;
     this.unidadMedida = unidadMedida;
-    this.descripcion = descripcion;
     this.cantidadRecibida = 0;
     this.cantidadRequerida = cantidadRequerida;
+    this.frecuencia = frecuencia;
   }
 
-  private void checkDatosBase(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, Integer cantidadRequerida) {
+  private void checkDatosBase(String descripcion, Subcategoria subcategoria, UnidadMedida unidadMedida, Integer cantidadRequerida) {
     if (subcategoria == null || subcategoria.getNombre().isBlank()) {
       throw new DominioException("El campo 'subcategoria' es obligatorio");
     }
@@ -57,8 +65,6 @@ public abstract class Necesidad {
     }
   }
 
-  abstract public String getTipo();
-
   public float getCantidadFaltanteEnMenorMedida() {
     return this.unidadMedida.convertirAMenorMedida(this.getCantidadFaltante());
   }
@@ -71,12 +77,36 @@ public abstract class Necesidad {
     return this.cantidadRecibida >= this.cantidadRequerida;
   }
 
-  protected void actualizarDatosBase(Subcategoria subcategoria, UnidadMedida unidadMedida, String descripcion, Integer cantidadRequerida) {
-    checkDatosBase(subcategoria, unidadMedida, descripcion, cantidadRequerida);
+  public static Necesidad crearNecesidadExtraordinaria(String descripcion, Subcategoria subcategoria, UnidadMedida unidadMedida, Integer cantidadRequerida) {
+    return new Necesidad(descripcion, TipoNecesidad.EXTRAORDINARIA, subcategoria, unidadMedida, cantidadRequerida, null);
+  }
+
+  public static Necesidad crearNecesidadRecurrente( String descripcion, Subcategoria subcategoria, UnidadMedida unidadMedida, Integer cantidadRequerida, Frecuencia frecuencia) {
+    if (frecuencia == null)
+      throw new DominioException( "Una necesidad recurrente necesita 'periodo' puede ser: " + Arrays.toString(Frecuencia.values()));
+
+    return new Necesidad(descripcion, TipoNecesidad.RECURRENTE, subcategoria, unidadMedida, cantidadRequerida, frecuencia);
+  }
+
+  private void actualizarDatosBase(String descripcion, Subcategoria subcategoria, UnidadMedida unidadMedida, Integer cantidadRequerida) {
     this.subcategoria = subcategoria;
     this.unidadMedida = unidadMedida;
     this.descripcion = descripcion;
     this.cantidadRequerida = cantidadRequerida;
+  }
+
+  public void actualizarDatosExtraordinaria(String descripcion, Subcategoria subcategoria, UnidadMedida unidadMedida, Integer cantidadRequerida) {
+    checkDatosBase(descripcion, subcategoria, unidadMedida, cantidadRequerida);
+    actualizarDatosBase(descripcion, subcategoria, unidadMedida, cantidadRequerida);
+  }
+
+  public void actualizarDatosRecurrente(String descripcion, Subcategoria subcategoria, UnidadMedida unidadMedida, Integer cantidadRequerida, Frecuencia frecuencia) {
+    checkDatosBase(descripcion, subcategoria, unidadMedida, cantidadRequerida);
+    if (frecuencia == null)
+      throw new DominioException( "Una necesidad recurrente necesita 'periodo' puede ser: " + Arrays.toString(Frecuencia.values()));
+
+    actualizarDatosBase(descripcion, subcategoria, unidadMedida, cantidadRequerida);
+    this.frecuencia = frecuencia;
   }
 
   //==================== FUNCIONES AUXILIARES =======================

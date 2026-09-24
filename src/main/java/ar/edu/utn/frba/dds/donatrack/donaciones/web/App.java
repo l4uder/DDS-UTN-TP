@@ -1,11 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.SuscriptorNotificacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.BeneficiarioRepository;
-import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DatosIniciales;
-import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
-import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
-import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.RankingRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.*;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.AsignacionController;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.BeneficiarioController;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.controller.DonacionController;
@@ -43,12 +39,13 @@ public class App {
     DonacionRepository donacionRepository = DonacionRepository.getInstancia();
     BeneficiarioRepository benificiarioRepository = BeneficiarioRepository.getInstancia();
     RankingRepository rankingRepository = RankingRepository.getInstancia();
+    SubcategoriaRepository subcategoriaRepository = SubcategoriaRepository.getInstancia();
 
     //Controllers
     DonanteController donanteController = new DonanteController(donanteRepository);
     DonacionController donacionController = new DonacionController(donacionRepository, donanteRepository);
     BeneficiarioController beneficiarioController = new BeneficiarioController(benificiarioRepository);
-    NecesidadController necesidadController = new NecesidadController(benificiarioRepository);
+    NecesidadController necesidadController = new NecesidadController(benificiarioRepository, subcategoriaRepository);
     AsignacionController asignacionController = new AsignacionController(donacionRepository, benificiarioRepository, rankingRepository);
 
     //Registramos las Rutas
