@@ -16,12 +16,12 @@ import javax.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Entity
 @DiscriminatorValue("perecedero")
-@Getter
 public class Perecedero extends Bien {
-  @Column(name="fecha_de_vencimiento")
+  @Column(name = "fecha_vencimiento")
   private LocalDate fechaVencimiento;
 
   public Perecedero(String descripcion, Float cantidad, UnidadMedida unidad,

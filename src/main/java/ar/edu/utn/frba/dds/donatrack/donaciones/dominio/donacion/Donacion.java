@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Setter;
 
+@Getter
 @NoArgsConstructor
 @Entity
-@Table(name="Donacion")
-@Getter
+@Table(name = "donaciones")
 public class Donacion {
-  @Id @GeneratedValue
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id_donacion")
   private Long id;
   @Column(name = "descripcion")
@@ -31,7 +31,7 @@ public class Donacion {
   @JoinColumn(name = "id_donacion")
   private List<Bien> bienes;
   @ElementCollection
-  @CollectionTable(name = "estados_donacion", joinColumns = @JoinColumn(name = "id_donacion"))
+  @CollectionTable(name = "historial_estados_donacion", joinColumns = @JoinColumn(name = "id_donacion"))
   @OrderColumn(name = "orden")
   private List<EstadoDonacion> historialEstados;
   @ManyToOne
@@ -39,7 +39,7 @@ public class Donacion {
   private Beneficiario beneficiario;//Doble asociación bidireccional
   @ManyToMany(cascade = CascadeType.PERSIST)
   @JoinTable(
-      name = "donacion_donante",
+      name = "donaciones_x_donante",
       joinColumns = @JoinColumn(name = "id_donacion"),
       inverseJoinColumns = @JoinColumn(name = "id_donante")) //TODO: evaluar si conviene calcularlo en vez de persistirlo.
   private List<Donante> donantes;

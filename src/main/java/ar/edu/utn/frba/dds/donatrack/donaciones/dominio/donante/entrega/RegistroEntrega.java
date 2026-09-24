@@ -22,10 +22,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "Registro_Entregas")
+@Table(name = "registro_entregas")
 public class RegistroEntrega {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id_registro_entrega")
   private Long id;
   @Column(name = "fecha")
   private LocalDateTime fecha;

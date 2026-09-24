@@ -8,13 +8,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+@Getter
 @NoArgsConstructor
 @Entity
-@Table(name="Subcategoria")
-@Getter
+@Table(name = "subcategorias")
 public class Subcategoria {
   @Id @GeneratedValue
-  @Column (name="id_subcategoria")
+  @Column (name = "id_subcategoria")
   private Long id;
   @Column (name = "nombre")
   private String nombre;

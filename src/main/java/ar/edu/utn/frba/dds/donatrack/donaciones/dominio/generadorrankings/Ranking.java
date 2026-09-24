@@ -26,12 +26,13 @@ import lombok.Setter;
 @Table (name = "rankings")
 public class Ranking {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id_ranking")
   private Long id;
   @Transient
   private Donacion donacion;
   @ManyToMany
   @JoinTable (
-      name = "ranking_por_beneficiario",
+      name = "ranking_x_beneficiario",
       joinColumns = @JoinColumn (name = "id_ranking"),
       inverseJoinColumns = @JoinColumn (name = "id_beneficiario")
   )

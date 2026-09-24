@@ -41,10 +41,6 @@ public class SmsDeContacto extends MedioContacto {
     }
   }
 
-  public String getDetalle() {
-    return this.detalle;
-  }
-
   @Override
   public void enviarMensaje(String message) {
     clienteSms.enviarSms(detalle, message);

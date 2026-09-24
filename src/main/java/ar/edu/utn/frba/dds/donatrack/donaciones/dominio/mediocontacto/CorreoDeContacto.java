@@ -41,10 +41,6 @@ public class CorreoDeContacto extends MedioContacto {
     }
   }
 
-  public String getDetalle() {
-    return this.detalle;
-  }
-
   @Override
   public void enviarMensaje(String message) {
     clienteCorreo.enviarCorreo(detalle, message);

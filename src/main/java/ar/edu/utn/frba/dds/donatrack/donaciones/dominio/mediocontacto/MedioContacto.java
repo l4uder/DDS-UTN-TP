@@ -11,8 +11,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @NoArgsConstructor
 @Table (name = "contactos")
@@ -20,16 +23,15 @@ import lombok.NoArgsConstructor;
 @DiscriminatorColumn (name = "tipo_contacto")
 public abstract class MedioContacto {
   @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
+  @Column(name = "id_contacto")
   private Long id;
   @Column (name = "es_principal")
   protected Boolean esPrincipal;
   @Column (name = "detalle")
   protected String detalle;
 
-  public boolean getEsPrincipal() {
-    return this.esPrincipal;
-  }
-
   public abstract void enviarMensaje(String message);
+
   public abstract boolean esIgualA(MedioContacto otro);
+
 }

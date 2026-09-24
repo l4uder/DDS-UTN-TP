@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Donante {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id_donante")
   private Long id;
   @Embedded
   private Documento documento;

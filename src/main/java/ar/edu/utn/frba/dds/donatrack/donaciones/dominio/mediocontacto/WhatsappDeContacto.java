@@ -41,10 +41,6 @@ public class WhatsappDeContacto extends MedioContacto {
     }
   }
 
-  public String getDetalle() {
-    return this.detalle;
-  }
-
   @Override
   public void enviarMensaje(String message) {
     clienteWhatsapp.enviarWhatsapp(detalle, message);

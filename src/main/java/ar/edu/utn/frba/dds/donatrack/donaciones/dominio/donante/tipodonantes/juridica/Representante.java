@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "representantes")
 public class Representante {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id_representante")
   private Long id;
   @Column(name = "nombre")
   private String nombre;

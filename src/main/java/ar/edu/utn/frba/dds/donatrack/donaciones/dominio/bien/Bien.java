@@ -2,41 +2,33 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+@Getter
 @NoArgsConstructor
 @Entity
-@Table(name="Bien")
+@Table(name = "bienes")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_bien")
-@Getter
 public abstract class Bien {
-  @Id @GeneratedValue
-  @Column (name="id_bien")
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column (name = "id_bien")
   private Long id;
   @Column (name = "descripcion")
   private String descripcion;
-  @Column (name="cantidad")
+  @Column (name = "cantidad")
   private float cantidad;
+  @Column (name = "unidad_medida")
   @Enumerated(EnumType.STRING)
-  @Column (name="unidad_medida")
   private UnidadMedida unidadMedida;
-  @Column (name="foto")
+  @Column (name = "foto")
   private String foto;
   @ManyToOne
-  @JoinColumn(name="id_subcategoria")
+  @JoinColumn(name = "id_subcategoria")
   private Subcategoria subcategoria;
 
   protected Bien(String descripcion, Float cantidad, UnidadMedida unidad,

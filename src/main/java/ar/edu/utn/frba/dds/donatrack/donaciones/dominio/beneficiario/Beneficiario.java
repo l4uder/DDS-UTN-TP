@@ -25,9 +25,10 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "Beneficiarios")
+@Table(name = "beneficiarios")
 public class Beneficiario {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id_beneficiario")
   private Long id;
   @Column(name = "razon_social")
   private String razonSocial;

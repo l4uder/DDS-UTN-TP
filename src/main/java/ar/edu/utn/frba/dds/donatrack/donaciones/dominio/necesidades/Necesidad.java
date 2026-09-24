@@ -27,6 +27,7 @@ import lombok.Setter;
 @DiscriminatorColumn(name = "tipo_necesidad")
 public abstract class Necesidad {
   @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
+  @Column(name = "id_necesidad")
   private Long id;
   @Transient
   private Subcategoria subcategoria;

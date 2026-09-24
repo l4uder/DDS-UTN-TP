@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "donantes_juridicas")
+@Table(name = "juridicas")
 @PrimaryKeyJoinColumn(name = "id_donante")
 public class Juridica extends Donante {
   @Column(name = "razon_social")
@@ -35,7 +35,7 @@ public class Juridica extends Donante {
   @Column(name = "rubro")
   private String rubro;
   @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "id_persona_juridica")
+  @JoinColumn(name = "id_juridica")
   private List<Representante> representantes;
 
   public Juridica(String razonSocial, Documento documento, TipoOrganizacion tipo,

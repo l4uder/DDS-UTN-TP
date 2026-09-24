@@ -11,12 +11,12 @@ import javax.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @Entity
 @DiscriminatorValue("no_perecedero")
-@Getter
 public class NoPerecedero extends Bien {
-  @Column(name="esta_usado")
+  @Column(name = "esta_usado")
   private Boolean estaUsado;
 
   public NoPerecedero(String descripcion, Float cantidad, UnidadMedida unidad,
