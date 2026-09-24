@@ -211,7 +211,7 @@ public class DonacionController {
   }
 
   private Donacion buscarDonacionPorId(String id) {
-    Donacion donacion = repoDonaciones.buscarPorId(id);
+    Donacion donacion = repoDonaciones.buscarPorId(Long.valueOf(id));
     if (donacion == null) throw new RecursoNoEncontradoException("No existe donación: " + id);
     return donacion;
   }

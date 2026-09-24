@@ -5,7 +5,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.bien.BienDto;
 import java.util.List;
 
 public record DonacionResponse(
-    String id,
+    Long id,
     String descripcion,
     String estado,
     BeneficiarioResumenResponse beneficiario,

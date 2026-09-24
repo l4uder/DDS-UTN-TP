@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien;
 
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;

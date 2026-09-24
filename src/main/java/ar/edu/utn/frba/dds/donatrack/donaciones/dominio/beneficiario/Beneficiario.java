@@ -39,7 +39,7 @@ public class Beneficiario {
   @OneToMany
   @JoinColumn(name = "id_beneficiario")
   private List<Necesidad> necesidades;
-  @Transient
+  @OneToMany(mappedBy = "beneficiario")
   private List<Donacion> donaciones;
 
   public Beneficiario(String razonSocial, String direccion, List<MedioContacto> contactos) {
