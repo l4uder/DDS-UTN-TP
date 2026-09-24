@@ -4,7 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Docume
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.Genero;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoMock;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoReal;
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.List;
 public class PruebaEnvioCorreoReal {
 
   public static void main(String[] args) {
-    CorreoDeContato correoFalso = new CorreoDeContato("correoFalso@gmail.com", true, new ClienteCorreoMock());
-    CorreoDeContato correoVerdadero = new CorreoDeContato("ericleohuanto@gmail.com", true, new ClienteCorreoReal());
+    CorreoDeContacto correoFalso = new CorreoDeContacto("correoFalso@gmail.com", true, new ClienteCorreoMock());
+    CorreoDeContacto correoVerdadero = new CorreoDeContacto("ericleohuanto@gmail.com", true, new ClienteCorreoReal());
 
     Humana persona = new Humana(
         "usuario",

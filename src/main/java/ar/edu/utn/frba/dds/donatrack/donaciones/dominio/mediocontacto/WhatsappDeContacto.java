@@ -6,24 +6,23 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementa
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
 @DiscriminatorValue("whatsapp")
-public class WhatsappDeContato extends MedioContacto {
+public class WhatsappDeContacto extends MedioContacto {
   @Transient
   private ClienteWhatsapp clienteWhatsapp;
 
-  public WhatsappDeContato(String telefono, Boolean esPrincipal) {
+  public WhatsappDeContacto(String telefono, Boolean esPrincipal) {
     checkDatos(telefono, esPrincipal);
     this.detalle = telefono;
     this.esPrincipal = esPrincipal;
     this.clienteWhatsapp = new ClienteWhatsappMock();
   }
 
-  public WhatsappDeContato(String telefono, Boolean esPrincipal, ClienteWhatsapp clienteWhatsapp) {
+  public WhatsappDeContacto(String telefono, Boolean esPrincipal, ClienteWhatsapp clienteWhatsapp) {
     checkDatos(telefono, esPrincipal);
     this.detalle = telefono;
     this.esPrincipal = esPrincipal;
@@ -53,7 +52,7 @@ public class WhatsappDeContato extends MedioContacto {
 
   @Override
   public boolean esIgualA(MedioContacto otro) {
-    if (!(otro instanceof WhatsappDeContato numeroWhatsapp)) {
+    if (!(otro instanceof WhatsappDeContacto numeroWhatsapp)) {
       return false;
     }
     return this.detalle.equals(numeroWhatsapp.getDetalle());

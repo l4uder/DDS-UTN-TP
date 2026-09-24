@@ -8,7 +8,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContacto;
 import org.junit.jupiter.api.Test;
 
 public class PersonaHumanaTest {
@@ -18,7 +18,7 @@ public class PersonaHumanaTest {
     Humana persona = new PersonaHumanaBuilder()
         .conNombre("Esteban")
         .conDocumento(new Documento(TipoDocumento.DNI, "45123456"))
-        .conAgregarContacto(new CorreoDeContato("estebancarp@gmail.com", true))
+        .conAgregarContacto(new CorreoDeContacto("estebancarp@gmail.com", true))
         .conDireccion("alguna dirección")
         .build();
 

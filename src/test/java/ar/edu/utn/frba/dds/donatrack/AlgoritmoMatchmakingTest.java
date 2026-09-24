@@ -17,7 +17,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Categoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades.NecesidadExtraordinaria;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,7 +47,7 @@ public class AlgoritmoMatchmakingTest {
   private Donacion donacionAsignada2;
   private Donacion donacionAsignada3;
   //MedioContacto
-  CorreoDeContato correo;
+  CorreoDeContacto correo;
   //Beneficiario
   private Beneficiario beneficiario1;
   private Beneficiario beneficiario2;
@@ -108,7 +108,7 @@ public class AlgoritmoMatchmakingTest {
     //Donacion
     //donacion = new Donacion(List.of(fideos));
     //MedioContacto
-    correo = new CorreoDeContato("correo@gmail.com", true);
+    correo = new CorreoDeContacto("correo@gmail.com", true);
     //Beneficiario
     beneficiario1 = new Beneficiario("4444", "av. Varela 1800", List.of(correo));
     beneficiario2 = new Beneficiario("5555", "av. Irigoyen 88", List.of(correo));
@@ -130,7 +130,7 @@ public class AlgoritmoMatchmakingTest {
         .conNombre("Juan")
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
+        .conAgregarContacto(new CorreoDeContacto("juan@prueba.com", true))
         .conDireccion("alguna dirección")
         .build();
   }

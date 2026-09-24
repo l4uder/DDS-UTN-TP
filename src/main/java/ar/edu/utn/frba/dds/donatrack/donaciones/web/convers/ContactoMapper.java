@@ -1,9 +1,9 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.convers;
 
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContato;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.SmsDeContacto;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.contacto.ContactoDto;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import java.util.List;
@@ -18,15 +18,15 @@ public class ContactoMapper {
       throw new DominioException("Cada contacto necesita un 'medio', valores posibles: [EMAIL, SMS, WHATSAPP] ");
     }
     return switch (contactoDto.medio().toUpperCase()) {
-      case "EMAIL" -> new CorreoDeContato(
+      case "EMAIL" -> new CorreoDeContacto(
           contactoDto.valor(),
           Boolean.TRUE.equals(contactoDto.principal())
       );
-      case "SMS" -> new SmsDeContato(
+      case "SMS" -> new SmsDeContacto(
           contactoDto.valor(),
           Boolean.TRUE.equals(contactoDto.principal())
       );
-      case "WHATSAPP" -> new WhatsappDeContato(
+      case "WHATSAPP" -> new WhatsappDeContacto(
           contactoDto.valor(),
           Boolean.TRUE.equals(contactoDto.principal())
       );
@@ -36,13 +36,13 @@ public class ContactoMapper {
   }
 
   public static ContactoDto aDto(MedioContacto contacto) {
-    if (contacto instanceof CorreoDeContato correo) {
+    if (contacto instanceof CorreoDeContacto correo) {
       return new ContactoDto("EMAIL", correo.getDetalle(), correo.getEsPrincipal());
     }
-    if (contacto instanceof SmsDeContato sms) {
+    if (contacto instanceof SmsDeContacto sms) {
       return new ContactoDto("SMS", sms.getDetalle(), sms.getEsPrincipal());
     }
-    WhatsappDeContato whatsapp = (WhatsappDeContato) contacto;
+    WhatsappDeContacto whatsapp = (WhatsappDeContacto) contacto;
     return new ContactoDto("WHATSAPP", whatsapp.getDetalle(), whatsapp.getEsPrincipal());
   }
 

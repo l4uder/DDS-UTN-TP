@@ -3,7 +3,7 @@ package ar.edu.utn.frba.dds.donatrack;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContato;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContacto;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
 import ar.edu.utn.frba.dds.donatrack.builder.BienBuilder;
@@ -50,7 +50,7 @@ public class EstadosDonacionTest {
         .conNombre("Juan")
         .conApellido("Pérez")
         .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conAgregarContacto(new CorreoDeContato("juan@prueba.com", true))
+        .conAgregarContacto(new CorreoDeContacto("juan@prueba.com", true))
         .conDireccion("alguna dirección")
         .build();
   }
@@ -77,7 +77,7 @@ public class EstadosDonacionTest {
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeAsignacionRealizada() {
     Donacion donacion = new Donacion(List.of(fideosLucetti), List.of(donantePrueba));
 
-    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true))));
+    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true))));
 
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::enCamino);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornarADeposito);
@@ -90,12 +90,12 @@ public class EstadosDonacionTest {
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeListaParaEntregar() {
     Donacion donacion = new Donacion(List.of(fideosLucetti), List.of(donantePrueba));
 
-    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true))));
+    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true))));
     donacion.listaParaEntregar();
 
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::entregada);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornarADeposito);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true)))));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true)))));
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.errorAlEntregar("razon"));
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::vencida);
     assertEquals(TipoEstadoDonacion.LISTA_PARA_ENTREGAR, donacion.getEstadoActual());
@@ -105,12 +105,12 @@ public class EstadosDonacionTest {
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEnViaje() {
     Donacion donacion = new Donacion(List.of(fideosLucetti), List.of(donantePrueba));
 
-    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true))));
+    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true))));
     donacion.listaParaEntregar();
     donacion.enCamino();
 
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::listaParaEntregar);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("nombreBeneficiario@gmail.com", true)))));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("nombreBeneficiario@gmail.com", true)))));
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::vencida);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornarADeposito);
 
@@ -121,14 +121,14 @@ public class EstadosDonacionTest {
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEntregaFallida() {
     Donacion donacion = new Donacion(List.of(fideosLucetti), List.of(donantePrueba));
 
-    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true))));
+    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true))));
     donacion.listaParaEntregar();
     donacion.enCamino();
     donacion.errorAlEntregar("No se encontraba en el domicilio");
 
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::listaParaEntregar);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::enCamino);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true)))));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true)))));
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::vencida);
 
     assertEquals(TipoEstadoDonacion.ENTREGA_FALLIDA, donacion.getEstadoActual());
@@ -138,14 +138,14 @@ public class EstadosDonacionTest {
   public void cambiosDeEstadoInvalidosDebenLanzarExcepcionDesdeEntregaRealizada() {
     Donacion donacion = new Donacion(List.of(fideosLucetti), List.of(donantePrueba));
 
-    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true))));
+    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true))));
     donacion.listaParaEntregar();
     donacion.enCamino();
     donacion.entregada();
 
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::listaParaEntregar);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::enCamino);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true)))));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true)))));
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::vencida);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornarADeposito);
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.errorAlEntregar("razon"));
@@ -161,7 +161,7 @@ public class EstadosDonacionTest {
 
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::listaParaEntregar);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::enCamino);
-    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true)))));
+    assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true)))));
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::entregada);
     assertThrows(CambioDeEstadoNoPermitidoException.class, donacion::retornarADeposito);
     assertThrows(CambioDeEstadoNoPermitidoException.class, () -> donacion.errorAlEntregar("razon"));
@@ -173,7 +173,7 @@ public class EstadosDonacionTest {
   public void entregaExitosa() {
     Donacion donacion = new Donacion(List.of(fideosLucetti), List.of(donantePrueba));
 
-    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true))));
+    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true))));
     donacion.listaParaEntregar();
     donacion.enCamino();
     donacion.entregada();
@@ -195,7 +195,7 @@ public class EstadosDonacionTest {
   public void entregaFallida() {
     Donacion donacion = new Donacion(List.of(fideosLucetti), List.of(donantePrueba));
 
-    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContato("esperanza@prueba.com", true))));
+    donacion.asignarA(new Beneficiario("razon", "direccion", List.of(new CorreoDeContacto("esperanza@prueba.com", true))));
     donacion.listaParaEntregar();
     donacion.enCamino();
     donacion.errorAlEntregar("No se encontraba en el domicilio");
