@@ -3,18 +3,9 @@ package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.necesidades;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.UnidadMedida;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,7 +20,8 @@ public abstract class Necesidad {
   @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
   @Column(name = "id_necesidad")
   private Long id;
-  @Transient
+  @ManyToOne
+  @JoinColumn(name = "id_subcategoria")
   private Subcategoria subcategoria;
   @Column(name = "unidad_medida")
   @Enumerated (EnumType.STRING)

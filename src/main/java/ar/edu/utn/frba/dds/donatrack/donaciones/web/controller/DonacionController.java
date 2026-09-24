@@ -23,11 +23,12 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.web.dto.donacion.ErrorEntregaDon
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.BodyException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.RecursoNoEncontradoException;
+import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 import io.javalin.http.Context;
 import java.util.Arrays;
 import java.util.List;
 
-public class DonacionController {
+public class DonacionController implements WithSimplePersistenceUnit {
   private final DonacionRepository repoDonaciones;
   private final DonanteRepository repoDonantes;
 
@@ -45,11 +46,13 @@ public class DonacionController {
     List<String> idDonantes = request.donantesId();
     List<BienDto> bienesDto = request.bienes();
 
+    beginTransaction();
     List<Donante> donantes = idDonantes.stream().map(this::buscarDonantePorId).toList();
     Donacion donacion = DonacionMapper.aDominio(bienesDto, donantes);
-
     repoDonaciones.guardar(donacion);
-    ctx.status(201).json(DonacionMapper.aDto(donacion));
+    commitTransaction();
+
+    ctx.status(201).json("Donación creada correctamente");
   }
 
   public void obtenerTodos(Context ctx) {
@@ -58,17 +61,20 @@ public class DonacionController {
 
     TipoEstadoDonacion estado = aTipoEstadoDonacion(estadoDonacion);
 
+    beginTransaction();
     List<Donacion> donaciones = estado == null ? repoDonaciones.buscarTodos() : repoDonaciones.buscarTodoPorEstado(estado);
     ctx.status(200).json(DonacionMapper.aDto(donaciones));
+    commitTransaction();
   }
 
   public void obtener(Context ctx) {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
 
+    beginTransaction();
     Donacion donacion = buscarDonacionPorId(idDonacion);
-
     ctx.status(200).json(DonacionMapper.aDto(donacion));
+    commitTransaction();
   }
 
   public void actualizar(Context ctx) {
@@ -76,23 +82,27 @@ public class DonacionController {
     String idDonacion = ctx.pathParam("id");
     //Cosas que recibo por Body
     DonacionRequest request = ctx.bodyAsClass(DonacionRequest.class);
+    if (request.bienes() == null) throw new BodyException("Bad Request, necesita: 'bienes'");
     List<BienDto> bienesDto = request.bienes();
 
+    beginTransaction();
     Donacion donacion = buscarDonacionPorId(idDonacion);
     List<Bien> bienes = BienMapper.aDominio(bienesDto);
-
     donacion.actualizarBienes(bienes);
     repoDonaciones.actualizar(donacion);
-    ctx.status(200).json(DonacionMapper.aDto(donacion));
+    commitTransaction();
+    ctx.status(200).json("Donación actualizada correctamente");
   }
 
   public void eliminar(Context ctx) {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
 
+    beginTransaction();
     Donacion donacion = buscarDonacionPorId(idDonacion);
-
     repoDonaciones.eliminar(donacion);
+    commitTransaction();
+
     ctx.status(204);
   }
 
@@ -100,10 +110,11 @@ public class DonacionController {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
 
+    beginTransaction();
     Donacion donacion = buscarDonacionPorId(idDonacion);
-
     List<EstadoDonacion> historialEstados = donacion.getHistorialEstados();
     ctx.status(200).json(EstadoDonacionMapper.aDto(historialEstados));
+    commitTransaction();
   }
 
   // [Asignación Realizada] -> [Lista Para Entregar]
@@ -111,11 +122,13 @@ public class DonacionController {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
 
+    beginTransaction();
     Donacion donacion = buscarDonacionPorId(idDonacion);
-
     donacion.listaParaEntregar();
     repoDonaciones.actualizar(donacion);
-    ctx.status(200).json(DonacionMapper.aDto(donacion));
+    commitTransaction();
+
+    ctx.status(200).json("la donación esta lista para ser entregada");
   }
 
   // [Lista Para Entregar] -> [En Traslado]
@@ -127,12 +140,14 @@ public class DonacionController {
     if (request.linkMapa() == null) throw new BodyException("Bad Request, necesita: 'link_mapa' ");
     String mapa = request.linkMapa();
 
+    beginTransaction();
     Donacion donacion = buscarDonacionPorId(idDonacion);
-
     donacion.enCamino();
     repoDonaciones.actualizar(donacion);
     DispatcherEventos.getInstancia().publicar(new EventoInicioDeRuta(donacion.getBeneficiario(), donacion.getDonantes(), donacion.getDescripcion(), mapa));
-    ctx.status(200).json(DonacionMapper.aDto(donacion));
+    commitTransaction();
+
+    ctx.status(200).json("la donación se encuentra en traslado");
   }
 
   // [En Traslado] -> [Entregada] FIN
@@ -144,12 +159,14 @@ public class DonacionController {
     if (request.linkComprobanteEntrega() == null) throw new BodyException("Bad Request, necesita: 'link_comprobante_entrega' ");
     String comprobante = request.linkComprobanteEntrega();
 
+    beginTransaction();
     Donacion donacion = buscarDonacionPorId(idDonacion);
-
     donacion.entregada();
     repoDonaciones.actualizar(donacion);
     DispatcherEventos.getInstancia().publicar(new EventoEntregaExitosa(donacion.getBeneficiario(), donacion.getDonantes(), donacion.getDescripcion(), comprobante));
-    ctx.status(200).json(DonacionMapper.aDto(donacion));
+    commitTransaction();
+
+    ctx.status(200).json("la donación fue entregada");
   }
 
   // [En Traslado] -> [Entregada Fallida]
@@ -161,12 +178,14 @@ public class DonacionController {
     if (request.observacion() == null) throw new BodyException("Bad Request, necesita: 'observacion' del error");
     String observacion = request.observacion();
 
+    beginTransaction();
     Donacion donacion = buscarDonacionPorId(idDonacion);
-
     donacion.errorAlEntregar(observacion);
     repoDonaciones.actualizar(donacion);
     DispatcherEventos.getInstancia().publicar(new EventoEntregaFallida(donacion, observacion));
-    ctx.status(200).json(DonacionMapper.aDto(donacion));
+    commitTransaction();
+
+    ctx.status(200).json("la donación No pudo ser entregada");
   }
 
   // [Entrega Fallida] -> [En Deposito]
@@ -174,11 +193,13 @@ public class DonacionController {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
 
+    beginTransaction();
     Donacion donacion = buscarDonacionPorId(idDonacion);
-
     donacion.retornarADeposito();
     repoDonaciones.actualizar(donacion);
-    ctx.status(200).json(DonacionMapper.aDto(donacion));
+    commitTransaction();
+
+    ctx.status(200).json("la donación fue devuelta a deposito");
   }
 
   // [En Deposito] -> [Vencida] FIN
@@ -186,12 +207,14 @@ public class DonacionController {
     //Cosas que recibo por URL --> Path param
     String idDonacion = ctx.pathParam("id");
 
+    beginTransaction();
     Donacion donacion = buscarDonacionPorId(idDonacion);
-
     donacion.vencida();
     repoDonaciones.actualizar(donacion);
     DispatcherEventos.getInstancia().publicar(new EventoVencida(donacion.getDonantes()));
-    ctx.status(200).json(DonacionMapper.aDto(donacion));
+    commitTransaction();
+
+    ctx.status(200).json("la donación se venció");
   }
 
   //================ FUNCIONES AUXILIARES ===============

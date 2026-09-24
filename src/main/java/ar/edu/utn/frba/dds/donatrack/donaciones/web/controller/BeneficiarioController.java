@@ -21,10 +21,12 @@ public class BeneficiarioController implements WithSimplePersistenceUnit {
     BeneficiarioRequest beneficiarioDto = ctx.bodyAsClass(BeneficiarioRequest.class);
 
     Beneficiario beneficiario = BeneficiarioMapper.aDominio(beneficiarioDto);
+
     beginTransaction();
     repoBeneficiarios.guardar(beneficiario);
-    ctx.status(201).json(BeneficiarioMapper.aDto(beneficiario));
     commitTransaction();
+
+    ctx.status(201).json("Beneficiario creado correctamente");
   }
 
   public void obtenerTodos(Context ctx) {
@@ -37,9 +39,9 @@ public class BeneficiarioController implements WithSimplePersistenceUnit {
   public void obtener(Context ctx) {
     //Cosas que recibo por URL --> Path param
     Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
+
     beginTransaction();
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
-
     ctx.status(200).json(BeneficiarioMapper.aDto(beneficiario));
     commitTransaction();
   }
@@ -53,20 +55,21 @@ public class BeneficiarioController implements WithSimplePersistenceUnit {
     beginTransaction();
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
     BeneficiarioMapper.actualizarDominio(beneficiario, beneficiarioDto);
-
     repoBeneficiarios.actualizar(beneficiario);
-    ctx.status(200).json(BeneficiarioMapper.aDto(beneficiario));
     commitTransaction();
+
+    ctx.status(200).json("Beneficiario actualizado correctamente");
   }
 
   public void eliminar(Context ctx) {
     //Cosas que recibo por URL --> Path param
     Long idBeneficiario = Long.valueOf(ctx.pathParam("id"));
+
     beginTransaction();
     Beneficiario beneficiario = buscarBeneficiarioPorId(idBeneficiario);
-
     repoBeneficiarios.eliminar(beneficiario);
     commitTransaction();
+
     ctx.status(204);
   }
 
