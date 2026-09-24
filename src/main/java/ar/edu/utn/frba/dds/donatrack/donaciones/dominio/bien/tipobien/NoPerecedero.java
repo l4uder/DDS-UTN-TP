@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("NO_PERECEDERO")
+@DiscriminatorValue("no_perecedero")
 @Getter
 public class NoPerecedero extends Bien {
   @Column(name="esta_usado")
@@ -25,12 +25,15 @@ public class NoPerecedero extends Bien {
     if (usado == null) throw new DominioException("El campo 'usado' es obligatorio, en el Bien No Perecedero");
     this.estaUsado = usado;
   }
+
   @Override
   public String getNombreClave() {
     return getSubcategoria().getNombre() + "_" + (estaUsado ? "usado" : "nuevo");
   }
+
   @Override
   public String getTipo() {
     return "NO_PERECEDERO";
   }
+
 }

@@ -6,24 +6,9 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.CambioDeEstadoNoPermitidoException;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
@@ -45,11 +30,9 @@ public class Donacion {
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "id_donacion")
   private List<Bien> bienes;
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "id_donacion")
-  @OrderBy("id")//el oneToMany no garantiza el orden. se hace un select sin
-                // orderBy, entonces al traernos de la base los estados,
-                // vienen desordenados y aca el orden es importantisimo
+  @ElementCollection
+  @CollectionTable(name = "estados_donacion", joinColumns = @JoinColumn(name = "id_donacion"))
+  @OrderColumn(name = "orden")
   private List<EstadoDonacion> historialEstados;
   @ManyToOne
   @JoinColumn(name = "id_beneficiario")
@@ -58,10 +41,7 @@ public class Donacion {
   @JoinTable(
       name = "donacion_donante",
       joinColumns = @JoinColumn(name = "id_donacion"),
-      inverseJoinColumns = @JoinColumn(name = "id_donante")) //esto genera que haya una tabla intermedia donacionXdonante.
-                                                            // Se podria evitar esto ya que es redundante porque se podria
-                                                            //llegar de donante a donacion haciendo joins con bienes y registro entrega
-                                                            // TODO: evaluar si conviene calcularlo en vez de persistirlo.
+      inverseJoinColumns = @JoinColumn(name = "id_donante")) //TODO: evaluar si conviene calcularlo en vez de persistirlo.
   private List<Donante> donantes;
   @Column(name = "estado_modificable")
   private Boolean estadoModificable;

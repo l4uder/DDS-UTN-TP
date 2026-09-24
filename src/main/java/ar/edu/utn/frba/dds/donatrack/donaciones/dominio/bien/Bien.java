@@ -38,7 +38,6 @@ public abstract class Bien {
   @ManyToOne
   @JoinColumn(name="id_subcategoria")
   private Subcategoria subcategoria;
- // private TipoBien tipoBien;
 
   protected Bien(String descripcion, Float cantidad, UnidadMedida unidad,
                String foto, Subcategoria subcategoria) {
@@ -48,7 +47,6 @@ public abstract class Bien {
     this.unidadMedida = unidad;
     this.foto = foto;
     this.subcategoria = subcategoria;
-    //this.tipoBien = tipoBien;
   }
 
   private void checkDatos(UnidadMedida unidadMedida, Float cantidad, Subcategoria subcategoria) {
@@ -64,26 +62,10 @@ public abstract class Bien {
 
   public abstract String getNombreClave();
 
-
-  //esto lo podria pasar a un enum
-  public abstract String getTipo();
+  public abstract String getTipo(); // Esto podría pasar a ser un enum
 
   public float getCantidadMenorMedida() {
     return this.unidadMedida.convertirAMenorMedida(cantidad);
   }
-
-  /*public static Bien crearPerecedero(String descripcion, Float cantidad, UnidadMedida unidad,
-                                     String foto, Subcategoria subcategoria, LocalDate fechaVencimiento) {
-
-    TipoBien tipoBien = new Perecedero(fechaVencimiento);
-    return new Bien(descripcion, cantidad, unidad, foto, subcategoria, tipoBien);
-  }*/
-
- /* public static Bien crearNoPerecedero(String descripcion, Float cantidad, UnidadMedida unidad,
-                                       String foto, Subcategoria subcategoria, Boolean usado) {
-
-    TipoBien tipoBien = new NoPerecedero(usado);
-    return new Bien(descripcion, cantidad, unidad, foto, subcategoria, tipoBien);
-  }*/
 
 }

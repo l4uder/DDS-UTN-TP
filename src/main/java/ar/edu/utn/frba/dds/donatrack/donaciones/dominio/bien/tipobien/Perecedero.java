@@ -18,12 +18,11 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Entity
-@DiscriminatorValue("PERECEDERO")
+@DiscriminatorValue("perecedero")
 @Getter
 public class Perecedero extends Bien {
   @Column(name="fecha_de_vencimiento")
   private LocalDate fechaVencimiento;
-
 
   public Perecedero(String descripcion, Float cantidad, UnidadMedida unidad,
                     String foto, Subcategoria subcategoria, LocalDate fechaVencimiento) {
@@ -31,12 +30,15 @@ public class Perecedero extends Bien {
     if (fechaVencimiento == null) throw new DominioException("El campo 'fecha_vencimiento' es obligatorio, en el Bien Perecedero");
     this.fechaVencimiento = fechaVencimiento;
   }
+
   @Override
   public String getNombreClave() {
     return getSubcategoria().getNombre() + "_" + this.fechaVencimiento.format(DateTimeFormatter.BASIC_ISO_DATE);
   }
+
   @Override
   public String getTipo() {
     return "PERECEDERO";
   }
+
 }
