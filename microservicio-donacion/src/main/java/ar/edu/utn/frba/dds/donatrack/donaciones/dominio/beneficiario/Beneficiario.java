@@ -26,7 +26,7 @@ public class Beneficiario {
   private String razonSocial;
   @Column(name = "direccion")
   private String direccion;
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinColumn(name = "id_beneficiario")
   private List<MedioContacto> contactos;
   @ElementCollection

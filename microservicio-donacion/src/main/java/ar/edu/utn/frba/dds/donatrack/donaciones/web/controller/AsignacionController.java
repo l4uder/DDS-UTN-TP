@@ -81,9 +81,10 @@ public class AsignacionController implements WithSimplePersistenceUnit {
     ranking.invalidar();
     Donacion donacion = ranking.getDonacion();
     donacion.asignarA(beneficiario);
-    repoDonaciones.actualizar(donacion);
-    repoBeneficiarios.actualizar(beneficiario);
-    repoRankings.actualizar(ranking);
+    //Redundantes
+    //repoDonaciones.actualizar(donacion);
+    //repoBeneficiarios.actualizar(beneficiario);
+    //repoRankings.actualizar(ranking);
     DispatcherEventos.getInstancia().publicar(new EventoAsignacion(beneficiario, donacion.getDonantes(), donacion.getDescripcion()));
     ctx.status(200).json(DonacionMapper.aDto(donacion));
     commitTransaction();

@@ -23,6 +23,7 @@ public class SuscriptorNotificacion {
 
   @Subscribe
   public void onAsignacionDeDonacion(EventoAsignacion evento) {
+    System.out.println("==== LLEGÓ EL EVENTO A GUAVA ====");
     String mensajeBeneficiario = "Se le ha asignado una nueva donación: %s ".formatted(evento.detalleDonacion());
     String mensajeDonante = "Su donación se le ha asignado a: %s ".formatted(evento.beneficiario().getRazonSocial());
     evento.beneficiario().recibirNotificacion(mensajeBeneficiario);

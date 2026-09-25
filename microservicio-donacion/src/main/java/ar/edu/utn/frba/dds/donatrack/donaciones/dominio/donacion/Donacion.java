@@ -52,7 +52,8 @@ public class Donacion {
     this.bienes = new ArrayList<>(bienes);
     this.historialEstados = new ArrayList<>();
     this.historialEstados.add(new EstadoDonacion(TipoEstadoDonacion.EN_DEPOSITO));
-    this.donantes = donantes;
+    //this.donantes = donantes;
+    this.donantes = new ArrayList<>(donantes);
     this.estadoModificable = true;
   }
 

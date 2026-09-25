@@ -16,6 +16,7 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.Dispatche
 import ar.edu.utn.frba.dds.donatrack.shared.ConfiguracionEntorno;
 import ar.edu.utn.frba.dds.donatrack.shared.ExceptionHandlers;
 import ar.edu.utn.frba.dds.donatrack.shared.GsonConfig;
+import com.twilio.Twilio;
 import io.javalin.Javalin;
 
 public class App {
@@ -24,8 +25,12 @@ public class App {
 
   public static void main(String[] args) {
     DatosIniciales.init();
+    ConfiguracionEntorno env = ConfiguracionEntorno.getInstance();
+
+    Twilio.init(env.getTwilioAccountSid(), env.getTwilioAuthToken());
     SuscriptorNotificacion.init();
-    crearApp().start(ConfiguracionEntorno.getInstance().puertoDonaciones(PUERTO));
+
+    crearApp().start(env.puertoDonaciones(PUERTO));
   }
 
   public static Javalin crearApp() {

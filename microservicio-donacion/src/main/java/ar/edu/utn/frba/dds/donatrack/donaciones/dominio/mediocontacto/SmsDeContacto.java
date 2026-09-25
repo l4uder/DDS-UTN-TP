@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSmsMock;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSmsRealTwilio;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.whatsapp.ClienteWhatsappRealTwilio;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.sms.ClienteSms;
 import javax.persistence.DiscriminatorValue;
@@ -43,6 +45,9 @@ public class SmsDeContacto extends MedioContacto {
 
   @Override
   public void enviarMensaje(String message) {
+    if (this.clienteSms == null) {
+      this.clienteSms = new ClienteSmsRealTwilio();
+    }
     clienteSms.enviarSms(detalle, message);
   }
 

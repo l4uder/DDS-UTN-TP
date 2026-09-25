@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoMock;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreoReal;
 import ar.edu.utn.frba.dds.donatrack.shared.excepciones.DominioException;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.implementacion.correo.ClienteCorreo;
 import javax.persistence.DiscriminatorValue;
@@ -43,6 +44,9 @@ public class CorreoDeContacto extends MedioContacto {
 
   @Override
   public void enviarMensaje(String message) {
+    if (this.clienteCorreo == null) {
+      this.clienteCorreo = new ClienteCorreoReal();
+    }
     clienteCorreo.enviarCorreo(detalle, message);
   }
 
