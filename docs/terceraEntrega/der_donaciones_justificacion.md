@@ -18,3 +18,13 @@ Mapeamos Bien con SINGLE_TABLE: una sola tabla bienes con el discriminador tipo_
 
 - Las subclases casi no se diferencian en datos: cada una agrega un solo atributo (fecha_vencimiento o esta_usado), y el resto está en Bien. Con JOINED tendríamos tablas de una columna y un join en cada consulta, sin ninguna ventaja.
 - Costo que asumimos: esas dos columnas quedan nullables en la base. Lo cubre el dominio: cada constructor lanza DominioException si falta su atributo obligatorio.
+
+---
+Para el mapeo de la clase donante se decio usar Joined table porque sus clases hijas poseen más atributos propios de los que comparten con el padre.
+Por ejemplo donante Humana tiene: nombre, apellido, fecha_nacimiento, género, direccion.
+y el donante Juridica tiene: razon_social, tipo_organizacion, rubro.
+Si usara SINGLE_TABLE, crearía una tabla con muchos valores NULL (más del 50% de las columnas estarían vacías para cualquier fila dada). 
+JOINED mantiene un esquema limpio y normalizado.
+
+Se decidio embeber la clase Documento, ya que cada documento es propio de una instancia, es decir es una relacion @OnetoOne donde un donante humano tiene un documento y un documento pertenece solo a un donante o a un solo representante.
+
