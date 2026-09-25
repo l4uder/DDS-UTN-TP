@@ -58,7 +58,6 @@ class GpsRepositoryTest {
   void actualizarFallaSiElGpsNoExiste() {
     Gps gpsInexistente = new Gps("IMEI-FANTASMA");
 
-    assertThrows(RegistroNoEncontradoException.class,
-        () -> repository.actualizar(gpsInexistente));
+    assertThrows(RegistroNoEncontradoException.class, () -> repository.actualizar(gpsInexistente));
   }
 }

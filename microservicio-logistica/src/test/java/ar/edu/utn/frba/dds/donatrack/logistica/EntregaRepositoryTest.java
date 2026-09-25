@@ -36,10 +36,10 @@ class EntregaRepositoryTest {
     // @Embeddable (DonacionEnTransito) con una relación @ManyToOne hacia
     // Beneficiario (entidad). Si algo del mapeo de herencia de colecciones
     // está mal, este test lo revela.
-    Beneficiario beneficiario = new Beneficiario(1L, "Comedor San José", "Av. Siempre Viva 123");
+    Beneficiario beneficiario = new Beneficiario(10L, "Comedor San José", "Av. Siempre Viva 123");
     beneficiarioRepository.guardar(beneficiario);
 
-    DonacionEnTransito donacion = new DonacionEnTransito(1L, "Fideos", beneficiario);
+    DonacionEnTransito donacion = new DonacionEnTransito(10L, "Fideos", beneficiario);
     Entrega entrega = new Entrega(List.of(donacion));
 
     entregaRepository.guardar(entrega);
@@ -49,17 +49,15 @@ class EntregaRepositoryTest {
 
     assertNotNull(recuperada);
     assertEquals(1, recuperada.getDonaciones().size());
-    assertEquals(
-        1L,
-        recuperada.getDonaciones().get(0).getBeneficiario().getId()
+    assertEquals(10L, recuperada.getDonaciones().get(0).getBeneficiario().getId()
     );
   }
 
   @Test
   void unaEntregaNuevaPersisteEnEstadoPendiente() {
-    Beneficiario beneficiario = new Beneficiario(2L, "Comedor B", "Calle 2");
+    Beneficiario beneficiario = new Beneficiario(20L, "Comedor B", "Calle 2");
     beneficiarioRepository.guardar(beneficiario);
-    DonacionEnTransito donacion = new DonacionEnTransito(2L, "Arroz", beneficiario);
+    DonacionEnTransito donacion = new DonacionEnTransito(20L, "Arroz", beneficiario);
     Entrega entrega = new Entrega(List.of(donacion));
 
     entregaRepository.guardar(entrega);
@@ -70,15 +68,12 @@ class EntregaRepositoryTest {
 
   @Test
   void elHistorialDeEstadosPreservaElOrdenAlRecuperar() {
-    Beneficiario beneficiario =
-        new Beneficiario(3L, "Comedor C", "Calle 3");
+    Beneficiario beneficiario = new Beneficiario(30L, "Comedor C", "Calle 3");
     beneficiarioRepository.guardar(beneficiario);
 
-    DonacionEnTransito donacion =
-        new DonacionEnTransito(3L, "Fideos", beneficiario);
+    DonacionEnTransito donacion = new DonacionEnTransito(30L, "Fideos", beneficiario);
 
-    Camion camion =
-        new Camion("CC333CC", 5f, 2f, 500f);
+    Camion camion = new Camion("CC333CC", 5f, 2f, 500f);
     camionRepository.guardar(camion);
 
     Entrega entrega = new Entrega(List.of(donacion));
@@ -89,44 +84,16 @@ class EntregaRepositoryTest {
 
     entregaRepository.actualizar(entrega);
 
-    Entrega recuperada =
-        entregaRepository.buscarPorId(entrega.getId());
+    Entrega recuperada = entregaRepository.buscarPorId(entrega.getId());
 
     assertEquals(3, recuperada.getHistorialEstados().size());
-
-    assertEquals(
-        TipoEstadoEntrega.PENDIENTE,
-        recuperada.getHistorialEstados().get(0).getTipoEstado()
-    );
-
-    assertEquals(
-        TipoEstadoEntrega.PENDIENTE,
-        recuperada.getHistorialEstados().get(1).getTipoEstado()
-    );
-
-    assertEquals(
-        TipoEstadoEntrega.LISTA_PARA_ENTREGAR,
-        recuperada.getHistorialEstados().get(2).getTipoEstado()
-    );
-
-    assertEquals(
-        TipoEstadoEntrega.LISTA_PARA_ENTREGAR,
-        recuperada.getEstadoActual()
-    );
-
-    assertNull(
-        recuperada.getHistorialEstados().get(0).getCamion()
-    );
-
-    assertEquals(
-        "CC333CC",
-        recuperada.getHistorialEstados().get(1).getCamion().getPatente()
-    );
-
-    assertEquals(
-        "CC333CC",
-        recuperada.getHistorialEstados().get(2).getCamion().getPatente()
-    );
+    assertEquals( TipoEstadoEntrega.PENDIENTE, recuperada.getHistorialEstados().get(0).getTipoEstado());
+    assertEquals(TipoEstadoEntrega.PENDIENTE, recuperada.getHistorialEstados().get(1).getTipoEstado());
+    assertEquals(TipoEstadoEntrega.LISTA_PARA_ENTREGAR, recuperada.getHistorialEstados().get(2).getTipoEstado());
+    assertEquals(TipoEstadoEntrega.LISTA_PARA_ENTREGAR, recuperada.getEstadoActual());
+    assertNull(recuperada.getHistorialEstados().get(0).getCamion());
+    assertEquals("CC333CC", recuperada.getHistorialEstados().get(1).getCamion().getPatente());
+    assertEquals("CC333CC", recuperada.getHistorialEstados().get(2).getCamion().getPatente());
   }
 
   @Test
@@ -145,7 +112,7 @@ class EntregaRepositoryTest {
 
   @Test
   void eliminarFallaSiLaEntregaNoExiste() {
-    assertThrows(RegistroNoEncontradoException.class,
-        () -> entregaRepository.eliminar(1L));
+    assertThrows(RegistroNoEncontradoException.class, () -> entregaRepository.eliminar(137L));
   }
+
 }

@@ -14,14 +14,12 @@ import java.time.LocalDate;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class RutaTest {
   private Camion camion;
   private Chofer chofer;
   private Entrega entrega;
   private Ruta ruta;
   private Beneficiario beneficiario;
-
 
   @BeforeEach
   void setUp() {
@@ -75,4 +73,5 @@ public class RutaTest {
 
     assertThrows(DominioException.class, () -> ruta.iniciarRecorrido());
   }
+
 }

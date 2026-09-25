@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class EntregaTest {
   private Beneficiario beneficiario;
   private DonacionEnTransito donacion;
@@ -94,7 +93,6 @@ public class EntregaTest {
 
   @Test
   void agregarFotoRecepcionRechazaSiLaEntregaNoFueConfirmada() {
-    assertThrows(IllegalStateException.class,
-        () -> entrega.agregarFotoRecepcion("https://storage.donatrack.com/foto1.jpg"));
+    assertThrows(IllegalStateException.class, () -> entrega.agregarFotoRecepcion("https://storage.donatrack.com/foto1.jpg"));
   }
 }

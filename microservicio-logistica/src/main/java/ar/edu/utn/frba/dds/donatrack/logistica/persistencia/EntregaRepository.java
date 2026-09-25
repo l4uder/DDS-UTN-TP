@@ -17,9 +17,6 @@ public class EntregaRepository implements WithLogisticaPersistenceUnit {
   }
 
   public void guardar(Entrega entrega) {
-    if (entrega.getId() != null) {
-      throw new BaseDatoException("Constraint Violations: La entrega ya tiene un ID asignado: " + entrega.getId());
-    }
     withTransaction(() -> entityManager().persist(entrega));
   }
 
