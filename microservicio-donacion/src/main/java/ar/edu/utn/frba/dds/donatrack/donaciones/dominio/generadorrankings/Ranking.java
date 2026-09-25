@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -28,7 +29,8 @@ public class Ranking {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id_ranking")
   private Long id;
-  @Transient
+  @ManyToOne
+  @JoinColumn(name = "id_donacion")
   private Donacion donacion;
   @ManyToMany
   @JoinTable (
