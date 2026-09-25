@@ -13,3 +13,8 @@ Por lo tanto, **nos inclinamos fuertemente por la Opción 2**. Entendemos que no
 Además, descartamos la idea de usar una asociación polimórfica genérica (un solo `dueño_id`) para no perder la integridad referencial de las FK en la base de datos. Mientras que, componentes puros de software como `ClienteWhatsapp` o `ClienteCorreo`, se marcaron con `@Transient` ya que no nos interesa persistir los clientes usados; esto corresponde a lógica de negocio.
 
 ---
+
+Mapeamos Bien con SINGLE_TABLE: una sola tabla bienes con el discriminador tipo_bien.
+
+- Las subclases casi no se diferencian en datos: cada una agrega un solo atributo (fecha_vencimiento o esta_usado), y el resto está en Bien. Con JOINED tendríamos tablas de una columna y un join en cada consulta, sin ninguna ventaja.
+- Costo que asumimos: esas dos columnas quedan nullables en la base. Lo cubre el dominio: cada constructor lanza DominioException si falta su atributo obligatorio.
