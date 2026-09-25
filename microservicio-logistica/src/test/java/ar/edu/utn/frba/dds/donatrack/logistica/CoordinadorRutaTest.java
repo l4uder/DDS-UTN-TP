@@ -34,8 +34,8 @@ public class CoordinadorRutaTest {
 
   @BeforeEach
   void setUp() {
-    beneficiarioA = new Beneficiario("ben-a", "Comedor A", "Av. BeneficiarioA");
-    beneficiarioB = new Beneficiario("ben-b", "Comedor B", "Av. BeneficiarioB");
+    beneficiarioA = new Beneficiario(1L, "Comedor A", "Av. BeneficiarioA");
+    beneficiarioB = new Beneficiario(2L, "Comedor B", "Av. BeneficiarioB");
     camiones = List.of(new Camion("AB123CD", 10f, 2.5f, 1500f));
 
     camionRepository = mock(CamionRepository.class);
@@ -52,7 +52,7 @@ public class CoordinadorRutaTest {
   }
 
   private DonacionEnTransito donacionPara(Beneficiario beneficiario, int nro) {
-    return new DonacionEnTransito("don-" + beneficiario.getId() + "-" + nro, "Arroz", beneficiario);
+    return new DonacionEnTransito((long) nro, "Arroz", beneficiario);
   }
 
   @Test
@@ -80,9 +80,13 @@ public class CoordinadorRutaTest {
     // 150 beneficiarios distintos, 1 donación cada uno -> 150 Entrega de 1 donación,
     // así el loteo tiene margen real para repartir en más de un lote de a 100.
     List<DonacionEnTransito> donaciones = new ArrayList<>();
-    for (int i = 0; i < 150; i++) {
-      Beneficiario beneficiario = new Beneficiario("ben-" + i, "Comedor " + i, "Calle " + i);
-      donaciones.add(new DonacionEnTransito("don-" + i, "Arroz", beneficiario));
+    for (int i = 1; i <= 150; i++) {
+      Beneficiario beneficiario =
+          new Beneficiario((long) i, "Comedor " + i, "Calle " + i);
+
+      donaciones.add(
+          new DonacionEnTransito((long) i, "Arroz", beneficiario)
+      );
     }
     when(donacionesClient.buscarDonacionesAsignadas()).thenReturn(donaciones);
 

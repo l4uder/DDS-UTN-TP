@@ -15,21 +15,22 @@ import lombok.NoArgsConstructor;
 @Table(name = "beneficiarios")
 public class Beneficiario {
   @Id
-  private String id;
+  @Column(name = "id_beneficiario")
+  private Long id;
   @Column(name = "razon_social")
   private String razonSocial;
   @Column(name = "direccion")
   private String direccion;
 
-  public Beneficiario(String id, String razonSocial, String direccion) {
+  public Beneficiario(Long id, String razonSocial, String direccion) {
     validar(id);
     this.id = id;
     this.razonSocial = razonSocial;
     this.direccion = direccion;
   }
 
-  private void validar(String id) {
-    if (id == null || id.isBlank())
+  private void validar(Long id) {
+    if (id == null)
       throw new DominioException("El beneficiario debe tener id");
   }
 

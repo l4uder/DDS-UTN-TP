@@ -29,29 +29,29 @@ public class EntregaController {
   }
 
   public void obtener(Context ctx) {
-    String idEntrega = ctx.pathParam("id");
+    Long id = Long.valueOf(ctx.pathParam("id"));
 
-    Entrega entrega = buscarEntregaPorId(idEntrega);
+    Entrega entrega = buscarEntregaPorId(id);
     ctx.status(200).json(EntregaMapper.aDto(entrega));
   }
 
   public void agregarFoto(Context ctx) {
     //Cosas que recibo por URL
-    String idEntrega = ctx.pathParam("id");
+    Long id = Long.valueOf(ctx.pathParam("id"));
     //Cosas que recibo por Body
     EntregaFotoRequest request = ctx.bodyAsClass(EntregaFotoRequest.class);
     String urlFoto = request.urlFoto();
 
-    Entrega entrega = buscarEntregaPorId(idEntrega);
+    Entrega entrega = buscarEntregaPorId(id);
     entrega.agregarFotoRecepcion(urlFoto);
     repoEntregas.actualizar(entrega);
     ctx.status(200);
   }
 
   public void confirmarRecibida(Context ctx) {
-    String idEntrega = ctx.pathParam("id");
+    Long id = Long.valueOf(ctx.pathParam("id"));
 
-    Entrega entrega = buscarEntregaPorId(idEntrega);
+    Entrega entrega = buscarEntregaPorId(id);
     entrega.confirmarRecepcion();
     repoEntregas.actualizar(entrega);
     comunicarAlasDonacionesSuRecepcion(entrega.getDonaciones(), "https://..../comprobantes/...");
@@ -60,13 +60,13 @@ public class EntregaController {
 
   public void confirmarNoRecibida(Context ctx) {
     //Cosas que recibo por URL
-    String idEntrega = ctx.pathParam("id");
+    Long id = Long.valueOf(ctx.pathParam("id"));
     //Cosas que recibo por Body
     EntregaNoRecibidaRequest request = ctx.bodyAsClass(EntregaNoRecibidaRequest.class);
     if (request.motivo()==null) throw new BodyException("Bad Request, necesita: 'motivo' ");
     String motivo = request.motivo();
 
-    Entrega entrega = buscarEntregaPorId(idEntrega);
+    Entrega entrega = buscarEntregaPorId(id);
     entrega.marcarNoRecibida(motivo);
     repoEntregas.actualizar(entrega);
     comunicarAlasDonacionesErrorRecepcion(entrega.getDonaciones(), motivo);
@@ -74,16 +74,16 @@ public class EntregaController {
   }
 
   public void reingresarADeposito(Context ctx) {
-    String idEntrega = ctx.pathParam("id");
+    Long id = Long.valueOf(ctx.pathParam("id"));
 
-    Entrega entrega = buscarEntregaPorId(idEntrega);
+    Entrega entrega = buscarEntregaPorId(id);
     entrega.reingresarDeposito();
     repoEntregas.eliminar(entrega.getId());
     comunicarAlasDonacionesReingresoAdeposito(entrega.getDonaciones());
     ctx.status(200);
   }
   //================== FUNCIONES AUXILIARES =====================
-  private Entrega buscarEntregaPorId(String id) {
+  private Entrega buscarEntregaPorId(Long id) {
     Entrega entrega = repoEntregas.buscarPorId(id);
     if (entrega == null) throw new RecursoNoEncontradoException("Entrega no encontrada: " + id);
 

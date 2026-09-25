@@ -49,40 +49,40 @@ public class ConectorDonacionesApi {
     List<DonacionRemotaResponse> remotas = gson.fromJson(response.body(), LISTA_DONACIONES_REMOTAS);
     if (remotas == null) return List.of();
 
-    Map<String, Beneficiario> beneficiariosCache = new HashMap<>();
+    Map<Long, Beneficiario> beneficiariosCache = new HashMap<>();
     return remotas.stream().map(r -> aDominio(r, beneficiariosCache)).toList();
   }
 
   //activa el paso 3 de la donacion (Lista Para Entregar)
-  public void marcarDonacionListaParaEntregar(String donacionId) {
+  public void marcarDonacionListaParaEntregar(Long donacionId) {
     cambiarEstadoDonacion(donacionId, null, buildUrl(donacionId, "lista-para-entregar"));
   }
   //activa el paso 4 de la donacion (En Traslado)
-  public void marcarDonacionEnCamino(String donacionId, String linkMapa) {
+  public void marcarDonacionEnCamino(Long donacionId, String linkMapa) {
     CambioEstadoInicioRutaRequest body = new CambioEstadoInicioRutaRequest(linkMapa);
     cambiarEstadoDonacion(donacionId, gson.toJson(body), buildUrl(donacionId, "en-camino"));
   }
   //activa el paso 5 de la donacion (Entregada)
-  public void marcarDonacionEntregaExitosa(String donacionId, String linkComprobante) {
+  public void marcarDonacionEntregaExitosa(Long donacionId, String linkComprobante) {
     CambioEstadoEntregadaRequest body = new CambioEstadoEntregadaRequest(linkComprobante);
     cambiarEstadoDonacion(donacionId, gson.toJson(body), buildUrl(donacionId, "entregada"));
   }
   //activa el paso 5B de la donacion (Error Al Entregar)
-  public void marcarDonacionErrorEntrega(String donacionId, String motivo) {
+  public void marcarDonacionErrorEntrega(Long donacionId, String motivo) {
     CambioEstadoErrorEntregaRequest body = new CambioEstadoErrorEntregaRequest(motivo);
     cambiarEstadoDonacion(donacionId, gson.toJson(body), buildUrl(donacionId, "error-entrega"));
   }
   //activa el paso 6B de la donacion (Devuelta A Deposito)
-  public void marcarDonacionVueltaDeposito(String donacionId) {
+  public void marcarDonacionVueltaDeposito(Long donacionId) {
     cambiarEstadoDonacion(donacionId, null, buildUrl(donacionId, "vuelta-deposito"));
   }
 
   //===================== FUNCIONES AUXILIARES =======================
-  private String buildUrl(String donacionId, String path){
+  private String buildUrl(Long donacionId, String path){
     return baseUrl + "/donaciones/" + donacionId + "/" + path;
   }
 
-  private void cambiarEstadoDonacion(String donacionId, String body, String url) {
+  private void cambiarEstadoDonacion(Long donacionId, String body, String url) {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(url))
         .method("PATCH", (body==null) ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(body))
@@ -112,7 +112,7 @@ public class ConectorDonacionesApi {
     return status >= 200 && status < 300;
   }
 
-  private DonacionEnTransito aDominio(DonacionRemotaResponse remota, Map<String, Beneficiario> cache) {
+  private DonacionEnTransito aDominio(DonacionRemotaResponse remota, Map<Long, Beneficiario> cache) {
     var beneficiarioRemoto = remota.beneficiario();
     if (beneficiarioRemoto == null) {
       throw new ServicioExternoException("Donación asignada sin beneficiario: id=" + remota.id());

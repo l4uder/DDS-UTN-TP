@@ -13,25 +13,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class DonacionEnTransito {
-  @Column(name = "donacion_id")
-  private String id;
+  @Column(name = "id_donacion")
+  private Long id;
 
   @Column(name = "donacion_descripcion")
   private String descripcion;
 
   @ManyToOne
-  @JoinColumn(name = "beneficiario_id")
+  @JoinColumn(name = "id_beneficiario")
   private Beneficiario beneficiario;
 
-  public DonacionEnTransito(String id, String descripcion, Beneficiario beneficiario) {
+  public DonacionEnTransito(Long id, String descripcion, Beneficiario beneficiario) {
     validar(id, beneficiario);
     this.id = id;
     this.descripcion = descripcion;
     this.beneficiario = beneficiario;
   }
 
-  private void validar(String id, Beneficiario beneficiario) {
-    if (id == null || id.isBlank())
+  private void validar(Long id, Beneficiario beneficiario) {
+    if (id == null)
       throw new DominioException("La donación debe tener id");
 
     if (beneficiario == null)

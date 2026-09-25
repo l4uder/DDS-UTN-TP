@@ -60,10 +60,14 @@ public class CoordinadorRuta {
 
   public List<Ruta> procesarCallback(CallbackPlanificacionRequest request) {
     LocalDate fecha = LocalDate.parse(request.fecha());
-    Map<Camion, List<Entrega>> entregasPorCamion = obtenerEntregasPorCamion(request.entregasPorPatente());
+    Map<Camion, List<Entrega>> entregasPorCamion =
+        obtenerEntregasPorCamion(request.entregasPorPatente());
+
     List<Entrega> entregasSinAsignar = request.entregasSinAsignar() == null
         ? List.of()
-        : request.entregasSinAsignar().stream().map(this::buscarEntregaPorId).toList();
+        : request.entregasSinAsignar().stream()
+          .map(this::buscarEntregaPorId)
+          .toList();
 
     List<Ruta> rutas = crearRutas(fecha, entregasPorCamion);
 
@@ -74,10 +78,14 @@ public class CoordinadorRuta {
     entregasSinAsignar.forEach(e -> entregaRepository.eliminar(e.getId()));
 
     rutas.forEach(rutaRepository::guardar);
-    rutas.forEach(ruta -> ruta.getEntregasOrdenadas().forEach(e ->
-        propagarEstadoDonaciones(e, donacionesClient::marcarDonacionListaParaEntregar))
+    rutas.forEach(ruta ->
+        ruta.getEntregasOrdenadas().forEach(e ->
+            propagarEstadoDonaciones(
+                e,
+                donacionesClient::marcarDonacionListaParaEntregar
+            )
+        )
     );
-
     return rutas;
   }
 
@@ -102,11 +110,11 @@ public class CoordinadorRuta {
     }
   }
   //--Helper--
-  private void propagarEstadoDonaciones(Entrega entrega, Consumer<String> command) {
+  private void propagarEstadoDonaciones(Entrega entrega, Consumer<Long> command) {
     entrega.getDonaciones().forEach(d -> command.accept(d.getId()));
   }
 
-  private Map<Camion, List<Entrega>> obtenerEntregasPorCamion(Map<String, List<String>> entregasPorPatente) {
+  private Map<Camion, List<Entrega>> obtenerEntregasPorCamion(Map<String, List<Long>> entregasPorPatente) {
     Map<Camion, List<Entrega>> entregasPorCamion = new HashMap<>();
 
     entregasPorPatente.forEach((patente, idsEntregas) -> {
@@ -141,7 +149,7 @@ public class CoordinadorRuta {
     return camion;
   }
 
-  private Entrega buscarEntregaPorId(String id) {
+  private Entrega buscarEntregaPorId(Long id) {
     Entrega entrega = entregaRepository.buscarPorId(id);
     if (entrega == null) throw new RecursoNoEncontradoException("Entrega no encontrado: " + id);
     return entrega;

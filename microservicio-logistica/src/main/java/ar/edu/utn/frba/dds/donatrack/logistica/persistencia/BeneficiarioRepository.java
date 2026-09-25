@@ -18,7 +18,7 @@ public class BeneficiarioRepository implements WithLogisticaPersistenceUnit {
     withTransaction(() -> entityManager().persist(beneficiario));
   }
 
-  public Beneficiario buscarPorId(String id) {
+  public Beneficiario buscarPorId(Long id) {
     return entityManager().find(Beneficiario.class, id);
   }
 
@@ -35,7 +35,7 @@ public class BeneficiarioRepository implements WithLogisticaPersistenceUnit {
     withTransaction(() -> entityManager().merge(beneficiario));
   }
 
-  public void eliminar(String id) {
+  public void eliminar(Long id) {
     Beneficiario beneficiario = buscarPorId(id);
     if (beneficiario == null) {
       throw new RegistroNoEncontradoException("No existe beneficiario con id " + id);

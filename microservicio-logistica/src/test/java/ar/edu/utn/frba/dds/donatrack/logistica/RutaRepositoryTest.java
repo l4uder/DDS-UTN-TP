@@ -41,14 +41,14 @@ class RutaRepositoryTest {
     Camion camion = new Camion("DD444DD", 10f, 2.5f, 1500f);
     camionRepository.guardar(camion);
 
-    Beneficiario beneficiario = new Beneficiario("ben-5", "Comedor E", "Calle 5");
+    Beneficiario beneficiario = new Beneficiario(5L, "Comedor E", "Calle 5");
     beneficiarioRepository.guardar(beneficiario);
 
-    DonacionEnTransito donacion1 = new DonacionEnTransito("don-5", "Fideos", beneficiario);
+    DonacionEnTransito donacion1 = new DonacionEnTransito(5L, "Fideos", beneficiario);
     Entrega entrega1 = new Entrega(List.of(donacion1), camion);
     entregaRepository.guardar(entrega1);
 
-    DonacionEnTransito donacion2 = new DonacionEnTransito("don-6", "Arroz", beneficiario);
+    DonacionEnTransito donacion2 = new DonacionEnTransito(6L, "Arroz", beneficiario);
     Entrega entrega2 = new Entrega(List.of(donacion2), camion);
     entregaRepository.guardar(entrega2);
 

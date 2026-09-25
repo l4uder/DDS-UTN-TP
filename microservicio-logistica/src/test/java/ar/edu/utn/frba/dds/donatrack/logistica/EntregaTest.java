@@ -1,13 +1,5 @@
 package ar.edu.utn.frba.dds.donatrack.logistica;
 
-/*
-import ar.edu.utn.frba.dds.donatrack.builder.PersonaHumanaBuilder;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.Documento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.documento.TipoDocumento;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.CorreoDeContacto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.WhatsappDeContacto;
-import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
@@ -19,39 +11,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
-*/
+
 
 public class EntregaTest {
-  /*
   private Beneficiario beneficiario;
   private DonacionEnTransito donacion;
   private Camion camion;
   private Entrega entrega;
 
-  private Donante donantePrueba;
-
   @BeforeEach
   void setUp() {
-    MedioContacto contactoWhatsapp = new WhatsappDeContacto("132212212", true);
-    MedioContacto contactoCorreo = new CorreoDeContacto("comedor@prueba.com", true);
-    List<MedioContacto> listaContactos = List.of(contactoCorreo, contactoWhatsapp);
-
-    beneficiario = new Beneficiario("ben-1", "Comedor San José", "Av. Siempre Viva 123");
-
-    donacion = new DonacionEnTransito("don-1", "Fideos", beneficiario);
-
-    camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
-    camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
-
-    donantePrueba = new PersonaHumanaBuilder()
-        .conNombre("Juan")
-        .conApellido("Pérez")
-        .conDocumento(new Documento(TipoDocumento.DNI, "12345678"))
-        .conAgregarContacto(new CorreoDeContacto("juan@prueba.com", true))
-        .conDireccion("alguna dirección")
-        .build();
-
-    entrega = new Entrega(List.of(donacion), camion);
+    beneficiario = new Beneficiario(
+        1L, "Comedor San José", "Av. Siempre Viva 123" );
+    donacion = new DonacionEnTransito( 1L, "Fideos", beneficiario );
+    camion = new Camion( "AB123CD", 10f, 2.5f, 1500f );
+    entrega = new Entrega( List.of(donacion), camion );
   }
 
   @Test
@@ -122,6 +96,4 @@ public class EntregaTest {
     assertThrows(IllegalStateException.class,
         () -> entrega.agregarFotoRecepcion("https://storage.donatrack.com/foto1.jpg"));
   }
-
-  */
 }

@@ -29,7 +29,7 @@ public class RutaController {
   }
 
   public void obtener(Context ctx) {
-    String idRuta = ctx.pathParam("id");
+    Long idRuta = Long.valueOf(ctx.pathParam("id"));
 
     Ruta ruta = buscarRutaPorId(idRuta);
     ctx.status(200).json(RutaMapper.aDto(ruta));
@@ -37,7 +37,7 @@ public class RutaController {
 
   public void asignarChofer(Context ctx) {
     //Cosas que recibo por URL
-    String idRuta = ctx.pathParam("id");
+    Long idRuta = Long.valueOf(ctx.pathParam("id"));
     //Cosas que recibo por Body
     ChoferDto choferDto = ctx.bodyAsClass(ChoferDto.class);
 
@@ -50,7 +50,7 @@ public class RutaController {
   }
 
   public void iniciar(Context ctx) {
-    String idRuta = ctx.pathParam("id");
+    Long idRuta = Long.valueOf(ctx.pathParam("id"));
 
     Ruta ruta = buscarRutaPorId(idRuta);
     ruta.iniciarRecorrido();
@@ -64,7 +64,7 @@ public class RutaController {
   }
 
   //================= FUNCIONES AUXILIARES ======================
-  public Ruta buscarRutaPorId(String id) {
+  public Ruta buscarRutaPorId(Long id) {
     Ruta ruta = repoRutas.buscarPorId(id);
     if (ruta == null) throw new RecursoNoEncontradoException("Ruta no encontrada: " + id);
     return ruta;

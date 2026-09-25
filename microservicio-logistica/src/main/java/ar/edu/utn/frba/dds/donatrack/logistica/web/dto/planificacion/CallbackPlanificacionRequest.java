@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public record CallbackPlanificacionRequest(
-    Map<String, List<String>> entregasPorPatente,
-    List<String> entregasSinAsignar,
+    Map<String, List<Long>> entregasPorPatente,
+    List<Long> entregasSinAsignar,
     String fecha
 ) {}

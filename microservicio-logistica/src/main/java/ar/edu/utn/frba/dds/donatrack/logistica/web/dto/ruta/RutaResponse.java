@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record RutaResponse(
-    String id,
+    Long id,
     String patenteCamion,
     String nombreChofer,
     LocalDate fecha,

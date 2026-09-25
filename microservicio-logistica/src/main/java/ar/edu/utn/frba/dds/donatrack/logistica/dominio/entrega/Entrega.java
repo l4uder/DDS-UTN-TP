@@ -17,13 +17,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 @Getter
 @NoArgsConstructor
@@ -31,12 +28,12 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "entregas")
 public class Entrega {
   @Id
-  @GeneratedValue(generator = "UUID")
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  private String id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id_entrega")
+  private Long id;
 
   @ElementCollection
-  @CollectionTable(name = "donaciones", joinColumns = @JoinColumn(name = "id_entrega"))
+  @CollectionTable(name = "donaciones", joinColumns = @JoinColumn(name = "entrega_id"))
   private List<DonacionEnTransito> donaciones;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -44,12 +41,12 @@ public class Entrega {
   private Camion camionAsignado;
 
   @ElementCollection
-  @CollectionTable(name = "historial_estados_entrega", joinColumns = @JoinColumn(name = "id_entrega"))
+  @CollectionTable(name = "historial_estados_entrega", joinColumns = @JoinColumn(name = "entrega_id"))
   @OrderColumn(name = "orden")
   private List<EstadoEntrega> historialEstados;
 
   @ElementCollection
-  @CollectionTable(name = "fotos", joinColumns = @JoinColumn(name = "id_entrega"))
+  @CollectionTable(name = "fotos", joinColumns = @JoinColumn(name = "entrega_id"))
   @Column(name = "url_foto")
   private List<String> fotosRecepcion;
 

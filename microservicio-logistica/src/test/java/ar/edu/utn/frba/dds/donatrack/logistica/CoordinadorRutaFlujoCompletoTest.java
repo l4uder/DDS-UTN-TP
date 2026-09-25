@@ -58,13 +58,13 @@ class CoordinadorRutaFlujoCompletoTest {
     Camion camion = new Camion("AB123CD", 10f, 2.5f, 1500f);
     camionRepository.guardar(camion);
 
-    Beneficiario beneficiario = new Beneficiario("ben-1", "Comedor A", "Calle 1");
-    DonacionEnTransito donacion = new DonacionEnTransito("don-1", "Fideos", beneficiario);
+    Beneficiario beneficiario = new Beneficiario(1l, "Comedor A", "Calle 1");
+    DonacionEnTransito donacion = new DonacionEnTransito(1l, "Fideos", beneficiario);
     when(donacionesClient.buscarDonacionesAsignadas()).thenReturn(List.of(donacion));
 
     List<Entrega> entregas = coordinador.planificarEntregasPendientes();
     assertEquals(1, entregas.size());
-    String idEntrega = entregas.get(0).getId();
+    Long idEntrega = entregas.get(0).getId();
     assertEquals(TipoEstadoEntrega.PENDIENTE, entregas.get(0).getEstadoActual());
 
     CallbackPlanificacionRequest request = new CallbackPlanificacionRequest(
@@ -82,7 +82,7 @@ class CoordinadorRutaFlujoCompletoTest {
     assertEquals(TipoEstadoEntrega.LISTA_PARA_ENTREGAR, entregaActualizada.getEstadoActual());
     assertEquals("AB123CD", entregaActualizada.getCamionAsignado().getPatente());
 
-    verify(donacionesClient).marcarDonacionListaParaEntregar("don-1");
+    verify(donacionesClient).marcarDonacionListaParaEntregar(1L);
   }
 
   @Test
@@ -90,12 +90,12 @@ class CoordinadorRutaFlujoCompletoTest {
     Camion camion = new Camion("XY111AA", 8f, 2f, 1000f);
     camionRepository.guardar(camion);
 
-    Beneficiario beneficiario = new Beneficiario("ben-2", "Comedor B", "Calle 2");
-    DonacionEnTransito donacion = new DonacionEnTransito("don-2", "Arroz", beneficiario);
+    Beneficiario beneficiario = new Beneficiario(2L, "Comedor B", "Calle 2");
+    DonacionEnTransito donacion = new DonacionEnTransito(2L, "Arroz", beneficiario);
     when(donacionesClient.buscarDonacionesAsignadas()).thenReturn(List.of(donacion));
 
     List<Entrega> entregas = coordinador.planificarEntregasPendientes();
-    String idEntrega = entregas.get(0).getId();
+    long idEntrega = entregas.get(0).getId();
 
     CallbackPlanificacionRequest request = new CallbackPlanificacionRequest(
         Map.of(),
@@ -113,8 +113,8 @@ class CoordinadorRutaFlujoCompletoTest {
     Camion camion = new Camion("ZZ333ZZ", 10f, 2.5f, 1500f);
     camionRepository.guardar(camion);
 
-    Beneficiario beneficiario = new Beneficiario("ben-3", "Comedor C", "Calle 3");
-    DonacionEnTransito donacion = new DonacionEnTransito("don-3", "Fideos", beneficiario);
+    Beneficiario beneficiario = new Beneficiario(3L, "Comedor C", "Calle 3");
+    DonacionEnTransito donacion = new DonacionEnTransito(3L, "Fideos", beneficiario);
     when(donacionesClient.buscarDonacionesAsignadas()).thenReturn(List.of(donacion));
 
     coordinador.ejecutarPlanificacionDiaria();

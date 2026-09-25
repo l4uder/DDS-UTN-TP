@@ -33,10 +33,10 @@ class EntregaRepositoryTest {
     // @Embeddable (DonacionEnTransito) con una relación @ManyToOne hacia
     // Beneficiario (entidad). Si algo del mapeo de herencia de colecciones
     // está mal, este test lo revela.
-    Beneficiario beneficiario = new Beneficiario("ben-A", "Comedor San José", "Av. Siempre Viva 123");
+    Beneficiario beneficiario = new Beneficiario(1L, "Comedor San José", "Av. Siempre Viva 123");
     beneficiarioRepository.guardar(beneficiario);
 
-    DonacionEnTransito donacion = new DonacionEnTransito("don-A", "Fideos", beneficiario);
+    DonacionEnTransito donacion = new DonacionEnTransito(1L, "Fideos", beneficiario);
     Entrega entrega = new Entrega(List.of(donacion), null);
 
     entregaRepository.guardar(entrega);
@@ -46,14 +46,17 @@ class EntregaRepositoryTest {
 
     assertNotNull(recuperada);
     assertEquals(1, recuperada.getDonaciones().size());
-    assertEquals("ben-A", recuperada.getDestino().getId());
+    assertEquals(
+        1L,
+        recuperada.getDonaciones().get(0).getBeneficiario().getId()
+    );
   }
 
   @Test
   void unaEntregaNuevaPersisteEnEstadoPendiente() {
-    Beneficiario beneficiario = new Beneficiario("ben-B", "Comedor B", "Calle 2");
+    Beneficiario beneficiario = new Beneficiario(2L, "Comedor B", "Calle 2");
     beneficiarioRepository.guardar(beneficiario);
-    DonacionEnTransito donacion = new DonacionEnTransito("don-B", "Arroz", beneficiario);
+    DonacionEnTransito donacion = new DonacionEnTransito(2L, "Arroz", beneficiario);
     Entrega entrega = new Entrega(List.of(donacion), null);
 
     entregaRepository.guardar(entrega);
@@ -67,9 +70,9 @@ class EntregaRepositoryTest {
     // Justificación: valida específicamente @OrderColumn en historialEstados —
     // sin esto, getEstadoActual() (que lee el último elemento de la lista)
     // podría devolver cualquier estado al azar tras recuperar de la base.
-    Beneficiario beneficiario = new Beneficiario("ben-C", "Comedor C", "Calle 3");
+    Beneficiario beneficiario = new Beneficiario(3L, "Comedor C", "Calle 3");
     beneficiarioRepository.guardar(beneficiario);
-    DonacionEnTransito donacion = new DonacionEnTransito("don-C", "Fideos", beneficiario);
+    DonacionEnTransito donacion = new DonacionEnTransito(3L, "Fideos", beneficiario);
     Camion camion = new Camion("CC333CC", 5f, 2f, 500f);
 
     Entrega entrega = new Entrega(List.of(donacion), camion);
@@ -89,12 +92,12 @@ class EntregaRepositoryTest {
 
   @Test
   void eliminarBorraLaEntregaYSusColeccionesAsociadas() {
-    Beneficiario beneficiario = new Beneficiario("ben-D", "Comedor D", "Calle 4");
+    Beneficiario beneficiario = new Beneficiario(4L, "Comedor D", "Calle 4");
     beneficiarioRepository.guardar(beneficiario);
-    DonacionEnTransito donacion = new DonacionEnTransito("don-D", "Fideos", beneficiario);
+    DonacionEnTransito donacion = new DonacionEnTransito(4L, "Fideos", beneficiario);
     Entrega entrega = new Entrega(List.of(donacion), null);
     entregaRepository.guardar(entrega);
-    String id = entrega.getId();
+    Long id = entrega.getId();
 
     entregaRepository.eliminar(id);
 
@@ -104,6 +107,6 @@ class EntregaRepositoryTest {
   @Test
   void eliminarFallaSiLaEntregaNoExiste() {
     assertThrows(RegistroNoEncontradoException.class,
-        () -> entregaRepository.eliminar("id-inexistente"));
+        () -> entregaRepository.eliminar(1L));
   }
 }

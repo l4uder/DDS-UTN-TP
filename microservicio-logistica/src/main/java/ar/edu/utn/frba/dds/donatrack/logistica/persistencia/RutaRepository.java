@@ -24,7 +24,7 @@ public class RutaRepository implements WithLogisticaPersistenceUnit {
     withTransaction(() -> entityManager().persist(ruta));
   }
 
-  public Ruta buscarPorId(String id) {
+  public Ruta buscarPorId(Long id) {
     return entityManager().find(Ruta.class, id);
   }
 
@@ -41,7 +41,7 @@ public class RutaRepository implements WithLogisticaPersistenceUnit {
     withTransaction(() -> entityManager().merge(ruta));
   }
 
-  public void eliminar(String id) {
+  public void eliminar(Long id) {
     Ruta ruta = buscarPorId(id);
     if (ruta == null) {
       throw new RegistroNoEncontradoException("No existe ruta con id " + id);

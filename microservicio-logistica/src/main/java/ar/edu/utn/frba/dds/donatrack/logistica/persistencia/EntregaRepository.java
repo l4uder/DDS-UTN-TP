@@ -23,7 +23,7 @@ public class EntregaRepository implements WithLogisticaPersistenceUnit {
     withTransaction(() -> entityManager().persist(entrega));
   }
 
-  public Entrega buscarPorId(String id) {
+  public Entrega buscarPorId(Long id) {
     return entityManager().find(Entrega.class, id);
   }
 
@@ -40,7 +40,7 @@ public class EntregaRepository implements WithLogisticaPersistenceUnit {
     withTransaction(() -> entityManager().merge(entrega));
   }
 
-  public void eliminar(String id) {
+  public void eliminar(Long id) {
     Entrega entrega = buscarPorId(id);
     if (entrega == null) {
       throw new RegistroNoEncontradoException("No existe entrega con id " + id);
