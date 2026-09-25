@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.Getter;
@@ -32,9 +33,8 @@ public class RegistroEntrega {
   private LocalDateTime fecha;
   @Column(name = "descripcion_general")
   private String descripcionGeneral;
-  //  @OneToMany
-  //  @JoinColumn(name = "id_registro_entrega")
-  @Transient
+  @OneToMany
+  @JoinColumn(name = "id_registro_entrega")
   private List<Bien> bienes;
   @ManyToOne
   @JoinColumn(name = "id_donante")
