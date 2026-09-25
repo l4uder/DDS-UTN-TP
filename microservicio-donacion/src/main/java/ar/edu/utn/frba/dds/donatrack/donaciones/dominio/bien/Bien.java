@@ -5,6 +5,7 @@ import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
@@ -25,6 +26,7 @@ public abstract class Bien {
   private UnidadMedida unidadMedida;
   @Column (name = "foto")
   private String foto;
+  @Setter
   @ManyToOne
   @JoinColumn(name = "id_subcategoria")
   private Subcategoria subcategoria;

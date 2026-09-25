@@ -40,10 +40,11 @@ public class App {
     BeneficiarioRepository benificiarioRepository = BeneficiarioRepository.getInstancia();
     RankingRepository rankingRepository = RankingRepository.getInstancia();
     SubcategoriaRepository subcategoriaRepository = SubcategoriaRepository.getInstancia();
+    CategoriaRepository categoriaRepository = CategoriaRepository.getInstancia();
 
     //Controllers
     DonanteController donanteController = new DonanteController(donanteRepository);
-    DonacionController donacionController = new DonacionController(donacionRepository, donanteRepository);
+    DonacionController donacionController = new DonacionController(donacionRepository, donanteRepository, subcategoriaRepository, categoriaRepository);
     BeneficiarioController beneficiarioController = new BeneficiarioController(benificiarioRepository);
     NecesidadController necesidadController = new NecesidadController(benificiarioRepository, subcategoriaRepository);
     AsignacionController asignacionController = new AsignacionController(donacionRepository, benificiarioRepository, rankingRepository);

@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.donatrack.donaciones.web.controller;
 
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Categoria;
+import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.EventoVencida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.Donacion;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donacion.EstadoDonacion;
@@ -9,8 +11,10 @@ import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.E
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.EventoEntregaFallida;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.comunicaciones.eventos.EventoInicioDeRuta;
 import ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.CategoriaRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonacionRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.DonanteRepository;
+import ar.edu.utn.frba.dds.donatrack.donaciones.persistencia.SubcategoriaRepository;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.BienMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.DonacionMapper;
 import ar.edu.utn.frba.dds.donatrack.donaciones.web.convers.EstadoDonacionMapper;
@@ -31,10 +35,14 @@ import java.util.List;
 public class DonacionController implements WithSimplePersistenceUnit {
   private final DonacionRepository repoDonaciones;
   private final DonanteRepository repoDonantes;
+  private final SubcategoriaRepository repoSubcategorias;
+  private final CategoriaRepository repoCategorias;
 
-  public DonacionController(DonacionRepository repoDonaciones, DonanteRepository repoDonantes) {
+  public DonacionController(DonacionRepository repoDonaciones, DonanteRepository repoDonantes, SubcategoriaRepository repoSubcategorias, CategoriaRepository repoCategorias) {
     this.repoDonaciones = repoDonaciones;
     this.repoDonantes = repoDonantes;
+    this.repoSubcategorias = repoSubcategorias;
+    this.repoCategorias = repoCategorias;
   }
 
   // [----] -> [En deposito]
@@ -49,6 +57,40 @@ public class DonacionController implements WithSimplePersistenceUnit {
     beginTransaction();
     List<Donante> donantes = idDonantes.stream().map(this::buscarDonantePorId).toList();
     Donacion donacion = DonacionMapper.aDominio(bienesDto, donantes);
+
+    //Valida e hidrata las subcategorias y categorias con las existentes en la db
+    //Si se quiere crear una donacion con una (sub)categoria no existente, crearlas previamente
+    for (Bien bien : donacion.getBienes()) {
+      if (bien.getSubcategoria() != null) {
+        Subcategoria subDelMapper = bien.getSubcategoria();
+        Categoria catDelMapper = subDelMapper.getCategoria();
+
+        //Valida Categoría
+        Categoria catReal = null;
+        if (catDelMapper != null && catDelMapper.getNombre() != null) {
+          catReal = repoCategorias.buscarPorNombre(catDelMapper.getNombre());
+          if (catReal == null) {
+            throw new BodyException("Bad Request: La categoría '" + catDelMapper.getNombre() + "' no existe.");
+          }
+        }
+
+        //Valida Subcategoría
+        Subcategoria subReal = repoSubcategorias.buscarPorNombre(subDelMapper.getNombre());
+        if (subReal == null) {
+          throw new BodyException("Bad Request: La subcategoría '" + subDelMapper.getNombre() + "' no existe.");
+        }
+
+        //Valida coherencia jerárquica (que la subcategoría realmente pertenezca a la categoría enviada)
+        if (catReal != null && subReal.getCategoria() != null
+            && !subReal.getCategoria().getId().equals(catReal.getId())) {
+          throw new BodyException("Bad Request: La subcategoría '" + subReal.getNombre()
+              + "' no pertenece a la categoría '" + catReal.getNombre() + "'.");
+        }
+
+        bien.setSubcategoria(subReal);
+      }
+    }
+
     repoDonaciones.guardar(donacion);
     commitTransaction();
 
