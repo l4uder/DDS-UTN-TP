@@ -7,17 +7,15 @@
     <persistence-unit name="logistica-persistence-unit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <!--
         <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion</class>
         <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Gps</class>
         <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Coordenada</class>
         <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario</class>
         <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega</class>
         <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.EstadoEntrega</class>
-        <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.DonacionEnTransito</class>
         <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta</class>
         <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Chofer</class>
-        -->
+
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
@@ -34,11 +32,14 @@
         </properties>
     </persistence-unit>
 
-    <persistence-unit name="donaciones-persistence-unit" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="simple-persistence-unit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <!-- Completar con las entidades de donaciones a medida que se migren a JPA -->
-        <!-- <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario</class> -->
+        <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.Donante</class>
+        <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Juridica</class>
+        <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana</class>
+        <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante</class>
+        <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

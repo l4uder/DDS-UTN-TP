@@ -36,7 +36,7 @@ public class Entrega {
   private String id;
 
   @ElementCollection
-  @CollectionTable(name = "entrega_donaciones", joinColumns = @JoinColumn(name = "entrega_id"))
+  @CollectionTable(name = "donaciones", joinColumns = @JoinColumn(name = "id_entrega"))
   private List<DonacionEnTransito> donaciones;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -44,12 +44,12 @@ public class Entrega {
   private Camion camionAsignado;
 
   @ElementCollection
-  @CollectionTable(name = "entrega_historial_estados", joinColumns = @JoinColumn(name = "entrega_id"))
+  @CollectionTable(name = "historial_estados_entrega", joinColumns = @JoinColumn(name = "id_entrega"))
   @OrderColumn(name = "orden")
   private List<EstadoEntrega> historialEstados;
 
   @ElementCollection
-  @CollectionTable(name = "entrega_fotos_recepcion", joinColumns = @JoinColumn(name = "entrega_id"))
+  @CollectionTable(name = "fotos", joinColumns = @JoinColumn(name = "id_entrega"))
   @Column(name = "url_foto")
   private List<String> fotosRecepcion;
 

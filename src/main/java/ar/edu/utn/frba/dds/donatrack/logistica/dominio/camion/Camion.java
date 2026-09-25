@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "Camiones")
+@Table(name = "camiones")
 public class Camion {
   @Id
   private String patente;

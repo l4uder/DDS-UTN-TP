@@ -44,7 +44,7 @@ public class Ruta {
   private LocalDate fecha;
 
   @OneToMany
-  @JoinColumn(name = "ruta_id")
+  @JoinColumn(name = "id_ruta")
   @OrderColumn(name = "orden_entrega")
   private List<Entrega> entregasOrdenadas;
 
