@@ -33,30 +33,33 @@ public class Entrega {
   private Long id;
 
   @ElementCollection
-  @CollectionTable(name = "donaciones", joinColumns = @JoinColumn(name = "entrega_id"))
+  @CollectionTable(name = "donaciones", joinColumns = @JoinColumn(name = "id_entrega"))
   private List<DonacionEnTransito> donaciones;
 
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JoinColumn(name = "camion_patente")
-  private Camion camionAsignado;
-
   @ElementCollection
-  @CollectionTable(name = "historial_estados_entrega", joinColumns = @JoinColumn(name = "entrega_id"))
+  @CollectionTable(name = "historial_estados_entrega", joinColumns = @JoinColumn(name = "id_entrega"))
   @OrderColumn(name = "orden")
   private List<EstadoEntrega> historialEstados;
 
   @ElementCollection
-  @CollectionTable(name = "fotos", joinColumns = @JoinColumn(name = "entrega_id"))
+  @CollectionTable(name = "fotos", joinColumns = @JoinColumn(name = "id_entrega"))
   @Column(name = "url_foto")
   private List<String> fotosRecepcion;
 
-  public Entrega(List<DonacionEnTransito> donaciones, Camion camion) {
+  public Entrega(List<DonacionEnTransito> donaciones) {
     this.donaciones = new ArrayList<>(donaciones);
-    this.camionAsignado = camion;
     this.historialEstados = new ArrayList<>();
     this.fotosRecepcion = new ArrayList<>();
 
-    historialEstados.add(new EstadoEntrega(TipoEstadoEntrega.PENDIENTE, camion));
+    historialEstados.add(new EstadoEntrega(TipoEstadoEntrega.PENDIENTE, null));
+  }
+
+  public Camion getCamionAsignado() {
+    if (historialEstados == null || historialEstados.isEmpty()) {
+      return null;
+    }
+
+    return historialEstados.get(historialEstados.size() - 1).getCamion();
   }
 
   public TipoEstadoEntrega getEstadoActual(){
@@ -67,7 +70,7 @@ public class Entrega {
 
   public void reasignarCamion(Camion camion) {
     validarTransicionDesde(TipoEstadoEntrega.PENDIENTE, "reasignar camión");
-    this.camionAsignado = camion;
+    cambiarEstado(TipoEstadoEntrega.PENDIENTE, null, camion);
   }
 
   public void agregarFotoRecepcion(String url) {
@@ -82,17 +85,17 @@ public class Entrega {
 
   public void confirmarListaParaEntregar() {
     validarTransicionDesde(TipoEstadoEntrega.PENDIENTE, "confirmar como lista para entregar");
-    cambiarEstado(TipoEstadoEntrega.LISTA_PARA_ENTREGAR, "Asignada a camión " + camionAsignado.getPatente());
+    cambiarEstado(TipoEstadoEntrega.LISTA_PARA_ENTREGAR, "Asignada a camión " + getCamionAsignado().getPatente(), getCamionAsignado());
   }
 
   public void iniciarTraslado() {
     validarTransicionDesde(TipoEstadoEntrega.LISTA_PARA_ENTREGAR, "iniciar traslado");
-    cambiarEstado(TipoEstadoEntrega.EN_TRASLADO, "Iniciando recorrido");
+    cambiarEstado(TipoEstadoEntrega.EN_TRASLADO, "Iniciando recorrido", getCamionAsignado());
   }
 
   public void confirmarRecepcion() {
     validarTransicionDesde(TipoEstadoEntrega.EN_TRASLADO, "confirmar recepción");
-    cambiarEstado(TipoEstadoEntrega.ENTREGADA, null);
+    cambiarEstado(TipoEstadoEntrega.ENTREGADA, null, getCamionAsignado());
   }
 
   public void marcarNoRecibida(String motivo) {
@@ -100,17 +103,17 @@ public class Entrega {
       throw new DominioException("Debe indicar un motivo");
 
     validarTransicionDesde(TipoEstadoEntrega.EN_TRASLADO, "marcar como no recibida");
-    cambiarEstado(TipoEstadoEntrega.NO_RECIBIDA, motivo);
+    cambiarEstado(TipoEstadoEntrega.NO_RECIBIDA, motivo, getCamionAsignado());
   }
 
   public void reingresarDeposito() {
     validarTransicionDesde(TipoEstadoEntrega.NO_RECIBIDA, "reingresar a depósito");
-    cambiarEstado(TipoEstadoEntrega.PENDIENTE, "Entrega devuelta al depósito");
+    cambiarEstado(TipoEstadoEntrega.PENDIENTE, "Entrega devuelta al depósito", null);
   }
 
   //==================== FUNCIONES AUXILIARES =====================
-  private void cambiarEstado(TipoEstadoEntrega estado, String detalle) {
-    historialEstados.add(new EstadoEntrega(estado, detalle, camionAsignado));
+  private void cambiarEstado(TipoEstadoEntrega estado, String detalle, Camion camion) {
+    historialEstados.add(new EstadoEntrega(estado, detalle, camion));
   }
 
   private void validarTransicionDesde(TipoEstadoEntrega esperado, String accion) {

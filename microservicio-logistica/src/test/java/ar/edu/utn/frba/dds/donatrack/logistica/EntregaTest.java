@@ -25,7 +25,8 @@ public class EntregaTest {
         1L, "Comedor San José", "Av. Siempre Viva 123" );
     donacion = new DonacionEnTransito( 1L, "Fideos", beneficiario );
     camion = new Camion( "AB123CD", 10f, 2.5f, 1500f );
-    entrega = new Entrega( List.of(donacion), camion );
+    entrega = new Entrega( List.of(donacion) );
+    entrega.reasignarCamion(camion);
   }
 
   @Test

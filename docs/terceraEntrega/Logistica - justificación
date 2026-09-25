@@ -1,61 +1,75 @@
 Camión - GPS: @Entity relación OneToOne
-Un GPS es un dispositivo físico con identidad propia (imei):
-puede desinstalarse de un camión y reinstalarse en otro.
-Si fuera embebido, se duplicarían sus datos cada vez que cambia de camión.
-Se relaciona vía @OneToOne.
+GPS es una entidad porque representa un dispositivo físico con identidad propia, identificada mediante
+su imei. Puede desinstalarse de un camión y posteriormente instalarse en otro, por lo que tiene un
+ciclo de vida independiente. Se relaciona con Camión mediante una relación @OneToOne, evitando
+duplicar los datos del GPS.
 
 Camión - Coordinadas: @ElementCollection
-Se persiste el historial completro porque el sistema recibe posiciones
-de formo continua.
+Las coordenadas no tienen identidad ni ciclo de vida propio; representan posiciones asociadas
+exclusivamente a un camión. Se persisten como una colección de elementos porque el sistema recibe
+posiciones de forma continua y se necesita conservar el historial de coordenadas.
 
 Coordenada: @Embedded
-No tiene entidad propia, es un valor que solo tiene sentido
-dentro del historial de un camión.
+No tiene entidad ni identidad propia. Solo tiene sentido como un valor dentro del historial de
+coordenadas de un camión, por lo que se modela como objeto embebido.
 
 Ruta
-Entidad con id generado por JPA (@GeneratedValue), ya que a diferencia
-de camión/chofer no tiene un dato natural que sirva de identificador.
+Es una entidad porque representa una ruta con identidad propia. Su identificador es generado por JPA
+mediante @GeneratedValue, ya que no existe un atributo natural que identifique de manera única una ruta.
 
 Ruta - Camion:Ruta referencia a camión
-Muchas rutas pueden tener el mismo camion a lo largo del tiempo
+Una ruta referencia a un camión y un mismo camión puede participar en múltiples rutas a lo largo del
+tiempo. El camión tiene identidad y ciclo de vida independiente de la ruta.
 
-Ruta - chofer: Ruta referencia a chofer, un chofer conduce multiples rutas
-a lo largo del tiempo.
-Muchas rutas pueden tener el mismo chofer a lo largo del tiempo
+Ruta - chofer:
+Una ruta referencia a un chofer y un mismo chofer puede conducir múltiples rutas a lo largo del
+tiempo. El chofer tiene identidad y ciclo de vida independiente de la ruta.
 
-Ruta - entregasOrdenadas: se preserva el orden.
-Una ruta puede tener muchas entregas
+Ruta - entregasOrdenadas:
+Una ruta puede contener múltiples entregas. Se utiliza una colección ordenada porque el orden en que
+deben realizarse las entregas forma parte de la información de la ruta.
+El orden se persiste mediante @OrderColumn(name = "orden_entrega").
 
 Beneficiario (LOGISTICA)
-@Entity, PK heredada de donaciones
-El id es una referencia al beneficiario real que viene del microservicio
-de donaciones.Se le da tabla propia (no embebido) porque el mismo
-beneficiario se referencia repetidamente desde múltiples entregas y
-donaciones a lo largo del tiempo — embeberlo generaría duplicación real
-de datos cada vez que vuelve a aparecer.
+Es una entidad porque representa a un beneficiario con identidad propia, identificada mediante
+id_beneficiario. Este identificador corresponde al beneficiario proveniente del microservicio de
+donaciones. Se utiliza una tabla propia porque el mismo beneficiario puede ser referenciado por
+múltiples donaciones y entregas a lo largo del tiempo, evitando duplicar sus datos.
 
 EstadoEntrega
-@Embeddable, sin identidad propia, solo tiene sentido como parte del historial
-Referencia a Camion como @ManyToOne
-@Enumerated(EnumType.STRING) solo para representación en bd
+@Embeddable, no tiene identidad propia y solo tiene sentido como parte del historial de estados de
+una entrega. Por eso se modela como un objeto embebido dentro de una colección.
+
+EstadoEntrega – Camión: @ManyToOne
+El estado puede referenciar al camión involucrado en ese momento. Camión es una entidad independiente
+y puede estar asociado a distintos estados de diferentes entregas.
+
+Tipo de estado: @Enumerated(EnumType.STRING)
+Se utiliza EnumType.STRING para almacenar en la base de datos el nombre del valor del enumerado,
+en lugar de su posición numérica.
 
 DonacionEnTransito
+@Embeddable
+Representa los datos de una donación mientras forma parte de una entrega. No posee un ciclo de vida
+independiente dentro del modelo, por lo que se persiste como elemento de una colección de Entrega.
 
-@Embeddable, referencia a Beneficiario como @ManyToOne
-(no embebido, ya que Beneficiario es entidad propia).
+DonacionEnTransito – Beneficiario: @ManyToOne
+Referencia a Beneficiario mediante @ManyToOne porque Beneficiario es una entidad independiente y
+puede ser referenciado por múltiples donaciones. No se embebe el beneficiario para evitar duplicar
+sus datos.
 
 Entrega
-Entidad con id generado por JPA. No tiene campo propio de beneficiario —
-se deriva de donaciones.get(0).getBeneficiario(), ya que todas las
-donaciones de una entrega pertenecen siempre al mismo beneficiario.
+Es una entidad porque posee identidad propia, representada por id_entrega, generado por JPA mediante
+@GeneratedValue. No tiene un campo propio de beneficiario porque el beneficiario se obtiene a través
+de las donaciones asociadas. Según la regla del dominio, todas las donaciones de una misma entrega
+pertenecen al mismo beneficiario.
 
 
-Cascada en relaciones @ManyToOne hacia entidades que pueden preexistir
+Cascada en relaciones con entidades independientes
+Se utiliza CascadeType.PERSIST y CascadeType.MERGE en determinadas relaciones hacia entidades que
+tienen ciclo de vida propio, con el objetivo de facilitar la persistencia y actualización de
+las entidades relacionadas.
 
-Se agregó cascade = {CascadeType.PERSIST, CascadeType.MERGE} en Camion.gps, Entrega.camionAsignado,
-Ruta.camion y Ruta.chofer. Se decidió no incluir CascadeType.REMOVE en ninguno de los casos:
-borrar una Entrega o una Ruta nunca debe eliminar el Camion, Chofer o Gps que tenía asociado,
-ya que estas entidades tienen ciclo de vida propio e independiente — siguen existiendo y pueden
-reasignarse a otras entregas, rutas o camiones. La cascada de persistencia/actualización se agregó
-por practicidad, para no depender de que cada punto del código que construye una relación se acuerde
-de persistir primero la entidad referenciada.
+No se utiliza CascadeType.REMOVE, ya que eliminar una entidad propietaria de la relación no debe
+eliminar las entidades relacionadas que poseen un ciclo de vida independiente. Por ejemplo, eliminar
+una ruta no debe eliminar el camión ni el chofer asociados.

@@ -45,11 +45,11 @@ class RutaRepositoryTest {
     beneficiarioRepository.guardar(beneficiario);
 
     DonacionEnTransito donacion1 = new DonacionEnTransito(5L, "Fideos", beneficiario);
-    Entrega entrega1 = new Entrega(List.of(donacion1), camion);
+    Entrega entrega1 = new Entrega(List.of(donacion1));
     entregaRepository.guardar(entrega1);
 
     DonacionEnTransito donacion2 = new DonacionEnTransito(6L, "Arroz", beneficiario);
-    Entrega entrega2 = new Entrega(List.of(donacion2), camion);
+    Entrega entrega2 = new Entrega(List.of(donacion2));
     entregaRepository.guardar(entrega2);
 
     Ruta ruta = new Ruta(camion, LocalDate.now(), List.of(entrega1, entrega2));

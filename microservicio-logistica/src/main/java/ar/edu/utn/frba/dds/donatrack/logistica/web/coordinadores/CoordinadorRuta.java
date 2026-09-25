@@ -98,7 +98,7 @@ public class CoordinadorRuta {
     List<Entrega> entregas = new ArrayList<>();
     agrupadas.forEach((beneficiario, donaciones) -> {
       asegurarBeneficiarioPersistido(beneficiario);
-      entregas.add(new Entrega(donaciones, null));
+      entregas.add(new Entrega(donaciones));
     });
 
     return entregas;

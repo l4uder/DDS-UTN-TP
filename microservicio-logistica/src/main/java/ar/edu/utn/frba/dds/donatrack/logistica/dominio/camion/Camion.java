@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.Getter;
@@ -32,6 +33,7 @@ public class Camion {
   private float capacidadCarga;
   @ElementCollection
   @CollectionTable(name = "camion_coordenadas", joinColumns = @JoinColumn(name = "camion_patente"))
+  @OrderColumn(name = "orden")
   private List<Coordenada> coordenadas;
   @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinColumn(name = "gps_imei")
