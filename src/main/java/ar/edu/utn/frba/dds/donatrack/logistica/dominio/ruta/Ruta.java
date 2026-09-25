@@ -7,22 +7,52 @@ import java.util.ArrayList;
 
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import javax.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 @Getter
+@NoArgsConstructor
+@Entity
+@Table(name = "rutas")
 public class Ruta {
-  @Setter
+  @Id
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String id;
+
+  @ManyToOne
+  @JoinColumn(name = "camion_patente")
   private Camion camion;
+
+  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinColumn(name = "chofer_licencia")
   private Chofer chofer;
+
+  @Column(name = "fecha")
   private LocalDate fecha;
+
+  @OneToMany
+  @JoinColumn(name = "ruta_id")
+  @OrderColumn(name = "orden_entrega")
   private List<Entrega> entregasOrdenadas;
+
+  @Column(name = "esta_iniciada")
   private boolean estaIniciada;
 
   public Ruta(Camion camion, LocalDate fecha, List<Entrega> entregasOrdenadas) {
     validar(camion, fecha, entregasOrdenadas);
-    this.id = null;
     this.camion = camion;
     this.fecha = fecha;
     this.entregasOrdenadas = new ArrayList<>(entregasOrdenadas);

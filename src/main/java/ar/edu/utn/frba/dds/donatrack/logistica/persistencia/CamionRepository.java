@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CamionRepository implements WithSimplePersistenceUnit {
+public class CamionRepository implements WithLogisticaPersistenceUnit {
   private static final CamionRepository INSTANCE = new CamionRepository();
 
   private CamionRepository() { }
@@ -18,19 +18,16 @@ public class CamionRepository implements WithSimplePersistenceUnit {
   }
 
   public void guardar(Camion camion) {
-    entityManager().persist(camion);
+    withTransaction(() -> entityManager().persist(camion));
   }
 
   public Camion buscarPorPatente(String patente) {
     return entityManager().find(Camion.class, patente);
-    /* es equivalente a:
-    return entityManager().createQuery("SELECT c FROM Camion c WHERE c.patente = :patente", Camion.class)
-        .setParameter("patente", patente)
-        .getResultList().stream().findFirst().orElse(null); */
   }
 
   public Camion buscarPorGps(String idGps) {
-    return entityManager().createQuery("SELECT c FROM Camion c WHERE UPPER(c.gps.imei) = UPPER(:imei)", Camion.class)
+    return entityManager().createQuery(
+            "SELECT c FROM Camion c WHERE UPPER(c.gps.imei) = UPPER(:imei)", Camion.class)
         .setParameter("imei", idGps)
         .getResultList().stream().findFirst().orElse(null);
   }
@@ -42,13 +39,17 @@ public class CamionRepository implements WithSimplePersistenceUnit {
 
   public void actualizar(Camion camion) {
     if (camion.getPatente() == null || buscarPorPatente(camion.getPatente()) == null) {
-      throw new RegistroNoEncontradoException("No se puede actualizar: no existe en la base de datos la patente " + camion.getPatente());
+      throw new RegistroNoEncontradoException(
+          "No se puede actualizar: no existe en la base de datos la patente " + camion.getPatente());
     }
-    entityManager().merge(camion);
+    withTransaction(() -> entityManager().merge(camion));
   }
 
-  public void eliminar(Camion camion) {
-    entityManager().remove(camion);
+  public void eliminar(String patente) {
+    Camion camion = buscarPorPatente(patente);
+    if (camion == null) {
+      throw new RegistroNoEncontradoException("No existe camión con patente " + patente);
+    }
+    withTransaction(() -> entityManager().remove(camion));
   }
-
 }

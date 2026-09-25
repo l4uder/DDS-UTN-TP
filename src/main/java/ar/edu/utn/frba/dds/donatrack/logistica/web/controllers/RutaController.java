@@ -54,10 +54,12 @@ public class RutaController {
 
     Ruta ruta = buscarRutaPorId(idRuta);
     ruta.iniciarRecorrido();
+    repoRutas.actualizar(ruta);
+
     String linkMapa = ruta.getCamion().getLinkSeguimiento();
     List<DonacionEnTransito> donaciones = ruta.getEntregasOrdenadas().stream().flatMap(e -> e.getDonaciones().stream()).toList();
     comunicarAlasDonacionesQueEstanEnCamino(donaciones, linkMapa);
-    repoRutas.actualizar(ruta);
+
     ctx.status(200).json(RutaMapper.aDto(ruta));
   }
 

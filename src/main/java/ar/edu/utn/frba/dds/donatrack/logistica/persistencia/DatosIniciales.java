@@ -4,7 +4,7 @@ import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Gps;
 import io.github.flbulgarelli.jpa.extras.simple.WithSimplePersistenceUnit;
 
-public class DatosIniciales implements WithSimplePersistenceUnit {
+public class DatosIniciales implements WithLogisticaPersistenceUnit {
   public static void init() {
     new DatosIniciales().comenzar();
   }

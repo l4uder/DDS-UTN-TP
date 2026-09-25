@@ -4,14 +4,17 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@Embeddable
+@Entity
+@Table(name = "gps")
 public class Gps {
-  @Column(name = "imei")
+  @Id
   private String imei;
   @Column(name = "fecha")
   private LocalDateTime fecha;
@@ -34,5 +37,4 @@ public class Gps {
     this.fecha = LocalDateTime.now();
     this.nivelBateria = nivelBateria;
   }
-
 }

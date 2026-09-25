@@ -4,28 +4,50 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
              http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
 
-    <persistence-unit name="simple-persistence-unit" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="logistica-persistence-unit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <properties>
-            <property name="hibernate.archive.autodetection" value="class"/>
-            <!-- recomendable, pero No es necesario usar SQL -->
-            <!--
-            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/test?serverTimezone=UTC"/>
-            <property name="hibernate.connection.username" value="root"/>
-            <property name="hibernate.connection.password" value=""/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
-            -->
 
-            <!-- si van por este camino recomiendo usar postman, para verificar si se persisten los objetos -->
-            <!--
-            -->
+        <!--
+        <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion</class>
+        <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Gps</class>
+        <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Coordenada</class>
+        <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario</class>
+        <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega</class>
+        <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.EstadoEntrega</class>
+        <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.DonacionEnTransito</class>
+        <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta</class>
+        <class>ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Chofer</class>
+        -->
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
             <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
-            <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:crons-db"/>
+            <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:logistica-db"/>
             <property name="hibernate.connection.username" value=""/>
             <property name="hibernate.connection.password" value=""/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
 
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="use_sql_comments" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="donaciones-persistence-unit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Completar con las entidades de donaciones a medida que se migren a JPA -->
+        <!-- <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.beneficiario.Beneficiario</class> -->
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
+            <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:donaciones-db"/>
+            <property name="hibernate.connection.username" value=""/>
+            <property name="hibernate.connection.password" value=""/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
 
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
@@ -33,4 +55,5 @@
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
         </properties>
     </persistence-unit>
+
 </persistence>

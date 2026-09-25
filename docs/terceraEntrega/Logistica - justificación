@@ -1,0 +1,61 @@
+Camión - GPS: @Entity relación OneToOne
+Un GPS es un dispositivo físico con identidad propia (imei):
+puede desinstalarse de un camión y reinstalarse en otro.
+Si fuera embebido, se duplicarían sus datos cada vez que cambia de camión.
+Se relaciona vía @OneToOne.
+
+Camión - Coordinadas: @ElementCollection
+Se persiste el historial completro porque el sistema recibe posiciones
+de formo continua.
+
+Coordenada: @Embedded
+No tiene entidad propia, es un valor que solo tiene sentido
+dentro del historial de un camión.
+
+Ruta
+Entidad con id generado por JPA (@GeneratedValue), ya que a diferencia
+de camión/chofer no tiene un dato natural que sirva de identificador.
+
+Ruta - Camion:Ruta referencia a camión
+Muchas rutas pueden tener el mismo camion a lo largo del tiempo
+
+Ruta - chofer: Ruta referencia a chofer, un chofer conduce multiples rutas
+a lo largo del tiempo.
+Muchas rutas pueden tener el mismo chofer a lo largo del tiempo
+
+Ruta - entregasOrdenadas: se preserva el orden.
+Una ruta puede tener muchas entregas
+
+Beneficiario (LOGISTICA)
+@Entity, PK heredada de donaciones
+El id es una referencia al beneficiario real que viene del microservicio
+de donaciones.Se le da tabla propia (no embebido) porque el mismo
+beneficiario se referencia repetidamente desde múltiples entregas y
+donaciones a lo largo del tiempo — embeberlo generaría duplicación real
+de datos cada vez que vuelve a aparecer.
+
+EstadoEntrega
+@Embeddable, sin identidad propia, solo tiene sentido como parte del historial
+Referencia a Camion como @ManyToOne
+@Enumerated(EnumType.STRING) solo para representación en bd
+
+DonacionEnTransito
+
+@Embeddable, referencia a Beneficiario como @ManyToOne
+(no embebido, ya que Beneficiario es entidad propia).
+
+Entrega
+Entidad con id generado por JPA. No tiene campo propio de beneficiario —
+se deriva de donaciones.get(0).getBeneficiario(), ya que todas las
+donaciones de una entrega pertenecen siempre al mismo beneficiario.
+
+
+Cascada en relaciones @ManyToOne hacia entidades que pueden preexistir
+
+Se agregó cascade = {CascadeType.PERSIST, CascadeType.MERGE} en Camion.gps, Entrega.camionAsignado,
+Ruta.camion y Ruta.chofer. Se decidió no incluir CascadeType.REMOVE en ninguno de los casos:
+borrar una Entrega o una Ruta nunca debe eliminar el Camion, Chofer o Gps que tenía asociado,
+ya que estas entidades tienen ciclo de vida propio e independiente — siguen existiendo y pueden
+reasignarse a otras entregas, rutas o camiones. La cascada de persistencia/actualización se agregó
+por practicidad, para no depender de que cada punto del código que construye una relación se acuerde
+de persistir primero la entidad referenciada.

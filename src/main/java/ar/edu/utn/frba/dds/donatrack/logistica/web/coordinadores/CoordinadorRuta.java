@@ -3,11 +3,11 @@ package ar.edu.utn.frba.dds.donatrack.logistica.web.coordinadores;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.Beneficiario;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.camion.Camion;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.Lote;
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.BeneficiarioRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.planificadorexterno.ClientePlanificadorExterno;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.beneficiario.DonacionEnTransito;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.entrega.Entrega;
 import ar.edu.utn.frba.dds.donatrack.logistica.dominio.ruta.Ruta;
-import ar.edu.utn.frba.dds.donatrack.logistica.dominio.planificacion.ResultadoPlanificacion;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.dto.planificacion.CallbackPlanificacionRequest;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.integracion.microserviciosdonaciones.ConectorDonacionesApi;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.CamionRepository;
@@ -30,15 +30,17 @@ public class CoordinadorRuta {
   private final EntregaRepository entregaRepository;
   private final ConectorDonacionesApi donacionesClient;
   private final ClientePlanificadorExterno clienteExterno;
+  private final BeneficiarioRepository beneficiarioRepository;
 
   public CoordinadorRuta(RutaRepository rutaRepository, CamionRepository camionRepository,
-                         EntregaRepository entregaRepository, ConectorDonacionesApi donacionesClient,
+                         EntregaRepository entregaRepository, BeneficiarioRepository beneficiarioRepository, ConectorDonacionesApi donacionesClient,
                          ClientePlanificadorExterno clienteExterno){
     this.rutaRepository = rutaRepository;
     this.camionRepository = camionRepository;
     this.entregaRepository = entregaRepository;
     this.donacionesClient = donacionesClient;
     this.clienteExterno = clienteExterno;
+    this.beneficiarioRepository = beneficiarioRepository;
   }
 
   public List<Entrega> planificarEntregasPendientes() {
@@ -59,14 +61,17 @@ public class CoordinadorRuta {
   public List<Ruta> procesarCallback(CallbackPlanificacionRequest request) {
     LocalDate fecha = LocalDate.parse(request.fecha());
     Map<Camion, List<Entrega>> entregasPorCamion = obtenerEntregasPorCamion(request.entregasPorPatente());
-    List<Entrega> entregasSinAsignar = request.entregasSinAsignar()==null? List.of() : request.entregasSinAsignar().stream().map(this::buscarEntregaPorId).toList();
+    List<Entrega> entregasSinAsignar = request.entregasSinAsignar() == null
+        ? List.of()
+        : request.entregasSinAsignar().stream().map(this::buscarEntregaPorId).toList();
 
     List<Ruta> rutas = crearRutas(fecha, entregasPorCamion);
+
     // Elimino las entregas que no fueron asignadas ya que las donaciones asociadas permanecen en
     // ASIGNACION_REALIZADA del lado de donaciones, nunca les aviso ningun cambio de estado, asu que
     // cuando se vuelva a consultar las donaciones asignadas la volveran a encuar para que entren
     // en el próximo ciclo de planificación.
-    entregasSinAsignar.forEach(entregaRepository::eliminar);
+    entregasSinAsignar.forEach(e -> entregaRepository.eliminar(e.getId()));
 
     rutas.forEach(rutaRepository::guardar);
     rutas.forEach(ruta -> ruta.getEntregasOrdenadas().forEach(e ->
@@ -83,12 +88,19 @@ public class CoordinadorRuta {
         .collect(Collectors.groupingBy(DonacionEnTransito::getBeneficiario));
 
     List<Entrega> entregas = new ArrayList<>();
-    agrupadas.forEach((beneficiario, donaciones) ->
-        entregas.add(new Entrega(beneficiario, donaciones, null)));
+    agrupadas.forEach((beneficiario, donaciones) -> {
+      asegurarBeneficiarioPersistido(beneficiario);
+      entregas.add(new Entrega(donaciones, null));
+    });
 
     return entregas;
   }
 
+  private void asegurarBeneficiarioPersistido(Beneficiario beneficiario) {
+    if (beneficiarioRepository.buscarPorId(beneficiario.getId()) == null) {
+      beneficiarioRepository.guardar(beneficiario);
+    }
+  }
   //--Helper--
   private void propagarEstadoDonaciones(Entrega entrega, Consumer<String> command) {
     entrega.getDonaciones().forEach(d -> command.accept(d.getId()));
@@ -115,6 +127,7 @@ public class CoordinadorRuta {
       entregasOrdenadas.forEach(entrega -> {
         entrega.reasignarCamion(camion);
         entrega.confirmarListaParaEntregar();
+        entregaRepository.actualizar(entrega);
       });
       rutasCreadas.add(new Ruta(camion, fecha, entregasOrdenadas));
     });
@@ -133,5 +146,4 @@ public class CoordinadorRuta {
     if (entrega == null) throw new RecursoNoEncontradoException("Entrega no encontrado: " + id);
     return entrega;
   }
-
 }

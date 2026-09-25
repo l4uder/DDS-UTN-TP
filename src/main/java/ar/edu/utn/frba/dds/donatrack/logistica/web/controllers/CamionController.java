@@ -58,9 +58,7 @@ public class CamionController {
 
   public void eliminar(Context ctx) {
     String patente = ctx.pathParam("patente");
-
-    Camion camion = buscarCamionPorPatente(patente);
-    repoCamiones.eliminar(camion);
+    repoCamiones.eliminar(patente);
     ctx.status(204);
   }
 

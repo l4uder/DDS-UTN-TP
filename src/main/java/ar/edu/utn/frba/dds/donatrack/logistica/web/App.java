@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.donatrack.logistica.web;
 
+import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.BeneficiarioRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.DatosIniciales;
 import ar.edu.utn.frba.dds.donatrack.logistica.persistencia.GpsRepository;
 import ar.edu.utn.frba.dds.donatrack.logistica.web.controllers.CamionController;
@@ -75,10 +76,11 @@ public class App {
     CamionRepository camionRepository = CamionRepository.getInstancia();
     RutaRepository rutaRepository = RutaRepository.getInstancia();
     GpsRepository gpsRepository = GpsRepository.getInstancia();
+    BeneficiarioRepository beneficiarioRepository = BeneficiarioRepository.getInstancia();
 
     //Coordinadores y procesos
     CoordinadorRuta coordinadorRuta = new CoordinadorRuta(
-        rutaRepository, camionRepository, entregaRepository,
+        rutaRepository, camionRepository, entregaRepository, beneficiarioRepository,
         donacionesClient, clienteExterno
     );
     ProcesoLogistica procesoLogistica = new ProcesoLogistica(coordinadorRuta);
