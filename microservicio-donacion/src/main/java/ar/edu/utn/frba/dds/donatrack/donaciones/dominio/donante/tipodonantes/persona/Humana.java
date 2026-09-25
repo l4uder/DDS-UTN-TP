@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "donantes_humanas")
+@Table(name = "humanas")
 @PrimaryKeyJoinColumn(name = "id_donante")
 public class Humana extends Donante {
   @Column(name = "nombre")

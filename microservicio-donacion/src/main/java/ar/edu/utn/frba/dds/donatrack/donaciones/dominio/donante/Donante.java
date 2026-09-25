@@ -15,6 +15,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.Getter;
@@ -33,7 +36,7 @@ public abstract class Donante {
   private Documento documento;
   @Column(name = "tipo_donante")
   private String tipo;
-  @Transient
+  @OneToMany(mappedBy = "donante")
   private List<RegistroEntrega> entregas;
 
   protected Donante(Documento documento, String tipo) {

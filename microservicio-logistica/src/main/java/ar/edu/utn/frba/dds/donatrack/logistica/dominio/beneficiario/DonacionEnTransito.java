@@ -15,10 +15,8 @@ import lombok.NoArgsConstructor;
 public class DonacionEnTransito {
   @Column(name = "id_donacion")
   private Long id;
-
-  @Column(name = "donacion_descripcion")
+  @Column(name = "descripcion")
   private String descripcion;
-
   @ManyToOne
   @JoinColumn(name = "id_beneficiario")
   private Beneficiario beneficiario;

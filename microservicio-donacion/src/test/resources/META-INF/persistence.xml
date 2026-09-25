@@ -11,6 +11,10 @@
         <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.persona.Humana</class>
         <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.tipodonantes.juridica.Representante</class>
         <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.mediocontacto.MedioContacto</class>
+        <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.donante.entrega.RegistroEntrega</class>
+        <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Bien</class>
+        <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Subcategoria</class>
+        <class>ar.edu.utn.frba.dds.donatrack.donaciones.dominio.bien.Categoria</class>
         <properties>
             <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
             <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:donaciones-db"/>

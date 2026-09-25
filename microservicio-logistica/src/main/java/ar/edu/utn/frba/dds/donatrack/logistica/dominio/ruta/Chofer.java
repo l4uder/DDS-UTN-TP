@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "choferes")
 public class Chofer {
   @Id
+  @Column(name = "licencia_conducir")
   private String licenciaConducir;
   @Column(name = "nombre")
   private String nombre;
