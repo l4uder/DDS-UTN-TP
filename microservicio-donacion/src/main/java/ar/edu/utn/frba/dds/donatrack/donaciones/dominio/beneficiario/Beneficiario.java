@@ -32,7 +32,7 @@ public class Beneficiario {
   @ElementCollection
   @CollectionTable(name = "necesidades", joinColumns = @JoinColumn(name = "id_beneficiario"))
   private List<Necesidad> necesidades;
-  @OneToMany(mappedBy = "beneficiario")
+  @OneToMany(mappedBy = "beneficiario") //Intentar evitar mappedBy. Relaciones bidireccionales son costosas de mantener
   private List<Donacion> donaciones;
 
   public Beneficiario(String razonSocial, String direccion, List<MedioContacto> contactos) {

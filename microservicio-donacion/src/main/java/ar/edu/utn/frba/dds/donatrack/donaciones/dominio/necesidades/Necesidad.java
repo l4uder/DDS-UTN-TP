@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 @Getter
 @NoArgsConstructor
-@Embeddable
+@Embeddable //No puede tener ID y no ser una identidad a la vez
 public class Necesidad {
   @Setter
   @Column(name = "id_necesidad")
